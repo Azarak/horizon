@@ -120,6 +120,10 @@
 		SSair.remove_from_active(src)
 	else
 		SSair.add_to_active(src)
+	for(var/thing in GetAtmosAdjacentTurfs())
+		var/turf/NT = thing
+		if(NT.liquids)
+			SSliquids.add_active_turf(NT)
 
 /atom/movable/proc/move_update_air(turf/T)
 	if(isturf(T))
