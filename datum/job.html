@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <base href="../" />
+    <link rel="stylesheet" href="dmdoc.css" />
+    <title>&#x2F;datum&#x2F;job - &#x2F;tg&#x2F; Station 13</title>
+</head>
+<body>
+<header>
+    <a href="index.html">&#x2F;tg&#x2F; Station 13</a> -
+    <a href="index.html#modules">Modules</a> -
+    <a href="index.html#types">Types</a>
+ &mdash; <a href="datum/job.html#var">Var Details</a> - <a href="datum/job.html#proc">Proc Details</a></header>
+<main>
+<h1>job <aside>/<a href="datum.html">datum</a>/<a href="datum/job.html">job</a></aside>
+        
+    
+            <a href="https://github.com/Azarak/horizon/blob/2382544f227e0e3ca86de3000570512f0d4d4b90/code/modules/jobs/job_types/_job.dm#L1">
+        <img src="git.png" width="16" height="16" title="code&#x2F;modules&#x2F;jobs&#x2F;job_types&#x2F;_job.dm 1"/></a></h1>
+
+<table class="summary" cellspacing="0"><tr><td colspan="2"><h2>Vars</h2></td></tr>
+            <tr><th><a href="datum/job.html#var/allow_bureaucratic_error">allow_bureaucratic_error</a></th><td>Should this job be allowed to be picked for the bureaucratic error event?</td></tr>
+            <tr><th><a href="datum/job.html#var/banned_quirks">banned_quirks</a></th><td>List of banned quirks in their names(dont blame me, that's how they're stored), players can't join as the job if they have the quirk. Associative for the purposes of performance</td></tr>
+            <tr><th><a href="datum/job.html#var/blacklist_dresscode_slots">blacklist_dresscode_slots</a></th><td>A list of slots that can't have loadout items assigned to them if no_dresscode is applied, used for important items such as ID, PDA, backpack and headset</td></tr>
+            <tr><th><a href="datum/job.html#var/liver_traits">liver_traits</a></th><td>Lazylist of traits added to the liver of the mob assigned this job (used for the classic &quot;cops heal from donuts&quot; reaction, among others)</td></tr>
+            <tr><th><a href="datum/job.html#var/loadout">loadout</a></th><td>Whether the job can use the loadout system</td></tr>
+            <tr><th><a href="datum/job.html#var/minimal_skills">minimal_skills</a></th><td>Innate skill levels unlocked at roundstart. Based on config.jobs_have_minimal_access config setting, for example with a full crew. Format is list(/datum/skill/foo = SKILL_EXP_NOVICE) with exp as an integer or as per code/_DEFINES/skills.dm</td></tr>
+            <tr><th><a href="datum/job.html#var/no_dresscode">no_dresscode</a></th><td>With this set to TRUE, the loadout will be applied before a job clothing will be</td></tr>
+            <tr><th><a href="datum/job.html#var/required_languages">required_languages</a></th><td>Which languages does the job require, associative to LANGUAGE_UNDERSTOOD or LANGUAGE_SPOKEN</td></tr>
+            <tr><th><a href="datum/job.html#var/skills">skills</a></th><td>Innate skill levels unlocked at roundstart. Based on config.jobs_have_minimal_access config setting, for example with a skeleton crew. Format is list(/datum/skill/foo = SKILL_EXP_NOVICE) with exp as an integer or as per code/_DEFINES/skills.dm</td></tr>
+            <tr><th><a href="datum/job.html#var/species_blacklist">species_blacklist</a></th><td>Blacklist of species for this job.</td></tr>
+            <tr><th><a href="datum/job.html#var/species_whitelist">species_whitelist</a></th><td>Whitelist of allowed species for this job. If not specified then all roundstart races can be used. Associative with TRUE</td></tr><tr><td colspan="2"><h2>Procs</h2></td></tr>
+            <tr><th><a href="datum/job.html#proc/GetMapChanges">GetMapChanges</a></th><td>Gets the changes dictionary made to the job template by the map config. Returns null if job is removed.</td></tr></table>
+    <h2 id="var">Var Details</h2><h3 id="var/allow_bureaucratic_error"><aside class="declaration">var </aside>allow_bureaucratic_error
+            <aside>&ndash; </aside>
+        
+    
+            <a href="https://github.com/Azarak/horizon/blob/2382544f227e0e3ca86de3000570512f0d4d4b90/code/modules/jobs/job_types/_job.dm#L72">
+        <img src="git.png" width="16" height="16" title="code&#x2F;modules&#x2F;jobs&#x2F;job_types&#x2F;_job.dm 72"/></a></h3>
+        <p>Should this job be allowed to be picked for the bureaucratic error event?</p><h3 id="var/banned_quirks"><aside class="declaration">var </aside>banned_quirks
+            <aside>&ndash; /list</aside>
+        
+    
+            <a href="https://github.com/Azarak/horizon/blob/2382544f227e0e3ca86de3000570512f0d4d4b90/code/modules/jobs/job_types/_job.dm#L79">
+        <img src="git.png" width="16" height="16" title="code&#x2F;modules&#x2F;jobs&#x2F;job_types&#x2F;_job.dm 79"/></a></h3>
+        <p>List of banned quirks in their names(dont blame me, that's how they're stored), players can't join as the job if they have the quirk. Associative for the purposes of performance</p><h3 id="var/blacklist_dresscode_slots"><aside class="declaration">var </aside>blacklist_dresscode_slots
+            <aside>&ndash; /list</aside>
+        
+    
+            <a href="https://github.com/Azarak/horizon/blob/2382544f227e0e3ca86de3000570512f0d4d4b90/code/modules/jobs/job_types/_job.dm#L81">
+        <img src="git.png" width="16" height="16" title="code&#x2F;modules&#x2F;jobs&#x2F;job_types&#x2F;_job.dm 81"/></a></h3>
+        <p>A list of slots that can't have loadout items assigned to them if no_dresscode is applied, used for important items such as ID, PDA, backpack and headset</p><h3 id="var/liver_traits"><aside class="declaration">var </aside>liver_traits
+            <aside>&ndash; /list</aside>
+        
+    
+            <a href="https://github.com/Azarak/horizon/blob/2382544f227e0e3ca86de3000570512f0d4d4b90/code/modules/jobs/job_types/_job.dm#L65">
+        <img src="git.png" width="16" height="16" title="code&#x2F;modules&#x2F;jobs&#x2F;job_types&#x2F;_job.dm 65"/></a></h3>
+        <p>Lazylist of traits added to the liver of the mob assigned this job (used for the classic &quot;cops heal from donuts&quot; reaction, among others)</p><h3 id="var/loadout"><aside class="declaration">var </aside>loadout
+            <aside>&ndash; </aside>
+        
+    
+            <a href="https://github.com/Azarak/horizon/blob/2382544f227e0e3ca86de3000570512f0d4d4b90/code/modules/jobs/job_types/_job.dm#L77">
+        <img src="git.png" width="16" height="16" title="code&#x2F;modules&#x2F;jobs&#x2F;job_types&#x2F;_job.dm 77"/></a></h3>
+        <p>Whether the job can use the loadout system</p><h3 id="var/minimal_skills"><aside class="declaration">var </aside>minimal_skills
+            <aside>&ndash; /list</aside>
+        
+    
+            <a href="https://github.com/Azarak/horizon/blob/2382544f227e0e3ca86de3000570512f0d4d4b90/code/modules/jobs/job_types/_job.dm#L12">
+        <img src="git.png" width="16" height="16" title="code&#x2F;modules&#x2F;jobs&#x2F;job_types&#x2F;_job.dm 12"/></a></h3>
+        <p>Innate skill levels unlocked at roundstart. Based on config.jobs_have_minimal_access config setting, for example with a full crew. Format is list(/datum/skill/foo = SKILL_EXP_NOVICE) with exp as an integer or as per code/_DEFINES/skills.dm</p><h3 id="var/no_dresscode"><aside class="declaration">var </aside>no_dresscode
+            <aside>&ndash; </aside>
+        
+    
+            <a href="https://github.com/Azarak/horizon/blob/2382544f227e0e3ca86de3000570512f0d4d4b90/code/modules/jobs/job_types/_job.dm#L75">
+        <img src="git.png" width="16" height="16" title="code&#x2F;modules&#x2F;jobs&#x2F;job_types&#x2F;_job.dm 75"/></a></h3>
+        <p>With this set to TRUE, the loadout will be applied before a job clothing will be</p><h3 id="var/required_languages"><aside class="declaration">var </aside>required_languages
+            <aside>&ndash; /list</aside>
+        
+    
+            <a href="https://github.com/Azarak/horizon/blob/2382544f227e0e3ca86de3000570512f0d4d4b90/code/modules/jobs/job_types/_job.dm#L87">
+        <img src="git.png" width="16" height="16" title="code&#x2F;modules&#x2F;jobs&#x2F;job_types&#x2F;_job.dm 87"/></a></h3>
+        <p>Which languages does the job require, associative to LANGUAGE_UNDERSTOOD or LANGUAGE_SPOKEN</p><h3 id="var/skills"><aside class="declaration">var </aside>skills
+            <aside>&ndash; /list</aside>
+        
+    
+            <a href="https://github.com/Azarak/horizon/blob/2382544f227e0e3ca86de3000570512f0d4d4b90/code/modules/jobs/job_types/_job.dm#L10">
+        <img src="git.png" width="16" height="16" title="code&#x2F;modules&#x2F;jobs&#x2F;job_types&#x2F;_job.dm 10"/></a></h3>
+        <p>Innate skill levels unlocked at roundstart. Based on config.jobs_have_minimal_access config setting, for example with a skeleton crew. Format is list(/datum/skill/foo = SKILL_EXP_NOVICE) with exp as an integer or as per code/_DEFINES/skills.dm</p><h3 id="var/species_blacklist"><aside class="declaration">var </aside>species_blacklist
+            <aside>&ndash; /list</aside>
+        
+    
+            <a href="https://github.com/Azarak/horizon/blob/2382544f227e0e3ca86de3000570512f0d4d4b90/code/modules/jobs/job_types/_job.dm#L85">
+        <img src="git.png" width="16" height="16" title="code&#x2F;modules&#x2F;jobs&#x2F;job_types&#x2F;_job.dm 85"/></a></h3>
+        <p>Blacklist of species for this job.</p><h3 id="var/species_whitelist"><aside class="declaration">var </aside>species_whitelist
+            <aside>&ndash; /list</aside>
+        
+    
+            <a href="https://github.com/Azarak/horizon/blob/2382544f227e0e3ca86de3000570512f0d4d4b90/code/modules/jobs/job_types/_job.dm#L83">
+        <img src="git.png" width="16" height="16" title="code&#x2F;modules&#x2F;jobs&#x2F;job_types&#x2F;_job.dm 83"/></a></h3>
+        <p>Whitelist of allowed species for this job. If not specified then all roundstart races can be used. Associative with TRUE</p><h2 id="proc">Proc Details</h2><h3 id="proc/GetMapChanges"><aside class="declaration">proc </aside>GetMapChanges<aside>() 
+        
+    
+            <a href="https://github.com/Azarak/horizon/blob/2382544f227e0e3ca86de3000570512f0d4d4b90/code/modules/jobs/job_types/_job.dm#L239">
+        <img src="git.png" width="16" height="16" title="code&#x2F;modules&#x2F;jobs&#x2F;job_types&#x2F;_job.dm 239"/></a></aside>
+        </h3>
+        <p>Gets the changes dictionary made to the job template by the map config. Returns null if job is removed.</p></main>
+<footer>
+    tgstation.dme
+    <a href="https://github.com/Azarak/horizon/tree/2382544f227e0e3ca86de3000570512f0d4d4b90">2382544</a>
+        (trunk) &mdash; <a href="https://github.com/SpaceManiac/SpacemanDMM/blob/master/src/dmdoc/README.md">dmdoc 1.3.0</a></footer>
+</body>
+</html>
