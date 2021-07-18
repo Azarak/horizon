@@ -2,7 +2,7 @@
 	title = "Ship Captain"
 	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD|DEADMIN_POSITION_SECURITY
 	department_head = list("Free Trade Union")
-	faction = "Tradership"
+	faction = FACTION_TRADERSHIP
 	total_positions = 1
 	spawn_positions = 1
 	supervisors = "your profit margin, your conscience, and the Trademaster"
@@ -29,7 +29,7 @@
 	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD
 	head_announce = list(RADIO_CHANNEL_SUPPLY, RADIO_CHANNEL_SERVICE)
 	department_head = list("Free Trade Union")
-	faction = "Tradership"
+	faction = FACTION_TRADERSHIP
 	total_positions = 1
 	spawn_positions = 1
 	supervisors = "the Captain"
@@ -55,7 +55,7 @@
 /datum/job/tradership_engineer
 	title = "Ship Engineer"
 	department_head = list("Captain")
-	faction = "Tradership"
+	faction = FACTION_TRADERSHIP
 	total_positions = 3
 	spawn_positions = 3
 	supervisors = "the First Mate and the Captain"
@@ -78,7 +78,7 @@
 /datum/job/tradership_doctor
 	title = "Ship Doctor"
 	department_head = list("Captain")
-	faction = "Tradership"
+	faction = FACTION_TRADERSHIP
 	total_positions = 2
 	spawn_positions = 2
 	supervisors = "the First Mate and the Captain"
@@ -99,7 +99,7 @@
 /datum/job/tradership_researcher
 	title = "Researcher"
 	department_head = list("Captain")
-	faction = "Tradership"
+	faction = FACTION_TRADERSHIP
 	total_positions = 2
 	spawn_positions = 2
 	supervisors = "the First Mate and the Captain"
@@ -120,7 +120,7 @@
 /datum/job/tradership_deckhand
 	title = "Deckhand"
 	department_head = list("Captain")
-	faction = "Tradership"
+	faction = FACTION_TRADERSHIP
 	total_positions = 50
 	spawn_positions = 20
 	supervisors = "literally everyone, you bottom feeder"
@@ -138,7 +138,7 @@
 /datum/job/tradership_cook
 	title = "Ship Cook"
 	department_head = list("Captain")
-	faction = "Tradership"
+	faction = FACTION_TRADERSHIP
 	total_positions = 1
 	spawn_positions = 1
 	supervisors = "the First Mate and the Captain"
@@ -159,7 +159,7 @@
 /datum/job/tradership_botanist
 	title = "Ship Botanist"
 	department_head = list("Captain")
-	faction = "Tradership"
+	faction = FACTION_TRADERSHIP
 	total_positions = 2
 	spawn_positions = 2
 	supervisors = "the First Mate and the Captain"
@@ -176,7 +176,7 @@
 
 /datum/job/tradership_stowaway
 	title = "Stowaway"
-	faction = "Tradership"
+	faction = FACTION_TRADERSHIP
 	total_positions = 1
 	spawn_positions = 1
 	supervisors = "your own interests"
@@ -193,4 +193,4 @@
 
 /datum/job/cyborg/tradership
 	title = "Ship Cyborg"
-	faction = "Tradership"
+	faction = FACTION_TRADERSHIP

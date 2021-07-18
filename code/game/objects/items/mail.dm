@@ -132,13 +132,15 @@
 	msg += "\t[SPAN_INFO("Distribute by hand or via destination tagger using the certified NT disposal system.")]"
 	return msg
 
-/// Accepts a mob to initialize goodies for a piece of mail.
-/obj/item/mail/proc/initialize_for_recipient(mob/new_recipient)
-	recipient = new_recipient
-	name = "[initial(name)] for [new_recipient.real_name] ([new_recipient.job])"
+/// Accepts a mind to initialize goodies for a piece of mail.
+/obj/item/mail/proc/initialize_for_recipient(datum/mind/recipient)
+	name = "[initial(name)] for [recipient.name] ([recipient.assigned_role.title])"
+	recipient_ref = WEAKREF(recipient)
+
+	var/mob/living/body = recipient.current
 	var/list/goodies = generic_goodies
 
-	var/datum/job/this_job = SSjob.name_occupations[new_recipient.job]
+	var/datum/job/this_job = recipient.assigned_role
 	if(this_job)
 		if(this_job.paycheck_department && department_colors[this_job.paycheck_department])
 			color = department_colors[this_job.paycheck_department]
@@ -219,10 +221,17 @@
 /obj/structure/closet/crate/mail/full/Initialize()
 	. = ..()
 	var/list/mail_recipients = list()
-	for(var/mob/living/carbon/human/alive in GLOB.player_list)
-		if(alive.stat != DEAD)
-			mail_recipients += alive
-	for(var/iterator in 1 to storage_capacity)
+
+	for(var/mob/living/carbon/human/human in GLOB.player_list)
+		if(human.stat == DEAD || !human.mind)
+			continue
+		// Skip wizards, nuke ops, cyborgs; Centcom does not send them mail
+		if(!(human.mind.assigned_role.job_flags & JOB_CREW_MEMBER))
+			continue
+
+		mail_recipients += human.mind
+
+	for(var/i in 1 to mail_count)
 		var/obj/item/mail/new_mail
 		if(prob(FULL_CRATE_LETTER_ODDS))
 			new_mail = new /obj/item/mail(src)
