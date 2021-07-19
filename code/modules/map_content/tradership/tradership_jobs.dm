@@ -1,5 +1,5 @@
 /datum/job/tradership_captain
-	title = "Ship Captain"
+	title = "Captain"
 	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD|DEADMIN_POSITION_SECURITY
 	department_head = list("Free Trade Union")
 	faction = FACTION_TRADERSHIP
@@ -23,6 +23,7 @@
 
 	display_order = JOB_DISPLAY_ORDER_CAPTAIN
 	departments = DEPARTMENT_COMMAND
+	job_flags = JOB_NEW_PLAYER_JOINABLE | JOB_EQUIP_RANK
 
 /datum/job/tradership_first_mate
 	title = "First Mate"
@@ -51,9 +52,10 @@
 	liver_traits = list(TRAIT_ROYAL_METABOLISM)
 
 	display_order = JOB_DISPLAY_ORDER_HEAD_OF_PERSONNEL
+	job_flags = JOB_NEW_PLAYER_JOINABLE | JOB_EQUIP_RANK
 
 /datum/job/tradership_engineer
-	title = "Ship Engineer"
+	title = "Engineer"
 	department_head = list("Captain")
 	faction = FACTION_TRADERSHIP
 	total_positions = 3
@@ -74,9 +76,10 @@
 	display_order = JOB_DISPLAY_ORDER_STATION_ENGINEER
 	bounty_types = CIV_JOB_ENG
 	departments = DEPARTMENT_ENGINEERING
+	job_flags = JOB_NEW_PLAYER_JOINABLE | JOB_EQUIP_RANK
 
 /datum/job/tradership_doctor
-	title = "Ship Doctor"
+	title = "Doctor"
 	department_head = list("Captain")
 	faction = FACTION_TRADERSHIP
 	total_positions = 2
@@ -95,6 +98,7 @@
 	display_order = JOB_DISPLAY_ORDER_MEDICAL_DOCTOR
 	bounty_types = CIV_JOB_MED
 	departments = DEPARTMENT_MEDICAL
+	job_flags = JOB_NEW_PLAYER_JOINABLE | JOB_EQUIP_RANK
 
 /datum/job/tradership_researcher
 	title = "Researcher"
@@ -116,6 +120,7 @@
 	display_order = JOB_DISPLAY_ORDER_SCIENTIST
 	bounty_types = CIV_JOB_SCI
 	departments = DEPARTMENT_SCIENCE
+	job_flags = JOB_NEW_PLAYER_JOINABLE | JOB_EQUIP_RANK
 
 /datum/job/tradership_deckhand
 	title = "Deckhand"
@@ -134,9 +139,10 @@
 	display_order = JOB_DISPLAY_ORDER_CARGO_TECHNICIAN
 	bounty_types = CIV_JOB_RANDOM
 	departments = DEPARTMENT_CARGO
+	job_flags = JOB_NEW_PLAYER_JOINABLE | JOB_EQUIP_RANK
 
 /datum/job/tradership_cook
-	title = "Ship Cook"
+	title = "Cook"
 	department_head = list("Captain")
 	faction = FACTION_TRADERSHIP
 	total_positions = 1
@@ -155,9 +161,10 @@
 	display_order = JOB_DISPLAY_ORDER_COOK
 	bounty_types = CIV_JOB_CHEF
 	departments = DEPARTMENT_CIVILLIAN
+	job_flags = JOB_NEW_PLAYER_JOINABLE | JOB_EQUIP_RANK
 
 /datum/job/tradership_botanist
-	title = "Ship Botanist"
+	title = "Botanist"
 	department_head = list("Captain")
 	faction = FACTION_TRADERSHIP
 	total_positions = 2
@@ -173,6 +180,7 @@
 	display_order = JOB_DISPLAY_ORDER_BOTANIST
 	bounty_types = CIV_JOB_GROW
 	departments = DEPARTMENT_CIVILLIAN
+	job_flags = JOB_NEW_PLAYER_JOINABLE | JOB_EQUIP_RANK
 
 /datum/job/tradership_stowaway
 	title = "Stowaway"
@@ -190,7 +198,9 @@
 
 	paycheck_department = ACCOUNT_CIV
 	display_order = JOB_DISPLAY_ORDER_ASSISTANT
+	job_flags = JOB_NEW_PLAYER_JOINABLE | JOB_EQUIP_RANK
 
 /datum/job/cyborg/tradership
-	title = "Ship Cyborg"
+	title = "Cyborg"
 	faction = FACTION_TRADERSHIP
+	job_flags = JOB_NEW_PLAYER_JOINABLE | JOB_EQUIP_RANK

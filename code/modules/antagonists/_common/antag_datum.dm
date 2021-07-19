@@ -106,7 +106,7 @@ GLOBAL_LIST_EMPTY(antagonists)
 	if(removing) // They're a clown becoming an antag, remove clumsy
 		human_override.dna.remove_mutation(CLOWNMUT)
 		if(!silent && message)
-			to_chat(human_override, span_boldnotice("[message]"))
+			to_chat(human_override, SPAN_BOLDNOTICE("[message]"))
 	else
 		human_override.dna.add_mutation(CLOWNMUT) // We're removing their antag status, add back clumsy
 

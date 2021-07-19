@@ -141,6 +141,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	var/action_buttons_screen_locs = list()
 
+	///This var stores the amount of points the owner will get for making it out alive.
+	var/hardcore_survival_score = 0
+
 	///Someone thought we were nice! We get a little heart in OOC until we join the server past the below time (we can keep it until the end of the round otherwise)
 	var/hearted
 	///If we have a hearted commendations, we honor it every time the player loads preferences until this time has been passed
@@ -224,7 +227,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		if(load_character())
 			return
 	//we couldn't load character data so just randomize the character appearance + name
-	randomise_appearance_prefs() //let's create a random character then - rather than a fat, bald and naked man.
+	random_character() //let's create a random character then - rather than a fat, bald and naked man.
 	key_bindings = deepCopyList(GLOB.hotkey_keybinding_list_by_key) // give them default keybinds and update their movement keys
 	C?.set_macros()
 	real_name = pref_species.random_name(gender,1)
@@ -1294,7 +1297,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				var/available_in_days = job.available_in_days(user.client)
 				HTML += "<font color=red>[rank]</font></td><td><font color=red> \[IN [(available_in_days)] DAYS\]</font></td></tr>"
 				continue
-<<<<<<< HEAD
 			if(job.has_banned_quirk(src))
 				HTML += "<font color=red>[rank]</font></td><td><font color=red> \[BAD QUIRKS\]</font></td></tr>"
 				continue
@@ -1304,10 +1306,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			if(!job.has_required_languages(src))
 				HTML += "<font color=red>[rank]</font></td><td><font color=red> \[BAD LANGS\]</font></td></tr>"
 				continue
-			if((job_preferences[SSjob.overflow_role] == JP_LOW) && (rank != SSjob.overflow_role) && !is_banned_from(user.ckey, SSjob.overflow_role))
-=======
 			if((job_preferences[overflow_role.title] == JP_LOW) && (rank != overflow_role.title) && !is_banned_from(user.ckey, overflow_role.title))
->>>>>>> 4c21166e4ff... Job refactor: strings to references and typepaths (#59841)
 				HTML += "<font color=orange>[rank]</font></td><td></td></tr>"
 				continue
 			if((rank in GLOB.command_positions) || (rank == "AI"))//Bold head jobs
@@ -1893,7 +1892,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				if("suit")
 					jumpsuit_style = pick(GLOB.jumpsuitlist)
 				if("all")
-					apply_character_randomization_prefs()
+					random_character(gender)
 
 		if("input")
 
@@ -2733,7 +2732,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 				if("changeslot")
 					if(!load_character(text2num(href_list["num"])))
-						randomise_appearance_prefs()
+						random_character()
+						real_name = random_unique_name(gender)
 						save_character()
 					else
 						needs_update = TRUE
@@ -2789,24 +2789,13 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	ShowChoices(user)
 	return TRUE
 
-
-<<<<<<< HEAD
-	if(roundstart_checks)
-		if(CONFIG_GET(flag/humans_need_surnames) && (pref_species.id == "human"))
-			var/firstspace = findtext(real_name, " ")
-			var/name_length = length(real_name)
-			if(!firstspace) //we need a surname
-				real_name += " [pick(GLOB.last_names)]"
-			else if(firstspace == name_length)
-				real_name += "[pick(GLOB.last_names)]"
-=======
 /// Sanitization checks to be performed before using these preferences.
 /datum/preferences/proc/sanitize_chosen_prefs()
-	if(!(pref_species.id in GLOB.roundstart_races) && !(pref_species.id in (CONFIG_GET(keyed_list/roundstart_no_hard_check))))
+	if(!GLOB.roundstart_races[pref_species.id] && !(pref_species.id in (CONFIG_GET(keyed_list/roundstart_no_hard_check))))
 		pref_species = new /datum/species/human
 		save_character()
 
-	if(CONFIG_GET(flag/humans_need_surnames) && (pref_species.id == SPECIES_HUMAN))
+	if(CONFIG_GET(flag/humans_need_surnames) && (pref_species.id == "human"))
 		var/firstspace = findtext(real_name, " ")
 		var/name_length = length(real_name)
 		if(!firstspace) //we need a surname
@@ -2814,19 +2803,14 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		else if(firstspace == name_length)
 			real_name += "[pick(GLOB.last_names)]"
 
-
 /// Sanitizes the preferences, applies the randomization prefs, and then applies the preference to the human mob.
 /datum/preferences/proc/safe_transfer_prefs_to(mob/living/carbon/human/character, icon_updates = TRUE, is_antag = FALSE)
-	apply_character_randomization_prefs(is_antag)
 	sanitize_chosen_prefs()
 	apply_prefs_to(character, icon_updates)
 
->>>>>>> 4c21166e4ff... Job refactor: strings to references and typepaths (#59841)
-
-/// Applies the given preferences to a human mob.
-/datum/preferences/proc/apply_prefs_to(mob/living/carbon/human/character, icon_updates = TRUE)
+/datum/preferences/proc/apply_prefs_to(mob/living/carbon/human/character, icon_updates = TRUE, character_setup = FALSE)
 	character.real_name = real_name
-	character.name = real_name
+	character.name = character.real_name
 
 	character.gender = gender
 	character.age = age
@@ -2857,17 +2841,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	character.jumpsuit_style = jumpsuit_style
 
-<<<<<<< HEAD
 	character.dominant_hand = dominant_hand
 
-	var/datum/species/chosen_species
-	chosen_species = pref_species.type
-	if(roundstart_checks && !(pref_species.id in GLOB.customizable_races))
-		chosen_species = /datum/species/human
-		set_new_species(/datum/species/human)
-		save_character()
-
-	character.set_species(chosen_species, icon_update = FALSE, pref_load = src)
+	character.set_species(pref_species.type, icon_update = FALSE, pref_load = src)
 	if(!character_setup || (character_setup && show_body_size))
 		character.dna.update_body_size()
 	else //We need to update it to 100% in case they switch back
@@ -2885,34 +2861,14 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		for(var/key in augments)
 			var/datum/augment_item/aug = GLOB.augment_items[augments[key]]
 			aug.apply(character, character_setup, src)
-=======
-	character.dna.features = features.Copy()
-	character.set_species(pref_species.type, icon_update = FALSE, pref_load = TRUE)
-	character.dna.real_name = character.real_name
-
-	if(pref_species.mutant_bodyparts["tail_lizard"])
-		character.dna.species.mutant_bodyparts["tail_lizard"] = pref_species.mutant_bodyparts["tail_lizard"]
-	if(pref_species.mutant_bodyparts["spines"])
-		character.dna.species.mutant_bodyparts["spines"] = pref_species.mutant_bodyparts["spines"]
->>>>>>> 4c21166e4ff... Job refactor: strings to references and typepaths (#59841)
 
 	if(icon_updates)
 		character.update_body()
 		character.update_hair()
 		character.update_body_parts()
 
-
-/// Returns whether the parent mob should have the random hardcore settings enabled. Assumes it has a mind.
 /datum/preferences/proc/should_be_random_hardcore(datum/job/job, datum/mind/mind)
-	if(!randomise[RANDOM_HARDCORE])
-		return FALSE
-	if(job.departments & DEPARTMENT_COMMAND) //No command staff
-		return FALSE
-	for(var/datum/antagonist/antag as anything in mind.antag_datums)
-		if(antag.get_team()) //No team antags
-			return FALSE
-	return TRUE
-
+	return FALSE
 
 /datum/preferences/proc/get_default_name(name_id)
 	switch(name_id)

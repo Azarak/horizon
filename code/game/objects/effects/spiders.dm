@@ -108,66 +108,6 @@
 /obj/structure/spider/eggcluster/Initialize()
 	pixel_x = base_pixel_x + rand(3,-3)
 	pixel_y = base_pixel_y + rand(3,-3)
-	return ..()
-
-/obj/structure/spider/eggcluster/Destroy()
-	if(spawner)
-		QDEL_NULL(spawner)
-	return ..()
-
-/obj/structure/spider/eggcluster/attack_ghost(mob/user)
-	if(spawner)
-		spawner.attack_ghost(user)
-	return ..()
-
-/obj/structure/spider/eggcluster/enriched
-	name = "enriched egg cluster"
-	color = rgb(148, 0, 211)
-
-/obj/structure/spider/eggcluster/bloody
-	name = "bloody egg cluster"
-	color = rgb(255, 0, 0)
-
-/obj/structure/spider/eggcluster/midwife
-	name = "midwife egg cluster"
-
-/obj/effect/mob_spawn/spider
-	name = "egg cluster"
-	desc = "They seem to pulse slightly with an inner life."
-	mob_name = "a spider"
-	icon = 'icons/effects/effects.dmi'
-	icon_state = "eggs"
-	roundstart = FALSE
-	death = FALSE
-	move_resist = MOVE_FORCE_NORMAL
-	density = FALSE
-	random = TRUE
-	show_flavour = FALSE
-	short_desc = "You are a spider."
-	important_info = "Follow your directives at all costs."
-	faction = list("spiders")
-	spawner_job_path = /datum/job/spider
-	banType = ROLE_ALIEN
-	ready = FALSE
-	radial_based = TRUE
-	/// The amount the egg cluster has grown.  Is able to produce a spider when it hits 100.
-	var/amount_grown = 0
-	/// The mother's directive at the time the egg was produced.  Passed onto the child.
-	var/directive = ""
-	///	Type of the cluster that the spawner spawns
-	var/cluster_type = /obj/structure/spider/eggcluster
-	/// Physical structure housing the spawner
-	var/obj/structure/spider/eggcluster/egg
-	/// The types of spiders that the spawner can produce
-	var/list/potentialspawns = list(
-		/mob/living/simple_animal/hostile/giant_spider,
-		/mob/living/simple_animal/hostile/giant_spider/hunter,
-		/mob/living/simple_animal/hostile/giant_spider/nurse,
-	)
-
-/obj/effect/mob_spawn/spider/Initialize(mapload)
-	. = ..()
->>>>>>> 4c21166e4ff... Job refactor: strings to references and typepaths (#59841)
 	START_PROCESSING(SSobj, src)
 	AddElement(/datum/element/point_of_interest)
 	return ..()

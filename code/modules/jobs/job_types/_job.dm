@@ -175,23 +175,33 @@
 	return TRUE
 
 
-/mob/living/proc/on_job_equipping(datum/job/equipping)
+/mob/living/proc/on_job_equipping(datum/job/equipping, apply_loadout = FALSE)
 	return
 
-/mob/living/carbon/human/on_job_equipping(datum/job/equipping)
+/mob/living/carbon/human/on_job_equipping(datum/job/equipping, apply_loadout = FALSE)
 	var/datum/bank_account/bank_account = new(real_name, equipping, dna.species.payday_modifier)
 	bank_account.payday(STARTING_PAYCHECKS, TRUE)
 	account_id = bank_account.account_id
 
-	dress_up_as_job(equipping)
+	dress_up_as_job(equipping, apply_loadout = apply_loadout)
 
 
-/mob/living/proc/dress_up_as_job(datum/job/equipping, visual_only = FALSE)
+/mob/living/proc/dress_up_as_job(datum/job/equipping, visual_only = FALSE, apply_loadout = FALSE)
 	return
 
-/mob/living/carbon/human/dress_up_as_job(datum/job/equipping, visual_only = FALSE)
+/mob/living/carbon/human/dress_up_as_job(datum/job/equipping, visual_only = FALSE, apply_loadout = FALSE)
+	var/list/packed_items
+	var/loadout_asserted = FALSE
+	if(apply_loadout && equipping.loadout && client)
+		loadout_asserted = TRUE
+		if(equipping.no_dresscode)
+			packed_items = client.prefs.equip_preference_loadout(src, FALSE, equipping, blacklist = equipping.blacklist_dresscode_slots, initial = TRUE)
 	dna.species.pre_equip_species_outfit(equipping, src, visual_only)
 	equipOutfit(equipping.outfit, visual_only)
+	if(loadout_asserted && !equipping.no_dresscode)
+		packed_items = client.prefs.equip_preference_loadout(src, FALSE, equipping, blacklist = equipping.blacklist_dresscode_slots, initial = TRUE)
+	if(packed_items)
+		client.prefs.add_packed_items(src, packed_items)
 
 
 /datum/job/proc/announce_head(mob/living/carbon/human/H, channels) //tells the given channel that the given mob is the new department head. See communications.dm for valid channels.
@@ -403,28 +413,13 @@
 
 
 /mob/living/carbon/human/apply_prefs_job(client/player_client, datum/job/job)
-	var/fully_randomize = GLOB.current_anonymous_theme || player_client.prefs.should_be_random_hardcore(job, player_client.mob.mind) || is_banned_from(player_client.ckey, "Appearance")
 	if(!player_client)
 		return // Disconnected while checking for the appearance ban.
-	if(fully_randomize)
-		if(CONFIG_GET(flag/enforce_human_authority) && (job.departments & DEPARTMENT_COMMAND))
-			if(player_client.prefs.pref_species.id != SPECIES_HUMAN)
-				player_client.prefs.pref_species = new /datum/species/human
-			player_client.prefs.randomise_appearance_prefs(~RANDOMIZE_SPECIES)
-		else
-			player_client.prefs.randomise_appearance_prefs()
-		player_client.prefs.apply_prefs_to(src)
-		if(GLOB.current_anonymous_theme)
-			fully_replace_character_name(null, GLOB.current_anonymous_theme.anonymous_name(src))
-	else
-		var/is_antag = (player_client.mob.mind in GLOB.pre_setup_antags)
-		if(CONFIG_GET(flag/enforce_human_authority) && (job.departments & DEPARTMENT_COMMAND))
-			player_client.prefs.randomise[RANDOM_SPECIES] = FALSE
-			if(player_client.prefs.pref_species.id != SPECIES_HUMAN)
-				player_client.prefs.pref_species = new /datum/species/human
-		player_client.prefs.safe_transfer_prefs_to(src, TRUE, is_antag)
-		if(CONFIG_GET(flag/force_random_names))
-			player_client.prefs.real_name = player_client.prefs.pref_species.random_name(player_client.prefs.gender, TRUE)
+	if(GLOB.current_anonymous_theme)
+		fully_replace_character_name(null, GLOB.current_anonymous_theme.anonymous_name(src))
+	else if(CONFIG_GET(flag/force_random_names))
+		player_client.prefs.real_name = player_client.prefs.pref_species.random_name(player_client.prefs.gender, TRUE)
+	player_client.prefs.apply_prefs_to(src)
 	dna.update_dna_identity()
 
 
@@ -441,7 +436,7 @@
 		var/organic_name 
 		if(GLOB.current_anonymous_theme)
 			organic_name = GLOB.current_anonymous_theme.anonymous_name(src)
-		else if(player_client.prefs.randomise[RANDOM_NAME] || CONFIG_GET(flag/force_random_names) || is_banned_from(player_client.ckey, "Appearance"))
+		else if(CONFIG_GET(flag/force_random_names) || is_banned_from(player_client.ckey, "Appearance"))
 			if(!player_client)
 				return // Disconnected while checking the appearance ban.
 			organic_name = player_client.prefs.pref_species.random_name(player_client.prefs.gender, TRUE)
@@ -459,3 +454,31 @@
 	// If this checks fails, then the name will have been handled during initialization.
 	if(!GLOB.current_anonymous_theme && player_client.prefs.custom_names["cyborg"] != DEFAULT_CYBORG_NAME)
 		apply_pref_name("cyborg", player_client)
+
+/datum/job/proc/has_banned_quirk(datum/preferences/pref)
+	if(!pref) //No preferences? We'll let you pass, this time (just a precautionary check,you dont wanna mess up gamemode setting logic)
+		return FALSE
+	if(banned_quirks)
+		for(var/Q in pref.all_quirks)
+			if(banned_quirks[Q])
+				return TRUE
+	return FALSE
+
+/datum/job/proc/has_banned_species(datum/preferences/pref)
+	var/my_id = pref.pref_species.id
+	if(species_whitelist && !species_whitelist[my_id])
+		return TRUE
+	else if(!GLOB.roundstart_races[my_id])
+		return TRUE
+	if(species_blacklist && species_blacklist[my_id])
+		return TRUE
+	return FALSE
+
+/datum/job/proc/has_required_languages(datum/preferences/pref)
+	if(!required_languages)
+		return TRUE
+	for(var/lang in required_languages)
+		//Doesnt have language, or the required "level" is too low (understood, while needing spoken)
+		if(!pref.languages[lang] || pref.languages[lang] < required_languages[lang])
+			return FALSE
+	return TRUE

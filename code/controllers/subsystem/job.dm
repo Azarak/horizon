@@ -93,7 +93,6 @@ SUBSYSTEM_DEF(job)
 	joinable_occupations = list()
 	if(!faction)
 		faction = SSmapping.config.job_faction
-	occupations = list()
 	var/list/all_jobs = subtypesof(/datum/job)
 	if(!length(all_jobs))
 		to_chat(world, SPAN_BOLDANNOUNCE("Error setting up jobs, no job datums found"))
@@ -102,8 +101,6 @@ SUBSYSTEM_DEF(job)
 	for(var/job_type in all_jobs)
 		var/datum/job/job = new job_type()
 		if(!job)
-			continue
-		if(job.faction != faction)
 			continue
 		if(!job.config_check())
 			continue
@@ -217,7 +214,7 @@ SUBSYSTEM_DEF(job)
 /datum/controller/subsystem/job/proc/GiveRandomJob(mob/dead/new_player/player)
 	JobDebug("GRJ Giving random job, Player: [player]")
 	. = FALSE
-	for(var/datum/job/job in shuffle(occupations))
+	for(var/datum/job/job as anything in shuffle(joinable_occupations))
 		if(!job)
 			continue
 
@@ -505,7 +502,7 @@ SUBSYSTEM_DEF(job)
 	if(player_client)
 		to_chat(player_client, "<span class='infoplain'><b>You are the [job.title].</b></span>")
 
-	equipping.on_job_equipping(job)
+	equipping.on_job_equipping(job, TRUE)
 
 	job.announce_job(equipping)
 
@@ -524,7 +521,7 @@ SUBSYSTEM_DEF(job)
 		if(job.req_admin_notify)
 			to_chat(player_client, "<span class='infoplain'><b>You are playing a job that is important for Game Progression. If you have to disconnect, please notify the admins via adminhelp.</b></span>")
 		if(CONFIG_GET(number/minimal_access_threshold))
-			to_chat(player_client, span_notice("<B>As this station was initially staffed with a [CONFIG_GET(flag/jobs_have_minimal_access) ? "full crew, only your job's necessities" : "skeleton crew, additional access may"] have been added to your ID card.</B>"))
+			to_chat(player_client, SPAN_NOTICE("<B>As this station was initially staffed with a [CONFIG_GET(flag/jobs_have_minimal_access) ? "full crew, only your job's necessities" : "skeleton crew, additional access may"] have been added to your ID card.</B>"))
 
 		var/related_policy = get_policy(job.title)
 		if(related_policy)

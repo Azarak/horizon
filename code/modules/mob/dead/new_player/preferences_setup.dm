@@ -115,13 +115,13 @@
 
 	// Set up the dummy for its photoshoot
 	var/mob/living/carbon/human/dummy/mannequin = generate_or_wait_for_human_dummy(DUMMY_HUMAN_SLOT_PREFERENCES)
-	apply_prefs_to(mannequin, TRUE)
+	apply_prefs_to(mannequin, TRUE, TRUE)
 
 	switch(preview_pref)
 		if(PREVIEW_PREF_JOB)
 			if(previewJob)
 				mannequin.job = previewJob.title
-				previewJob.equip(mannequin, TRUE, preference_source = parent)
+				mannequin.dress_up_as_job(previewJob, TRUE)
 			mannequin.underwear_visibility = NONE
 		if(PREVIEW_PREF_LOADOUT)
 			mannequin.underwear_visibility = NONE

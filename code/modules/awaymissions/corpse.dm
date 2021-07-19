@@ -210,13 +210,13 @@
 
 /obj/effect/mob_spawn/human/equip(mob/living/carbon/human/H, mob/user, pref_load, alias)
 	if(pref_load && user?.client)
-		user.client.prefs.copy_to(H)
+		user.client.prefs.apply_prefs_to(H)
 		H.dna.update_dna_identity()
 		if(alias)
 			H.name = alias
 			H.real_name = alias
 		//Pre-job equips so Voxes dont die
-		H.dna.species.before_equip_job(null, H)
+		H.dna.species.pre_equip_species_outfit(null, H)
 		H.regenerate_icons()
 	else
 		if(mob_species)

@@ -280,7 +280,7 @@
 
 /mob/dead/new_player/proc/IsJobUnavailable(rank, latejoin = FALSE)
 	var/datum/job/job = SSjob.GetJob(rank)
-	if(!(job.job_flags & JOB_NEW_PLAYER_JOINABLE))
+	if(!(job in SSjob.joinable_occupations))
 		return JOB_UNAVAILABLE_GENERIC
 	if((job.current_positions >= job.total_positions) && job.total_positions != -1)
 		if(is_assistant_job(job))

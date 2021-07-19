@@ -519,7 +519,7 @@
 			return
 		var/datum/job/new_job = SSjob.GetJob(new_role)
 		if (!new_job)
-			to_chat(usr, span_warning("Job not found."))
+			to_chat(usr, SPAN_WARNING("Job not found."))
 			return
 		set_assigned_role(new_role)
 
