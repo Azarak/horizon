@@ -817,6 +817,8 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 		return
 	var/turf/epicenter = get_turf(mob)
 	epicenter.PolluteTurf(choice, amount_choice)
+	message_admins("[ADMIN_LOOKUPFLW(usr)] spawned pollution at [epicenter.loc] ([choice] - [amount_choice]).")
+	log_admin("[key_name(usr)] spawned pollution at [epicenter.loc] ([choice] - [amount_choice]).")
 
 /client/proc/debugstatpanel()
 	set name = "Debug Stat Panel"
