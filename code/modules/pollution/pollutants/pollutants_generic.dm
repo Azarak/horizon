@@ -21,7 +21,7 @@
 /datum/pollutant/smoke/vape
 	name = "Vape Cloud"
 	thickness = 2
-	scent = "pleasantly soft vapour"
+	scent = "pleasant and soft vapour"
 
 ///Dust from mining drills
 /datum/pollutant/dust
