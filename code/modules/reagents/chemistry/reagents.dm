@@ -105,6 +105,8 @@ GLOBAL_LIST_INIT(name2reagent, build_name2reagent())
 	var/glass_icon
 	///How good of an accelerant is this reagent
 	var/accelerant_quality = 0
+	///What cleaning type clean stains of this reagent
+	var/clean_type = CLEAN_TYPE_CHEMICAL_WASH
 
 /datum/reagent/New()
 	SHOULD_CALL_PARENT(TRUE)

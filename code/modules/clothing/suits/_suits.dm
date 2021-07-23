@@ -22,9 +22,6 @@
 	if(damaged_clothes)
 		var/damagefile2use = (mutant_styles & STYLE_TAUR_ALL) ? 'icons/horizon/mob/64x32_item_damage.dmi' : 'icons/effects/item_damage.dmi'
 		. += mutable_appearance(damagefile2use, "damaged[blood_overlay_type]")
-	if(HAS_BLOOD_DNA(src))
-		var/bloodfile2use = (mutant_styles & STYLE_TAUR_ALL) ? 'icons/horizon/mob/64x32_blood.dmi' : 'icons/effects/blood.dmi'
-		. += mutable_appearance(bloodfile2use, "[blood_overlay_type]blood")
 
 	var/mob/living/carbon/human/M = loc
 	if(!ishuman(M) || !M.w_uniform)

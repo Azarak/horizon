@@ -117,6 +117,16 @@
 	layer = CURSE_LAYER
 	plane = FULLSCREEN_PLANE
 
+/atom/movable/screen/fullscreen/stained
+	icon_state = "stained"
+	layer = STAINED_LAYER
+	plane = FULLSCREEN_PLANE
+
+/atom/movable/screen/fullscreen/stained_flash
+	layer = STAINED_FLASH_LAYER
+	plane = FULLSCREEN_PLANE
+	icon_state = "passage7"
+
 /atom/movable/screen/fullscreen/impaired
 	icon_state = "impairedoverlay"
 

@@ -122,6 +122,11 @@
 		jetpack = new jetpack(src)
 	. = ..()
 
+/obj/item/clothing/suit/space/hardsuit/wash(clean_types)
+	if(helmet)
+		helmet.wash(clean_types)
+	return ..()
+
 /obj/item/clothing/suit/space/hardsuit/attack_self(mob/user)
 	user.changeNext_move(CLICK_CD_MELEE)
 	..()

@@ -161,10 +161,12 @@
 #define FULLSCREEN_RENDER_TARGET "FULLSCREEN_PLANE"
 #define FLASH_LAYER 1
 #define FULLSCREEN_LAYER 2
-#define UI_DAMAGE_LAYER 3
-#define BLIND_LAYER 4
-#define CRIT_LAYER 5
-#define CURSE_LAYER 6
+#define STAINED_LAYER 3
+#define STAINED_FLASH_LAYER 4
+#define UI_DAMAGE_LAYER 5
+#define BLIND_LAYER 6
+#define CRIT_LAYER 7
+#define CURSE_LAYER 8
 
 
 //-------------------- HUD ---------------------

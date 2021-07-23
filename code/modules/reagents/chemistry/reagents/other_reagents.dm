@@ -156,6 +156,7 @@
 	glass_desc = "The father of all refreshments."
 	shot_glass_icon_state = "shotglassclear"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+	clean_type = CLEAN_TYPE_DRY_WASH
 
 /*
  * Water reaction to turf

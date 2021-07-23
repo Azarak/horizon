@@ -1345,3 +1345,9 @@
 #define COMSIG_MOB_PLAYS_FOOTSTEP "mob_plays_footstep"
 	/// Will cancel the attempted footstep playing (most likely after overriding and playing another one)
 	#define COMPONENT_CANCEL_PLAY_FOOTSTEP (1<<0)
+
+/// Called by /obj/item/proc/worn_overlays() Can append overlays to worn items through this. (list/overlays, isinhands, mutant_variant, bodytype, worn_slot)
+#define COMSIG_ITEM_UPDATE_WORN_OVERLAYS "item_worn_overlays"
+
+/// Used exclusively for item -> reagent coating component communication
+#define COMSIG_ITEM_STAIN_REAGENTS "item_stain_reagents"

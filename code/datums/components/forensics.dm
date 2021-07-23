@@ -11,7 +11,6 @@
 	hiddenprints = hiddenprints | F.hiddenprints
 	blood_DNA = blood_DNA | F.blood_DNA
 	fibers = fibers | F.fibers
-	check_blood()
 	return ..()
 
 /datum/component/forensics/Initialize(new_fingerprints, new_hiddenprints, new_blood_DNA, new_fibers)
@@ -21,10 +20,8 @@
 	hiddenprints = new_hiddenprints
 	blood_DNA = new_blood_DNA
 	fibers = new_fibers
-	check_blood()
 
 /datum/component/forensics/RegisterWithParent()
-	check_blood()
 	RegisterSignal(parent, COMSIG_COMPONENT_CLEAN_ACT, .proc/clean_act)
 
 /datum/component/forensics/UnregisterFromParent()
@@ -56,7 +53,7 @@
 	if(clean_types & CLEAN_TYPE_FINGERPRINTS)
 		wipe_fingerprints()
 		. = COMPONENT_CLEANED
-	if(clean_types & CLEAN_TYPE_BLOOD)
+	if(clean_types & CLEAN_TYPE_CHEMICAL_WASH) //Bloodstains and blood DNA is hard to wash, unlike blood decals
 		wipe_blood_DNA()
 		. = COMPONENT_CLEANED
 	if(clean_types & CLEAN_TYPE_FIBERS)
@@ -177,12 +174,4 @@
 	LAZYINITLIST(blood_DNA)
 	for(var/i in dna)
 		blood_DNA[i] = dna[i]
-	check_blood()
 	return TRUE
-
-/datum/component/forensics/proc/check_blood()
-	if(!isitem(parent))
-		return
-	if(!length(blood_DNA))
-		return
-	parent.AddElement(/datum/element/decal/blood)

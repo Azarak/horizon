@@ -69,6 +69,14 @@
 	if(length(dna))
 		. = AddComponent(/datum/component/forensics, null, null, dna)
 
+/obj/item/add_blood_DNA(list/dna)
+	. = ..()
+	///We can't not use forensics because the blood reagent cant store as much data by design (it could tho, maybe a refactor one day)
+	var/datum/reagents/temp_reagents = new(MINIMUM_REAGENT_COAT_VOLUME)
+	temp_reagents.add_reagent(/datum/reagent/blood, MINIMUM_REAGENT_COAT_VOLUME)
+	temp_reagents.expose(src, TOUCH)
+	qdel(temp_reagents)
+
 /obj/item/clothing/gloves/add_blood_DNA(list/blood_dna, list/datum/disease/diseases)
 	. = ..()
 	transfer_blood = rand(2, 4)
@@ -87,6 +95,9 @@
 	else if(w_uniform)
 		w_uniform.add_blood_DNA(blood_dna)
 		update_inv_w_uniform()
+	if(head && prob(20))
+		var/obj/item/clothing/head/helmet = head
+		helmet.add_blood_DNA(blood_dna)
 	if(gloves)
 		var/obj/item/clothing/gloves/G = gloves
 		G.add_blood_DNA(blood_dna)

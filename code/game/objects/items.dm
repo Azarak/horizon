@@ -1177,3 +1177,22 @@ GLOBAL_DATUM_INIT(fire_overlay, /mutable_appearance, mutable_appearance('icons/e
 	if(ismob(loc))
 		var/mob/mob_loc = loc
 		mob_loc.regenerate_icons()
+
+/// Handles exposing an item to reagents.
+/obj/item/expose_reagents(list/reagents, datum/reagents/source, methods=TOUCH, volume_modifier=1, show_message=TRUE)
+	. = ..()
+	if(. & COMPONENT_NO_EXPOSE_REAGENTS)
+		return
+	if(item_flags & STAINLESS)
+		return
+	if(source.total_volume < MINIMUM_REAGENT_COAT_VOLUME)
+		return
+	if(!(methods & TOUCH|VAPOR)) //inject? nah, injest? even less sense
+		return
+	if(!GetComponent(/datum/component/reagent_coating))
+		AddReagentCoating()
+	SEND_SIGNAL(src, COMSIG_ITEM_STAIN_REAGENTS, source)
+
+///Proc to add the component of reagent coating, all subtypes can override this for the apporopriate subtypes and arguments of the coating they may wish to apply
+/obj/item/proc/AddReagentCoating()
+	AddComponent(/datum/component/reagent_coating)

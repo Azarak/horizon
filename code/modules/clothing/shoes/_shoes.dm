@@ -48,17 +48,6 @@
 
 	if(damaged_clothes)
 		. += mutable_appearance('icons/effects/item_damage.dmi', "damagedshoe")
-	if(HAS_BLOOD_DNA(src))
-		if(mutant_styles & STYLE_DIGITIGRADE)
-			if(clothing_flags & LARGE_WORN_ICON)
-				. += mutable_appearance('icons/horizon/mob/shoeblood/64x64.dmi', "shoeblood_large")
-			else
-				. += mutable_appearance('icons/horizon/mob/shoeblood/blood.dmi', "shoeblood")
-		else
-			if(clothing_flags & LARGE_WORN_ICON)
-				. += mutable_appearance('icons/effects/64x64.dmi', "shoeblood_large")
-			else
-				. += mutable_appearance('icons/effects/blood.dmi', "shoeblood")
 
 /obj/item/clothing/shoes/examine(mob/user)
 	. = ..()

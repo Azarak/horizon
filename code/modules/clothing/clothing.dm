@@ -87,6 +87,15 @@
 	if(!icon_state)
 		item_flags |= ABSTRACT
 
+/obj/item/clothing/AddReagentCoating()
+	if(body_parts_covered & FEET || flags_inv & HIDESHOES)
+		AddComponent(/datum/component/reagent_coating/equip/feetcover)
+		return
+	if(flags_cover & GLASSESCOVERSEYES || flags_cover & HEADCOVERSEYES)
+		AddComponent(/datum/component/reagent_coating/equip/eyecover)
+		return
+	return ..()
+
 /obj/item/clothing/MouseDrop(atom/over_object)
 	. = ..()
 	var/mob/M = usr

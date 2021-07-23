@@ -951,3 +951,27 @@
 
 	for(var/obj/item/I in torn_items)
 		I.take_damage(damage_amount, damage_type, damage_flag, 0)
+
+/mob/living/carbon/human/expose_reagents(list/reagents, datum/reagents/source, methods=TOUCH, volume_modifier=1, show_message=TRUE)
+	. = ..()
+	if(. & COMPONENT_NO_EXPOSE_REAGENTS)
+		return
+	//TODO: Factor in bodypart coverage
+	//This code is mostly for staining clothes of a human
+	if(wear_suit)
+		wear_suit.expose_reagents(reagents, source, methods, volume_modifier)
+		if(head)
+			head.expose_reagents(reagents, source, methods, volume_modifier)
+		return
+	if(w_uniform)
+		w_uniform.expose_reagents(reagents, source, methods, volume_modifier)
+	if(head)
+		head.expose_reagents(reagents, source, methods, volume_modifier)
+	if(shoes)
+		shoes.expose_reagents(reagents, source, methods, volume_modifier)
+	if(gloves)
+		gloves.expose_reagents(reagents, source, methods, volume_modifier)
+	if(wear_mask)
+		wear_mask.expose_reagents(reagents, source, methods, volume_modifier)
+	if(glasses)
+		glasses.expose_reagents(reagents, source, methods, volume_modifier)

@@ -13,6 +13,9 @@
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 10, RAD = 0, FIRE = 0, ACID = 0)
 	mutant_variants = NONE
 
+/obj/item/clothing/suit/hooded/wintercoat/AddReagentCoating()
+	AddComponent(/datum/component/reagent_coating, "coat")
+
 /obj/item/clothing/suit/hooded/wintercoat/Initialize()
 	. = ..()
 	allowed += list(

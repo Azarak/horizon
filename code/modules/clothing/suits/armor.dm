@@ -25,6 +25,9 @@
 	blood_overlay_type = "armor"
 	dog_fashion = /datum/dog_fashion/back
 
+/obj/item/clothing/suit/armor/vest/AddReagentCoating()
+	AddComponent(/datum/component/reagent_coating, "armor")
+
 /obj/item/clothing/suit/armor/vest/alt
 	desc = "A Type I armored vest that provides decent protection against most types of damage."
 	icon_state = "armor"
