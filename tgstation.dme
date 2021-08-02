@@ -599,6 +599,7 @@
 #include "code\datums\components\spinny.dm"
 #include "code\datums\components\spooky.dm"
 #include "code\datums\components\squeak.dm"
+#include "code\datums\components\stain_stepper.dm"
 #include "code\datums\components\stationloving.dm"
 #include "code\datums\components\stationstuck.dm"
 #include "code\datums\components\strong_pull.dm"

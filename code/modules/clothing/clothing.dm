@@ -83,7 +83,7 @@
 	if(ispath(pocket_storage_component_path))
 		LoadComponent(pocket_storage_component_path)
 	if(can_be_bloody && ((body_parts_covered & FEET) || (flags_inv & HIDESHOES)))
-		LoadComponent(/datum/component/bloodysoles)
+		AddComponent(/datum/component/stain_stepper)
 	if(!icon_state)
 		item_flags |= ABSTRACT
 
