@@ -558,9 +558,7 @@
 "iD" = (
 /obj/structure/table,
 /obj/item/pipe_dispenser,
-/obj/item/clothing/gloves/color/yellow,
 /obj/item/pipe_dispenser,
-/obj/item/clothing/gloves/color/yellow,
 /turf/open/floor/iron/dark,
 /area/engineering/main)
 "iF" = (
