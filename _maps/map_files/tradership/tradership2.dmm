@@ -1819,8 +1819,8 @@
 	},
 /area/commons/dorms/barracks)
 "YM" = (
-/obj/machinery/rnd/production/circuit_imprinter/department/science,
 /obj/machinery/airalarm/directional/south,
+/obj/machinery/rnd/production/circuit_imprinter,
 /turf/open/floor/iron/white,
 /area/science)
 "YR" = (
