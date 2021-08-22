@@ -17,13 +17,12 @@
 	var/number_of_mats = 1
 	var/build_material = /obj/item/stack/rods
 
-
 /obj/structure/lattice/examine(mob/user)
 	. = ..()
 	. += deconstruction_hints(user)
 
 /obj/structure/lattice/proc/deconstruction_hints(mob/user)
-	return "<span class='notice'>The rods look like they could be <b>cut</b>. There's space for more <i>rods</i> or a <i>tile</i>.</span>"
+	return SPAN_NOTICE("The rods look like they could be <b>cut</b>. There's space for more <i>rods</i> or a <i>tile</i>.")
 
 /obj/structure/lattice/Initialize(mapload)
 	. = ..()
@@ -32,6 +31,7 @@
 			continue
 		stack_trace("multiple lattices found in ([loc.x], [loc.y], [loc.z])")
 		return INITIALIZE_HINT_QDEL
+	AddElement(/datum/element/footstep_override, FOOTSTEP_LATTICE, FOOTSTEP_HARD_BAREFOOT, FOOTSTEP_LATTICE, FOOTSTEP_LATTICE)
 
 /obj/structure/lattice/blob_act(obj/structure/blob/B)
 	return
@@ -40,7 +40,8 @@
 	if(resistance_flags & INDESTRUCTIBLE)
 		return
 	if(C.tool_behaviour == TOOL_WIRECUTTER)
-		to_chat(user, "<span class='notice'>Slicing [name] joints ...</span>")
+		C.play_tool_sound(src)
+		to_chat(user, SPAN_NOTICE("Slicing [name] joints ..."))
 		deconstruct()
 	else
 		var/turf/T = get_turf(src)
@@ -57,7 +58,7 @@
 
 /obj/structure/lattice/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, passed_mode)
 	if(passed_mode == RCD_FLOORWALL)
-		to_chat(user, "<span class='notice'>You build a floor.</span>")
+		to_chat(user, SPAN_NOTICE("You build a floor."))
 		var/turf/T = src.loc
 		if(isspaceturf(T))
 			T.PlaceOnTop(/turf/open/floor/plating, flags = CHANGETURF_INHERIT_AIR)
@@ -75,26 +76,66 @@
 	icon = 'icons/obj/smooth_structures/catwalk.dmi'
 	icon_state = "catwalk-0"
 	base_icon_state = "catwalk"
+	layer = CATWALK_LAYER //over pipes
 	number_of_mats = 2
 	smoothing_flags = SMOOTH_BITMASK
 	smoothing_groups = list(SMOOTH_GROUP_LATTICE, SMOOTH_GROUP_CATWALK, SMOOTH_GROUP_OPEN_FLOOR)
-	canSmoothWith = list(SMOOTH_GROUP_CATWALK)
+	canSmoothWith = list(SMOOTH_GROUP_CATWALK, SMOOTH_GROUP_CLOSED_TURFS, SMOOTH_GROUP_WINDOW_FULLTILE)
 	obj_flags = CAN_BE_HIT | BLOCK_Z_OUT_DOWN | BLOCK_Z_IN_UP
 
+/obj/structure/lattice/catwalk/Initialize()
+	if(isspaceturf(loc))
+		layer = LATTICE_LAYER //For solars and other space projects to have the wires/other stuff show up higher than the catwalk
+	return ..()
+
 /obj/structure/lattice/catwalk/deconstruction_hints(mob/user)
-	return "<span class='notice'>The supporting rods look like they could be <b>cut</b>.</span>"
+	return SPAN_NOTICE("The supporting rods look like they could be <b>cut</b>.")
 
 /obj/structure/lattice/catwalk/Move()
-	var/turf/T = loc
-	for(var/obj/structure/cable/C in T)
-		C.deconstruct()
+	CheckCableSupport()
 	..()
 
 /obj/structure/lattice/catwalk/deconstruct()
+	CheckCableSupport()
+	..()
+
+/obj/structure/lattice/catwalk/proc/CheckCableSupport()
 	var/turf/T = loc
+	if(!isopenspaceturf(T) && !isspaceturf(T))
+		return
 	for(var/obj/structure/cable/C in T)
 		C.deconstruct()
-	..()
+
+/obj/structure/lattice/catwalk/plated
+	name = "plated catwalk"
+	desc = "A durable catwalk for easier maintenance of pipes and wires. Cats hate this thing."
+	icon = 'icons/obj/smooth_structures/catwalk_plated.dmi'
+	icon_state = "catwalk_plated-0"
+	base_icon_state = "catwalk_plated"
+	smoothing_groups = list(SMOOTH_GROUP_PLATED_CATWALK)
+	canSmoothWith = list(SMOOTH_GROUP_PLATED_CATWALK)
+	build_material = /obj/item/stack/catwalk/plated
+
+/obj/structure/lattice/catwalk/plated/deconstruction_hints(mob/user)
+	return SPAN_NOTICE("The plate looks like it could be <b>pried</b> up.")
+
+/obj/structure/lattice/catwalk/plated/attackby(obj/item/item, mob/user, params)
+	if(item.tool_behaviour == TOOL_CROWBAR)
+		item.play_tool_sound(src)
+		to_chat(user, SPAN_NOTICE("You pry \the [src] up."))
+		deconstruct()
+		return TRUE
+	if(item.tool_behaviour == TOOL_WIRECUTTER) //To stop "cutting" it from lattice inheritance
+		return TRUE
+	return ..()
+
+/obj/structure/lattice/catwalk/plated/dark
+	icon = 'icons/obj/smooth_structures/catwalk_plated_dark.dmi'
+	build_material = /obj/item/stack/catwalk/plated/dark
+
+/obj/structure/lattice/catwalk/plated/smooth
+	icon = 'icons/obj/smooth_structures/catwalk_plated_smooth.dmi'
+	build_material = /obj/item/stack/catwalk/plated/smooth
 
 /obj/structure/lattice/lava
 	name = "heatproof support lattice"
@@ -111,16 +152,16 @@
 	resistance_flags = FIRE_PROOF | LAVA_PROOF
 
 /obj/structure/lattice/lava/deconstruction_hints(mob/user)
-	return "<span class='notice'>The rods look like they could be <b>cut</b>, but the <i>heat treatment will shatter off</i>. There's space for a <i>tile</i>.</span>"
+	return SPAN_NOTICE("The rods look like they could be <b>cut</b>, but the <i>heat treatment will shatter off</i>. There's space for a <i>tile</i>.")
 
 /obj/structure/lattice/lava/attackby(obj/item/C, mob/user, params)
 	. = ..()
 	if(istype(C, /obj/item/stack/tile/iron))
 		var/obj/item/stack/tile/iron/P = C
 		if(P.use(1))
-			to_chat(user, "<span class='notice'>You construct a floor plating, as lava settles around the rods.</span>")
+			to_chat(user, SPAN_NOTICE("You construct a floor plating, as lava settles around the rods."))
 			playsound(src, 'sound/weapons/genhit.ogg', 50, TRUE)
 			new /turf/open/floor/plating(locate(x, y, z))
 		else
-			to_chat(user, "<span class='warning'>You need one floor tile to build atop [src].</span>")
+			to_chat(user, SPAN_WARNING("You need one floor tile to build atop [src]."))
 		return

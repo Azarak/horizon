@@ -1,6 +1,6 @@
-#define LOG_BURN_TIMER 150
-#define PAPER_BURN_TIMER 5
-#define MAXIMUM_BURN_TIMER 3000
+#define LOG_BURN_TIMER 1500
+#define PAPER_BURN_TIMER 50
+#define MAXIMUM_BURN_TIMER 30000
 
 /obj/structure/fireplace
 	name = "fireplace"
@@ -26,10 +26,10 @@
 
 /obj/structure/fireplace/proc/try_light(obj/item/O, mob/user)
 	if(lit)
-		to_chat(user, "<span class='warning'>It's already lit!</span>")
+		to_chat(user, SPAN_WARNING("It's already lit!"))
 		return FALSE
 	if(!fuel_added)
-		to_chat(user, "<span class='warning'>[src] needs some fuel to burn!</span>")
+		to_chat(user, SPAN_WARNING("[src] needs some fuel to burn!"))
 		return FALSE
 	var/msg = O.ignition_effect(src, user)
 	if(msg)
@@ -43,7 +43,7 @@
 		var/space_remaining = MAXIMUM_BURN_TIMER - burn_time_remaining()
 		var/space_for_logs = round(space_remaining / LOG_BURN_TIMER)
 		if(space_for_logs < 1)
-			to_chat(user, "<span class='warning'>You can't fit any more of [T] in [src]!</span>")
+			to_chat(user, SPAN_WARNING("You can't fit any more of [T] in [src]!"))
 			return
 		var/logs_used = min(space_for_logs, wood.amount)
 		wood.use(logs_used)

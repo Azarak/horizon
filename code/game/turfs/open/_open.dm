@@ -8,12 +8,37 @@
 	var/heavyfootstep = null
 	/// Reference to the turf fire on the turf
 	var/obj/effect/abstract/turf_fire/turf_fire
+	/// Whether this turf can have catwalk tiles placed on
+	var/can_have_catwalk
+	/// Pollution of this turf
+	var/datum/pollution/pollution
+
+/turf/open/attackby(obj/item/item, mob/user, params)
+	if(istype(item, /obj/item/stack/catwalk))
+		if(can_have_catwalk)
+			var/obj/item/stack/catwalk/catitem = item
+			if(locate(/obj/structure/lattice/catwalk, src))
+				return
+			var/cost = 2
+			var/obj/structure/lattice/L = locate(/obj/structure/lattice, src)
+			if(L)
+				qdel(L)
+				cost = 1
+			if(catitem.use(cost))
+				new catitem.catwalk_type(src)
+				playsound(src, 'sound/weapons/genhit.ogg', 50, TRUE)
+				to_chat(user, SPAN_NOTICE("You place down the catwalk."))
+			else
+				to_chat(user, SPAN_WARNING("You need two rods to build a catwalk!"))
+			return
+		to_chat(user, SPAN_WARNING("You can't place down a catwalk in this spot!"))
+	return ..()
 
 //direction is direction of travel of A
 /turf/open/zPassIn(atom/movable/A, direction, turf/source)
 	if(direction == DOWN)
 		for(var/obj/O in contents)
-			if(O.obj_flags & BLOCK_Z_IN_DOWN)
+			if(O.obj_flags & BLOCK_Z_IN_DOWN || O.obj_flags & FULL_BLOCK_Z_ABOVE)
 				return FALSE
 		return TRUE
 	return FALSE
@@ -22,7 +47,7 @@
 /turf/open/zPassOut(atom/movable/A, direction, turf/destination)
 	if(direction == UP)
 		for(var/obj/O in contents)
-			if(O.obj_flags & BLOCK_Z_OUT_UP)
+			if(O.obj_flags & BLOCK_Z_OUT_UP || O.obj_flags & FULL_BLOCK_Z_BELOW)
 				return FALSE
 		return TRUE
 	return FALSE
@@ -81,10 +106,10 @@
 	. = ..()
 	AddComponent(/datum/component/wet_floor, TURF_WET_SUPERLUBE, INFINITY, 0, INFINITY, TRUE)
 
-/turf/open/indestructible/honk/Entered(atom/movable/AM)
-	..()
-	if(ismob(AM))
-		playsound(src,sound,50,TRUE)
+/turf/open/indestructible/honk/Entered(atom/movable/arrived, direction)
+	. = ..()
+	if(ismob(arrived))
+		playsound(src, sound, 50, TRUE)
 
 /turf/open/indestructible/necropolis
 	name = "necropolis floor"
@@ -221,7 +246,7 @@
 			if(C.m_intent == MOVE_INTENT_WALK && (lube&NO_SLIP_WHEN_WALKING))
 				return FALSE
 		if(!(lube&SLIDE_ICE))
-			to_chat(C, "<span class='notice'>You slipped[ O ? " on the [O.name]" : ""]!</span>")
+			to_chat(C, SPAN_NOTICE("You slipped[ O ? " on the [O.name]" : ""]!"))
 			playsound(C.loc, 'sound/misc/slip.ogg', 50, TRUE, -3)
 
 		SEND_SIGNAL(C, COMSIG_ON_CARBON_SLIP)
@@ -294,3 +319,17 @@
 	if(isopenspaceturf(src) || isspaceturf(src))
 		return
 	new /obj/effect/abstract/turf_fire(src, power)
+
+/turf/open/PolluteTurf(pollution_type, amount, cap)
+	if(!pollution)
+		pollution = new(src)
+	if(cap && pollution.total_amount >= cap)
+		return
+	pollution.AddPollutant(pollution_type, amount)
+
+/turf/open/PolluteListTurf(list/pollutions, cap)
+	if(!pollution)
+		pollution = new(src)
+	if(cap && pollution.total_amount >= cap)
+		return
+	pollution.AddPollutantList(pollutions)

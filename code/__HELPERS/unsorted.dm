@@ -199,10 +199,10 @@ Turf and target are separate in case you want to teleport some distance from a t
 	var/loop = 1
 	var/safety = 0
 
-	var/banned = C ? is_banned_from(C.ckey, "Appearance") : null
+	var/random = CONFIG_GET(flag/force_random_names) || (C ? is_banned_from(C.ckey, "Appearance") : FALSE)
 
 	while(loop && safety < 5)
-		if(C?.prefs.custom_names[role] && !safety && !banned)
+		if(!safety && !random && C?.prefs.custom_names[role])
 			newname = C.prefs.custom_names[role]
 		else
 			switch(role)
@@ -1508,10 +1508,10 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 		path = new path(pod)
 
 	//remove non var edits from specifications
-	specifications -= landing_location
-	specifications -= style
-	specifications -= spawn_type
-	specifications -= "paths_to_spawn" //list, we remove the key
+	specifications -= "target"
+	specifications -= "style"
+	specifications -= "path"
+	specifications -= "spawn" //list, we remove the key
 
 	//rest of specificiations are edits on the pod
 	for(var/variable_name in specifications)

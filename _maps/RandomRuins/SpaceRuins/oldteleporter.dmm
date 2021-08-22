@@ -21,9 +21,6 @@
 	},
 /area/ruin/space/oldteleporter)
 "g" = (
-/obj/structure/light_construct/small{
-	dir = 1
-	},
 /turf/open/floor/iron/airless{
 	icon_state = "damaged3"
 	},
@@ -64,6 +61,19 @@
 "n" = (
 /obj/machinery/power/apc/auto_name/south,
 /turf/open/floor/iron/airless,
+/area/ruin/space/oldteleporter)
+"G" = (
+/obj/structure/girder,
+/turf/open/floor/plating/airless,
+/area/ruin/space/oldteleporter)
+"I" = (
+/obj/structure/light_construct/small{
+	dir = 1
+	},
+/turf/open/floor/plating/airless,
+/area/ruin/space/oldteleporter)
+"V" = (
+/turf/closed/wall/r_wall/rust,
 /area/ruin/space/oldteleporter)
 
 (1,1,1) = {"
@@ -128,13 +138,13 @@ a
 a
 b
 b
-b
+G
 d
 d
 d
 d
 d
-a
+V
 "}
 (6,1,1) = {"
 a
@@ -142,12 +152,12 @@ a
 a
 b
 b
-d
-d
+V
+I
 g
 e
 l
-d
+c
 d
 "}
 (7,1,1) = {"
@@ -156,7 +166,7 @@ a
 a
 b
 b
-d
+V
 c
 e
 e
@@ -170,7 +180,7 @@ a
 a
 b
 c
-d
+V
 c
 e
 h
@@ -184,12 +194,12 @@ a
 a
 b
 c
-c
+G
 e
 e
 i
 e
-e
+c
 d
 "}
 (10,1,1) = {"
@@ -218,7 +228,7 @@ e
 e
 e
 c
-c
+G
 "}
 (12,1,1) = {"
 a
@@ -231,8 +241,8 @@ c
 e
 k
 f
-d
 c
+G
 "}
 (13,1,1) = {"
 b
@@ -240,13 +250,13 @@ b
 b
 b
 b
-c
-c
+G
+G
 d
 d
 d
 d
-a
+d
 "}
 (14,1,1) = {"
 b

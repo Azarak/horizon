@@ -87,6 +87,23 @@
 		"sflash",
 	)
 
+/datum/techweb_node/robot_parts
+	id = "robot_organs"
+	starting_node = TRUE
+	display_name = "Robot Parts"
+	description = "Basic `organs` for robotic or synthetic lifeforms."
+	design_ids = list(
+		"robot_eyes",
+		"robot_ears",
+		"robot_tongue",
+		"robot_heart",
+		"robot_liver",
+		"robot_lungs",
+		"robot_stomach",
+		"power_cord",
+		"vox_lungs",
+	)
+
 /datum/techweb_node/mech
 	id = "mecha"
 	starting_node = TRUE
@@ -223,6 +240,7 @@
 		"compact_remote_shell",
 		"component_printer",
 		"integrated_circuit",
+		"usb_cable",
 	)
 
 /////////////////////////Biotech/////////////////////////
@@ -502,6 +520,7 @@
 		"super_capacitor",
 		"super_cell",
 		"superpacman",
+		"shieldgen"
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
 
@@ -516,6 +535,8 @@
 		"bluespace_crystal",
 		"telesci_gps",
 		"xenobioconsole",
+		"tradeconsole",
+		"tradepad"
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
 
@@ -573,6 +594,7 @@
 		"phasic_scanning",
 		"plumbing_receiver",
 		"roastingstick",
+		"transporter"
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 5000)
 
@@ -1151,9 +1173,28 @@
 		"hypermod",
 		"jackhammer",
 		"plasmacutter_adv",
+		"mininglaser"
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 7500)
 	discount_experiments = list(/datum/experiment/scanning/random/material/hard/one = 5000)
+
+/datum/techweb_node/archeology
+	id = "archeology"
+	display_name = "Archeology Research"
+	description = "Discover long lost artifacts!"
+	prereq_ids = list("basic_mining")
+	design_ids = list(
+		"pick1",
+		"pick2",
+		"pick3",
+		"pick4",
+		"pick5",
+		"pick_hand",
+		"measuring_tape",
+		"excavation_depth_scanner",
+		"excavation_locator"
+	)
+	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
 
 /datum/techweb_node/janitor
 	id = "janitor"

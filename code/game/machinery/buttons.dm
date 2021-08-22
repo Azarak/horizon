@@ -67,34 +67,34 @@
 			default_deconstruction_screwdriver(user, "button-open", "[skin]",W)
 			update_appearance()
 		else
-			to_chat(user, "<span class='alert'>Maintenance Access Denied.</span>")
+			to_chat(user, SPAN_ALERT("Maintenance Access Denied."))
 			flick("[skin]-denied", src)
 		return
 
 	if(panel_open)
 		if(!device && istype(W, /obj/item/assembly))
 			if(!user.transferItemToLoc(W, src))
-				to_chat(user, "<span class='warning'>\The [W] is stuck to you!</span>")
+				to_chat(user, SPAN_WARNING("\The [W] is stuck to you!"))
 				return
 			device = W
-			to_chat(user, "<span class='notice'>You add [W] to the button.</span>")
+			to_chat(user, SPAN_NOTICE("You add [W] to the button."))
 
 		if(!board && istype(W, /obj/item/electronics/airlock))
 			if(!user.transferItemToLoc(W, src))
-				to_chat(user, "<span class='warning'>\The [W] is stuck to you!</span>")
+				to_chat(user, SPAN_WARNING("\The [W] is stuck to you!"))
 				return
 			board = W
 			if(board.one_access)
 				req_one_access = board.accesses
 			else
 				req_access = board.accesses
-			to_chat(user, "<span class='notice'>You add [W] to the button.</span>")
+			to_chat(user, SPAN_NOTICE("You add [W] to the button."))
 
 		if(!device && !board && W.tool_behaviour == TOOL_WRENCH)
-			to_chat(user, "<span class='notice'>You start unsecuring the button frame...</span>")
+			to_chat(user, SPAN_NOTICE("You start unsecuring the button frame..."))
 			W.play_tool_sound(src)
 			if(W.use_tool(src, user, 40))
-				to_chat(user, "<span class='notice'>You unsecure the button frame.</span>")
+				to_chat(user, SPAN_NOTICE("You unsecure the button frame."))
 				transfer_fingerprints_to(new /obj/item/wallframe/button(get_turf(src)))
 				playsound(loc, 'sound/items/deconstruct.ogg', 50, TRUE)
 				qdel(src)
@@ -151,14 +151,14 @@
 				req_one_access = list()
 				board = null
 			update_appearance()
-			to_chat(user, "<span class='notice'>You remove electronics from the button frame.</span>")
+			to_chat(user, SPAN_NOTICE("You remove electronics from the button frame."))
 
 		else
 			if(skin == "doorctrl")
 				skin = "launcher"
 			else
 				skin = "doorctrl"
-			to_chat(user, "<span class='notice'>You change the button frame's front panel.</span>")
+			to_chat(user, SPAN_NOTICE("You change the button frame's front panel."))
 		return
 
 	if((machine_stat & (NOPOWER|BROKEN)))
@@ -168,7 +168,7 @@
 		return
 
 	if(!allowed(user))
-		to_chat(user, "<span class='alert'>Access Denied.</span>")
+		to_chat(user, SPAN_ALERT("Access Denied."))
 		flick("[skin]-denied", src)
 		return
 
@@ -322,36 +322,3 @@
 	icon_state = "button"
 	result_path = /obj/machinery/button
 	custom_materials = list(/datum/material/iron=MINERAL_MATERIAL_AMOUNT)
-
-/obj/machinery/button/elevator
-	name = "elevator button"
-	desc = "Go back. Go back. Go back. Can you operate the elevator."
-	icon_state = "launcher"
-	skin = "launcher"
-	device_type = /obj/item/assembly/control/elevator
-	req_access = list()
-	id = 1
-
-/obj/machinery/button/elevator/examine(mob/user)
-	. = ..()
-	. += "<span class='notice'>There's a small inscription on the button...</span>"
-	. += "<span class='notice'>THIS CALLS THE ELEVATOR! IT DOES NOT OPERATE IT! Interact with the elevator itself to use it!</span>"
-
-/obj/machinery/button/tram
-	name = "tram caller"
-	desc = "A button for calling the tram. It has a speakerbox in it with some internals."
-	icon_state = "launcher"
-	skin = "launcher"
-	device_type = /obj/item/assembly/control/tram
-	req_access = list()
-	id = 1
-
-/obj/machinery/button/tram/setup_device()
-	var/obj/item/assembly/control/tram/tram_device = device
-	tram_device.initial_id = id
-	. = ..()
-
-/obj/machinery/button/tram/examine(mob/user)
-	. = ..()
-	. += "<span class='notice'>There's a small inscription on the button...</span>"
-	. += "<span class='notice'>THIS CALLS THE TRAM! IT DOES NOT OPERATE IT! The console on the tram tells it where to go!</span>"

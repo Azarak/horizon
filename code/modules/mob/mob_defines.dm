@@ -154,8 +154,8 @@
 	/// Can this mob enter shuttles
 	var/move_on_shuttle = 1
 
-	///The last mob/living/carbon to push/drag/grab this mob (exclusively used by slimes friend recognition)
-	var/mob/living/carbon/LAssailant = null
+	///A weakref to the last mob/living/carbon to push/drag/grab this mob (exclusively used by slimes friend recognition)
+	var/datum/weakref/LAssailant = null
 
 	/**
 	  * construct spells and mime spells.
@@ -228,3 +228,8 @@
 
 	/// A mock client, provided by tests and friends
 	var/datum/client_interface/mock_client
+
+	/// Our dominant hand, affects delay for do_after
+	/// If ambidextrous no speedup or slowdown occurs
+	var/dominant_hand = DOMINANT_HAND_AMBI
+

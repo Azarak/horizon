@@ -116,10 +116,12 @@
 /datum/chemical_reaction/food/hot_ramen
 	results = list(/datum/reagent/consumable/hot_ramen = 3)
 	required_reagents = list(/datum/reagent/water = 1, /datum/reagent/consumable/dry_ramen = 3)
+	pollutant_type = /datum/pollutant/food/spicy_noodles
 
 /datum/chemical_reaction/food/hell_ramen
 	results = list(/datum/reagent/consumable/hell_ramen = 6)
 	required_reagents = list(/datum/reagent/consumable/capsaicin = 1, /datum/reagent/consumable/hot_ramen = 6)
+	pollutant_type = /datum/pollutant/food/spicy_noodles
 
 /datum/chemical_reaction/food/imitationcarpmeat
 	required_reagents = list(/datum/reagent/toxin/carpotoxin = 5)
@@ -158,7 +160,7 @@
 
 /datum/chemical_reaction/food/pancakebatter
 	results = list(/datum/reagent/consumable/pancakebatter = 15)
-	required_reagents = list(/datum/reagent/consumable/eggyolk = 12, /datum/reagent/consumable/milk = 10, /datum/reagent/consumable/flour = 5)
+	required_reagents = list(/datum/reagent/consumable/eggyolk = 15, /datum/reagent/consumable/milk = 10, /datum/reagent/consumable/flour = 5)
 
 /datum/chemical_reaction/food/ricebowl
 	required_reagents = list(/datum/reagent/consumable/rice = 10, /datum/reagent/water = 10)

@@ -31,10 +31,17 @@
 	var/burn_damage = 0
 	var/datum/disease/disease = null //Do they start with a pre-spawned disease?
 	var/mob_color //Change the mob's color
-	var/assignedrole
+	/// Typepath indicating the kind of job datum this ert member will have.
+	var/spawner_job_path = /datum/job/ghost_role
 	var/show_flavour = TRUE
 	var/banType = ROLE_LAVALAND
 	var/ghost_usable = TRUE
+	var/can_use_pref_char = TRUE
+	var/can_use_alias = FALSE
+	var/any_station_species = FALSE
+	var/can_use_loadout = TRUE
+	var/mob_species = /datum/species/human //Set to make them a mutant race such as lizard or skeleton. Uses the datum typepath instead of the ID.
+
 
 //ATTACK GHOST IGNORING PARENT RETURN VALUE
 /obj/effect/mob_spawn/attack_ghost(mob/user)
@@ -44,20 +51,39 @@
 	if(ghost_role == "No" || !loc || QDELETED(user))
 		return
 	if(!(GLOB.ghost_role_flags & GHOSTROLE_SPAWNER) && !(flags_1 & ADMIN_SPAWNED_1))
-		to_chat(user, "<span class='warning'>An admin has temporarily disabled non-admin ghost roles!</span>")
+		to_chat(user, SPAN_WARNING("An admin has temporarily disabled non-admin ghost roles!"))
 		return
 	if(!uses)
-		to_chat(user, "<span class='warning'>This spawner is out of charges!</span>")
+		to_chat(user, SPAN_WARNING("This spawner is out of charges!"))
 		return
 	if(is_banned_from(user.key, banType))
-		to_chat(user, "<span class='warning'>You are jobanned!</span>")
+		to_chat(user, SPAN_WARNING("You are jobanned!"))
 		return
 	if(!allow_spawn(user))
 		return
+	var/pref_load = FALSE
+	if(can_use_pref_char)
+		var/pref_choice = tgui_alert(user, "Would you like to spawn as a randomly created character, or use the one currently selected in your preferences?",,list("Use Random Character", "Use Character From Preferences"))
+		if(pref_choice && pref_choice == "Use Character From Preferences")
+			var/pref_choice2 = tgui_alert(user, "WARNING: This spawner will use your currently selected character in prefs ([user.client.prefs.real_name])\nMake sure that the character is not used as a station crew, or would have a good reason to be this role.(ie. intern in Space Hotel)\nUSING STATION CHARACTERS FOR SYNDICATE OR HOSTILE ROLES IS PROHIBITED WILL GET YOU BANNED!\nConsider making a character dedicated to the role.\nDo you wanna proceed?",,list("Yes", "No"))
+			if(pref_choice2 && pref_choice2 == "Yes")
+				if(!any_station_species && user.client.prefs.pref_species.type != mob_species)
+					to_chat(user, SPAN_WARNING("Sorry, This spawner is limited to those species: [mob_species]. Please switch your character."))
+					return
+				else
+					pref_load = TRUE
+	var/alias = null
+	if(can_use_alias)
+		var/action = tgui_alert(user, "Would you like to use an alias?\nIf you do, your name will be changed to that",,list("Dont Use Alias", "Use Alias"))
+		if(action && action == "Use Alias")
+			var/msg = reject_bad_name(input(user, "Set your character's alias for this role", "Alias") as text|null)
+			if(!msg)
+				return FALSE
+			alias = msg
 	if(QDELETED(src) || QDELETED(user))
 		return
 	log_game("[key_name(user)] became [mob_name]")
-	create(ckey = user.ckey)
+	create(user.ckey, null, user, pref_load, alias)
 
 /obj/effect/mob_spawn/Initialize(mapload)
 	. = ..()
@@ -83,7 +109,7 @@
 /obj/effect/mob_spawn/proc/equip(mob/M)
 	return
 
-/obj/effect/mob_spawn/proc/create(ckey, newname)
+/obj/effect/mob_spawn/proc/create(ckey, newname, mob/user, pref_load, alias)
 	var/mob/living/M = new mob_type(get_turf(src)) //living mobs only
 	if(!random || newname)
 		if(newname)
@@ -107,7 +133,7 @@
 	M.adjustBruteLoss(brute_damage)
 	M.adjustFireLoss(burn_damage)
 	M.color = mob_color
-	equip(M)
+	equip(M, user, pref_load, alias)
 
 	if(ckey)
 		M.ckey = ckey
@@ -116,7 +142,7 @@
 			if(flavour_text != "")
 				output_message += "\n<span class='infoplain'><b>[flavour_text]</b></span>"
 			if(important_info != "")
-				output_message += "\n<span class='userdanger'>[important_info]</span>"
+				output_message += "\n[SPAN_USERDANGER("[important_info]")]"
 			to_chat(M, output_message)
 		var/datum/mind/MM = M.mind
 		var/datum/antagonist/A
@@ -129,9 +155,8 @@
 				var/datum/objective/O = new/datum/objective(objective)
 				O.owner = MM
 				A.objectives += O
-		if(assignedrole)
-			M.mind.assigned_role = assignedrole
-		special(M)
+		M.mind.set_assigned_role(SSjob.GetJobType(spawner_job_path))
+		special(M, pref_load)
 		MM.name = M.real_name
 	if(uses > 0)
 		uses--
@@ -143,11 +168,10 @@
 /obj/effect/mob_spawn/human
 	mob_type = /mob/living/carbon/human
 	//Human specific stuff.
-	var/mob_species = null //Set to make them a mutant race such as lizard or skeleton. Uses the datum typepath instead of the ID.
 	var/datum/outfit/outfit = /datum/outfit //If this is a path, it will be instanced in Initialize()
 	var/disable_pda = TRUE
 	var/disable_sensors = TRUE
-	assignedrole = "Ghost Role"
+	spawner_job_path = /datum/job/ghost_role
 
 	var/husk = null
 	//these vars are for lazy mappers to override parts of the outfit
@@ -184,38 +208,48 @@
 		outfit = new /datum/outfit
 	return ..()
 
-/obj/effect/mob_spawn/human/equip(mob/living/carbon/human/H)
-	if(mob_species)
-		H.set_species(mob_species)
-	if(husk)
-		H.Drain()
-	else //Because for some reason I can't track down, things are getting turned into husks even if husk = false. It's in some damage proc somewhere.
-		H.cure_husk()
-	H.underwear = "Nude"
-	H.undershirt = "Nude"
-	H.socks = "Nude"
-	if(hairstyle)
-		H.hairstyle = hairstyle
+/obj/effect/mob_spawn/human/equip(mob/living/carbon/human/H, mob/user, pref_load, alias)
+	if(pref_load && user?.client)
+		user.client.prefs.apply_prefs_to(H)
+		H.dna.update_dna_identity()
+		if(alias)
+			H.name = alias
+			H.real_name = alias
+		//Pre-job equips so Voxes dont die
+		H.dna.species.pre_equip_species_outfit(null, H)
+		H.regenerate_icons()
 	else
-		H.hairstyle = random_hairstyle(H.gender)
-	if(facial_hairstyle)
-		H.facial_hairstyle = facial_hairstyle
-	else
-		H.facial_hairstyle = random_facial_hairstyle(H.gender)
-	if(haircolor)
-		H.hair_color = haircolor
-	else
-		H.hair_color = random_short_color()
-	if(facial_haircolor)
-		H.facial_hair_color = facial_haircolor
-	else
-		H.facial_hair_color = random_short_color()
-	if(skin_tone)
-		H.skin_tone = skin_tone
-	else
-		H.skin_tone = random_skin_tone()
-	H.update_hair()
-	H.update_body()
+		if(mob_species)
+			H.set_species(mob_species)
+		if(husk)
+			H.Drain()
+		else //Because for some reason I can't track down, things are getting turned into husks even if husk = false. It's in some damage proc somewhere.
+			H.cure_husk()
+		H.underwear = "Nude"
+		H.undershirt = "Nude"
+		H.socks = "Nude"
+		if(hairstyle)
+			H.hairstyle = hairstyle
+		else
+			H.hairstyle = random_hairstyle(H.gender, H.dna.species)
+		if(facial_hairstyle)
+			H.facial_hairstyle = facial_hairstyle
+		else
+			H.facial_hairstyle = random_facial_hairstyle(H.gender, H.dna.species)
+		if(haircolor)
+			H.hair_color = haircolor
+		else
+			H.hair_color = random_short_color()
+		if(facial_haircolor)
+			H.facial_hair_color = facial_haircolor
+		else
+			H.facial_hair_color = random_short_color()
+		if(skin_tone)
+			H.skin_tone = skin_tone
+		else
+			H.skin_tone = random_skin_tone()
+		H.update_hair()
+		H.update_body()
 	if(outfit)
 		var/static/list/slots = list("uniform", "r_hand", "l_hand", "suit", "shoes", "gloves", "ears", "glasses", "mask", "head", "belt", "r_pocket", "l_pocket", "back", "id", "neck", "backpack_contents", "suit_store")
 		for(var/slot in slots)
@@ -242,6 +276,10 @@
 		W.registered_name = H.real_name
 		W.update_label()
 		W.update_icon()
+
+	if(pref_load && user?.client && can_use_loadout)
+		var/list/packed_items = user.client.prefs.equip_preference_loadout(H ,FALSE)
+		user.client.prefs.add_packed_items(H, packed_items)
 
 //Instant version - use when spawning corpses during runtime
 /obj/effect/mob_spawn/human/corpse
@@ -442,7 +480,7 @@
 	name = "rotting corpse"
 	mob_name = "zombie"
 	mob_species = /datum/species/zombie
-	assignedrole = "Zombie"
+	spawner_job_path = /datum/job/zombie
 
 /obj/effect/mob_spawn/human/abductor
 	name = "abductor"

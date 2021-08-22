@@ -54,11 +54,11 @@
 
 	var/mob/living/LM = parent
 
-	if(!T.footstep || LM.buckled || LM.throwing || LM.movement_type & (VENTCRAWLING | FLYING) || HAS_TRAIT(LM, TRAIT_IMMOBILIZED))
+	if(LM.buckled || LM.throwing || LM.movement_type & (VENTCRAWLING | FLYING) || HAS_TRAIT(LM, TRAIT_IMMOBILIZED))
 		return
 
 	if(LM.body_position == LYING_DOWN) //play crawling sound if we're lying
-		playsound(T, 'sound/effects/footstep/crawl1.ogg', 15 * volume, falloff_distance = 1, vary = sound_vary)
+		playsound(T, 'sound/effects/footstep/crawl1.ogg', 30 * volume, falloff_distance = 1, vary = sound_vary)
 		return
 
 	if(iscarbon(LM))
@@ -85,6 +85,10 @@
 	var/turf/open/T = prepare_step()
 	if(!T)
 		return
+	if(SEND_SIGNAL(T, COMSIG_MOB_PLAYS_FOOTSTEP, footstep_type, volume, e_range, sound_vary) & COMPONENT_CANCEL_PLAY_FOOTSTEP)
+		return
+	if(!T.footstep)
+		return
 	if(isfile(footstep_sounds) || istext(footstep_sounds))
 		playsound(T, footstep_sounds, volume, falloff_distance = 1, vary = sound_vary)
 		return
@@ -107,26 +111,41 @@
 
 	if(HAS_TRAIT(parent, TRAIT_SILENT_FOOTSTEPS))
 		return
+
+	var/volume_multiplier = 1
+	var/range_adjustment = 0
+
+	if(HAS_TRAIT(parent, TRAIT_LIGHT_STEP))
+		volume_multiplier = 0.6
+		range_adjustment = -2
+
 	var/turf/open/T = prepare_step()
 	if(!T)
 		return
 	var/mob/living/carbon/human/H = parent
-
+	var/established_type
 	if ((H.wear_suit?.body_parts_covered | H.w_uniform?.body_parts_covered | H.shoes?.body_parts_covered) & FEET)
 		// we are wearing shoes
+		established_type = FOOTSTEP_MOB_SHOE
+	else
+		established_type = FOOTSTEP_MOB_BAREFOOT
+	if(SEND_SIGNAL(T, COMSIG_MOB_PLAYS_FOOTSTEP, established_type, volume, e_range, sound_vary) & COMPONENT_CANCEL_PLAY_FOOTSTEP)
+		return
+	if(!T.footstep)
+		return
+	if(established_type == FOOTSTEP_MOB_SHOE)
 		playsound(T, pick(GLOB.footstep[T.footstep][1]),
-			GLOB.footstep[T.footstep][2] * volume,
+			GLOB.footstep[T.footstep][2] * volume * volume_multiplier,
 			TRUE,
-			GLOB.footstep[T.footstep][3] + e_range, falloff_distance = 1, vary = sound_vary)
+			GLOB.footstep[T.footstep][3] + e_range + range_adjustment, falloff_distance = 1, vary = sound_vary)
 	else
 		if(H.dna.species.special_step_sounds)
 			playsound(T, pick(H.dna.species.special_step_sounds), 50, TRUE, falloff_distance = 1, vary = sound_vary)
 		else
 			playsound(T, pick(GLOB.barefootstep[T.barefootstep][1]),
-				GLOB.barefootstep[T.barefootstep][2] * volume,
+				GLOB.barefootstep[T.barefootstep][2] * volume * volume_multiplier,
 				TRUE,
-				GLOB.barefootstep[T.barefootstep][3] + e_range, falloff_distance = 1, vary = sound_vary)
-
+				GLOB.barefootstep[T.barefootstep][3] + e_range + range_adjustment, falloff_distance = 1, vary = sound_vary)
 
 ///Prepares a footstep for machine walking
 /datum/component/footstep/proc/play_simplestep_machine()
@@ -134,5 +153,7 @@
 
 	var/turf/open/T = get_turf(parent)
 	if(!istype(T))
+		return
+	if(!T.footstep)
 		return
 	playsound(T, footstep_sounds, 50, falloff_distance = 1, vary = sound_vary)

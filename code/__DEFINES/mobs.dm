@@ -443,3 +443,12 @@
 #define THROW_MODE_TOGGLE 1
 #define THROW_MODE_HOLD 2
 
+//Saves a proc call, life is suffering. If who has no targets_from var, we assume it's just who
+#define GET_TARGETS_FROM(who) (who.targets_from ? who.get_targets_from() : who)
+
+/// Defines for dominanthand state
+#define DOMINANT_HAND_LEFT "Left"
+#define DOMINANT_HAND_RIGHT "Right"
+#define DOMINANT_HAND_AMBI "Ambidextrous"
+/// What is the increase/slowdown for using your dominant hand, or not
+#define DOMINANT_HAND_FACTOR 0.20

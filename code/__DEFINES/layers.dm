@@ -10,16 +10,18 @@
 
 
 #define OPENSPACE_LAYER 600 //Openspace layer over all
-#define OPENSPACE_PLANE -9 //Openspace plane below all turfs
-#define OPENSPACE_BACKDROP_PLANE -8 //Black square just over openspace plane to guaranteed cover all in openspace turf
+#define OPENSPACE_PLANE -10 //Openspace plane below all turfs
+#define OPENSPACE_BACKDROP_PLANE -9 //Black square just over openspace plane to guaranteed cover all in openspace turf
 
 
-#define FLOOR_PLANE -7
+#define FLOOR_PLANE -8
 #define FLOOR_PLANE_RENDER_TARGET "FLOOR_PLANE"
-#define OVER_TILE_PLANE -6
-#define WALL_PLANE -5
-#define GAME_PLANE -4
+#define OVER_TILE_PLANE -7
+#define WALL_PLANE -6
+#define GAME_PLANE -5
 #define GAME_PLANE_RENDER_TARGET "GAME_PLANE"
+#define MOUSE_TRANSPARENT_PLANE -4
+#define MOUSE_TRANSPARENT_PLANE_RENDER_TARGET "MOUSE_TRANSPARENT_PLANE"
 #define UNDER_FRILL_PLANE -3
 #define UNDER_FRILL_RENDER_TARGET "UNDER_FRILL_PLANE"
 #define FRILL_PLANE -2
@@ -29,6 +31,7 @@
 #define BLACKNESS_PLANE_RENDER_TARGET "BLACKNESS_PLANE"
 
 #define SPACE_LAYER 1.8
+#define ROOF_LAYER 1.9
 //#define TURF_LAYER 2 //For easy recordkeeping; this is a byond define
 #define CULT_OVERLAY_LAYER 2.01
 #define MID_TURF_LAYER 2.02
@@ -46,6 +49,7 @@
 #define WIRE_BRIDGE_LAYER 2.44
 #define WIRE_TERMINAL_LAYER 2.45
 #define GAS_SCRUBBER_LAYER 2.46
+#define CATWALK_LAYER 2.465
 #define GAS_PIPE_VISIBLE_LAYER 2.47 //layer = initial(layer) + piping_layer / 1000 in atmospherics/update_icon() to determine order of pipe overlap
 #define GAS_FILTER_LAYER 2.48
 #define GAS_PUMP_LAYER 2.49
@@ -111,9 +115,11 @@
 #define FRILL_MASK_RENDER_TARGET "*FRILL_MASK_PLANE"
 
 //---------- LIGHTING -------------
-///Normal 1 per turf dynamic lighting objects
+///Normal 1 per turf dynamic lighting underlays
 #define LIGHTING_PLANE 100
 #define LIGHTING_RENDER_TARGET "LIGHT_PLANE"
+
+#define DAY_NIGHT_LIGHTING_LAYER 100
 
 ///Things that should render ignoring lighting
 #define ABOVE_LIGHTING_PLANE 110

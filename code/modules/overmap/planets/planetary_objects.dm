@@ -24,6 +24,8 @@
 	planetary_atmos = TRUE
 	tiled_dirt = FALSE
 	intact = FALSE
+	baseturfs = /turf/open/floor/planetary/rock
+	can_have_catwalk = TRUE
 	var/can_build_on = TRUE
 
 /turf/open/floor/planetary/ex_act(severity, target)
@@ -51,9 +53,9 @@
 /turf/open/floor/planetary/examine(mob/user)
 	. = ..()
 	if(broken || burnt)
-		. += "<span class='notice'>It looks like it had better days.</span>"
+		. += SPAN_NOTICE("It looks like it had better days.")
 	if(can_build_on)
-		. += "<span class='notice'>You might be able to build ontop of it with some <i>tiles</i> or reinforcement <i>rods</i>.</span>"
+		. += SPAN_NOTICE("You might be able to build ontop of it with some <i>tiles</i> or reinforcement <i>rods</i>.")
 
 /turf/open/floor/planetary/setup_broken_states()
 	return list(base_icon_state)

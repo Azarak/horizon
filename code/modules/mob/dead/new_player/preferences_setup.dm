@@ -1,43 +1,27 @@
 
 	//The mob should have a gender you want before running this proc. Will run fine without H
 /datum/preferences/proc/random_character(gender_override, antag_override = FALSE)
-	if(randomise[RANDOM_SPECIES])
-		random_species()
-	else if(randomise[RANDOM_NAME])
-		real_name = pref_species.random_name(gender,1)
-	if(gender_override && !(randomise[RANDOM_GENDER] || randomise[RANDOM_GENDER_ANTAG] && antag_override))
-		gender = gender_override
-	else
-		gender = pick(MALE,FEMALE,PLURAL)
-	if(randomise[RANDOM_AGE] || randomise[RANDOM_AGE_ANTAG] && antag_override)
-		age = rand(AGE_MIN,AGE_MAX)
-	if(randomise[RANDOM_UNDERWEAR])
-		underwear = random_underwear(gender)
-	if(randomise[RANDOM_UNDERWEAR_COLOR])
-		underwear_color = random_short_color()
-	if(randomise[RANDOM_UNDERSHIRT])
-		undershirt = random_undershirt(gender)
-	if(randomise[RANDOM_SOCKS])
-		socks = random_socks()
-	if(randomise[RANDOM_BACKPACK])
-		backpack = random_backpack()
-	if(randomise[RANDOM_JUMPSUIT_STYLE])
-		jumpsuit_style = pick(GLOB.jumpsuitlist)
-	if(randomise[RANDOM_HAIRSTYLE])
-		hairstyle = random_hairstyle(gender)
-	if(randomise[RANDOM_FACIAL_HAIRSTYLE])
-		facial_hairstyle = random_facial_hairstyle(gender)
-	if(randomise[RANDOM_HAIR_COLOR])
-		hair_color = random_short_color()
-	if(randomise[RANDOM_FACIAL_HAIR_COLOR])
-		facial_hair_color = random_short_color()
-	if(randomise[RANDOM_SKIN_TONE])
-		set_skin_tone(random_skin_tone())
-	if(randomise[RANDOM_EYE_COLOR])
-		eye_color = random_eye_color()
 	if(!pref_species)
 		var/rando_race = pick(GLOB.roundstart_races)
 		set_new_species(rando_race)
+	real_name = pref_species.random_name(gender,1)
+	if(gender_override)
+		gender = gender_override
+	else
+		gender = pick(MALE,FEMALE,PLURAL)
+	age = rand(AGE_MIN,AGE_MAX)
+	underwear = random_underwear(gender, pref_species)
+	underwear_color = random_short_color()
+	undershirt = random_undershirt(gender, pref_species)
+	socks = random_socks(pref_species)
+	backpack = random_backpack()
+	jumpsuit_style = pick(GLOB.jumpsuitlist)
+	hairstyle = random_hairstyle(gender, pref_species)
+	facial_hairstyle = random_facial_hairstyle(gender, pref_species)
+	hair_color = random_short_color()
+	facial_hair_color = random_short_color()
+	set_skin_tone(random_skin_tone())
+	eye_color = random_eye_color()
 	if(gender in list(MALE, FEMALE))
 		body_type = gender
 	else
@@ -48,27 +32,27 @@
 		features[key] = new_features[key]
 	mutant_bodyparts = pref_species.get_random_mutant_bodyparts(features)
 	body_markings = pref_species.get_random_body_markings(features)
+	needs_update = TRUE
 
 /datum/preferences/proc/random_species()
 	var/random_species_type = GLOB.species_list[pick(GLOB.roundstart_races)]
 	set_new_species(random_species_type)
-	if(randomise[RANDOM_NAME])
-		real_name = pref_species.random_name(gender,1)
 
-///Setup a hardcore random character and calculate their hardcore random score
-/datum/preferences/proc/hardcore_random_setup(mob/living/carbon/human/character, antagonist, is_latejoiner)
-	var/rand_gender = pick(list(MALE, FEMALE, PLURAL))
-	random_character(rand_gender, antagonist)
-	select_hardcore_quirks()
-	hardcore_survival_score = hardcore_survival_score ** 1.2 //30 points would be about 60 score
-	if(is_latejoiner)//prevent them from cheatintg
-		hardcore_survival_score = 0
 
-///Go through all quirks that can be used in hardcore mode and select some based on a random budget.
+///Setup the random hardcore quirks and give the character the new score prize.
+/datum/preferences/proc/hardcore_random_setup(mob/living/carbon/human/character)
+	var/next_hardcore_score = select_hardcore_quirks()
+	character.hardcore_survival_score = next_hardcore_score ** 1.2  //30 points would be about 60 score
+
+
+/**
+ * Goes through all quirks that can be used in hardcore mode and select some based on a random budget.
+ * Returns the new value to be gained with this setup, plus the previously earned score.
+ **/
 /datum/preferences/proc/select_hardcore_quirks()
+	. = 0
 
 	var/quirk_budget = rand(8, 35)
-
 
 	all_quirks = list() //empty it out
 
@@ -107,8 +91,9 @@
 
 		all_quirks += initial(picked_quirk.name)
 		quirk_budget -= available_hardcore_quirks[picked_quirk]
-		hardcore_survival_score += available_hardcore_quirks[picked_quirk]
+		. += available_hardcore_quirks[picked_quirk]
 		available_hardcore_quirks -= picked_quirk
+
 
 /datum/preferences/proc/update_preview_icon()
 	// Determine what job is marked as 'High' priority, and dress them up as such.
@@ -130,13 +115,13 @@
 
 	// Set up the dummy for its photoshoot
 	var/mob/living/carbon/human/dummy/mannequin = generate_or_wait_for_human_dummy(DUMMY_HUMAN_SLOT_PREFERENCES)
-	copy_to(mannequin, 1, TRUE, TRUE)
+	apply_prefs_to(mannequin, TRUE, TRUE)
 
 	switch(preview_pref)
 		if(PREVIEW_PREF_JOB)
 			if(previewJob)
 				mannequin.job = previewJob.title
-				previewJob.equip(mannequin, TRUE, preference_source = parent)
+				mannequin.dress_up_as_job(previewJob, TRUE)
 			mannequin.underwear_visibility = NONE
 		if(PREVIEW_PREF_LOADOUT)
 			mannequin.underwear_visibility = NONE
@@ -196,11 +181,7 @@
 
 /datum/preferences/proc/set_new_species(new_species_path)
 	pref_species = new new_species_path()
-	var/list/new_features = pref_species.get_random_features() //We do this to keep flavor text, genital sizes etc.
-	for(var/key in new_features)
-		features[key] = new_features[key]
-	mutant_bodyparts = pref_species.get_random_mutant_bodyparts(features)
-	body_markings = pref_species.get_random_body_markings(features)
+	random_character(FALSE, antag_override = FALSE)
 	if(pref_species.use_skintones)
 		features["uses_skintones"] = TRUE
 	//We reset the quirk-based stuff

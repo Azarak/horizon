@@ -993,7 +993,7 @@
 		SEND_SIGNAL(src, COMSIG_REAGENTS_REACTION_STEP, num_reactions, delta_time)
 
 	if(length(mix_message)) //This is only at the end
-		my_atom.audible_message("<span class='notice'>[icon2html(my_atom, viewers(DEFAULT_MESSAGE_RANGE, src))] [mix_message.Join()]</span>")
+		my_atom.audible_message(SPAN_NOTICE("[icon2html(my_atom, viewers(DEFAULT_MESSAGE_RANGE, src))] [mix_message.Join()]"))
 
 	if(!LAZYLEN(reaction_list))
 		finish_reacting()
@@ -1023,6 +1023,10 @@
 	var/reaction_message = equilibrium.reaction.mix_message
 	if(equilibrium.reaction.mix_sound)
 		playsound(get_turf(my_atom), equilibrium.reaction.mix_sound, 80, TRUE)
+	//If the reaction pollutes, pollute it here if we have an atom
+	if(equilibrium.reaction.pollutant_type && my_atom)
+		var/turf/my_turf = get_turf(my_atom)
+		my_turf.PolluteTurf(equilibrium.reaction.pollutant_type, equilibrium.reaction.pollutant_amount * equilibrium.reacted_vol)
 	qdel(equilibrium)
 	update_total()
 	SEND_SIGNAL(src, COMSIG_REAGENTS_REACTED, .)
@@ -1055,7 +1059,7 @@
 	for(var/datum/equilibrium/equilibrium as anything in reaction_list)
 		mix_message += end_reaction(equilibrium)
 	if(length(mix_message))
-		my_atom.audible_message("<span class='notice'>[icon2html(my_atom, viewers(DEFAULT_MESSAGE_RANGE, src))] [mix_message.Join()]</span>")
+		my_atom.audible_message(SPAN_NOTICE("[icon2html(my_atom, viewers(DEFAULT_MESSAGE_RANGE, src))] [mix_message.Join()]"))
 	finish_reacting()
 
 /*
@@ -1076,7 +1080,7 @@
 				mix_message += end_reaction(equilibrium)
 				any_stopped = TRUE
 	if(length(mix_message))
-		my_atom.audible_message("<span class='notice'>[icon2html(my_atom, viewers(DEFAULT_MESSAGE_RANGE, src))][mix_message.Join()]</span>")
+		my_atom.audible_message(SPAN_NOTICE("[icon2html(my_atom, viewers(DEFAULT_MESSAGE_RANGE, src))][mix_message.Join()]"))
 	return any_stopped
 
 /*
@@ -1167,16 +1171,21 @@
 			if(selected_reaction.mix_sound)
 				playsound(get_turf(cached_my_atom), selected_reaction.mix_sound, 80, TRUE)
 
-			my_atom.audible_message("<span class='notice'>[iconhtml] [selected_reaction.mix_message]</span>")
+			my_atom.audible_message(SPAN_NOTICE("[iconhtml] [selected_reaction.mix_message]"))
 
 		if(istype(cached_my_atom, /obj/item/slime_extract))
 			var/obj/item/slime_extract/extract = my_atom
 			extract.Uses--
 			if(extract.Uses <= 0) // give the notification that the slime core is dead
-				my_atom.visible_message("<span class='notice'>[iconhtml] \The [my_atom]'s power is consumed in the reaction.</span>")
+				my_atom.visible_message(SPAN_NOTICE("[iconhtml] \The [my_atom]'s power is consumed in the reaction."))
 				extract.name = "used slime extract"
 				extract.desc = "This extract has been used up."
 
+	//If the reaction pollutes, pollute it here if we have an atom
+	if(selected_reaction.pollutant_type && my_atom)
+		var/turf/my_turf = get_turf(my_atom)
+		my_turf.PolluteTurf(selected_reaction.pollutant_type, selected_reaction.pollutant_amount * multiplier)
+	
 	selected_reaction.on_reaction(src, null, multiplier)
 
 ///Possibly remove - see if multiple instant reactions is okay (Though, this "sorts" reactions by temp decending)
@@ -1198,14 +1207,15 @@
 /// Updates [/datum/reagents/var/total_volume]
 /datum/reagents/proc/update_total()
 	var/list/cached_reagents = reagent_list
-	total_volume = 0
+	. = 0 // This is a relatively hot proc.
 	for(var/datum/reagent/reagent as anything in cached_reagents)
 		if((reagent.volume < 0.05) && !is_reacting)
 			del_reagent(reagent.type)
 		else if(reagent.volume <= CHEMICAL_VOLUME_MINIMUM)//For clarity
 			del_reagent(reagent.type)
 		else
-			total_volume += reagent.volume
+			. += reagent.volume
+	total_volume = .
 	recalculate_sum_ph()
 
 /**

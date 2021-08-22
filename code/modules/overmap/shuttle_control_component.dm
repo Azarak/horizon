@@ -25,6 +25,15 @@
 	shuttle_control_button = new
 	shuttle_control_button.target = src
 
+/datum/overmap_shuttle_controller/Destroy()
+	if(mob_controller)
+		RemoveCurrentControl()
+	QDEL_NULL(quit_control_button)
+	QDEL_NULL(stop_shuttle_button)
+	QDEL_NULL(shuttle_control_button)
+	overmap_obj = null
+	return ..()
+
 /datum/overmap_shuttle_controller/proc/SetController(mob/living/our_guy)
 	if(mob_controller)
 		RemoveCurrentControl()
@@ -45,10 +54,10 @@
 	shuttle_control_button.Grant(mob_controller)
 
 
-/datum/overmap_shuttle_controller/proc/RemoveCurrentControl(removing_overmap = FALSE)
+/datum/overmap_shuttle_controller/proc/RemoveCurrentControl()
 	if(mob_controller)
 		if(freeform_docker)
-			AbortFreeform(removing_overmap)
+			AbortFreeform()
 		UnregisterSignal(mob_controller, COMSIG_CLICKON)
 		mob_controller.client.perspective = MOB_PERSPECTIVE
 		mob_controller.client.eye = mob_controller
@@ -62,19 +71,16 @@
 		mob_controller.remote_control = null
 		mob_controller.update_parallax_contents()
 		mob_controller = null
-	if(removing_overmap)
-		QDEL_NULL(overmap_obj)
 
-/datum/overmap_shuttle_controller/proc/AbortFreeform(removing_overmap)
+/datum/overmap_shuttle_controller/proc/AbortFreeform()
 	if(!freeform_docker)
 		return
 	freeform_docker.remove_eye_control()
 	qdel(freeform_docker)
-	if(!removing_overmap)
-		mob_controller.client.perspective = EYE_PERSPECTIVE
-		mob_controller.client.eye = overmap_obj.my_visual
-		mob_controller.update_parallax_contents()
-		mob_controller.remote_control = overmap_obj.my_visual
+	mob_controller.client.perspective = EYE_PERSPECTIVE
+	mob_controller.client.eye = overmap_obj.my_visual
+	mob_controller.update_parallax_contents()
+	mob_controller.remote_control = overmap_obj.my_visual
 
 /datum/overmap_shuttle_controller/proc/ControllerClick(datum/source, atom/A, params)
 	SIGNAL_HANDLER

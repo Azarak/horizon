@@ -39,8 +39,7 @@ GLOBAL_LIST_INIT(meteorsC, list(/obj/effect/meteor/dust)) //for space dust event
 		max_i--
 		if(max_i<=0)
 			return
-	var/obj/effect/meteor/M = new meteor_type(pickedstart, pickedgoal)
-	M.dest = pickedgoal
+	new meteor_type(pickedstart, pickedgoal)
 
 /proc/spaceDebrisStartLoc(startSide, Z, padding)
 	var/starty
@@ -132,6 +131,7 @@ GLOBAL_LIST_INIT(meteorsC, list(/obj/effect/meteor/dust)) //for space dust event
 	SSaugury.register_doom(src, threat)
 	SpinAnimation()
 	timerid = QDEL_IN(src, lifetime)
+	dest = target
 	chase_target(target)
 
 /obj/effect/meteor/Bump(atom/A)
@@ -147,7 +147,7 @@ GLOBAL_LIST_INIT(meteorsC, list(/obj/effect/meteor/dust)) //for space dust event
 			continue
 		if(isliving(thing))
 			var/mob/living/living_thing = thing
-			living_thing.visible_message("<span class='warning'>[src] slams into [living_thing].</span>", "<span class='userdanger'>[src] slams into you!.</span>")
+			living_thing.visible_message(SPAN_WARNING("[src] slams into [living_thing]."), SPAN_USERDANGER("[src] slams into you!."))
 		switch(hitpwr)
 			if(EXPLODE_DEVASTATE)
 				SSexplosions.high_mov_atom += thing
@@ -315,7 +315,7 @@ GLOBAL_LIST_INIT(meteorsC, list(/obj/effect/meteor/dust)) //for space dust event
 
 
 /obj/effect/meteor/meaty/ram_turf(turf/T)
-	if(!isspaceturf(T))
+	if(!isspaceturf(T) && !isopenspaceturf(T))
 		new /obj/effect/decal/cleanable/blood(T)
 
 /obj/effect/meteor/meaty/Bump(atom/A)
@@ -333,7 +333,7 @@ GLOBAL_LIST_INIT(meteorsC, list(/obj/effect/meteor/dust)) //for space dust event
 	return ..()
 
 /obj/effect/meteor/meaty/xeno/ram_turf(turf/T)
-	if(!isspaceturf(T))
+	if(!isspaceturf(T) && !isopenspaceturf(T))
 		new /obj/effect/decal/cleanable/xenoblood(T)
 
 //Station buster Tunguska

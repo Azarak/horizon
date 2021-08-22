@@ -113,6 +113,7 @@ GLOBAL_LIST_INIT(metal_recipes, list ( \
 	new/datum/stack_recipe("fire alarm frame", /obj/item/wallframe/firealarm, 2), \
 	new/datum/stack_recipe("extinguisher cabinet frame", /obj/item/wallframe/extinguisher_cabinet, 2), \
 	new/datum/stack_recipe("button frame", /obj/item/wallframe/button, 1), \
+	new/datum/stack_recipe("lightswitch frame", /obj/item/wallframe/light_switch, 1), \
 	null, \
 	new/datum/stack_recipe("iron door", /obj/structure/mineral_door/iron, 20, one_per_turf = TRUE, on_floor = TRUE), \
 	new/datum/stack_recipe("floodlight frame", /obj/structure/floodlight_frame, 5, one_per_turf = TRUE, on_floor = TRUE), \
@@ -162,7 +163,7 @@ GLOBAL_LIST_INIT(metal_recipes, list ( \
 	. += GLOB.metal_recipes
 
 /obj/item/stack/sheet/iron/suicide_act(mob/living/carbon/user)
-	user.visible_message("<span class='suicide'>[user] begins whacking [user.p_them()]self over the head with \the [src]! It looks like [user.p_theyre()] trying to commit suicide!</span>")
+	user.visible_message(SPAN_SUICIDE("[user] begins whacking [user.p_them()]self over the head with \the [src]! It looks like [user.p_theyre()] trying to commit suicide!"))
 	return BRUTELOSS
 
 /*
@@ -176,7 +177,23 @@ GLOBAL_LIST_INIT(plasteel_recipes, list ( \
 		new/datum/stack_recipe("high security airlock assembly", /obj/structure/door_assembly/door_assembly_highsecurity, 4, time = 50, one_per_turf = 1, on_floor = 1), \
 		new/datum/stack_recipe("vault door assembly", /obj/structure/door_assembly/door_assembly_vault, 6, time = 50, one_per_turf = 1, on_floor = 1), \
 	)), \
+	null, \
+	new /datum/stack_recipe_list("crates & carts", list( \
+		new/datum/stack_recipe("grey crate", /obj/structure/closet/crate, 2, time = 15, one_per_turf = 1, on_floor = 1), \
+		new/datum/stack_recipe("medical crate", /obj/structure/closet/crate/medical, 2, time = 15, one_per_turf = 1, on_floor = 1), \
+		new/datum/stack_recipe("freezer crate", /obj/structure/closet/crate/freezer, 2, time = 15, one_per_turf = 1, on_floor = 1), \
+		new/datum/stack_recipe("internals crate", /obj/structure/closet/crate/internals, 2, time = 15, one_per_turf = 1, on_floor = 1), \
+		new/datum/stack_recipe("hydroponics crate", /obj/structure/closet/crate/hydroponics, 2, time = 15, one_per_turf = 1, on_floor = 1), \
+		new/datum/stack_recipe("radiation crate", /obj/structure/closet/crate/radiation, 2, time = 15, one_per_turf = 1, on_floor = 1), \
+		new/datum/stack_recipe("engineering crate", /obj/structure/closet/crate/engineering, 2, time = 15, one_per_turf = 1, on_floor = 1), \
+		new/datum/stack_recipe("science crate", /obj/structure/closet/crate/science, 2, time = 15, one_per_turf = 1, on_floor = 1), \
+		new/datum/stack_recipe("trash cart", /obj/structure/closet/crate/trashcart, 2, time = 15, one_per_turf = 1, on_floor = 1), \
+		new/datum/stack_recipe("laundry cart", /obj/structure/closet/crate/trashcart/laundry, 2, time = 15, one_per_turf = 1, on_floor = 1), \
+	)), \
 ))
+
+/obj/structure/closet/crate/trashcart/laundry
+/obj/structure/closet/crate/trashcart
 
 /obj/item/stack/sheet/plasteel
 	name = "plasteel"
@@ -311,6 +328,7 @@ GLOBAL_LIST_INIT(cloth_recipes, list ( \
 	new/datum/stack_recipe("white scarf", /obj/item/clothing/neck/scarf, 1), \
 	null, \
 	new/datum/stack_recipe("backpack", /obj/item/storage/backpack, 4), \
+	new/datum/stack_recipe("satchel", /obj/item/storage/backpack/satchel, 4), \
 	new/datum/stack_recipe("duffel bag", /obj/item/storage/backpack/duffelbag, 6), \
 	null, \
 	new/datum/stack_recipe("plant bag", /obj/item/storage/bag/plants, 4), \
@@ -497,13 +515,13 @@ GLOBAL_LIST_INIT(cardboard_recipes, list ( \
 		var/atom/droploc = drop_location()
 		if(use(1))
 			playsound(I, 'sound/items/bikehorn.ogg', 50, TRUE, -1)
-			to_chat(user, "<span class='notice'>You stamp the cardboard! It's a clown box! Honk!</span>")
+			to_chat(user, SPAN_NOTICE("You stamp the cardboard! It's a clown box! Honk!"))
 			if (amount >= 0)
 				new/obj/item/storage/box/clown(droploc) //bugfix
 	if(istype(I, /obj/item/stamp/chameleon) && !istype(loc, /obj/item/storage))
 		var/atom/droploc = drop_location()
 		if(use(1))
-			to_chat(user, "<span class='notice'>You stamp the cardboard in a sinister way.</span>")
+			to_chat(user, SPAN_NOTICE("You stamp the cardboard in a sinister way."))
 			if (amount >= 0)
 				new/obj/item/storage/box/syndie_kit(droploc)
 	else
@@ -540,12 +558,12 @@ GLOBAL_LIST_INIT(runed_metal_recipes, list ( \
 
 /obj/item/stack/sheet/runed_metal/attack_self(mob/living/user)
 	if(!IS_CULTIST(user))
-		to_chat(user, "<span class='warning'>Only one with forbidden knowledge could hope to work this metal...</span>")
+		to_chat(user, SPAN_WARNING("Only one with forbidden knowledge could hope to work this metal..."))
 		return
 	var/turf/T = get_turf(user) //we may have moved. adjust as needed...
 	var/area/A = get_area(user)
 	if((!is_station_level(T.z) && !is_mining_level(T.z)) || (A && !(A.area_flags & CULT_PERMITTED)))
-		to_chat(user, "<span class='warning'>The veil is not weak enough here.</span>")
+		to_chat(user, SPAN_WARNING("The veil is not weak enough here."))
 		return FALSE
 	return ..()
 

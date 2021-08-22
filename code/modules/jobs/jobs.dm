@@ -32,14 +32,14 @@ GLOBAL_LIST_INIT(security_sub_positions, list(
 	"Security Officer (Science)" = TRUE,
 ))
 
-GLOBAL_LIST_INIT(nonhuman_positions, list(ROLE_PAI = TRUE))
+GLOBAL_LIST_EMPTY(nonhuman_positions)
 
 // job categories for rendering the late join menu
 GLOBAL_LIST_INIT(position_categories, list(
 	EXP_TYPE_COMMAND = list("jobs" = command_positions, "color" = "#ccccff"),
 	EXP_TYPE_ENGINEERING = list("jobs" = engineering_positions, "color" = "#ffeeaa"),
 	EXP_TYPE_SUPPLY = list("jobs" = supply_positions, "color" = "#ddddff"),
-	EXP_TYPE_SILICON = list("jobs" = nonhuman_positions - "pAI", "color" = "#ccffcc"),
+	EXP_TYPE_SILICON = list("jobs" = nonhuman_positions, "color" = "#ccffcc"),
 	EXP_TYPE_MISC = list("jobs" = misc_positions, "color" = "#eeeeee"),
 	EXP_TYPE_MEDICAL = list("jobs" = medical_positions, "color" = "#ffddf0"),
 	EXP_TYPE_SCIENCE = list("jobs" = science_positions, "color" = "#ffddff"),
@@ -58,14 +58,35 @@ GLOBAL_LIST_INIT(exp_jobsmap, list(
 	EXP_TYPE_SECURITY = list("titles" = security_positions),
 	EXP_TYPE_CIVILLIAN = list("titles" = civillian_positions),
 	EXP_TYPE_MISC = list("titles" = misc_positions),
-	EXP_TYPE_SILICON = list("titles" = list("AI","Cyborg")),
+	EXP_TYPE_SILICON = list("titles" = nonhuman_positions),
 	EXP_TYPE_SERVICE = list("titles" = service_positions)
 ))
 
+// TO DO: Replace this with job datum flags instead.
 GLOBAL_LIST_INIT(exp_specialmap, list(
 	EXP_TYPE_LIVING = list(), // all living mobs
 	EXP_TYPE_ANTAG = list(),
-	EXP_TYPE_SPECIAL = list("Lifebringer","Ash Walker","Exile","Servant Golem","Free Golem","Hermit","Translocated Vet","Escaped Prisoner","Hotel Staff","SuperFriend","Space Syndicate","Ancient Crew","Space Doctor","Space Bartender","Beach Bum","Skeleton","Zombie","Space Bar Patron","Lavaland Syndicate","Maintenance Drone","Ghost Role"), // Ghost roles
+	EXP_TYPE_SPECIAL = list(
+		ROLE_LIFEBRINGER,
+		ROLE_ASHWALKER,
+		ROLE_EXILE,
+		ROLE_SERVANT_GOLEM,
+		ROLE_FREE_GOLEM,
+		ROLE_HERMIT,
+		ROLE_ESCAPED_PRISONER,
+		ROLE_HOTEL_STAFF,
+		ROLE_SPACE_SYNDICATE,
+		ROLE_ANCIENT_CREW,
+		ROLE_SPACE_DOCTOR,
+		ROLE_SPACE_BARTENDER,
+		ROLE_BEACH_BUM,
+		ROLE_SKELETON,
+		ROLE_ZOMBIE,
+		ROLE_SPACE_BAR_PATRON,
+		ROLE_LAVALAND_SYNDICATE,
+		ROLE_MAINTENANCE_DRONE,
+		ROLE_GHOST_ROLE,
+		), // Ghost roles
 	EXP_TYPE_GHOST = list() // dead people, observers
 ))
 GLOBAL_PROTECT(exp_jobsmap)
@@ -77,9 +98,9 @@ GLOBAL_PROTECT(exp_specialmap)
 	if(!job_title)
 		return list()
 
-	for(var/datum/job/J in SSjob.occupations)
-		if(J.title == job_title)
-			return J.department_head //this is a list
+	for(var/datum/job/job as anything in SSjob.joinable_occupations)
+		if(job.title == job_title)
+			return job.department_head //this is a list
 
 /proc/get_full_job_name(job)
 	var/static/regex/cap_expand = new("cap(?!tain)")

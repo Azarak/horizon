@@ -5,10 +5,12 @@
 	var/climb_time = (2 SECONDS)
 	///Stun duration for when you get onto the object
 	var/climb_stun = (2 SECONDS)
+	/// Whether you climb OVER a thing, implies it is directional and will invoke extra checks / verb changes
+	var/climb_over = FALSE
 	///Assoc list of object being climbed on - climbers.  This allows us to check who needs to be shoved off a climbable object when its clicked on.
 	var/list/current_climbers
 
-/datum/element/climbable/Attach(datum/target, climb_time, climb_stun)
+/datum/element/climbable/Attach(datum/target, climb_time, climb_stun, climb_over)
 	. = ..()
 
 	if(!isatom(target) || isarea(target))
@@ -17,6 +19,8 @@
 		src.climb_time = climb_time
 	if(climb_stun)
 		src.climb_stun = climb_stun
+	if(climb_over)
+		src.climb_over = climb_over
 
 	RegisterSignal(target, COMSIG_ATOM_ATTACK_HAND, .proc/attack_hand)
 	RegisterSignal(target, COMSIG_PARENT_EXAMINE, .proc/on_examine)
@@ -31,9 +35,13 @@
 	SIGNAL_HANDLER
 
 	if(can_climb(source, user))
-		examine_texts += "<span class='notice'>[source] looks climbable.</span>"
+		examine_texts += SPAN_NOTICE("[source] looks climbable.")
 
 /datum/element/climbable/proc/can_climb(atom/source, mob/user)
+	if(climb_over && source.loc != user.loc)
+		var/turf/neighboring_turf = get_step(source.loc,source.dir)
+		if(user.loc != neighboring_turf)
+			return FALSE
 	return TRUE
 
 /datum/element/climbable/proc/attack_hand(atom/climbed_thing, mob/user)
@@ -46,15 +54,16 @@
 		user.changeNext_move(CLICK_CD_MELEE)
 		user.do_attack_animation(climbed_thing)
 		structure_climber.Paralyze(40)
-		structure_climber.visible_message("<span class='warning'>[structure_climber] is knocked off [climbed_thing].</span>", "<span class='warning'>You're knocked off [climbed_thing]!</span>", "<span class='hear'>You hear a cry from [structure_climber], followed by a slam.</span>")
+		structure_climber.visible_message(SPAN_WARNING("[structure_climber] is knocked off [climbed_thing]."), SPAN_WARNING("You're knocked off [climbed_thing]!"), SPAN_HEAR("You hear a cry from [structure_climber], followed by a slam."))
 
 
 /datum/element/climbable/proc/climb_structure(atom/climbed_thing, mob/living/user)
 	if(!can_climb(climbed_thing, user))
 		return
 	climbed_thing.add_fingerprint(user)
-	user.visible_message("<span class='warning'>[user] starts climbing onto [climbed_thing].</span>", \
-								"<span class='notice'>You start climbing onto [climbed_thing]...</span>")
+	var/climb_verb = climb_over ? "over" : "onto"
+	user.visible_message(SPAN_WARNING("[user] starts climbing [climb_verb] [climbed_thing]."), \
+								SPAN_NOTICE("You start climbing [climb_verb] [climbed_thing]..."))
 	var/adjusted_climb_time = climb_time
 	var/adjusted_climb_stun = climb_stun
 	if(HAS_TRAIT(user, TRAIT_HANDS_BLOCKED)) //climbing takes twice as long without help from the hands.
@@ -69,20 +78,25 @@
 		if(QDELETED(climbed_thing)) //Checking if structure has been destroyed
 			return
 		if(do_climb(climbed_thing, user))
-			user.visible_message("<span class='warning'>[user] climbs onto [climbed_thing].</span>", \
-								"<span class='notice'>You climb onto [climbed_thing].</span>")
-			log_combat(user, climbed_thing, "climbed onto")
+			user.visible_message(SPAN_WARNING("[user] climbs [climb_verb] [climbed_thing]."), \
+								SPAN_NOTICE("You climb [climb_verb] [climbed_thing]."))
+			log_combat(user, climbed_thing, "climbed [climb_verb]")
 			if(adjusted_climb_stun)
 				user.Stun(adjusted_climb_stun)
 		else
-			to_chat(user, "<span class='warning'>You fail to climb onto [climbed_thing].</span>")
+			to_chat(user, SPAN_WARNING("You fail to climb [climb_verb] [climbed_thing]."))
 	LAZYREMOVEASSOC(current_climbers, climbed_thing, user)
 
 
 /datum/element/climbable/proc/do_climb(atom/climbed_thing, mob/living/user)
-	climbed_thing.density = FALSE
-	. = step(user, get_dir(user,climbed_thing.loc))
-	climbed_thing.density = TRUE
+	climbed_thing.set_density(FALSE)
+	var/dir
+	if(climb_over && climbed_thing.loc == user.loc)
+		dir = climbed_thing.dir
+	else
+		dir = get_dir(user,climbed_thing.loc)
+	. = step(user, dir)
+	climbed_thing.set_density(TRUE)
 
 ///Handles climbing onto the atom when you click-drag
 /datum/element/climbable/proc/mousedrop_receive(atom/climbed_thing, atom/movable/dropped_atom, mob/user)

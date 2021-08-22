@@ -14,6 +14,8 @@
 	var/lit = FALSE
 	var/infinite = FALSE
 	var/start_lit = FALSE
+	/// Pollutant type for scented candles
+	var/scented_type
 
 /obj/item/candle/Initialize()
 	. = ..()
@@ -68,15 +70,38 @@
 	if(wax <= 0)
 		new /obj/item/trash/candle(loc)
 		qdel(src)
+	if(scented_type)
+		var/turf/my_turf = get_turf(src)
+		my_turf.PolluteTurf(scented_type, 5)
 	update_appearance()
 	open_flame()
 
 /obj/item/candle/attack_self(mob/user)
 	if(put_out_candle())
-		user.visible_message("<span class='notice'>[user] snuffs [src].</span>")
+		user.visible_message(SPAN_NOTICE("[user] snuffs [src]."))
 
 /obj/item/candle/infinite
 	infinite = TRUE
 	start_lit = TRUE
+
+/obj/item/candle/vanilla
+	name = "vanilla scented candle"
+	scented_type = /datum/pollutant/fragrance/vanilla
+
+/obj/item/candle/pear
+	name = "pear scented candle"
+	scented_type = /datum/pollutant/fragrance/pear
+
+/obj/item/candle/amber
+	name = "amber scented candle"
+	scented_type = /datum/pollutant/fragrance/amber
+
+/obj/item/candle/jasmine
+	name = "jasmine scented candle"
+	scented_type = /datum/pollutant/fragrance/jasmine
+
+/obj/item/candle/mint
+	name = "mint scented candle"
+	scented_type = /datum/pollutant/fragrance/mint
 
 #undef CANDLE_LUMINOSITY

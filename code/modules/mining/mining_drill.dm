@@ -13,7 +13,7 @@
 	max_integrity = 200
 	integrity_failure = 0.25
 	damage_deflection = 10
-	resistance_flags = FIRE_PROOF
+	resistance_flags = FIRE_PROOF | LAVA_PROOF
 	interaction_flags_machine = INTERACT_MACHINE_WIRES_IF_OPEN | INTERACT_MACHINE_ALLOW_SILICON | INTERACT_MACHINE_OPEN_SILICON
 
 	circuit = /obj/item/circuitboard/machine/mining_drill
@@ -111,9 +111,9 @@
 /obj/machinery/power/mining_drill/examine(mob/user)
 	. = ..()
 	if(!powered)
-		. += "<span class='warning'>It's not powered.</span>"
+		. += SPAN_WARNING("It's not powered.")
 	if(required_braces > length(connected_braces))
-		. += "<span class='warning'>It's not braced sufficiently.</span>"
+		. += SPAN_WARNING("It's not braced sufficiently.")
 
 /obj/machinery/power/mining_drill/update_icon_state()
 	. = ..()
@@ -154,21 +154,21 @@
 		cell.update_icon()
 		cell.add_fingerprint(user)
 		user.put_in_active_hand(cell)
-		to_chat(user, "<span class='notice'>You remove \the [cell].</span>")
+		to_chat(user, SPAN_NOTICE("You remove \the [cell]."))
 		cell = null
 		return
 	else
 		playsound(src, 'sound/machines/microwave/microwave-start.ogg', 50, TRUE) //Couldnt find a better one
 		if(active)
-			to_chat(user, "<span class='notice'>You turn off [src].</span>")
+			to_chat(user, SPAN_NOTICE("You turn off [src]."))
 			turn_off()
 		else
 			if(panel_open)
-				to_chat(user, "<span class='warning'>Close the maintenance panel first!</span>")
+				to_chat(user, SPAN_WARNING("Close the maintenance panel first!"))
 			else if(length(connected_braces) < required_braces)
-				to_chat(user, "<span class='warning'>\The [src] is not braced sufficiently.</span>")
+				to_chat(user, SPAN_WARNING("\The [src] is not braced sufficiently."))
 			else
-				to_chat(user, "<span class='notice'>You turn on [src].</span>")
+				to_chat(user, SPAN_NOTICE("You turn on [src]."))
 				turn_on()
 	return ..()
 
@@ -180,15 +180,15 @@
 			terminal = new /obj/machinery/power/terminal(get_turf(user))
 			terminal.setDir(tdir)
 			terminal.master = src
-			to_chat(user, "<span class='notice'>You connect a terminal to [src].</span>")
+			to_chat(user, SPAN_NOTICE("You connect a terminal to [src]."))
 			UpdateAnchored()
 		else
-			to_chat(user, "<span class='warning'>You need 5 cables to wire a terminal for [src].</span>")
+			to_chat(user, SPAN_WARNING("You need 5 cables to wire a terminal for [src]."))
 		return
 	if(panel_open && !cell && istype(W, /obj/item/stock_parts/cell))
 		cell = W
 		cell.forceMove(src)
-		to_chat(user, "<span class='notice'>You insert the cell inside [src].</span>")
+		to_chat(user, SPAN_NOTICE("You insert the cell inside [src]."))
 		return
 	return ..()
 
@@ -196,7 +196,7 @@
 	if(..())
 		return TRUE
 	if(active)
-		to_chat(user, "<span class='warning'>Turn it off first!</span>")
+		to_chat(user, SPAN_WARNING("Turn it off first!"))
 		return TRUE
 	default_deconstruction_screwdriver(user, initial(icon_state), initial(icon_state), I)
 	update_icon()
@@ -256,7 +256,9 @@
 			RegisterNode(node)
 			update_icon()
 		//Mine ore
+		var/turf/my_turf = get_turf(src)
 		if(current_node)
+			my_turf.PolluteTurf(/datum/pollutant/dust, 50)
 			var/obj/item/mined = current_node.TakeRandomOre()
 			if(mined)
 				stored_ores += mined
@@ -264,9 +266,6 @@
 		dump_ticker++
 		if(dump_ticker > 5)
 			dump_ore()
-			//"Dig" into the ground too
-			var/turf/my_turf = get_turf(src)
-			my_turf.ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
 
 /obj/machinery/power/mining_drill/disconnect_terminal()
 	if(terminal)
@@ -389,7 +388,7 @@
 	icon_state = "mining_brace"
 	use_power = NO_POWER_USE
 	layer = ABOVE_MOB_LAYER
-	resistance_flags = FIRE_PROOF
+	resistance_flags = FIRE_PROOF | LAVA_PROOF
 
 	circuit = /obj/item/circuitboard/machine/mining_brace
 
@@ -409,7 +408,7 @@
 	if(anchored)
 		//Try and disconnect
 		if(connected_drill && connected_drill.active)
-			to_chat(user, "<span class='warning'>Turn off the drill first!</span>")
+			to_chat(user, SPAN_WARNING("Turn off the drill first!"))
 		default_unfasten_wrench(user, item, 0)
 		disconnect()
 	else
@@ -420,7 +419,7 @@
 			default_unfasten_wrench(user, item, 0)
 			connect(found_drill)
 		else
-			to_chat(user, "<span class='warning'>There's no drill to connect to!</span>")
+			to_chat(user, SPAN_WARNING("There's no drill to connect to!"))
 	update_icon()
 	return TRUE
 
@@ -455,7 +454,7 @@
 
 /obj/machinery/mining_brace/proc/can_be_rotated(mob/user, rotation_type)
 	if(anchored)
-		to_chat(user, "<span class='warning'>Disconnect it first!</span>")
+		to_chat(user, SPAN_WARNING("Disconnect it first!"))
 		return FALSE
 	return TRUE
 

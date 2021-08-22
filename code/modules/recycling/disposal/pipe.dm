@@ -6,6 +6,7 @@
 	icon = 'icons/obj/atmospherics/pipes/disposal.dmi'
 	anchored = TRUE
 	density = FALSE
+	plane = FLOOR_PLANE
 	obj_flags = CAN_BE_HIT | ON_BLUEPRINTS
 	dir = NONE // dir will contain dominant direction for junction pipes
 	max_integrity = 200
@@ -131,10 +132,10 @@
 	if(!I.tool_start_check(user, amount=0))
 		return TRUE
 
-	to_chat(user, "<span class='notice'>You start slicing [src]...</span>")
+	to_chat(user, SPAN_NOTICE("You start slicing [src]..."))
 	if(I.use_tool(src, user, 30, volume=50))
 		deconstruct()
-		to_chat(user, "<span class='notice'>You slice [src].</span>")
+		to_chat(user, SPAN_NOTICE("You slice [src]."))
 	return TRUE
 
 //checks if something is blocking the deconstruction (e.g. trunk with a bin still linked to it)
@@ -246,7 +247,7 @@
 
 /obj/structure/disposalpipe/trunk/can_be_deconstructed(mob/user)
 	if(linked)
-		to_chat(user, "<span class='warning'>You need to deconstruct disposal machinery above this pipe!</span>")
+		to_chat(user, SPAN_WARNING("You need to deconstruct disposal machinery above this pipe!"))
 		return FALSE
 	return TRUE
 

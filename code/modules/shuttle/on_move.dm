@@ -31,7 +31,7 @@ All ShuttleMove procs go here
 				if(M.pulledby)
 					M.pulledby.stop_pulling()
 				M.stop_pulling()
-				M.visible_message("<span class='warning'>[shuttle] slams into [M]!</span>")
+				M.visible_message(SPAN_WARNING("[shuttle] slams into [M]!"))
 				SSblackbox.record_feedback("tally", "shuttle_gib", 1, M.type)
 				log_attack("[key_name(M)] was shuttle gibbed by [shuttle].")
 				M.gib()
@@ -159,6 +159,8 @@ All ShuttleMove procs go here
 	oldT.change_area(src, target_area)
 	oldT.underlying_area = null
 	//The old turf has now been given back to the area that turf originaly belonged to
+	if(oldT.shuttle_roof)
+		QDEL_NULL(oldT.shuttle_roof)
 
 	var/area/old_dest_area = newT.loc
 	parallax_movedir = old_dest_area.parallax_movedir
@@ -167,6 +169,10 @@ All ShuttleMove procs go here
 	contents += newT
 	newT.change_area(old_dest_area, src)
 	newT.underlying_area = old_dest_area
+
+	var/turf/above_turf = SSmapping.get_turf_above(newT)
+	if(above_turf)
+		newT.shuttle_roof = new(above_turf)
 	return TRUE
 
 // Called on areas after everything has been moved
@@ -365,9 +371,6 @@ All ShuttleMove procs go here
 	return ..()
 
 /************************************Misc move procs************************************/
-
-/atom/movable/lighting_object/onShuttleMove()
-	return FALSE
 
 /obj/docking_port/mobile/beforeShuttleMove(turf/newT, rotation, move_mode, obj/docking_port/mobile/moving_dock)
 	. = ..()

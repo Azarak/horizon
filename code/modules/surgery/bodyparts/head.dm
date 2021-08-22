@@ -71,29 +71,29 @@
 	. = ..()
 	if(status == BODYPART_ORGANIC)
 		if(!brain)
-			. += "<span class='info'>The brain has been removed from [src].</span>"
+			. += SPAN_INFO("The brain has been removed from [src].")
 		else if(brain.suicided || brainmob?.suiciding)
-			. += "<span class='info'>There's a miserable expression on [real_name]'s face; they must have really hated life. There's no hope of recovery.</span>"
+			. += SPAN_INFO("There's a miserable expression on [real_name]'s face; they must have really hated life. There's no hope of recovery.")
 		else if(brainmob?.health <= HEALTH_THRESHOLD_DEAD)
-			. += "<span class='info'>It's leaking some kind of... clear fluid? The brain inside must be in pretty bad shape.</span>"
+			. += SPAN_INFO("It's leaking some kind of... clear fluid? The brain inside must be in pretty bad shape.")
 		else if(brainmob)
 			if(brainmob.key || brainmob.get_ghost(FALSE, TRUE))
-				. += "<span class='info'>Its muscles are twitching slightly... It seems to have some life still in it.</span>"
+				. += SPAN_INFO("Its muscles are twitching slightly... It seems to have some life still in it.")
 			else
-				. += "<span class='info'>It's completely lifeless. Perhaps there'll be a chance for them later.</span>"
+				. += SPAN_INFO("It's completely lifeless. Perhaps there'll be a chance for them later.")
 		else if(brain?.decoy_override)
-			. += "<span class='info'>It's completely lifeless. Perhaps there'll be a chance for them later.</span>"
+			. += SPAN_INFO("It's completely lifeless. Perhaps there'll be a chance for them later.")
 		else
-			. += "<span class='info'>It's completely lifeless.</span>"
+			. += SPAN_INFO("It's completely lifeless.")
 
 		if(!eyes)
-			. += "<span class='info'>[real_name]'s eyes have been removed.</span>"
+			. += SPAN_INFO("[real_name]'s eyes have been removed.")
 
 		if(!ears)
-			. += "<span class='info'>[real_name]'s ears have been removed.</span>"
+			. += SPAN_INFO("[real_name]'s ears have been removed.")
 
 		if(!tongue)
-			. += "<span class='info'>[real_name]'s tongue has been removed.</span>"
+			. += SPAN_INFO("[real_name]'s tongue has been removed.")
 
 
 /obj/item/bodypart/head/can_dismember(obj/item/item)
@@ -108,14 +108,14 @@
 	for(var/obj/item/head_item in src)
 		if(head_item == brain)
 			if(user)
-				user.visible_message("<span class='warning'>[user] saws [src] open and pulls out a brain!</span>", "<span class='notice'>You saw [src] open and pull out a brain.</span>")
+				user.visible_message(SPAN_WARNING("[user] saws [src] open and pulls out a brain!"), SPAN_NOTICE("You saw [src] open and pull out a brain."))
 			if(brainmob)
 				brainmob.container = null
 				brainmob.forceMove(brain)
 				brain.brainmob = brainmob
 				brainmob = null
 			if(violent_removal && prob(rand(80, 100))) //ghetto surgery can damage the brain.
-				to_chat(user, "<span class='warning'>[brain] was damaged in the process!</span>")
+				to_chat(user, SPAN_WARNING("[brain] was damaged in the process!"))
 				brain.setOrganDamage(brain.maxHealth)
 			brain.forceMove(head_turf)
 			brain = null
@@ -210,7 +210,7 @@
 			//facial hair
 			if(facial_hairstyle)
 				var/datum/sprite_accessory/sprite = GLOB.facial_hairstyles_list[facial_hairstyle]
-				if(sprite)
+				if(sprite.icon_state)
 					var/image/facial_overlay = image(sprite.icon, "[sprite.icon_state]", -HAIR_LAYER, SOUTH)
 					facial_overlay.color = "#" + facial_hair_color
 					facial_overlay.alpha = hair_alpha
@@ -226,12 +226,12 @@
 					debrain_overlay.icon = 'icons/mob/animal_parts.dmi'
 					debrain_overlay.icon_state = "debrained_larva"
 				else if(!(NOBLOOD in species_flags_list))
-					debrain_overlay.icon = 'icons/mob/human_face.dmi'
+					debrain_overlay.icon = 'icons/mob/sprite_accessory/human_face.dmi'
 					debrain_overlay.icon_state = "debrained"
 				. += debrain_overlay
 			else
 				var/datum/sprite_accessory/sprite2 = GLOB.hairstyles_list[hairstyle]
-				if(sprite2)
+				if(sprite2.icon_state)
 					var/image/hair_overlay = image(sprite2.icon, "[sprite2.icon_state]", -HAIR_LAYER, SOUTH)
 					hair_overlay.color = "#" + hair_color
 					hair_overlay.alpha = hair_alpha
@@ -240,12 +240,12 @@
 
 		// lipstick
 		if(lip_style)
-			var/image/lips_overlay = image('icons/mob/human_face.dmi', "lips_[lip_style]", -BODY_LAYER, SOUTH)
+			var/image/lips_overlay = image('icons/mob/sprite_accessory/human_face.dmi', "lips_[lip_style]", -BODY_LAYER, SOUTH)
 			lips_overlay.color = lip_color
 			. += lips_overlay
 
 		// eyes
-		var/image/eyes_overlay = image('icons/mob/human_face.dmi', "eyes_missing", -BODY_LAYER, SOUTH)
+		var/image/eyes_overlay = image('icons/mob/sprite_accessory/human_face.dmi', "eyes_missing", -BODY_LAYER, SOUTH)
 		. += eyes_overlay
 		if(eyes)
 			eyes_overlay.icon_state = eyes.eye_icon_state

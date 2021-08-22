@@ -29,12 +29,13 @@
 			var/datum/sprite_accessory/P = path
 			if(initial(P.locked))
 				continue
-		var/datum/sprite_accessory/D = new path()
+		var/datum/sprite_accessory/D = path
+		if(!initial(D.name))
+			continue
 
-		if(D.icon_state)
-			L[D.name] = D
-		else
-			L += D.name
+		D = new path()
+
+		L[D.name] = D
 
 		switch(D.gender)
 			if(MALE)
@@ -47,18 +48,35 @@
 	return L
 
 /datum/sprite_accessory
-	var/icon //the icon file the accessory is located in
-	var/icon_state //the icon_state of the accessory
-	var/name //the preview name of the accessory
-	var/gender = NEUTER //Determines if the accessory will be skipped or included in random hair generations
-	var/gender_specific //Something that can be worn by either gender, but looks different on each
-	var/use_static //determines if the accessory will be skipped by color preferences
-	var/color_src = MUTCOLORS //Currently only used by mutantparts so don't worry about hair and stuff. This is the source that this accessory will get its color from. Default is MUTCOLOR, but can also be HAIR, FACEHAIR, EYECOLOR and 0 if none.
-	var/hasinner //Decides if this sprite has an "inner" part, such as the fleshy parts on ears.
-	var/locked = FALSE //Is this part locked from roundstart selection? Used for parts that apply effects
+	/// The icon file the accessory is located in.
+	var/icon
+	/// The icon_state of the accessory.
+	var/icon_state
+	/// The preview name of the accessory.
+	var/name
+	/// Determines if the accessory will be skipped or included in random hair generations.
+	var/gender = NEUTER
+	/// Something that can be worn by either gender, but looks different on each.
+	var/gender_specific
+	/// Determines if the accessory will be skipped by color preferences.
+	var/use_static
+	/**
+	 * Currently only used by mutantparts so don't worry about hair and stuff.
+	 * This is the source that this accessory will get its color from. Default is MUTCOLOR, but can also be HAIR, FACEHAIR, EYECOLOR and 0 if none.
+	 */
+	var/color_src = MUTCOLORS
+	/// Decides if this sprite has an "inner" part, such as the fleshy parts on ears.
+	var/hasinner
+	/// Is this part locked from roundstart selection? Used for parts that apply effects.
+	var/locked = FALSE
+	/// Should we center the sprite?
+	var/center = FALSE
+	/// The width of the sprite in pixels. Used to center it if necessary.
 	var/dimension_x = 32
+	/// The height of the sprite in pixels. Used to center it if necessary.
 	var/dimension_y = 32
-	var/center = FALSE //Should we center the sprite?
+	/// Should this sprite block emissives?
+	var/em_block = TRUE
 
 	///Unique key of an accessroy. All tails should have "tail", ears "ears" etc.
 	var/key = null
@@ -100,6 +118,8 @@
 	var/extra2_color_src
 	///If defined, the accessory will be only available to ckeys inside the list. ITS ASSOCIATIVE, ie. ("ckey" = TRUE). For speed
 	var/list/ckey_whitelist
+	/// Bodytypes which can access this accessory. (This can be bypassed by mismatched parts anyway)
+	var/bodytypes = GENERIC_BODYTYPES
 
 /datum/sprite_accessory/New()
 	if(!default_color)
