@@ -580,7 +580,7 @@ GLOBAL_LIST_EMPTY(colored_images)
 		CHECK_TICK
 
 
-/datum/controller/subsystem/air/proc/get_init_dirs(type, dir, init_dir)
+/datum/controller/subsystem/air/proc/get_init_dirs(type, dir)
 
 	if(!pipe_init_dirs_cache[type])
 		pipe_init_dirs_cache[type] = list()

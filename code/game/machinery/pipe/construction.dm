@@ -214,7 +214,7 @@ Buildable meters
 		if((machine.piping_layer != piping_layer) && !((machine.pipe_flags | flags) & PIPING_ALL_LAYER)) //don't continue if either pipe goes across all layers
 			continue
 
-		if(machine.GetInitDirections() & SSair.get_init_dirs(pipe_type, fixed_dir(), p_init_dir)) // matches at least one direction on either type of pipe
+		if(machine.GetInitDirections() & SSair.get_init_dirs(pipe_type, fixed_dir())) // matches at least one direction on either type of pipe
 			to_chat(user, SPAN_WARNING("There is already a pipe at that location!"))
 			return TRUE
 	// no conflicts found
