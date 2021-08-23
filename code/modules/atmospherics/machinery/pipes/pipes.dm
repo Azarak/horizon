@@ -16,7 +16,7 @@
 
 	vis_flags = VIS_INHERIT_PLANE
 
-/obj/machinery/atmospherics/pipe/New(loc, process = TRUE, setdir, init_dir = ALL_CARDINALS, arg_pipe_layer, arg_pipe_color, arg_hide)
+/obj/machinery/atmospherics/pipe/New(loc, process = TRUE, setdir, arg_pipe_layer, arg_pipe_color, arg_hide, arg_dir)
 	if(!isnull(arg_pipe_layer))
 		piping_layer = arg_pipe_layer
 
@@ -25,6 +25,10 @@
 
 	if(!isnull(arg_hide))
 		hide = arg_hide
+
+	if(!isnull(arg_dir))
+		hide = arg_hide
+
 	add_atom_colour(pipe_color, FIXED_COLOUR_PRIORITY)
 	volume = 35 * device_type
 	..()

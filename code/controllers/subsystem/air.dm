@@ -47,6 +47,8 @@ SUBSYSTEM_DEF(air)
 	var/list/queued_for_activation
 	var/display_all_groups = FALSE
 
+	var/list/lateload_atmosmachines = list()
+
 
 /datum/controller/subsystem/air/stat_entry(msg)
 	msg += "C:{"
@@ -87,6 +89,9 @@ SUBSYSTEM_DEF(air)
 
 /datum/controller/subsystem/air/fire(resumed = FALSE)
 	var/timer = TICK_USAGE_REAL
+
+	if(lateload_atmosmachines.len)
+		initialize_lateload_atmosmachines()
 
 	//Rebuilds can happen at any time, so this needs to be done outside of the normal system
 	cost_rebuilds = 0
@@ -199,6 +204,14 @@ SUBSYSTEM_DEF(air)
 	currentpart = SSAIR_PIPENETS
 	SStgui.update_uis(SSair) //Lightning fast debugging motherfucker
 
+/datum/controller/subsystem/air/proc/initialize_lateload_atmosmachines()
+	for (var/obj/machinery/atmospherics/AM as anything in lateload_atmosmachines)
+		AM.atmosinit()
+		add_to_rebuild_queue(AM)
+	lateload_atmosmachines.Cut()
+
+/datum/controller/subsystem/air/proc/add_lateload_atmosmachine(var/obj/machinery/atmospherics/passed_machine)
+	lateload_atmosmachines += passed_machine
 
 /datum/controller/subsystem/air/proc/process_pipenets(resumed = FALSE)
 	if (!resumed)

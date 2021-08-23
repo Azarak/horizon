@@ -53,9 +53,8 @@
 	return ..()
 
 /obj/effect/mapping_helpers/smart_pipe/proc/spawn_pipe(direction, type)
-	var/obj/machinery/atmospherics/pipe/built_pipe = new type(loc, arg_pipe_layer = piping_layer, arg_pipe_color = pipe_color, arg_hide = hide)
-	built_pipe.setDir(direction)
-	built_pipe.SetInitDirections()
+	var/obj/machinery/atmospherics/pipe/built_pipe = new type(loc, setdir = direction, arg_pipe_layer = piping_layer, arg_pipe_color = pipe_color, arg_hide = hide)
+	SSair.add_lateload_atmosmachine(built_pipe)
 
 //Whether we can connect to another smart pipe helper, doesn't care about directions
 /obj/effect/mapping_helpers/smart_pipe/proc/connect_smart_pipe_check(obj/effect/mapping_helpers/smart_pipe/other_pipe, passed_dir)
