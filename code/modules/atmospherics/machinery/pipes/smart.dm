@@ -1,7 +1,9 @@
 /obj/effect/mapping_helpers/smart_pipe
+	late = TRUE
 	var/pipe_color = COLOR_VERY_LIGHT_GRAY
 	var/piping_layer = PIPING_LAYER_DEFAULT
 	var/hide = FALSE
+	var/obj/machinery/atmospherics/pipe/my_pipe
 
 /obj/effect/mapping_helpers/smart_pipe/Initialize()
 	var/directions = get_node_directions()
@@ -18,11 +20,13 @@
 			var/atom/movable/AM = i
 			if(istype(AM, /obj/effect/mapping_helpers/smart_pipe))
 				var/obj/effect/mapping_helpers/smart_pipe/other_smart_pipe = AM
+				if(other_smart_pipe.my_pipe)
+					continue
 				if(connect_smart_pipe_check(other_smart_pipe, cardinal))
 					passed_directions |= cardinal
 					dir_count++
 					continue
-			else if (istype(AM, /obj/machinery/atmospherics))
+			if (istype(AM, /obj/machinery/atmospherics))
 				var/obj/machinery/atmospherics/atmosmachine = AM
 				if(connect_atmos_machinery_check(atmosmachine, cardinal))
 					passed_directions |= cardinal
@@ -52,9 +56,14 @@
 
 	return ..()
 
+/obj/effect/mapping_helpers/smart_pipe/LateInitialize()
+	if(my_pipe)
+		my_pipe.atmosinit()
+		SSair.add_to_rebuild_queue(my_pipe)
+	qdel(src)
+
 /obj/effect/mapping_helpers/smart_pipe/proc/spawn_pipe(direction, type)
-	var/obj/machinery/atmospherics/pipe/built_pipe = new type(loc, setdir = direction, arg_pipe_layer = piping_layer, arg_pipe_color = pipe_color, arg_hide = hide)
-	SSair.add_lateload_atmosmachine(built_pipe)
+	my_pipe = new type(loc, setdir = direction, arg_pipe_layer = piping_layer, arg_pipe_color = pipe_color, arg_hide = hide)
 
 //Whether we can connect to another smart pipe helper, doesn't care about directions
 /obj/effect/mapping_helpers/smart_pipe/proc/connect_smart_pipe_check(obj/effect/mapping_helpers/smart_pipe/other_pipe, passed_dir)
