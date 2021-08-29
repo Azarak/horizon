@@ -167,6 +167,10 @@
 								/datum/sold_goods/incomplete_bot = 100,
 								/datum/sold_goods/posibrain = 100)
 	target_sold_goods_amount = 5
+	possible_bounties = list(
+		/datum/trader_bounty/stack/golden_circuits = 100,
+		/datum/trader_bounty/stack/seeing_diamonds = 100
+		)
 
 /datum/trader/xeno_shop
 	name = "Xenolife Collector"
@@ -237,6 +241,10 @@
 	possible_deliveries = list(
 		/datum/delivery_run/medical_supplies_delivery = 100,
 		/datum/delivery_run/delicate_biological_matter = 50
+	possible_bounties = list(
+		/datum/trader_bounty/reagent/medicine_easy = 100,
+		/datum/trader_bounty/reagent/medicine_hard = 100,
+		/datum/trader_bounty/stack/biological_compounds = 100
 		)
 
 /datum/trader/mining
@@ -278,6 +286,9 @@
 	possible_deliveries = list(
 		/datum/delivery_run/mineral_delivery = 100,
 		/datum/delivery_run/industrial_equipment_delivery = 50
+	possible_bounties = list(
+		/datum/trader_bounty/gas/hard_to_breathe = 100,
+		/datum/trader_bounty/heavy_lifting = 100
 		)
 
 /datum/trader/petshop

@@ -30,6 +30,9 @@
 	delivery_gain_chance = 60
 	possible_deliveries = list(
 		/datum/delivery_run/food_delivery/pizza = 100
+	possible_bounties = list(
+		/datum/trader_bounty/kitchen_restock_botany = 100,
+		/datum/trader_bounty/kitchen_restock_meat = 100
 		)
 
 /datum/trader/chinese
@@ -62,6 +65,10 @@
 	delivery_gain_chance = 60
 	possible_deliveries = list(
 		/datum/delivery_run/food_delivery/chinese = 100
+	possible_bounties = list(
+		/datum/trader_bounty/kitchen_restock_botany = 100,
+		/datum/trader_bounty/kitchen_restock_meat = 100,
+		/datum/trader_bounty/festive_preparations = 150
 		)
 	var/list/fortunes = list("Today it's up to you to create the peacefulness you long for.",
 							"If you refuse to accept anything but the best, you very often get it.",
@@ -108,9 +115,15 @@
 		/datum/sold_goods/chicken = 100,
 		/datum/sold_goods/wheat = 100,
 		/datum/sold_goods/corn = 100,
-		/datum/sold_goods/pumpkin = 100,)
-	possible_bought_goods = list(/datum/bought_goods/eggs = 100,
-								/datum/bought_goods/produce = 100,
-								/datum/bought_goods/logs = 100)
+		/datum/sold_goods/pumpkin = 100
+		)
+	possible_bought_goods = list(
+		/datum/bought_goods/eggs = 100,
+		/datum/bought_goods/produce = 100,
+		/datum/bought_goods/logs = 100
+		)
 	target_sold_goods_amount = 6
 	target_bought_goods_amount = 3
+	possible_bounties = list(
+		/datum/trader_bounty/reagent/fertilizer_shortage = 100
+		)
