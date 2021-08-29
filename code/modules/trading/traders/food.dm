@@ -27,6 +27,10 @@
 								/datum/bought_goods/pineapple = 100)
 	target_sold_goods_amount = 4
 	target_bought_goods_amount = 3
+	delivery_gain_chance = 60
+	possible_deliveries = list(
+		/datum/delivery_run/food_delivery/pizza = 100
+		)
 
 /datum/trader/chinese
 	name = "Chinese Restaurant"
@@ -55,6 +59,10 @@
 								/datum/bought_goods/batter = 100)
 	target_sold_goods_amount = 5
 	target_bought_goods_amount = 3
+	delivery_gain_chance = 60
+	possible_deliveries = list(
+		/datum/delivery_run/food_delivery/chinese = 100
+		)
 	var/list/fortunes = list("Today it's up to you to create the peacefulness you long for.",
 							"If you refuse to accept anything but the best, you very often get it.",
 							"A smile is your passport into the hearts of others.",

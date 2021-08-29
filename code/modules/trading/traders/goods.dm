@@ -234,6 +234,10 @@
 								/datum/bought_goods/reagent/meth = 100)
 	target_sold_goods_amount = 15
 	target_bought_goods_amount = 4
+	possible_deliveries = list(
+		/datum/delivery_run/medical_supplies_delivery = 100,
+		/datum/delivery_run/delicate_biological_matter = 50
+		)
 
 /datum/trader/mining
 	name = "Rock'n'Drill Mining Inc"
@@ -271,6 +275,10 @@
 								/datum/sold_goods/mining_kit = 100)
 	target_sold_goods_amount = 6
 	target_bought_goods_amount = 5
+	possible_deliveries = list(
+		/datum/delivery_run/mineral_delivery = 100,
+		/datum/delivery_run/industrial_equipment_delivery = 50
+		)
 
 /datum/trader/petshop
 	name = "Pet Shop Employee"
@@ -303,6 +311,9 @@
 		)
 	target_sold_goods_amount = 6
 	target_bought_goods_amount = 5
+	possible_deliveries = list(
+		/datum/delivery_run/artifact_delivery = 100
+		)
 
 /datum/trader/atmospherics
 	name = "Atmospheric Shop Employee"
