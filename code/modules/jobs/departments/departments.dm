@@ -103,6 +103,15 @@
 	label_class = "silicon"
 	latejoin_color = "#ccffcc"
 
+/datum/job_department/civillian
+	department_name = DEPARTMENT_CIVILLIAN
+	department_bitflags = DEPARTMENT_BITFLAG_CIVILLIAN
+	department_head = /datum/job/head_of_personnel
+	department_experience_type = EXP_TYPE_CIVILLIAN
+	display_order = 9
+	label_class = "civillian"
+	latejoin_color = "#ffffff"
+
 
 /// Catch-all department for undefined jobs.
 /datum/job_department/undefined

@@ -87,6 +87,7 @@
 #define EXP_TYPE_MISC "Miscellanous"
 #define EXP_TYPE_SILICON "Silicon"
 #define EXP_TYPE_SERVICE "Service"
+#define EXP_TYPE_CIVILLIAN "Civillian"
 #define EXP_TYPE_ANTAG "Antag"
 #define EXP_TYPE_SPECIAL "Special"
 #define EXP_TYPE_GHOST "Ghost"

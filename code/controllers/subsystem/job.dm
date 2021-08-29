@@ -100,10 +100,11 @@ SUBSYSTEM_DEF(job)
 	JobDebug("Overflow role set to : [new_overflow.type]")
 
 
-/datum/controller/subsystem/job/proc/SetupOccupations()
+/datum/controller/subsystem/job/proc/SetupOccupations(faction)
 	name_occupations = list()
 	type_occupations = list()
-
+	if(!faction)
+		faction = SSmapping.config.job_faction
 	var/list/all_jobs = subtypesof(/datum/job)
 	if(!length(all_jobs))
 		all_occupations = list()
@@ -130,7 +131,7 @@ SUBSYSTEM_DEF(job)
 		new_all_occupations += job
 		name_occupations[job.title] = job
 		type_occupations[job_type] = job
-		if(job.job_flags & JOB_NEW_PLAYER_JOINABLE)
+		if(job.job_flags & JOB_NEW_PLAYER_JOINABLE && job.faction == faction)
 			new_joinable_occupations += job
 			if(!LAZYLEN(job.departments_list))
 				var/datum/job_department/department = new_joinable_departments_by_type[/datum/job_department/undefined]

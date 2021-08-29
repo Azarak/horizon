@@ -206,9 +206,6 @@
 	outfit = /datum/outfit/job/assistant
 	plasmaman_outfit = /datum/outfit/plasmaman
 	paycheck = PAYCHECK_ASSISTANT
-	departments_list = list(
-		/datum/job_department/service,
-		)
 
 	liver_traits = list(TRAIT_GREYTIDE_METABOLISM)
 

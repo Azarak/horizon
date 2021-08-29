@@ -67,8 +67,6 @@
 #define DEPARTMENT_SILICON "Silicon"
 #define DEPARTMENT_BITFLAG_CIVILLIAN (1<<8)
 #define DEPARTMENT_CIVILLIAN "Civillian"
-#define DEPARTMENT_BITFLAG_MISC (1<<9)
-#define DEPARTMENT_MISC "Miscellanous"
 
 /* Job datum job_flags */
 /// Whether the mob is announced on arrival.
