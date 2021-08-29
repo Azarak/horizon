@@ -1,18 +1,31 @@
 /datum/delivery_run
+	/// Name of the delivery mission
 	var/name = "Badly Coded Delivery Run"
+	/// Description of the delivery mission
 	var/desc = "We need some stuff delivered."
+	/// Type of the cargo to spawn, neeed to be types of /obj/item/delivery_cargo
 	var/cargo_type = /obj/item/delivery_cargo
+	/// Possible flavor namings for the cargo we'll be carrying
 	var/list/possible_cargo_names = list("valuable cargo")
+	/// Possible flavor namings for our recipients we'll be delivering to
 	var/list/possible_recipients = list("our trusted client")
+	/// Cash reward we'll get, can be null
 	var/reward_cash = 2000
+	/// Path to the rewarded item, can be null
 	var/reward_item_path
+	/// Name of the rewarded item, automatically filled if above is present
 	var/reward_item_name
 
+	//Below are internals
+	/// System to deliver to
 	var/datum/overmap_sun_system/system_to_deliver
+	/// Overmap X coordinate to deliver to
 	var/overmap_x
+	/// Overmap Y coordinate to deliver to
 	var/overmap_y
-
+	/// Name of the cargo that was chosen
 	var/cargo_name
+	/// Name of the recipient that was chosen
 	var/recipient_name
 
 /datum/delivery_run/New(datum/trader/source_trader)
@@ -34,6 +47,7 @@
 	new /datum/delivery_run_instance(src, console)
 
 /datum/delivery_run_instance
+	//All internal variables holding data from /datum/delivery_run
 	var/obj/item/delivery_cargo/delivery_object
 	var/reward_cash
 	var/reward_item_path
