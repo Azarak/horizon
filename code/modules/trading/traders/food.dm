@@ -30,6 +30,7 @@
 	delivery_gain_chance = 60
 	possible_deliveries = list(
 		/datum/delivery_run/food_delivery/pizza = 100
+		)
 	possible_bounties = list(
 		/datum/trader_bounty/kitchen_restock_botany = 100,
 		/datum/trader_bounty/kitchen_restock_meat = 100
@@ -65,6 +66,7 @@
 	delivery_gain_chance = 60
 	possible_deliveries = list(
 		/datum/delivery_run/food_delivery/chinese = 100
+		)
 	possible_bounties = list(
 		/datum/trader_bounty/kitchen_restock_botany = 100,
 		/datum/trader_bounty/kitchen_restock_meat = 100,
