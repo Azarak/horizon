@@ -19,7 +19,7 @@
 
 /datum/crew_manifest/ui_data(mob/user)
 	var/list/positions = list()
-	for(var/datum/job_department/department as anything in SSjob.joinable_departments)
+	for(var/datum/job_department/department as anything in SSjob.main_jobs.joinable_departments)
 		var/open = 0
 		var/list/exceptions = list()
 		for(var/datum/job/job as anything in department.department_jobs)

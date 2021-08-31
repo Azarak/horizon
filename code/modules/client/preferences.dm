@@ -1254,7 +1254,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/width = widthPerColumn
 
 	var/HTML = "<center>"
-	if(length(SSjob.joinable_occupations) <= 0)
+	if(length(SSjob.main_jobs.joinable_occupations) <= 0)
 		HTML += "The job SSticker is not yet finished creating jobs, please try again later"
 		HTML += "<center><a href='?_src_=prefs;preference=job;task=close'>Done</a></center><br>" // Easier to press up here.
 
@@ -1269,9 +1269,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 		//The job before the current job. I only use this to get the previous jobs color when I'm filling in blank rows.
 		var/datum/job/lastJob
-		var/datum/job/overflow_role = SSjob.GetJobType(SSjob.overflow_role)
+		var/datum/job/overflow_role = SSjob.GetJobType(SSjob.main_jobs.overflow_role)
 
-		for(var/datum/job/job as anything in SSjob.joinable_occupations)
+		for(var/datum/job/job as anything in SSjob.main_jobs.joinable_occupations)
 
 			index += 1
 			if(index >= limit)
@@ -1390,7 +1390,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	return TRUE
 
 /datum/preferences/proc/UpdateJobPreference(mob/user, role, desiredLvl)
-	if(!SSjob || length(SSjob.joinable_occupations) <= 0)
+	if(!SSjob || length(SSjob.main_jobs.joinable_occupations) <= 0)
 		return
 	var/datum/job/job = SSjob.GetJob(role)
 
@@ -1413,7 +1413,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		if(1)
 			jpval = JP_HIGH
 
-	if(job.type == SSjob.overflow_role)
+	if(job.type == SSjob.main_jobs.overflow_role)
 		if(job_preferences[job.title] == JP_LOW)
 			jpval = null
 		else
@@ -1542,7 +1542,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			if("random")
 				switch(joblessrole)
 					if(RETURNTOLOBBY)
-						var/datum/job/overflow_role = SSjob.GetJobType(SSjob.overflow_role)
+						var/datum/job/overflow_role = SSjob.GetJobType(SSjob.main_jobs.overflow_role)
 						if(is_banned_from(user.ckey, overflow_role.title))
 							joblessrole = BERANDOMJOB
 						else

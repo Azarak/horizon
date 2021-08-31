@@ -434,7 +434,7 @@
 			else
 				mind.announce_objectives()
 
-		for(var/datum/job/job as anything in SSjob.joinable_occupations)
+		for(var/datum/job/job as anything in SSjob.main_jobs.joinable_occupations)
 			if(!(job.departments_bitflags & (DEPARTMENT_BITFLAG_SECURITY|DEPARTMENT_BITFLAG_COMMAND)))
 				continue
 			job.allow_bureaucratic_error = FALSE

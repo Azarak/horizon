@@ -130,7 +130,7 @@ GLOBAL_VAR_INIT(time_last_changed_position, 0)
 	data["authed"] = authed
 
 	var/list/pos = list()
-	for(var/j in SSjob.joinable_occupations)
+	for(var/j in SSjob.main_jobs.joinable_occupations)
 		var/datum/job/job = j
 		if(job.title in blacklisted)
 			continue

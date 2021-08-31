@@ -236,7 +236,7 @@
 		var/break_counter = 0
 		output += "<div class='row'>"
 
-		for(var/datum/job_department/department as anything in SSjob.joinable_departments)
+		for(var/datum/job_department/department as anything in SSjob.main_jobs.joinable_departments)
 			var/label_class = department.label_class
 			var/department_name = department.department_name
 			output += "<div class='column'><label class='rolegroup [label_class]'>[department_name]</label><div class='content'>"

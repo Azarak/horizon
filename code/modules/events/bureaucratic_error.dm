@@ -11,7 +11,7 @@
 	priority_announce("A recent bureaucratic error in the Organic Resources Department may result in personnel shortages in some departments and redundant staffing in others.", "Paperwork Mishap Alert")
 
 /datum/round_event/bureaucratic_error/start()
-	var/list/jobs = SSjob.joinable_occupations.Copy()
+	var/list/jobs = SSjob.main_jobs.joinable_occupations.Copy()
 	if(prob(33)) // Only allows latejoining as a single role. Add latejoin AI bluespace pods for fun later.
 		var/datum/job/overflow = pick_n_take(jobs)
 		overflow.spawn_positions = -1

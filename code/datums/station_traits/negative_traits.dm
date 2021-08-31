@@ -118,7 +118,7 @@
 
 /datum/station_trait/overflow_job_bureaucracy/proc/set_overflow_job_override(datum/source, new_overflow_role)
 	SIGNAL_HANDLER
-	SSjob.set_overflow_role(chosen_job)
+	SSjob.main_jobs.SetOverflowRole(chosen_job)
 
 /datum/station_trait/slow_shuttle
 	name = "Slow Shuttle"

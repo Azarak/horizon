@@ -280,13 +280,13 @@
 
 /mob/dead/new_player/proc/IsJobUnavailable(rank, latejoin = FALSE)
 	var/datum/job/job = SSjob.GetJob(rank)
-	if(!(job in SSjob.joinable_occupations))
+	if(!(job in SSjob.main_jobs.joinable_occupations))
 		return JOB_UNAVAILABLE_GENERIC
 	if((job.current_positions >= job.total_positions) && job.total_positions != -1)
 		if(is_assistant_job(job))
 			if(isnum(client.player_age) && client.player_age <= 14) //Newbies can always be assistants
 				return JOB_AVAILABLE
-			for(var/datum/job/other_job as anything in SSjob.joinable_occupations)
+			for(var/datum/job/other_job as anything in SSjob.main_jobs.joinable_occupations)
 				if(other_job.current_positions < other_job.total_positions && other_job != job)
 					return JOB_UNAVAILABLE_SLOTFULL
 		else
@@ -426,12 +426,14 @@
 	dat += "<table><tr><td valign='top'>"
 	var/column_counter = 0
 
-	for(var/datum/job_department/department as anything in SSjob.joinable_departments)
+	for(var/datum/job_department/department as anything in SSjob.main_jobs.joinable_departments)
 		var/department_color = department.latejoin_color
 		dat += "<fieldset style='width: 185px; border: 2px solid [department_color]; display: inline'>"
 		dat += "<legend align='center' style='color: [department_color]'>[department.department_name]</legend>"
 		var/list/dept_data = list()
 		for(var/datum/job/job_datum as anything in department.department_jobs)
+			var/unavail_status = IsJobUnavailable(job_datum.title, TRUE)
+			message_admins("[unavail_status]")
 			if(IsJobUnavailable(job_datum.title, TRUE) != JOB_AVAILABLE)
 				continue
 			var/command_bold = ""
