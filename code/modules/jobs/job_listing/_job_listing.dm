@@ -1,6 +1,6 @@
 /datum/job_listing
 	var/datum/job/overflow_role_job
-	var/overflow_role = /datum/job/assistant
+	var/overflow_role
 	/// List of all departments with joinable jobs.
 	var/list/datum/job_department/joinable_departments = list()
 	/// List of all joinable departments indexed by their typepath, sorted by their own display order.
@@ -19,6 +19,8 @@
 	SetupOccupations()
 	SetOverflowRole(overflow_role)
 	SSjob.job_listings += src
+	if(!SSjob.main_jobs)
+		SSjob.main_jobs = src
 
 /datum/job_listing/proc/GetJobType(passed_type)
 	return joinable_occupations_by_type[passed_type]
@@ -82,4 +84,9 @@
 	return joinable_departments_by_type[department_type]
 
 /datum/job_listing/station
+	overflow_role = /datum/job/assistant
 	faction = FACTION_STATION
+
+/datum/job_listing/tradership
+	overflow_role = /datum/job/tradership_deckhand
+	faction = FACTION_TRADERSHIP

@@ -306,6 +306,9 @@ Used by the AI doomsday and the self-destruct nuke.
 	//Load overmap
 	SSovermap.MappingInit()
 
+	//Create station jobs
+	new config.job_listing()
+
 	// load the station
 	station_start = world.maxz + 1
 	INIT_ANNOUNCE("Loading [config.map_name]...")

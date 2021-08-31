@@ -23,9 +23,7 @@
 
 	allow_custom_shuttles = TRUE
 
-	job_faction = FACTION_TRADERSHIP
-
-	overflow_job = /datum/job/tradership_deckhand
+	job_listing = /datum/job_listing/tradership
 
 	overmap_object_type = /datum/overmap_object/shuttle/ship/bearcat
 

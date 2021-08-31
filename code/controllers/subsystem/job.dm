@@ -9,8 +9,9 @@ SUBSYSTEM_DEF(job)
 	var/list/name_occupations = list()
 	/// Dictionary of all jobs, keys are types.
 	var/list/datum/job/type_occupations = list()
-	/// The main job listing of the game. This is gonna be the first station/ship's that is loaded.
+	/// The main job listing of the game. This is gonna be the first station/ship/ruin's that is loaded.
 	var/datum/job_listing/main_jobs
+	/// List of all job listings in the game. Each loaded station/ship/ruin can create one.
 	var/list/datum/job_listing/job_listings = list()
 
 	/// Dictionary of jobs indexed by the experience type they grant.
@@ -66,15 +67,12 @@ SUBSYSTEM_DEF(job)
 	setup_job_lists()
 	if(!length(all_occupations))
 		SetupOccupations()
-	main_jobs = new /datum/job_listing/station()
 	generate_selectable_species()
 	return ..()
 
-/datum/controller/subsystem/job/proc/SetupOccupations(faction)
+/datum/controller/subsystem/job/proc/SetupOccupations()
 	name_occupations = list()
 	type_occupations = list()
-	if(!faction)
-		faction = SSmapping.config.job_faction
 	var/list/all_jobs = subtypesof(/datum/job)
 	if(!length(all_jobs))
 		all_occupations = list()

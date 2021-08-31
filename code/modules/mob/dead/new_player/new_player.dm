@@ -279,7 +279,7 @@
 	return "Error: Unknown job availability."
 
 /mob/dead/new_player/proc/IsJobUnavailable(rank, latejoin = FALSE)
-	var/datum/job/job = SSjob.GetJob(rank)
+	var/datum/job/job = SSjob.main_jobs.GetJobType(SSjob.GetJob(rank).type)
 	if(!(job in SSjob.main_jobs.joinable_occupations))
 		return JOB_UNAVAILABLE_GENERIC
 	if((job.current_positions >= job.total_positions) && job.total_positions != -1)
