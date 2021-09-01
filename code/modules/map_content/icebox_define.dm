@@ -1,10 +1,23 @@
 /datum/map_config/icebox
 	map_name = "Ice Box Station"
+
+	space_ruin_levels = 2
+
+	minetype = "none"
+
+	allow_custom_shuttles = TRUE
+
+	job_changes = list("cook" = list("additional_cqc_areas" = list("/area/service/kitchen/diner")),
+						"captain" = list("special_charter" = "moon"))
+
+	station_maps = list(/datum/station_map/icebox)
+
+/datum/station_map/icebox
+	map_name = "Ice Box Station"
 	map_path = "map_files/IceBoxStation"
 	map_file = list("IcemoonUnderground_Below.dmm",
 					"IcemoonUnderground_Above.dmm",
 					"IceBoxStation.dmm")
-
 	traits = list(list("Up" = 1,
 						"Mining" = TRUE,
 						"Station" = FALSE,
@@ -26,19 +39,11 @@
 						"Ice Ruins" = TRUE,
 						"Baseturf" = "/turf/open/openspace/icemoon/keep_below")
 					)
-	space_ruin_levels = 2
-
-	minetype = "none"
-
-	allow_custom_shuttles = TRUE
 	shuttles = list(
 		"cargo" = "cargo_box",
 		"ferry" = "ferry_fancy",
 		"whiteship" = "whiteship_box",
 		"emergency" = "emergency_box")
-
-	job_changes = list("cook" = list("additional_cqc_areas" = list("/area/service/kitchen/diner")),
-						"captain" = list("special_charter" = "moon"))
 
 	overmap_object_type = /datum/overmap_object/shuttle/planet/icebox
 	weather_controller_type = /datum/weather_controller/icebox

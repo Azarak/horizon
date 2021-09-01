@@ -432,8 +432,6 @@
 		dat += "<legend align='center' style='color: [department_color]'>[department.department_name]</legend>"
 		var/list/dept_data = list()
 		for(var/datum/job/job_datum as anything in department.department_jobs)
-			var/unavail_status = IsJobUnavailable(job_datum.title, TRUE)
-			message_admins("[unavail_status]")
 			if(IsJobUnavailable(job_datum.title, TRUE) != JOB_AVAILABLE)
 				continue
 			var/command_bold = ""

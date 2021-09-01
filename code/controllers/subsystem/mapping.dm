@@ -55,6 +55,8 @@ SUBSYSTEM_DEF(mapping)
 	/// The overmap object of the main loaded station, for easy access
 	var/datum/overmap_object/station_overmap_object
 
+	var/list/shuttles_to_load
+
 /datum/controller/subsystem/mapping/New()
 	..()
 #ifdef FORCE_MAP
@@ -306,32 +308,13 @@ Used by the AI doomsday and the self-destruct nuke.
 	//Load overmap
 	SSovermap.MappingInit()
 
-	//Create station jobs
-	new config.job_listing()
-
 	// load the station
 	station_start = world.maxz + 1
 	INIT_ANNOUNCE("Loading [config.map_name]...")
-	station_overmap_object = new config.overmap_object_type(SSovermap.main_system, rand(3,10), rand(3,10))
-	var/picked_rock_color = CHECK_AND_PICK_OR_NULL(config.rock_color)
-	var/picked_plant_color = CHECK_AND_PICK_OR_NULL(config.plant_color)
-	var/picked_grass_color = CHECK_AND_PICK_OR_NULL(config.grass_color)
-	var/picked_water_color = CHECK_AND_PICK_OR_NULL(config.water_color)
-	LoadGroup(FailedZs,
-			"Station",
-			config.map_path,
-			config.map_file,
-			config.traits,
-			ZTRAITS_STATION,
-			ov_obj = station_overmap_object,
-			weather_controller_type = config.weather_controller_type,
-			atmosphere_type = config.atmosphere_type,
-			day_night_controller_type = config.day_night_controller_type,
-			rock_color = picked_rock_color,
-			plant_color = picked_plant_color,
-			grass_color = picked_grass_color,
-			water_color = picked_water_color,
-			ore_node_seeder_type = config.ore_node_seeder_type)
+	for(var/station_type in config.station_maps)
+		var/datum/station_map/map_to_load = new station_type()
+		map_to_load.LoadStationMap()
+		qdel(map_to_load)
 
 	if(SSdbcore.Connect())
 		var/datum/db_query/query_round_map_name = SSdbcore.NewQuery({"
@@ -372,12 +355,6 @@ Used by the AI doomsday and the self-destruct nuke.
 		msg += ". Yell at your server host!"
 		INIT_ANNOUNCE(msg)
 #undef INIT_ANNOUNCE
-
-	// Custom maps are removed after station loading so the map files does not persist for no reason.
-	if(config.map_path == "custom")
-		fdel("_maps/custom/[config.map_file]")
-		// And as the file is now removed set the next map to default.
-		next_map_config = load_map_config(default_to_box = TRUE)
 
 GLOBAL_LIST_EMPTY(the_station_areas)
 
