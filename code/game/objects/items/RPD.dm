@@ -528,12 +528,10 @@ GLOBAL_LIST_INIT(transit_tube_recipes, list(
 										pipe_dir = EAST
 									path = /obj/machinery/atmospherics/pipe/simple
 								if(3) //Manifold
-									message_admins("[pipe_dir]")
 									for(var/cardinal in GLOB.cardinals)
 										if(!(pipe_dir & cardinal))
 											path = /obj/machinery/atmospherics/pipe/manifold
 											pipe_dir = cardinal
-											message_admins("[pipe_dir]")
 											break
 								if(4) //4 way manifold
 									path = /obj/machinery/atmospherics/pipe/manifold4w
