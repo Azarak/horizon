@@ -18,7 +18,7 @@ GLOBAL_DATUM(triple_ai_controller, /datum/triple_ai_controller)
 
 	for(var/datum/job/ai/ai_datum in SSjob.main_jobs.joinable_occupations)
 		ai_datum.spawn_positions = 3
-	for(var/obj/effect/landmark/start/ai/secondary/secondary_ai_spawn in GLOB.start_landmarks_list)
+	for(var/obj/effect/landmark/start/ai/secondary/secondary_ai_spawn in SSjob.main_jobs.start_landmarks_list)
 		secondary_ai_spawn.latejoin_active = TRUE
 	qdel(src)
 

@@ -32,6 +32,7 @@ INITIALIZE_IMMEDIATE(/obj/effect/landmark)
 	var/jobspawn_override = FALSE
 	var/delete_after_roundstart = TRUE
 	var/used = FALSE
+	var/datum/job_listing/my_listing
 
 /obj/effect/landmark/start/proc/after_round_start()
 	if(delete_after_roundstart)
@@ -39,16 +40,18 @@ INITIALIZE_IMMEDIATE(/obj/effect/landmark)
 
 /obj/effect/landmark/start/Initialize()
 	. = ..()
-	GLOB.start_landmarks_list += src
+	my_listing = SSjob.last_job_listing
+	my_listing.start_landmarks_list += src
 	if(jobspawn_override)
-		LAZYADDASSOCLIST(GLOB.jobspawn_overrides, name, src)
+		LAZYADDASSOCLIST(my_listing.jobspawn_overrides, name, src)
 	if(name != "start")
 		tag = "start*[name]"
 
 /obj/effect/landmark/start/Destroy()
-	GLOB.start_landmarks_list -= src
+	my_listing.start_landmarks_list -= src
 	if(jobspawn_override)
-		LAZYREMOVEASSOC(GLOB.jobspawn_overrides, name, src)
+		LAZYREMOVEASSOC(my_listing.jobspawn_overrides, name, src)
+	my_listing = null
 	return ..()
 
 // START LANDMARKS FOLLOW. Don't change the names unless
@@ -245,44 +248,44 @@ INITIALIZE_IMMEDIATE(/obj/effect/landmark)
 
 //Antagonist spawns
 
-/obj/effect/landmark/start/wizard
+/obj/effect/landmark/wizard
 	name = "wizard"
 	icon = 'icons/effects/landmarks_static.dmi'
 	icon_state = "wiznerd_spawn"
 
-/obj/effect/landmark/start/wizard/Initialize()
+/obj/effect/landmark/wizard/Initialize()
 	..()
 	GLOB.wizardstart += loc
 	return INITIALIZE_HINT_QDEL
 
-/obj/effect/landmark/start/nukeop
+/obj/effect/landmark/nukeop
 	name = "nukeop"
 	icon = 'icons/effects/landmarks_static.dmi'
 	icon_state = "snukeop_spawn"
 
-/obj/effect/landmark/start/nukeop/Initialize()
+/obj/effect/landmark/nukeop/Initialize()
 	..()
 	GLOB.nukeop_start += loc
 	return INITIALIZE_HINT_QDEL
 
-/obj/effect/landmark/start/nukeop_leader
+/obj/effect/landmark/nukeop_leader
 	name = "nukeop leader"
 	icon = 'icons/effects/landmarks_static.dmi'
 	icon_state = "snukeop_leader_spawn"
 
-/obj/effect/landmark/start/nukeop_leader/Initialize()
+/obj/effect/landmark/nukeop_leader/Initialize()
 	..()
 	GLOB.nukeop_leader_start += loc
 	return INITIALIZE_HINT_QDEL
 
 // Must be immediate because players will
 // join before SSatom initializes everything.
-INITIALIZE_IMMEDIATE(/obj/effect/landmark/start/new_player)
+INITIALIZE_IMMEDIATE(/obj/effect/landmark/new_player)
 
-/obj/effect/landmark/start/new_player
+/obj/effect/landmark/new_player
 	name = "New Player"
 
-/obj/effect/landmark/start/new_player/Initialize()
+/obj/effect/landmark/new_player/Initialize()
 	..()
 	GLOB.newplayer_start += loc
 	return INITIALIZE_HINT_QDEL
@@ -292,7 +295,7 @@ INITIALIZE_IMMEDIATE(/obj/effect/landmark/start/new_player)
 
 /obj/effect/landmark/latejoin/Initialize(mapload)
 	..()
-	SSjob.latejoin_trackers += loc
+	SSjob.last_job_listing.latejoin_trackers += loc
 	return INITIALIZE_HINT_QDEL
 
 //space carps, magicarps, lone ops, slaughter demons, possibly revenants spawn here

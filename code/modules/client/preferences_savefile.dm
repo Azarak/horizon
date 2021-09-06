@@ -5,7 +5,7 @@
 // You do not need to raise this if you are adding new values that have sane defaults.
 // Only raise this value when changing the meaning/format/name/layout of an existing value
 // where you would want the updater procs below to run
-#define SAVEFILE_VERSION_MAX 40
+#define SAVEFILE_VERSION_MAX 41
 
 /*
 SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Carn
@@ -92,6 +92,8 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 		LAZYADD(key_bindings["4"], "toggle_combat_mode")
 	if (current_version < 40)
 		LAZYADD(key_bindings["Space"], "hold_throw_mode")
+	if (current_version < 41)
+		job_preferences = list()
 
 /datum/preferences/proc/update_character(current_version, savefile/S)
 	return
@@ -476,10 +478,6 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	persistent_scars = sanitize_integer(persistent_scars)
 
 	joblessrole = sanitize_integer(joblessrole, 1, 3, initial(joblessrole))
-	//Validate job prefs
-	for(var/j in job_preferences)
-		if(job_preferences[j] != JP_LOW && job_preferences[j] != JP_MEDIUM && job_preferences[j] != JP_HIGH)
-			job_preferences -= j
 
 	all_quirks = SANITIZE_LIST(all_quirks)
 	validate_quirks()

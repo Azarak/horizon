@@ -1,4 +1,6 @@
 /datum/job_listing
+	var/name
+	var/desc
 	var/datum/job/overflow_role_job
 	var/overflow_role
 	/// List of all departments with joinable jobs.
@@ -13,14 +15,36 @@
 	var/list/jobs = list()
 	/// If this is defined, instead it'll pool all jobs that are of that faction, and ignore the `jobs` definiton.
 	var/faction
+	/// Landmarks for latejoining
+	var/list/latejoin_trackers = list()
+	/// Landmarks for starting points
+	var/list/start_landmarks_list = list()
+	/// Landmarks for starting points
+	var/list/jobspawn_overrides = list()
+	/// Unique ID of the job listing, doesn't actually have to be unique as the system will handle duplicates fine, but if you want consistent job prefs savefiles, make those unique
+	var/unique_id = "blank"
 
-/datum/job_listing/New()
+/datum/job_listing/New(passed_name, passed_desc)
 	. = ..()
+	name = passed_name
+	desc = passed_desc
 	SetupOccupations()
 	SetOverflowRole(overflow_role)
 	SSjob.job_listings += src
 	if(!SSjob.main_jobs)
 		SSjob.main_jobs = src
+	SSjob.last_job_listing = src
+	if(!SSjob.job_listings_ids[unique_id])
+		SSjob.job_listings_ids[unique_id] = src
+	else //There is already a listing loaded like us, fallback to appending our id
+		var/append_num = 1
+		while(TRUE)
+			append_num++
+			var/target_id = "[unique_id][append_num]"
+			if(!SSjob.job_listings_ids[target_id])
+				unique_id = target_id
+				SSjob.job_listings_ids[unique_id] = src
+				break
 
 /datum/job_listing/proc/GetJobType(passed_type)
 	return joinable_occupations_by_type[passed_type]
@@ -36,7 +60,7 @@
 	var/list/new_joinable_departments = list()
 	var/list/new_joinable_departments_by_type = list()
 	for(var/iterated_type in jobs)
-		var/datum/job/job = new iterated_type()
+		var/datum/job/job = new iterated_type(src)
 		new_joinable_occupations += job
 		joinable_occupations_by_type[iterated_type] = job
 		if(!LAZYLEN(job.departments_list))
@@ -86,7 +110,9 @@
 /datum/job_listing/station
 	overflow_role = /datum/job/assistant
 	faction = FACTION_STATION
+	unique_id = "station"
 
 /datum/job_listing/tradership
 	overflow_role = /datum/job/tradership_deckhand
 	faction = FACTION_TRADERSHIP
+	unique_id = "tradership"

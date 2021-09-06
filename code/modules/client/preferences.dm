@@ -96,8 +96,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	//Quirk list
 	var/list/all_quirks = list()
 
-	//Job preferences 2.0 - indexed by job title , no key or value implies never
+	//Job preferences 3.0 - indexed by job listing unique ID, to an assoc list of job type to preference level
 	var/list/job_preferences = list()
+	var/chosen_job_tab = 1
 
 		// Want randomjob if preferences already filled - Donkie
 	var/joblessrole = BERANDOMJOB  //defaults to 1 for fewer assistants
@@ -1254,11 +1255,19 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/width = widthPerColumn
 
 	var/HTML = "<center>"
-	if(length(SSjob.main_jobs.joinable_occupations) <= 0)
+	if(!length(SSjob.job_listings))
 		HTML += "The job SSticker is not yet finished creating jobs, please try again later"
 		HTML += "<center><a href='?_src_=prefs;preference=job;task=close'>Done</a></center><br>" // Easier to press up here.
 
 	else
+		if(chosen_job_tab > SSjob.job_listings.len) //Reset the tab to the first if it's a wrong tab
+			chosen_job_tab = 1
+		var/datum/job_listing/job_listing = SSjob.job_listings[chosen_job_tab]
+		var/iterated_job_index = 0
+		for(var/datum/job_listing/iterated_listing as anything in SSjob.job_listings)
+			iterated_job_index++
+			HTML += "<a href='?_src_=prefs;preference=job;task=setJobTab;tab=[iterated_job_index]' [chosen_job_tab == iterated_job_index ? "class='linkOn'" : ""]>[iterated_listing.name]</a>"
+		HTML += "<BR>[job_listing.desc]<HR>"
 		HTML += "<b>Choose occupation chances</b><br>"
 		HTML += "<div align='center'>Left-click to raise an occupation preference, right-click to lower it.<br></div>"
 		HTML += "<center><a href='?_src_=prefs;preference=job;task=close'>Done</a></center><br>" // Easier to press up here.
@@ -1269,10 +1278,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 		//The job before the current job. I only use this to get the previous jobs color when I'm filling in blank rows.
 		var/datum/job/lastJob
-		var/datum/job/overflow_role = SSjob.GetJobType(SSjob.main_jobs.overflow_role)
+		var/datum/job/overflow_role = job_listing.overflow_role_job
 
-		for(var/datum/job/job as anything in SSjob.main_jobs.joinable_occupations)
-
+		for(var/datum/job/job as anything in job_listing.joinable_occupations)
+			var/job_preference_list = job_preferences[job_listing.unique_id] || list()
 			index += 1
 			if(index >= limit)
 				width += widthPerColumn
@@ -1306,7 +1315,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			if(!job.has_required_languages(src))
 				HTML += "<font color=red>[rank]</font></td><td><font color=red> \[BAD LANGS\]</font></td></tr>"
 				continue
-			if((job_preferences[overflow_role.title] == JP_LOW) && (rank != overflow_role.title) && !is_banned_from(user.ckey, overflow_role.title))
+			if((job_preference_list[overflow_role.type] == JP_LOW) && (rank != overflow_role.title) && !is_banned_from(user.ckey, overflow_role.title))
 				HTML += "<font color=orange>[rank]</font></td><td></td></tr>"
 				continue
 			if(job.job_flags & JOB_BOLD_SELECT_TEXT)//Bold head jobs
@@ -1321,7 +1330,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			var/prefUpperLevel = -1 // level to assign on left click
 			var/prefLowerLevel = -1 // level to assign on right click
 
-			switch(job_preferences[job.title])
+			switch(job_preference_list[job.type])
 				if(JP_HIGH)
 					prefLevelLabel = "High"
 					prefLevelColor = "slateblue"
@@ -1343,10 +1352,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					prefUpperLevel = 3
 					prefLowerLevel = 1
 
-			HTML += "<a class='white' href='?_src_=prefs;preference=job;task=setJobLevel;level=[prefUpperLevel];text=[rank]' oncontextmenu='javascript:return setJobPrefRedirect([prefLowerLevel], \"[rank]\");'>"
+			HTML += "<a class='white' href='?_src_=prefs;preference=job;task=setJobLevel;level=[prefUpperLevel];job_type=[job.type];job_listing_id=[job_listing.unique_id]' oncontextmenu='javascript:return setJobPrefRedirect([prefLowerLevel], \"[rank]\");'>"
 
 			if(rank == overflow_role.title)//Overflow is special
-				if(job_preferences[overflow_role.title] == JP_LOW)
+				if(job_preference_list[overflow_role.type] == JP_LOW)
 					HTML += "<font color=green>Yes</font>"
 				else
 					HTML += "<font color=red>No</font>"
@@ -1375,24 +1384,33 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	popup.set_content(HTML)
 	popup.open(FALSE)
 
-/datum/preferences/proc/SetJobPreferenceLevel(datum/job/job, level)
+/datum/preferences/proc/SetJobPreferenceLevel(datum/job/job, level, job_listing_id)
 	if (!job)
 		return FALSE
 
-	if (level == JP_HIGH) // to high
+	if(!job_preferences[job_listing_id])
+		job_preferences[job_listing_id] = list()
+	var/job_preference_list = job_preferences[job_listing_id]
+
+	if(level == JP_HIGH) // to high
 		//Set all other high to medium
-		for(var/j in job_preferences)
-			if(job_preferences[j] == JP_HIGH)
-				job_preferences[j] = JP_MEDIUM
+		for(var/j in job_preference_list)
+			if(job_preference_list[j] == JP_HIGH)
+				job_preference_list[j] = JP_MEDIUM
 				//technically break here
 
-	job_preferences[job.title] = level
+	if(!level)
+		job_preference_list -= job.type
+	else
+		job_preference_list[job.type] = level
 	return TRUE
 
-/datum/preferences/proc/UpdateJobPreference(mob/user, role, desiredLvl)
-	if(!SSjob || length(SSjob.main_jobs.joinable_occupations) <= 0)
+/datum/preferences/proc/UpdateJobPreference(mob/user, role_type, desiredLvl, job_listing_id)
+	if(!SSjob || !length(SSjob.job_listings))
 		return
-	var/datum/job/job = SSjob.GetJob(role)
+	var/datum/job/job = SSjob.GetJobType(role_type)
+	var/datum/job_listing/job_listing = SSjob.job_listings_ids[job_listing_id]
+	var/list/job_preference_list = job_preferences[job_listing_id]
 
 	if(!job || !(job.job_flags & JOB_NEW_PLAYER_JOINABLE))
 		user << browse(null, "window=mob_occupation")
@@ -1413,13 +1431,13 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		if(1)
 			jpval = JP_HIGH
 
-	if(job.type == SSjob.main_jobs.overflow_role)
-		if(job_preferences[job.title] == JP_LOW)
+	if(role_type == job_listing.overflow_role)
+		if(job_preference_list && job_preference_list[role_type] == JP_LOW)
 			jpval = null
 		else
 			jpval = JP_LOW
 
-	SetJobPreferenceLevel(job, jpval)
+	SetJobPreferenceLevel(job, jpval, job_listing_id)
 	SetChoices(user)
 
 	return 1
@@ -1553,7 +1571,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						joblessrole = RETURNTOLOBBY
 				SetChoices(user)
 			if("setJobLevel")
-				UpdateJobPreference(user, href_list["text"], text2num(href_list["level"]))
+				UpdateJobPreference(user, text2path(href_list["job_type"]), text2num(href_list["level"]), href_list["job_listing_id"])
+			if("setJobTab")
+				chosen_job_tab = text2num(href_list["tab"])
+				SetChoices(user)
 			else
 				SetChoices(user)
 		return 1

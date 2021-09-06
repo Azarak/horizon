@@ -99,10 +99,13 @@
 	// Determine what job is marked as 'High' priority, and dress them up as such.
 	var/datum/job/previewJob
 	var/highest_pref = 0
-	for(var/job in job_preferences)
-		if(job_preferences[job] > highest_pref)
-			previewJob = SSjob.GetJob(job)
-			highest_pref = job_preferences[job]
+	for(var/listing_key in job_preferences)
+		var/list/job_list = job_preferences[listing_key]
+		for(var/job_type in job_list)
+			var/job_value = job_list[job_type]
+			if(job_value > highest_pref)
+				previewJob = SSjob.GetJobType(job_type)
+				highest_pref = job_value
 
 	if(previewJob)
 		// Silicons only need a very basic preview since there is no customization for them.

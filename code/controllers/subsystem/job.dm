@@ -13,6 +13,10 @@ SUBSYSTEM_DEF(job)
 	var/datum/job_listing/main_jobs
 	/// List of all job listings in the game. Each loaded station/ship/ruin can create one.
 	var/list/datum/job_listing/job_listings = list()
+	/// Assoc list of job listing ids to their reference
+	var/job_listings_ids = list()
+	/// Last loaded job listing
+	var/datum/job_listing/last_job_listing
 
 	/// Dictionary of jobs indexed by the experience type they grant.
 	var/list/experience_jobs_map = list()
@@ -21,7 +25,6 @@ SUBSYSTEM_DEF(job)
 	var/initial_players_to_assign = 0 //used for checking against population caps
 
 	var/list/prioritized_jobs = list()
-	var/list/latejoin_trackers = list()
 
 	var/list/level_order = list(JP_HIGH,JP_MEDIUM,JP_LOW)
 
@@ -151,8 +154,8 @@ SUBSYSTEM_DEF(job)
 		return FALSE
 	job.current_positions = max(0, job.current_positions - 1)
 
-/datum/controller/subsystem/job/proc/FindOccupationCandidates(datum/job/job, level, flag)
-	JobDebug("Running FOC, Job: [job], Level: [level], Flag: [flag]")
+/datum/controller/subsystem/job/proc/FindOccupationCandidates(datum/job/job, level, job_listing_id, flag)
+	JobDebug("Running FOC, Job: [job], Level: [level], Job Listing ID:[job_listing_id], Flag: [flag]")
 	var/list/candidates = list()
 	for(var/mob/dead/new_player/player in unassigned)
 		if(is_banned_from(player.ckey, job.title) || QDELETED(player))
@@ -171,7 +174,7 @@ SUBSYSTEM_DEF(job)
 			JobDebug("FOC incompatible with antagonist role, Player: [player]")
 			continue
 
-		if(player.client.prefs.job_preferences[job.title] == level)
+		if(player.client.prefs.job_preferences[job_listing_id][job.type] == level)
 			JobDebug("FOC pass, Player: [player], Level:[level]")
 			candidates += player
 	return candidates
@@ -236,7 +239,7 @@ SUBSYSTEM_DEF(job)
 		for(var/datum/job/job as anything in command_department.department_jobs)
 			if((job.current_positions >= job.total_positions) && job.total_positions != -1)
 				continue
-			var/list/candidates = FindOccupationCandidates(job, level)
+			var/list/candidates = FindOccupationCandidates(job, level, SSjob.main_jobs.unique_id)
 			if(!candidates.len)
 				continue
 			var/mob/dead/new_player/candidate = pick(candidates)
@@ -254,7 +257,7 @@ SUBSYSTEM_DEF(job)
 	for(var/datum/job/job as anything in command_department.department_jobs)
 		if((job.current_positions >= job.total_positions) && job.total_positions != -1)
 			continue
-		var/list/candidates = FindOccupationCandidates(job, level)
+		var/list/candidates = FindOccupationCandidates(job, level, SSjob.main_jobs.unique_id)
 		if(!candidates.len)
 			continue
 		var/mob/dead/new_player/candidate = pick(candidates)
@@ -269,7 +272,7 @@ SUBSYSTEM_DEF(job)
 	for(var/i in ai_job.current_positions to ai_job.total_positions - 1)
 		for(var/level in level_order)
 			var/list/candidates = list()
-			candidates = FindOccupationCandidates(ai_job, level)
+			candidates = FindOccupationCandidates(ai_job, level, SSjob.main_jobs.unique_id)
 			if(candidates.len)
 				var/mob/dead/new_player/candidate = pick(candidates)
 				if(AssignRole(candidate, GetJobType(/datum/job/ai)))
@@ -319,7 +322,7 @@ SUBSYSTEM_DEF(job)
 	//People who wants to be the overflow role, sure, go on.
 	JobDebug("DO, Running Overflow Check 1")
 	var/datum/job/overflow_datum = GetJobType(main_jobs.overflow_role)
-	var/list/overflow_candidates = FindOccupationCandidates(overflow_datum, JP_LOW)
+	var/list/overflow_candidates = FindOccupationCandidates(overflow_datum, JP_LOW, SSjob.main_jobs.unique_id)
 	JobDebug("AC1, Candidates: [overflow_candidates.len]")
 	for(var/mob/dead/new_player/player in overflow_candidates)
 		JobDebug("AC1 pass, Player: [player]")
@@ -382,7 +385,7 @@ SUBSYSTEM_DEF(job)
 					continue
 
 				// If the player wants that job on this level, then try give it to him.
-				if(player.client.prefs.job_preferences[job.title] == level)
+				if(player.client.prefs.job_preferences[main_jobs.unique_id][job.title] == level)
 					// If the job isn't filled
 					if((job.current_positions < job.spawn_positions) || job.spawn_positions == -1)
 						JobDebug("DO pass, Player: [player], Level:[level], Job:[job.title]")
@@ -540,7 +543,7 @@ SUBSYSTEM_DEF(job)
 			if(job.required_playtime_remaining(player.client))
 				young++
 				continue
-			switch(player.client.prefs.job_preferences[job.title])
+			switch(player.client.prefs.job_preferences[main_jobs.unique_id][job.title])
 				if(JP_HIGH)
 					high++
 				if(JP_MEDIUM)
@@ -603,13 +606,13 @@ SUBSYSTEM_DEF(job)
 
 /datum/controller/subsystem/job/proc/SendToLateJoin(mob/M, buckle = TRUE)
 	var/atom/destination
-	if(M.mind && !is_unassigned_job(M.mind.assigned_role) && length(GLOB.jobspawn_overrides[M.mind.assigned_role.title])) //We're doing something special today.
-		destination = pick(GLOB.jobspawn_overrides[M.mind.assigned_role.title])
+	if(M.mind && !is_unassigned_job(M.mind.assigned_role) && length(SSjob.main_jobs.jobspawn_overrides[M.mind.assigned_role.title])) //We're doing something special today.
+		destination = pick(SSjob.main_jobs.jobspawn_overrides[M.mind.assigned_role.title])
 		destination.JoinPlayerHere(M, FALSE)
 		return TRUE
 
-	if(latejoin_trackers.len)
-		destination = pick(latejoin_trackers)
+	if(main_jobs.latejoin_trackers.len)
+		destination = pick(main_jobs.latejoin_trackers)
 		destination.JoinPlayerHere(M, buckle)
 		return TRUE
 

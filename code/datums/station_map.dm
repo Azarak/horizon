@@ -1,5 +1,6 @@
 /datum/station_map
-	var/map_name
+	var/map_name = "Station"
+	var/map_desc = "A station."
 	var/map_path
 	var/map_file
 	var/job_listing = /datum/job_listing/station
@@ -40,7 +41,8 @@
 
 /datum/station_map/proc/LoadStationMap()
 	//Create station jobs
-	new job_listing()
+	if(job_listing)
+		new job_listing(map_name, map_desc)
 
 	var/loaded_overmap_object = new overmap_object_type(SSovermap.main_system, rand(3,10), rand(3,10))
 	if(!SSmapping.station_overmap_object)
@@ -52,7 +54,7 @@
 	var/picked_grass_color = CHECK_AND_PICK_OR_NULL(grass_color)
 	var/picked_water_color = CHECK_AND_PICK_OR_NULL(water_color)
 	SSmapping.LoadGroup(null,
-			"Station",
+			map_name,
 			map_path,
 			map_file,
 			traits,

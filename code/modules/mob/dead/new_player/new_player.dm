@@ -14,6 +14,8 @@
 	var/mob/living/new_character
 	///Used to make sure someone doesn't get spammed with messages if they're ineligible for roles.
 	var/ineligible_for_roles = FALSE
+	/// Currently selected tab of job listing
+	var/latejoin_job_listing_tab = 1
 
 
 
@@ -198,7 +200,19 @@
 				to_chat(usr, SPAN_WARNING("Server is full."))
 				return
 
-		AttemptLateSpawn(href_list["SelectedJob"])
+		var/chosen_job_listing_index = text2num(href_list["SelectedJobListing"])
+		if(chosen_job_listing_index > SSjob.job_listings.len)
+			return
+		var/datum/job_listing/job_listing = SSjob.job_listings[chosen_job_listing_index]
+		var/datum/job/chosen_job = job_listing.GetJobType(text2path(href_list["SelectedJob"]))
+		if(!chosen_job)
+			return
+		AttemptLateSpawn(chosen_job)
+		return
+
+	else if(href_list["SelectedJobTab"])
+		latejoin_job_listing_tab = text2num(href_list["SelectedJobTab"])
+		LateChoices()
 		return
 
 	else if(!href_list["late_join"])
@@ -278,15 +292,16 @@
 			return "You don't have the required languages for [jobtitle]."
 	return "Error: Unknown job availability."
 
-/mob/dead/new_player/proc/IsJobUnavailable(rank, latejoin = FALSE)
-	var/datum/job/job = SSjob.main_jobs.GetJobType(SSjob.GetJob(rank).type)
-	if(!(job in SSjob.main_jobs.joinable_occupations))
+/mob/dead/new_player/proc/IsJobUnavailable(datum/job/job, latejoin = FALSE)
+	var/rank = job.title
+	var/datum/job_listing/job_listing = job.job_listing
+	if(!(job in job_listing.joinable_occupations))
 		return JOB_UNAVAILABLE_GENERIC
 	if((job.current_positions >= job.total_positions) && job.total_positions != -1)
 		if(is_assistant_job(job))
 			if(isnum(client.player_age) && client.player_age <= 14) //Newbies can always be assistants
 				return JOB_AVAILABLE
-			for(var/datum/job/other_job as anything in SSjob.main_jobs.joinable_occupations)
+			for(var/datum/job/other_job as anything in job_listing.joinable_occupations)
 				if(other_job.current_positions < other_job.total_positions && other_job != job)
 					return JOB_UNAVAILABLE_SLOTFULL
 		else
@@ -309,8 +324,9 @@
 		return JOB_UNAVAILABLE_GENERIC
 	return JOB_AVAILABLE
 
-/mob/dead/new_player/proc/AttemptLateSpawn(rank)
-	var/error = IsJobUnavailable(rank)
+/mob/dead/new_player/proc/AttemptLateSpawn(datum/job/job)
+	var/error = IsJobUnavailable(job)
+	var/rank = job.title
 	if(error != JOB_AVAILABLE)
 		tgui_alert(usr, get_job_unavailable_error_message(error, rank))
 		return FALSE
@@ -331,8 +347,6 @@
 	//Remove the player from the join queue if he was in one and reset the timer
 	SSticker.queued_players -= src
 	SSticker.queue_delay = 4
-
-	var/datum/job/job = SSjob.GetJob(rank)
 
 	SSjob.AssignRole(src, job, TRUE)
 
@@ -423,24 +437,36 @@
 	for(var/datum/job/prioritized_job in SSjob.prioritized_jobs)
 		if(prioritized_job.current_positions >= prioritized_job.total_positions)
 			SSjob.prioritized_jobs -= prioritized_job
-	dat += "<table><tr><td valign='top'>"
+
+	var/job_listing_index = 0
+	var/datum/job_listing/job_listing
+	if(latejoin_job_listing_tab > SSjob.job_listings.len)
+		latejoin_job_listing_tab = 1
+	job_listing = SSjob.job_listings[latejoin_job_listing_tab]
+	dat += "<HR>"
+	for(var/datum/job_listing/iterated_listing as anything in SSjob.job_listings)
+		job_listing_index++
+		dat += "<a href='byond://?src=[REF(src)];SelectedJobTab=[job_listing_index]' [latejoin_job_listing_tab == job_listing_index ? "class='linkOn'" : ""]>[iterated_listing.name]</a>"
+
+	dat += "<BR>[job_listing.desc]"
+	dat += "<HR><table><tr><td valign='top'>"
 	var/column_counter = 0
 
-	for(var/datum/job_department/department as anything in SSjob.main_jobs.joinable_departments)
+	for(var/datum/job_department/department as anything in job_listing.joinable_departments)
 		var/department_color = department.latejoin_color
 		dat += "<fieldset style='width: 185px; border: 2px solid [department_color]; display: inline'>"
 		dat += "<legend align='center' style='color: [department_color]'>[department.department_name]</legend>"
 		var/list/dept_data = list()
 		for(var/datum/job/job_datum as anything in department.department_jobs)
-			if(IsJobUnavailable(job_datum.title, TRUE) != JOB_AVAILABLE)
+			if(IsJobUnavailable(job_datum, TRUE) != JOB_AVAILABLE)
 				continue
 			var/command_bold = ""
 			if(job_datum.departments_bitflags & DEPARTMENT_BITFLAG_COMMAND)
 				command_bold = " command"
 			if(job_datum in SSjob.prioritized_jobs)
-				dept_data += "<a class='job[command_bold]' href='byond://?src=[REF(src)];SelectedJob=[job_datum.title]'><span class='priority'>[job_datum.title] ([job_datum.current_positions])</span></a>"
+				dept_data += "<a class='job[command_bold]' href='byond://?src=[REF(src)];SelectedJob=[job_datum.type];SelectedJobListing=[latejoin_job_listing_tab]'><span class='priority'>[job_datum.title] ([job_datum.current_positions])</span></a>"
 			else
-				dept_data += "<a class='job[command_bold]' href='byond://?src=[REF(src)];SelectedJob=[job_datum.title]'>[job_datum.title] ([job_datum.current_positions])</a>"
+				dept_data += "<a class='job[command_bold]' href='byond://?src=[REF(src)];SelectedJob=[job_datum.type];SelectedJobListing=[latejoin_job_listing_tab]'>[job_datum.title] ([job_datum.current_positions])</a>"
 		if(!length(dept_data))
 			dept_data += "<span class='nopositions'>No positions open.</span>"
 		dat += dept_data.Join()

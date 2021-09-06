@@ -85,9 +85,6 @@
 	/// Should this job be allowed to be picked for the bureaucratic error event?
 	var/allow_bureaucratic_error = TRUE
 
-	/// Is this job affected by weird spawns like the ones from station traits
-	var/random_spawns_possible = TRUE
-
 	/// List of family heirlooms this job can get with the family heirloom quirk. List of types.
 	var/list/family_heirlooms
 
@@ -115,10 +112,13 @@
 
 	/// String. If set to a non-empty one, it will be the key for the policy text value to show this role on spawn.
 	var/policy_index = ""
+	/// The job listing that the job belongs to
+	var/datum/job_listing/job_listing
 
 
-/datum/job/New()
+/datum/job/New(datum/job_listing/passed_job_listing)
 	. = ..()
+	job_listing = passed_job_listing
 	var/list/jobs_changes = get_map_changes()
 	if(!jobs_changes)
 		return
@@ -347,22 +347,8 @@
 
 /// Returns an atom where the mob should spawn in.
 /datum/job/proc/get_roundstart_spawn_point()
-	if(random_spawns_possible)
-		if(HAS_TRAIT(SSstation, STATION_TRAIT_LATE_ARRIVALS))
-			return get_latejoin_spawn_point()
-		if(HAS_TRAIT(SSstation, STATION_TRAIT_RANDOM_ARRIVALS))
-			return get_safe_random_station_turf(typesof(/area/hallway)) || get_latejoin_spawn_point()
-		if(HAS_TRAIT(SSstation, STATION_TRAIT_HANGOVER))
-			var/obj/effect/landmark/start/hangover_spawn_point
-			for(var/obj/effect/landmark/start/hangover/hangover_landmark in GLOB.start_landmarks_list)
-				hangover_spawn_point = hangover_landmark
-				if(hangover_landmark.used) //so we can revert to spawning them on top of eachother if something goes wrong
-					continue
-				hangover_landmark.used = TRUE
-				break
-			return hangover_spawn_point || get_latejoin_spawn_point()
-	if(length(GLOB.jobspawn_overrides[title]))
-		return pick(GLOB.jobspawn_overrides[title])
+	if(length(job_listing.jobspawn_overrides[title]))
+		return pick(job_listing.jobspawn_overrides[title])
 	var/obj/effect/landmark/start/spawn_point = get_default_roundstart_spawn_point()
 	if(!spawn_point) //if there isn't a spawnpoint send them to latejoin, if there's no latejoin go yell at your mapper
 		return get_latejoin_spawn_point()
@@ -371,7 +357,7 @@
 
 /// Handles finding and picking a valid roundstart effect landmark spawn point, in case no uncommon different spawning events occur.
 /datum/job/proc/get_default_roundstart_spawn_point()
-	for(var/obj/effect/landmark/start/spawn_point as anything in GLOB.start_landmarks_list)
+	for(var/obj/effect/landmark/start/spawn_point as anything in job_listing.start_landmarks_list)
 		if(spawn_point.name != title)
 			continue
 		. = spawn_point
@@ -385,10 +371,10 @@
 
 /// Finds a valid latejoin spawn point, checking for events and special conditions.
 /datum/job/proc/get_latejoin_spawn_point()
-	if(length(GLOB.jobspawn_overrides[title])) //We're doing something special today.
-		return pick(GLOB.jobspawn_overrides[title])
-	if(length(SSjob.latejoin_trackers))
-		return pick(SSjob.latejoin_trackers)
+	if(length(job_listing.jobspawn_overrides[title])) //We're doing something special today.
+		return pick(job_listing.jobspawn_overrides[title])
+	if(length(SSjob.main_jobs.latejoin_trackers))
+		return pick(SSjob.main_jobs.latejoin_trackers)
 	return SSjob.get_last_resort_spawn_points()
 
 /// Spawns the mob to be played as, taking into account preferences and the desired spawn point.
