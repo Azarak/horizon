@@ -267,7 +267,7 @@ SUBSYSTEM_DEF(job)
 
 /// Attempts to fill out all available AI positions.
 /datum/controller/subsystem/job/proc/fill_ai_positions()
-	var/datum/job/ai_job = dividing_jobs.GetJob("AI")
+	var/datum/job/ai_job = dividing_jobs.GetJobType(/datum/job/ai)
 	if(!ai_job)
 		return
 	// In byond for(in to) loops, the iteration is inclusive so we need to stop at ai_job.total_positions - 1
