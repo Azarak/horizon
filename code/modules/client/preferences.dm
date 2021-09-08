@@ -209,6 +209,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/faction_more_info = FALSE
 	//Associative list, keyed by language typepath, pointing to LANGUAGE_UNDERSTOOD, or LANGUAGE_SPOKEN, for whether we understand or speak the language
 	var/list/languages = list()
+	/// Which job listing would the client want to be started in on roundstart
+	var/chosen_job_listing_start
+	/// List of the job listings the client has preferred to start their character as
+	var/list/preferred_job_listings = list()
 
 /datum/preferences/New(client/C)
 	parent = C
@@ -1267,6 +1271,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		for(var/datum/job_listing/iterated_listing as anything in SSjob.job_listings)
 			iterated_job_index++
 			HTML += "<a href='?_src_=prefs;preference=job;task=setJobTab;tab=[iterated_job_index]' [chosen_job_tab == iterated_job_index ? "class='linkOn'" : ""]>[iterated_listing.name]</a>"
+		HTML += "<BR><a href='?_src_=prefs;preference=job;task=setJobListingIdPref;id=[job_listing.unique_id]' [preferred_job_listings[job_listing.unique_id] ? "class='linkOn'" : ""]>Preferred</a>"
 		HTML += "<BR>[job_listing.desc]<HR>"
 		HTML += "<b>Choose occupation chances</b><br>"
 		HTML += "<div align='center'>Left-click to raise an occupation preference, right-click to lower it.<br></div>"
@@ -1574,6 +1579,13 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				UpdateJobPreference(user, text2path(href_list["job_type"]), text2num(href_list["level"]), href_list["job_listing_id"])
 			if("setJobTab")
 				chosen_job_tab = text2num(href_list["tab"])
+				SetChoices(user)
+			if("setJobListingIdPref")
+				var/chosen_id = href_list["id"]
+				if(preferred_job_listings[chosen_id])
+					preferred_job_listings -= chosen_id
+				else
+					preferred_job_listings[chosen_id] = TRUE
 				SetChoices(user)
 			else
 				SetChoices(user)
@@ -3217,3 +3229,24 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		facial_hairstyle = our_list[our_list.len]
 	else
 		facial_hairstyle = our_list[index-1]
+
+/datum/preferences/proc/SetupChosenJobListing()
+	if(chosen_job_listing_start)
+		return
+	chosen_job_listing_start = FindChosenJobListing()
+
+///Finds a preffered job listings that matches with the current available job listings
+/datum/preferences/proc/FindChosenJobListing()
+	if(chosen_job_listing_start)
+		return chosen_job_listing_start
+	if(!SSjob)
+		return
+	var/found_listing
+	for(var/datum/job_listing/job_listing as anything in SSjob.job_listings)
+		if(preferred_job_listings[job_listing.unique_id])
+			found_listing = job_listing.unique_id
+			break
+	if(!found_listing)
+		var/datum/job_listing/job_listing = SSjob.job_listings[1]
+		found_listing = job_listing.unique_id
+	return found_listing

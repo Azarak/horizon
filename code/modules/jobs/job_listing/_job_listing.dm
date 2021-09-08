@@ -23,6 +23,8 @@
 	var/list/jobspawn_overrides = list()
 	/// Unique ID of the job listing, doesn't actually have to be unique as the system will handle duplicates fine, but if you want consistent job prefs savefiles, make those unique
 	var/unique_id = "blank"
+	/// Whether the job listing will be started and its occupations divided on the start of the round
+	var/setup_on_roundstart = TRUE
 
 /datum/job_listing/New(passed_name, passed_desc)
 	. = ..()

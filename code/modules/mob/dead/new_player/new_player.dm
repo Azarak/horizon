@@ -20,6 +20,9 @@
 
 
 /mob/dead/new_player/Initialize()
+	if(client && client.prefs)
+		client.prefs.SetupChosenJobListing()
+
 	if(client && SSticker.state == GAME_STATE_STARTUP)
 		var/atom/movable/screen/splash/S = new(client, TRUE, TRUE)
 		S.Fade(TRUE)
@@ -62,6 +65,10 @@
 	output += "<p><a href='byond://?src=[REF(src)];show_preferences=1'>Setup Character</a></p>"
 
 	if(SSticker.current_state <= GAME_STATE_PREGAME)
+		if(SSjob)
+			client.prefs.SetupChosenJobListing()
+			var/datum/job_listing/job_listing = SSjob.job_listings_ids[client.prefs.chosen_job_listing_start]
+			output += "<p>Start at: <a href='byond://?src=[REF(src)];job_listing_start=1'>[job_listing.name]</a></p>"
 		switch(ready)
 			if(PLAYER_NOT_READY)
 				output += "<p>\[ [LINKIFY_READY("Ready", PLAYER_READY_TO_PLAY)] | <b>Not Ready</b> | [LINKIFY_READY("Observe", PLAYER_READY_TO_OBSERVE)] \]</p>"
@@ -79,7 +86,7 @@
 
 	output += "</center>"
 
-	var/datum/browser/popup = new(src, "playersetup", "<div align='center'>[greeting_title]</div>", 400, 300)
+	var/datum/browser/popup = new(src, "playersetup", "<div align='center'>[greeting_title]</div>", 400, 350)
 	popup.set_window_options("can_close=0")
 	popup.set_content(output.Join())
 	popup.open(FALSE)
@@ -137,6 +144,22 @@
 		relevant_cap = min(hpc, epc)
 	else
 		relevant_cap = max(hpc, epc)
+
+	if(href_list["job_listing_start"])
+		var/list/name_choice_list = list()
+		var/list/id_translation_list = list()
+		var/index = 0
+		for(var/datum/job_listing/job_listing in SSjob.job_listings)
+			if(!job_listing.setup_on_roundstart)
+				continue
+			index++
+			name_choice_list["[index]. [job_listing.name]"] = index
+			id_translation_list += job_listing.unique_id
+		var/choice = input(usr, "Choose your character's starting job place:", "Character Preference")  as null|anything in name_choice_list
+		if(!choice)
+			return
+		var/chosen_index = name_choice_list[choice]
+		client.prefs.chosen_job_listing_start = id_translation_list[chosen_index]
 
 	if(href_list["show_preferences"])
 		client.prefs.needs_update = TRUE
