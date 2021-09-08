@@ -11,6 +11,7 @@ SUBSYSTEM_DEF(job)
 	var/list/datum/job/type_occupations = list()
 	/// The main job listing of the game. This is gonna be the first station/ship/ruin's that is loaded.
 	var/datum/job_listing/main_jobs
+	/// Reference to current job listing we're diving in DivideOccupations, for ease of access
 	var/datum/job_listing/dividing_jobs
 	/// List of all job listings in the game. Each loaded station/ship/ruin can create one.
 	var/list/datum/job_listing/job_listings = list()
