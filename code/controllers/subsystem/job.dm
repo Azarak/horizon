@@ -277,7 +277,7 @@ SUBSYSTEM_DEF(job)
 			candidates = FindOccupationCandidates(ai_job, level, dividing_jobs.unique_id)
 			if(candidates.len)
 				var/mob/dead/new_player/candidate = pick(candidates)
-				if(AssignRole(candidate, GetJobType(/datum/job/ai)))
+				if(AssignRole(candidate, dividing_jobs.GetJobType(/datum/job/ai)))
 					break
 
 
@@ -336,13 +336,13 @@ SUBSYSTEM_DEF(job)
 		JobDebug("DO, For [job_listing.name]:")
 		//People who wants to be the overflow role, sure, go on.
 		JobDebug("DO, Running Overflow Check 1")
-		var/datum/job/overflow_datum = GetJobType(job_listing.overflow_role)
+		var/datum/job/overflow_datum = job_listing.GetJobType(job_listing.overflow_role)
 		if(overflow_datum)
 			var/list/overflow_candidates = FindOccupationCandidates(overflow_datum, JP_LOW, dividing_jobs.unique_id)
 			JobDebug("AC1, Candidates: [overflow_candidates.len]")
 			for(var/mob/dead/new_player/player in overflow_candidates)
 				JobDebug("AC1 pass, Player: [player]")
-				AssignRole(player, GetJobType(job_listing.overflow_role))
+				AssignRole(player, job_listing.GetJobType(job_listing.overflow_role))
 				overflow_candidates -= player
 		JobDebug("DO, AC1 end")
 	
