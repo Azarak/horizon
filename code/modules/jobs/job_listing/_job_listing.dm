@@ -56,6 +56,8 @@
 		jobs = list()
 		for(var/job_type in subtypesof(/datum/job))
 			var/datum/job/job = SSjob.GetJobType(job_type)
+			if(!job)
+				continue
 			if(job.job_flags & JOB_NEW_PLAYER_JOINABLE && job.faction == faction)
 				jobs += job_type
 	var/list/new_joinable_occupations = list()
