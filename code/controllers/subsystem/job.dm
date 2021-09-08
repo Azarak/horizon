@@ -11,6 +11,7 @@ SUBSYSTEM_DEF(job)
 	var/list/datum/job/type_occupations = list()
 	/// The main job listing of the game. This is gonna be the first station/ship/ruin's that is loaded.
 	var/datum/job_listing/main_jobs
+	var/datum/job_listing/dividing_jobs
 	/// List of all job listings in the game. Each loaded station/ship/ruin can create one.
 	var/list/datum/job_listing/job_listings = list()
 	/// Assoc list of job listing ids to their reference
@@ -183,9 +184,9 @@ SUBSYSTEM_DEF(job)
 /datum/controller/subsystem/job/proc/GiveRandomJob(mob/dead/new_player/player)
 	JobDebug("GRJ Giving random job, Player: [player]")
 	. = FALSE
-	for(var/datum/job/job as anything in shuffle(main_jobs.joinable_occupations))
+	for(var/datum/job/job as anything in shuffle(dividing_jobs.joinable_occupations))
 
-		if(istype(job, GetJobType(main_jobs.overflow_role))) // We don't want to give him assistant, that's boring!
+		if(dividing_jobs.overflow_role && istype(job, GetJobType(dividing_jobs.overflow_role))) // We don't want to give him assistant, that's boring!
 			continue
 
 		if(job.departments_bitflags & DEPARTMENT_BITFLAG_COMMAND) //If you want a command position, select it!
@@ -232,14 +233,14 @@ SUBSYSTEM_DEF(job)
 //it locates a head or runs out of levels to check
 //This is basically to ensure that there's atleast a few heads in the round
 /datum/controller/subsystem/job/proc/FillHeadPosition()
-	var/datum/job_department/command_department = get_department_type(/datum/job_department/command)
+	var/datum/job_department/command_department = dividing_jobs.get_department_type(/datum/job_department/command)
 	if(!command_department)
 		return FALSE
 	for(var/level in level_order)
 		for(var/datum/job/job as anything in command_department.department_jobs)
 			if((job.current_positions >= job.total_positions) && job.total_positions != -1)
 				continue
-			var/list/candidates = FindOccupationCandidates(job, level, SSjob.main_jobs.unique_id)
+			var/list/candidates = FindOccupationCandidates(job, level, dividing_jobs.unique_id)
 			if(!candidates.len)
 				continue
 			var/mob/dead/new_player/candidate = pick(candidates)
@@ -251,13 +252,13 @@ SUBSYSTEM_DEF(job)
 //This proc is called at the start of the level loop of DivideOccupations() and will cause head jobs to be checked before any other jobs of the same level
 //This is also to ensure we get as many heads as possible
 /datum/controller/subsystem/job/proc/CheckHeadPositions(level)
-	var/datum/job_department/command_department = get_department_type(/datum/job_department/command)
+	var/datum/job_department/command_department = dividing_jobs.get_department_type(/datum/job_department/command)
 	if(!command_department)
 		return
 	for(var/datum/job/job as anything in command_department.department_jobs)
 		if((job.current_positions >= job.total_positions) && job.total_positions != -1)
 			continue
-		var/list/candidates = FindOccupationCandidates(job, level, SSjob.main_jobs.unique_id)
+		var/list/candidates = FindOccupationCandidates(job, level, dividing_jobs.unique_id)
 		if(!candidates.len)
 			continue
 		var/mob/dead/new_player/candidate = pick(candidates)
@@ -265,14 +266,14 @@ SUBSYSTEM_DEF(job)
 
 /// Attempts to fill out all available AI positions.
 /datum/controller/subsystem/job/proc/fill_ai_positions()
-	var/datum/job/ai_job = GetJob("AI")
+	var/datum/job/ai_job = dividing_jobs.GetJob("AI")
 	if(!ai_job)
 		return
 	// In byond for(in to) loops, the iteration is inclusive so we need to stop at ai_job.total_positions - 1
 	for(var/i in ai_job.current_positions to ai_job.total_positions - 1)
 		for(var/level in level_order)
 			var/list/candidates = list()
-			candidates = FindOccupationCandidates(ai_job, level, SSjob.main_jobs.unique_id)
+			candidates = FindOccupationCandidates(ai_job, level, dividing_jobs.unique_id)
 			if(candidates.len)
 				var/mob/dead/new_player/candidate = pick(candidates)
 				if(AssignRole(candidate, GetJobType(/datum/job/ai)))
@@ -319,94 +320,101 @@ SUBSYSTEM_DEF(job)
 	JobDebug("DO, Assigning Priority Positions: [length(dynamic_forced_occupations)]")
 	assign_priority_positions()
 
-	//People who wants to be the overflow role, sure, go on.
-	JobDebug("DO, Running Overflow Check 1")
-	var/datum/job/overflow_datum = GetJobType(main_jobs.overflow_role)
-	var/list/overflow_candidates = FindOccupationCandidates(overflow_datum, JP_LOW, SSjob.main_jobs.unique_id)
-	JobDebug("AC1, Candidates: [overflow_candidates.len]")
-	for(var/mob/dead/new_player/player in overflow_candidates)
-		JobDebug("AC1 pass, Player: [player]")
-		AssignRole(player, GetJobType(main_jobs.overflow_role))
-		overflow_candidates -= player
-	JobDebug("DO, AC1 end")
+	var/list/all_unassigned = unassigned
+	var/list/unassigned_by_listing_id = list()
+	for(var/mob/dead/new_player/player as anything in all_unassigned)
+		player.client.prefs.SetupChosenJobListing()
+		var/player_job_listing_start = player.client.prefs.chosen_job_listing_start
+		if(!unassigned_by_listing_id[player_job_listing_start])
+			unassigned_by_listing_id[player_job_listing_start] = list()
+		unassigned_by_listing_id[player_job_listing_start] += player
 
-	//Select one head
-	JobDebug("DO, Running Head Check")
-	FillHeadPosition()
-	JobDebug("DO, Head Check end")
-
-	// Fill out any remaining AI positions.
-	JobDebug("DO, Running AI Check")
-	fill_ai_positions()
-	JobDebug("DO, AI Check end")
-
-	//Other jobs are now checked
-	JobDebug("DO, Running Standard Check")
-
-
-	// New job giving system by Donkie
-	// This will cause lots of more loops, but since it's only done once it shouldn't really matter much at all.
-	// Hopefully this will add more randomness and fairness to job giving.
-
-	// Loop through all levels from high to low
-	var/list/shuffledoccupations = shuffle(main_jobs.joinable_occupations)
-	for(var/level in level_order)
-		//Check the head jobs first each level
-		CheckHeadPositions(level)
-
-		// Loop through all unassigned players
-		for(var/mob/dead/new_player/player in unassigned)
-			if(PopcapReached())
-				RejectPlayer(player)
-
-			// Loop through all jobs
-			for(var/datum/job/job in shuffledoccupations) // SHUFFLE ME BABY
-				if(!job)
-					continue
-
-				if(is_banned_from(player.ckey, job.title))
-					JobDebug("DO isbanned failed, Player: [player], Job:[job.title]")
-					continue
-
-				if(QDELETED(player))
-					JobDebug("DO player deleted during job ban check")
-					break
-
-				if(!job.player_old_enough(player.client))
-					JobDebug("DO player not old enough, Player: [player], Job:[job.title]")
-					continue
-
-				if(job.required_playtime_remaining(player.client))
-					JobDebug("DO player not enough xp, Player: [player], Job:[job.title]")
-					continue
-
-				if(player.mind && (job.title in player.mind.restricted_roles))
-					JobDebug("DO incompatible with antagonist role, Player: [player], Job:[job.title]")
-					continue
-
-				// If the player wants that job on this level, then try give it to him.
-				if(player.client.prefs.job_preferences[main_jobs.unique_id][job.title] == level)
-					// If the job isn't filled
-					if((job.current_positions < job.spawn_positions) || job.spawn_positions == -1)
-						JobDebug("DO pass, Player: [player], Level:[level], Job:[job.title]")
-						AssignRole(player, job)
-						unassigned -= player
+	for(var/datum/job_listing/job_listing as anything in job_listings)
+		dividing_jobs = job_listing
+		unassigned = unassigned_by_listing_id[job_listing.unique_id]
+		JobDebug("DO, For [job_listing.name]:")
+		//People who wants to be the overflow role, sure, go on.
+		JobDebug("DO, Running Overflow Check 1")
+		var/datum/job/overflow_datum = GetJobType(job_listing.overflow_role)
+		if(overflow_datum)
+			var/list/overflow_candidates = FindOccupationCandidates(overflow_datum, JP_LOW, dividing_jobs.unique_id)
+			JobDebug("AC1, Candidates: [overflow_candidates.len]")
+			for(var/mob/dead/new_player/player in overflow_candidates)
+				JobDebug("AC1 pass, Player: [player]")
+				AssignRole(player, GetJobType(job_listing.overflow_role))
+				overflow_candidates -= player
+		JobDebug("DO, AC1 end")
+	
+		//Select one head
+		JobDebug("DO, Running Head Check")
+		FillHeadPosition()
+		JobDebug("DO, Head Check end")
+	
+		// Fill out any remaining AI positions.
+		JobDebug("DO, Running AI Check")
+		fill_ai_positions()
+		JobDebug("DO, AI Check end")
+	
+		//Other jobs are now checked
+		JobDebug("DO, Running Standard Check")
+	
+	
+		// New job giving system by Donkie
+		// This will cause lots of more loops, but since it's only done once it shouldn't really matter much at all.
+		// Hopefully this will add more randomness and fairness to job giving.
+	
+		// Loop through all levels from high to low
+		var/list/shuffledoccupations = shuffle(job_listing.joinable_occupations)
+		for(var/level in level_order)
+			//Check the head jobs first each level
+			CheckHeadPositions(level)
+	
+			// Loop through all unassigned players
+			for(var/mob/dead/new_player/player in unassigned)
+				if(PopcapReached())
+					RejectPlayer(player)
+	
+				// Loop through all jobs
+				for(var/datum/job/job in shuffledoccupations) // SHUFFLE ME BABY
+					if(!job)
+						continue
+	
+					if(is_banned_from(player.ckey, job.title))
+						JobDebug("DO isbanned failed, Player: [player], Job:[job.title]")
+						continue
+	
+					if(QDELETED(player))
+						JobDebug("DO player deleted during job ban check")
 						break
-
-
-	JobDebug("DO, Handling unassigned.")
-	// Hand out random jobs to the people who didn't get any in the last check
-	// Also makes sure that they got their preference correct
-	for(var/mob/dead/new_player/player in unassigned)
-		HandleUnassigned(player)
-
-	JobDebug("DO, Handling unrejectable unassigned")
-	//Mop up people who can't leave.
-	for(var/mob/dead/new_player/player in unassigned) //Players that wanted to back out but couldn't because they're antags (can you feel the edge case?)
-		if(!GiveRandomJob(player))
-			if(!AssignRole(player, GetJobType(main_jobs.overflow_role))) //If everything is already filled, make them an assistant
-				return FALSE //Living on the edge, the forced antagonist couldn't be assigned to overflow role (bans, client age) - just reroll
-
+	
+					if(!job.player_old_enough(player.client))
+						JobDebug("DO player not old enough, Player: [player], Job:[job.title]")
+						continue
+	
+					if(job.required_playtime_remaining(player.client))
+						JobDebug("DO player not enough xp, Player: [player], Job:[job.title]")
+						continue
+	
+					if(player.mind && (job.title in player.mind.restricted_roles))
+						JobDebug("DO incompatible with antagonist role, Player: [player], Job:[job.title]")
+						continue
+	
+					// If the player wants that job on this level, then try give it to him.
+					if(player.client.prefs.job_preferences[job_listing.unique_id][job.title] == level)
+						// If the job isn't filled
+						if((job.current_positions < job.spawn_positions) || job.spawn_positions == -1)
+							JobDebug("DO pass, Player: [player], Level:[level], Job:[job.title]")
+							AssignRole(player, job)
+							unassigned -= player
+							break
+	
+	
+		JobDebug("DO, Handling unassigned.")
+		// Hand out random jobs to the people who didn't get any in the last check
+		// Also makes sure that they got their preference correct
+		for(var/mob/dead/new_player/player in unassigned)
+			HandleUnassigned(player)
+	dividing_jobs = null
 	return TRUE
 
 //We couldn't find a job from prefs for this guy.
@@ -414,7 +422,9 @@ SUBSYSTEM_DEF(job)
 	if(PopcapReached())
 		RejectPlayer(player)
 	else if(player.client.prefs.joblessrole == BEOVERFLOW)
-		var/datum/job/overflow_role_datum = GetJobType(main_jobs.overflow_role)
+		var/datum/job/overflow_role_datum = GetJobType(dividing_jobs.overflow_role)
+		if(!overflow_role_datum)
+			RejectPlayer(player)
 		var/allowed_to_be_a_loser = !is_banned_from(player.ckey, overflow_role_datum.title)
 		if(QDELETED(player) || !allowed_to_be_a_loser)
 			RejectPlayer(player)

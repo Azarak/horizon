@@ -90,7 +90,7 @@
 /datum/job_listing/proc/SetOverflowRole(new_overflow_role_type)
 	var/datum/job/new_overflow_role = GetJobType(new_overflow_role_type)
 	if(!new_overflow_role)
-		CRASH("SetOverflowRole failed | SetOverflowRole: [isnull(new_overflow_role) ? "null" : new_overflow_role]")
+		return
 	var/cap = CONFIG_GET(number/overflow_cap)
 
 	new_overflow_role.allow_bureaucratic_error = FALSE
