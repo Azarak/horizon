@@ -83,7 +83,7 @@
 	if(!eyeturf)
 		return SHUTTLE_DOCKER_BLOCKED
 	/*
-	if(!eyeturf.z || SSmapping.level_has_any_trait(eyeturf.z, locked_traits))
+	if(!eyeturf.z || SSmapping.sub_zone_has_any_trait(eyeturf, locked_traits))
 		return SHUTTLE_DOCKER_BLOCKED
 	*/
 

@@ -349,7 +349,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 			if (!length(area_turfs))
 				continue
 			var/turf/picked = pick(area_turfs)
-			if(is_station_level(picked.z))
+			if(is_station_level(picked))
 				if(!(A.type in areas_all) && !is_type_in_typecache(A, station_areas_blacklist))
 					areas_all.Add(A.type)
 		else if(!(A.type in areas_all))

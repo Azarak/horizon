@@ -658,6 +658,7 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "ladder00"
 
+/* TODO: re-do later
 /obj/item/jacobs_ladder/attack_self(mob/user)
 	var/turf/T = get_turf(src)
 	var/ladder_x = T.x
@@ -670,6 +671,7 @@
 		var/turf/T2 = locate(ladder_x, ladder_y, i)
 		last_ladder = new /obj/structure/ladder/unbreakable/jacob(T2, null, last_ladder)
 	qdel(src)
+*/
 
 // Inherit from unbreakable but don't set ID, to suppress the default Z linkage
 /obj/structure/ladder/unbreakable/jacob

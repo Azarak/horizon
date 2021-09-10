@@ -54,6 +54,8 @@ SUBSYSTEM_DEF(mapping)
 
 	/// The overmap object of the main loaded station, for easy access
 	var/datum/overmap_object/station_overmap_object
+	/// List of all map zones
+	var/list/map_zones = list()
 
 /datum/controller/subsystem/mapping/New()
 	..()
@@ -386,7 +388,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 		if (!A.contents.len || !(A.area_flags & UNIQUE_AREA))
 			continue
 		var/turf/picked = A.contents[1]
-		if (is_station_level(picked.z))
+		if (is_station_level(picked))
 			GLOB.the_station_areas += A.type
 
 	if(!GLOB.the_station_areas.len)

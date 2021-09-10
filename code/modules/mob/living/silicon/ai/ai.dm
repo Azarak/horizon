@@ -350,7 +350,7 @@
 	if(!target)
 		return
 
-	if ((ai.z != target.z) && !is_station_level(ai.z))
+	if ((ai.z != target.z) && !is_station_level(ai))
 		return FALSE
 
 	if (istype(loc, /obj/item/aicard))
@@ -611,7 +611,7 @@
 
 	for (var/obj/machinery/camera/C in GLOB.cameranet.cameras)
 		var/list/tempnetwork = C.network
-		if(!(is_station_level(C.z) || is_mining_level(C.z) || ("ss13" in tempnetwork)))
+		if(!(is_station_level(C) || is_mining_level(C) || ("ss13" in tempnetwork)))
 			continue
 		if(!C.can_use())
 			continue

@@ -134,7 +134,7 @@
 
 /obj/machinery/shuttle_scrambler/process()
 	if(active)
-		if(is_station_level(z))
+		if(is_station_level(src))
 			var/datum/bank_account/D = SSeconomy.get_dep_account(ACCOUNT_CAR)
 			if(D)
 				var/siphoned = min(D.account_balance,siphon_per_tick)
@@ -457,7 +457,7 @@
 /datum/export/pirate/parrot/find_loot()
 	for(var/mob/living/simple_animal/parrot/P in GLOB.alive_mob_list)
 		var/turf/T = get_turf(P)
-		if(T && is_station_level(T.z))
+		if(T && is_station_level(T))
 			return P
 
 /datum/export/pirate/cash

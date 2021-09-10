@@ -1,11 +1,16 @@
 /datum/space_level/proc/set_linkage(new_linkage)
+	return
+	/*
 	linkage = new_linkage
 	if(linkage == SELFLOOPING)
 		neigbours = list(TEXT_NORTH,TEXT_SOUTH,TEXT_EAST,TEXT_WEST)
 		for(var/A in neigbours)
 			neigbours[A] = src
+	*/
 
 /datum/space_level/proc/set_neigbours(list/L)
+	return
+	/*
 	for(var/datum/space_transition_point/P in L)
 		if(P.x == xi)
 			if(P.y == yi+1)
@@ -21,6 +26,7 @@
 			else if(P.x == xi-1)
 				neigbours[TEXT_WEST] = P.spl
 				P.spl.neigbours[TEXT_EAST] = src
+	*/
 
 /datum/space_transition_point          //this is explicitly utilitarian datum type made specially for the space map generation and are absolutely unusable for anything else
 	var/list/neigbours = list()
@@ -43,6 +49,8 @@
 	point_grid[x][y] = src
 
 /datum/space_transition_point/proc/set_neigbours(list/grid)
+	return
+	/*
 	var/max_X = grid.len
 	var/list/max_Y = grid[1]
 	max_Y = max_Y.len
@@ -55,8 +63,11 @@
 		neigbours |= grid[x][y+1]
 	if(y-1 >= 1)
 		neigbours |= grid[x][y-1]
+	*/
 
 /datum/controller/subsystem/mapping/proc/setup_map_transitions() //listamania
+	return
+	/*
 	var/list/SLS = list()
 	var/list/cached_z_list = z_list
 	var/conf_set_len = 0
@@ -141,3 +152,4 @@
 
 				var/turf/place = locate(S.destination_x, S.destination_y, S.destination_z)
 				S.AddComponent(/datum/component/mirage_border, place, mirage_dir)
+	*/

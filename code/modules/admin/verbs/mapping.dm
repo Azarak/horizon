@@ -319,15 +319,18 @@ GLOBAL_VAR_INIT(say_disabled, FALSE)
 	set name = "Debug Z-Levels"
 	set category = "Mapping"
 
-	var/list/z_list = SSmapping.z_list
+	//var/list/z_list = SSmapping.z_list
 	var/list/messages = list()
 	messages += "<b>World</b>: [world.maxx] x [world.maxy] x [world.maxz]<br>"
 
+	/*
 	var/list/linked_levels = list()
 	var/min_x = INFINITY
 	var/min_y = INFINITY
 	var/max_x = -INFINITY
 	var/max_y = -INFINITY
+	*/
+	/*
 
 	for(var/z in 1 to max(world.maxz, z_list.len))
 		if (z > z_list.len)
@@ -374,3 +377,4 @@ GLOBAL_VAR_INIT(say_disabled, FALSE)
 	messages += "</table>"
 
 	to_chat(src, messages.Join(""), confidential = TRUE)
+	*/

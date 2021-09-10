@@ -76,7 +76,7 @@
 		return
 
 	. += "fire_overlay"
-	if(is_station_level(z))
+	if(is_station_level(src))
 		. += "fire_[SSsecurity_level.current_level]"
 		. += mutable_appearance(icon, "fire_[SSsecurity_level.current_level]")
 		. += emissive_appearance(icon, "fire_[SSsecurity_level.current_level]")
@@ -160,7 +160,7 @@
 /obj/machinery/firealarm/proc/check_security_level(datum/source, new_level)
 	SIGNAL_HANDLER
 
-	if(is_station_level(z))
+	if(is_station_level(src))
 		update_appearance()
 
 /obj/machinery/firealarm/proc/alarm(mob/user)

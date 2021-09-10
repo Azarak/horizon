@@ -17,16 +17,16 @@
 	var/obj/effect/abstract/overmap/my_visual
 	/// The type of the visual that will be spawned for this object
 	var/visual_type = /obj/effect/abstract/overmap
-	/// Related Z levels of this overmap object, for objects like the station, planets, ruin clusters
-	var/list/related_levels = list()
+	/// Related map zone of this overmap object, for objects like the station, planets, ruin clusters
+	var/datum/map_zone/related_map_zone
 	/// If true then the SSovermap will call process() on it every time it fires
 	var/overmap_process = FALSE
 	/// When this object is spawned it will clear all the hazards in its current position
 	var/clears_hazards_on_spawn = FALSE
 	var/overmap_flags = OV_SHOWS_ON_SENSORS|OV_CAN_BE_TARGETED|OV_CAN_BE_SCANNED
-	/// Linked weather controller, expect this to apply to all related_levels
+	/// Linked weather controller, expect this to apply to related_map_zone
 	var/datum/weather_controller/weather_controller
-	/// Linked day and night controller, expect this to apply to all related_levels
+	/// Linked day and night controller, expect this to apply to related_map_zone
 	var/datum/day_night_controller/day_night_controller
 
 /datum/overmap_object/proc/ProcessPartials()
