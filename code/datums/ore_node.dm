@@ -20,7 +20,7 @@
 
 /datum/ore_node/Destroy()
 	//Remove from the level list
-	var/datum/sub_map_zone/subzone = SSmapping.get_sub_zone(locate(x,y,z))
+	var/datum/sub_map_zone/subzone = SSmapping.get_sub_zone(locate(x_coord,y_coord,z_coord))
 	subzone.ore_nodes -= src
 	return ..()
 

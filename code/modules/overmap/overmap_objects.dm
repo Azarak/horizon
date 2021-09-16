@@ -24,10 +24,6 @@
 	/// When this object is spawned it will clear all the hazards in its current position
 	var/clears_hazards_on_spawn = FALSE
 	var/overmap_flags = OV_SHOWS_ON_SENSORS|OV_CAN_BE_TARGETED|OV_CAN_BE_SCANNED
-	/// Linked weather controller, expect this to apply to related_map_zone
-	var/datum/weather_controller/weather_controller
-	/// Linked day and night controller, expect this to apply to related_map_zone
-	var/datum/day_night_controller/day_night_controller
 
 /datum/overmap_object/proc/ProcessPartials()
 	var/did_move = FALSE
@@ -64,19 +60,13 @@
 
 //Gets all alive client mobs in the contained overmap object
 /datum/overmap_object/proc/GetAllAliveClientMobs()
-	var/list/compiled_list = list()
-	for(var/i in related_levels)
-		var/datum/space_level/level = i 
-		compiled_list += SSmobs.clients_by_zlevel[level.z_value]
-	return compiled_list
+	if(related_map_zone)
+		return related_map_zone.get_alive_client_mobs()
 
 //Gets all alive and dead(observers) client mobs in the contained overmap object
 /datum/overmap_object/proc/GetAllClientMobs()
-	var/list/compiled_list = GetAllAliveClientMobs()
-	for(var/i in related_levels)
-		var/datum/space_level/level = i 
-		compiled_list += SSmobs.dead_players_by_zlevel[level.z_value]
-	return compiled_list
+	if(related_map_zone)
+		return related_map_zone.get_client_mobs()
 
 //When something enters this object. Also called when the objects are created
 /datum/overmap_object/proc/Entered(datum/overmap_object/entering, spawned = FALSE)
@@ -108,8 +98,6 @@
 		current_system.CoordsClearHazard(x, y)
 
 /datum/overmap_object/Destroy()
-	if(weather_controller)
-		weather_controller.UnlinkOvermapObject()
 	//As we are destroyed we exit other objects
 	for(var/other_obj in current_system.GetObjectsOnCoords(x, y))
 		var/datum/overmap_object/other_overmap_obj = other_obj

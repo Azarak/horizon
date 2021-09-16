@@ -36,8 +36,8 @@
 	transform = M
 	icon = smooth_icon
 	if(!color && turn_to_level_color)
-		var/datum/space_level/level = SSmapping.z_list[z]
-		color = level.rock_color
+		var/datum/map_zone/mapzone = SSmapping.get_map_zone(src)
+		color = mapzone.rock_color
 	if(prob(3))
 		AddComponent(/datum/component/digsite)
 

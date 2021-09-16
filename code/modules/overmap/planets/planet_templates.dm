@@ -40,7 +40,6 @@
 	var/ore_node_seeder_type = /datum/ore_node_seeder
 
 /datum/planet_template/proc/LoadTemplate(datum/overmap_sun_system/system, coordinate_x, coordinate_y)
-	var/old_z = world.maxz
 	var/datum/overmap_object/linked_overmap_object = new overmap_type(system, coordinate_x, coordinate_y)
 	var/picked_rock_color = CHECK_AND_PICK_OR_NULL(rock_color)
 	var/picked_plant_color = CHECK_AND_PICK_OR_NULL(plant_color)
@@ -73,15 +72,21 @@
 			WARNING("No area type passed on planet generation")
 		if(!generator_type)
 			WARNING("No generator type passed on planet generation")
-		var/datum/space_level/new_level = SSmapping.add_new_zlevel(name, default_traits_input, overmap_obj = linked_overmap_object)
+		var/datum/space_level/new_level = SSmapping.add_new_zlevel(name)
+		var/datum/map_zone/mapzone = new()
+		mapzone.related_overmap_object = linked_overmap_object
+		var/datum/sub_map_zone/subzone = new()
+		mapzone.add_sub_zone(subzone)
+		subzone.traits = default_traits_input
+		subzone.reserve(1, 1, world.maxx, world.maxy, new_level.z_value)
 		if(picked_rock_color)
-			new_level.rock_color = picked_rock_color
+			mapzone.rock_color = picked_rock_color
 		if(picked_plant_color)
-			new_level.plant_color = picked_plant_color
+			mapzone.plant_color = picked_plant_color
 		if(picked_grass_color)
-			new_level.grass_color = picked_grass_color
+			mapzone.grass_color = picked_grass_color
 		if(picked_water_color)
-			new_level.water_color = picked_water_color
+			mapzone.water_color = picked_water_color
 		if(atmosphere_type)
 			var/datum/atmosphere/atmos = new atmosphere_type()
 			SSair.register_planetary_atmos(atmos, new_level.z_value)
@@ -90,9 +95,6 @@
 			var/datum/ore_node_seeder/seeder = new ore_node_seeder_type
 			seeder.SeedToLevel(new_level.z_value)
 			qdel(seeder)
-		if(day_night_controller_type)
-			var/datum/day_night_controller/day_night = new day_night_controller_type(list(new_level))
-			day_night.LinkOvermapObject(linked_overmap_object)
 		var/area/new_area = new area_type()
 		var/list/turfs = block(locate(1,1,new_level.z_value),locate(world.maxx,world.maxy,new_level.z_value))
 		new_area.contents.Add(turfs)
@@ -101,21 +103,16 @@
 		qdel(my_generator)
 		//Create weather controller
 		if(weather_controller_type)
-			var/datum/weather_controller/weather_controller = new weather_controller_type(list(new_level))
-			weather_controller.LinkOvermapObject(linked_overmap_object)
+			new weather_controller_type(mapzone)
+		if(day_night_controller_type)
+			new day_night_controller_type(mapzone)
 
-	var/new_z = world.maxz
-
-	//Remember all the levels that we've added
-	var/list/z_levels = list()
-	for(var/i = old_z + 1 to new_z)
-		z_levels += i
-
+	var/datum/map_zone/mapzone = SSmapping.map_zones[SSmapping.map_zones.len]
 	//Pass them to the ruin seeder
-	SeedRuins(z_levels)
+	SeedRuins(mapzone)
 
 //Due to the particular way ruins are seeded right now this will be handled through a proc, rather than data-driven as of now
-/datum/planet_template/proc/SeedRuins(list/z_levels)
+/datum/planet_template/proc/SeedRuins(datum/map_zone/mapzone)
 	if(!spawns_planetary_ruins)
 		return
 	var/eligible_ruins = SSmapping.planet_ruins_templates.Copy()
@@ -124,7 +121,7 @@
 		if(!(planet_flags & planetary_ruin.planet_requirements))
 			eligible_ruins -= ruin_name
 
-	seedRuins(z_levels, ruin_budget, list(area_type), eligible_ruins)
+	seedRuins(mapzone.sub_map_zones, ruin_budget, list(area_type), eligible_ruins)
 
 
 /datum/planet_template/lavaland
@@ -143,14 +140,7 @@
 	spawns_planetary_ruins = FALSE
 	planet_flags = PLANET_VOLCANIC|PLANET_WRECKAGES
 
-/datum/planet_template/lavaland/SeedRuins(list/z_levels)
-	var/list/lava_ruins = SSmapping.levels_by_trait(ZTRAIT_LAVA_RUINS)
-	//Only account for the levels we loaded, in case we load 2 lavalands
-	for(var/i in lava_ruins)
-		if(!(i in z_levels))
-			lava_ruins -= i
-
-	if (z_levels.len)
-		seedRuins(z_levels, CONFIG_GET(number/lavaland_budget), list(/area/lavaland/surface/outdoors/unexplored), SSmapping.lava_ruins_templates)
-		for (var/lava_z in z_levels)
-			spawn_rivers(lava_z)
+/datum/planet_template/lavaland/SeedRuins(datum/map_zone/mapzone)
+	seedRuins(mapzone.sub_map_zones, CONFIG_GET(number/lavaland_budget), list(/area/lavaland/surface/outdoors/unexplored), SSmapping.lava_ruins_templates)
+	for (var/datum/sub_map_zone/submapz in mapzone.sub_map_zones)
+		spawn_rivers(submapz)

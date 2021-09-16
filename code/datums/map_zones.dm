@@ -1,4 +1,5 @@
 /datum/map_zone
+	var/name = "Map Zone"
 	var/list/traits
 	var/datum/overmap_object/related_overmap_object
 	var/is_overmap_controllable = FALSE
@@ -20,12 +21,40 @@
 	/// List of all sub map zones this map zone contains
 	var/list/sub_map_zones = list()
 
+/datum/map_zone/New()
+	SSmapping.map_zones += src
+	. = ..()
+
 ///If something requires a level to have a weather controller, use this
 /datum/map_zone/proc/AssertWeatherController()
 	if(!weather_controller)
 		new /datum/weather_controller(list(src))
 
+/datum/map_zone/proc/get_client_mobs()
+	return get_alive_client_mobs() + get_dead_client_mobs()
+
+/datum/map_zone/proc/get_alive_client_mobs()
+	. = list()
+	for(var/datum/sub_map_zone/subzone as anything in sub_map_zones)
+		. += subzone.get_alive_client_mobs()
+
+/datum/map_zone/proc/get_dead_client_mobs()
+	. = list()
+	for(var/datum/sub_map_zone/subzone as anything in sub_map_zones)
+		. += subzone.get_dead_client_mobs()
+
+/datum/map_zone/proc/is_in_bounds(atom/Atom)
+	for(var/datum/sub_map_zone/subzone as anything in sub_map_zones)
+		if(subzone.is_in_bounds(Atom))
+			return TRUE
+	return FALSE
+
+/datum/map_zone/proc/add_sub_zone(datum/sub_map_zone/addsub)
+	sub_map_zones += addsub
+	addsub.parent_map_zone = src
+
 /datum/sub_map_zone
+	var/name = "Sub Map Zone"
 	var/datum/map_zone/parent_map_zone
 	/// Z level which contains this sub map zone
 	var/datum/space_level/parent_level
@@ -57,6 +86,20 @@
 	/// A list of all ore nodes on this level
 	var/list/ore_nodes = list()
 
+/datum/sub_map_zone/proc/get_trait(trait)
+	return traits[trait]
+
+/datum/sub_map_zone/proc/reserve(x1, y1, x2, y2, z)
+	low_x = x1
+	low_y = y1
+	high_x = x2
+	high_y = y2
+	z_value = z
+	parent_level = SSmapping.z_list[z]
+	parent_level.sub_map_zones += src
+	x_distance = high_x - low_x
+	y_distance = high_y - low_y
+
 /datum/sub_map_zone/proc/is_in_bounds(atom/Atom)
 	if(Atom.x >= low_x && Atom.x <= high_x && Atom.y >= low_y && Atom.y <= high_y)
 		return TRUE
@@ -84,6 +127,21 @@
 	var/abs_x = Turf.x - low_x
 	var/abs_y = Turf.y - low_y
 	return locate(up_linkage.low_x + abs_x, up_linkage.low_y + abs_y, up_linkage.z_value)
+
+/datum/sub_map_zone/proc/get_client_mobs()
+	return get_alive_client_mobs() + get_dead_client_mobs()
+
+/datum/sub_map_zone/proc/get_alive_client_mobs()
+	. = list()
+	for(var/mob/Mob as anything in SSmobs.clients_by_zlevel[z_value])
+		if(is_in_bounds(Mob))
+			. += Mob
+
+/datum/sub_map_zone/proc/get_dead_client_mobs()
+	. = list()
+	for(var/mob/Mob as anything in SSmobs.dead_players_by_zlevel[z_value])
+		if(is_in_bounds(Mob))
+			. += Mob
 
 /// Gets the sub zone that contains the passed atom
 /datum/controller/subsystem/mapping/proc/get_sub_zone(atom/Atom)

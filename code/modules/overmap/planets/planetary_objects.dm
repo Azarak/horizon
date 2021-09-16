@@ -113,8 +113,8 @@
 	var/matrix/translation = new
 	translation.Translate(-9, -9)
 	transform = translation
-	var/datum/space_level/level = SSmapping.z_list[z]
-	color = level.grass_color
+	var/datum/map_zone/mapzone = SSmapping.get_map_zone(src)
+	color = mapzone.grass_color
 
 /turf/open/floor/planetary/dirt
 	gender = PLURAL
@@ -140,8 +140,8 @@
 
 /turf/open/floor/planetary/rock/Initialize()
 	. = ..()
-	var/datum/space_level/level = SSmapping.z_list[z]
-	color = level.rock_color
+	var/datum/map_zone/mapzone = SSmapping.get_map_zone(src)
+	color = mapzone.rock_color
 
 /turf/open/floor/planetary/mud
 	gender = PLURAL

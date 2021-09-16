@@ -390,11 +390,9 @@ GLOBAL_LIST_EMPTY(gravity_generators) // We will keep track of this by adding ne
 	if(T)
 		var/list/z_list = list()
 		// Multi-Z, station gravity generator generates gravity on all ZTRAIT_STATION z-levels.
-		if(SSmapping.sub_zone_trait(T, ZTRAIT_STATION))
-			for(var/z in SSmapping.levels_by_trait(ZTRAIT_STATION))
-				z_list += z
-		else
-			z_list += T.z
+		//TODO ^
+		//else
+		z_list += T.z
 		for(var/z in z_list)
 			if(!GLOB.gravity_generators["[z]"])
 				GLOB.gravity_generators["[z]"] = list()

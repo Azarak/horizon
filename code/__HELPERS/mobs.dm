@@ -563,7 +563,7 @@ GLOBAL_LIST_EMPTY(species_list)
 		if(check_mind)
 			if(!ai.mind)
 				continue
-		if(z && !(z == ai.z) && (!is_station_level(z) || !is_station_level(ai))) //if a Z level was specified, AND the AI is not on the same level, AND either is off the station...
+		if(z && !(z == ai.z) && (!is_station_level(ai) || !is_station_level(ai))) //if a Z level was specified, AND the AI is not on the same level, AND either is off the station...
 			continue
 		. += ai
 

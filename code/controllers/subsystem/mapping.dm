@@ -52,8 +52,8 @@ SUBSYSTEM_DEF(mapping)
 	var/adding_new_zlevel = FALSE
 
 
-	/// The overmap object of the main loaded station, for easy access
-	var/datum/overmap_object/station_overmap_object
+	/// The map zone of the main loaded station, for easy access
+	var/datum/map_zone/station_map_zone
 	/// List of all map zones
 	var/list/map_zones = list()
 
@@ -81,7 +81,7 @@ SUBSYSTEM_DEF(mapping)
 	process_teleport_locs() //Sets up the wizard teleport locations
 
 #ifndef LOWMEMORYMODE
-	empty_space = add_new_zlevel("Empty Area [space_levels_so_far]", list(ZTRAIT_LINKAGE = UNAFFECTED))
+	empty_space = add_new_zlevel("Empty Area [space_levels_so_far]")
 
 	// Pick a random away mission.
 	if(CONFIG_GET(flag/roundstart_away))
@@ -96,21 +96,21 @@ SUBSYSTEM_DEF(mapping)
 	// Generate mining ruins
 	loading_ruins = TRUE
 
-	var/list/ice_ruins = levels_by_trait(ZTRAIT_ICE_RUINS)
+	var/list/ice_ruins = sub_zones_by_trait(ZTRAIT_ICE_RUINS)
 	if (ice_ruins.len)
 		// needs to be whitelisted for underground too so place_below ruins work
 		seedRuins(ice_ruins, CONFIG_GET(number/icemoon_budget), list(/area/icemoon/surface/outdoors/unexplored, /area/icemoon/underground/unexplored), ice_ruins_templates)
-		for (var/ice_z in ice_ruins)
-			spawn_rivers(ice_z, 4, /turf/open/openspace/icemoon, /area/icemoon/surface/outdoors/unexplored/rivers)
+		for (var/datum/sub_map_zone/ice_sub in ice_ruins)
+			spawn_rivers(ice_sub, 4, /turf/open/openspace/icemoon, /area/icemoon/surface/outdoors/unexplored/rivers)
 
-	var/list/ice_ruins_underground = levels_by_trait(ZTRAIT_ICE_RUINS_UNDERGROUND)
+	var/list/ice_ruins_underground = sub_zones_by_trait(ZTRAIT_ICE_RUINS_UNDERGROUND)
 	if (ice_ruins_underground.len)
 		seedRuins(ice_ruins_underground, CONFIG_GET(number/icemoon_budget), list(/area/icemoon/underground/unexplored), ice_ruins_underground_templates)
-		for (var/ice_z in ice_ruins_underground)
-			spawn_rivers(ice_z, 4, level_trait(ice_z, ZTRAIT_BASETURF), /area/icemoon/underground/unexplored/rivers)
+		for (var/datum/sub_map_zone/ice_sub in ice_ruins_underground)
+			spawn_rivers(ice_sub, 4, ice_sub.get_trait(ZTRAIT_BASETURF), /area/icemoon/underground/unexplored/rivers)
 
 	// Generate deep space ruins
-	var/list/space_ruins = levels_by_trait(ZTRAIT_SPACE_RUINS)
+	var/list/space_ruins = sub_zones_by_trait(ZTRAIT_SPACE_RUINS)
 	if (space_ruins.len)
 		seedRuins(space_ruins, CONFIG_GET(number/space_budget), list(/area/space), space_ruins_templates)
 	loading_ruins = FALSE
@@ -118,7 +118,12 @@ SUBSYSTEM_DEF(mapping)
 	// Run map generation after ruin generation to prevent issues
 	run_map_generation()
 	// Add the transit level
-	transit = add_new_zlevel("Transit/Reserved", list(ZTRAIT_RESERVED = TRUE))
+	transit = add_new_zlevel("Transit/Reserved")
+	var/datum/map_zone/mapzone = new()
+	var/datum/sub_map_zone/subzone = new()
+	mapzone.add_sub_zone(subzone)
+	subzone.traits = list(ZTRAIT_RESERVED = TRUE)
+	subzone.reserve(1, 1, world.maxx, world.maxy, world.maxz)
 	repopulate_sorted_areas()
 	// Set up Z-level transitions.
 	setup_map_transitions()
@@ -221,6 +226,8 @@ Used by the AI doomsday and the self-destruct nuke.
 	)
 	. = list()
 	var/start_time = REALTIMEOFDAY
+	var/datum/map_zone/mapzone = new()
+	mapzone.related_overmap_object = ov_obj
 
 	if (!islist(files))  // handle single-level maps
 		files = list(files)
@@ -252,8 +259,12 @@ Used by the AI doomsday and the self-destruct nuke.
 	var/start_z = world.maxz + 1
 	var/i = 0
 	var/list/space_levels = list()
-	for (var/level in traits)
-		space_levels += add_new_zlevel("[name][i ? " [i + 1]" : ""]", level, null, overmap_obj = ov_obj)
+	for (var/list/level as anything in traits)
+		space_levels += add_new_zlevel("[name][i ? " [i + 1]" : ""]")
+		var/datum/sub_map_zone/subzone = new()
+		mapzone.add_sub_zone(subzone)
+		subzone.traits = level.Copy()
+		subzone.reserve(1, 1, world.maxx, world.maxy, start_z + i)
 		++i
 	var/datum/atmosphere/atmos
 	if(atmosphere_type)
@@ -261,32 +272,28 @@ Used by the AI doomsday and the self-destruct nuke.
 	var/datum/ore_node_seeder/ore_node_seeder
 	if(ore_node_seeder_type)
 		ore_node_seeder = new ore_node_seeder_type
-	for(var/c in space_levels)
-		var/datum/space_level/level = c
+	for(var/datum/sub_map_zone/iterated_subzone in mapzone.sub_map_zones)
 		if(ore_node_seeder)
-			ore_node_seeder.SeedToLevel(level.z_value)
+			ore_node_seeder.SeedToLevel(iterated_subzone.z_value)
 		if(atmos)
-			SSair.register_planetary_atmos(atmos, level.z_value)
-		if(rock_color)
-			level.rock_color = rock_color
-		if(plant_color)
-			level.plant_color = plant_color
-		if(grass_color)
-			level.grass_color = grass_color
-		if(water_color)
-			level.water_color = water_color
+			SSair.register_planetary_atmos(atmos, iterated_subzone.z_value)
+	if(rock_color)
+		mapzone.rock_color = rock_color
+	if(plant_color)
+		mapzone.plant_color = plant_color
+	if(grass_color)
+		mapzone.grass_color = grass_color
+	if(water_color)
+		mapzone.water_color = water_color
 	if(atmos)
 		qdel(atmos)
 	if(ore_node_seeder)
 		qdel(ore_node_seeder)
 	//Apply the weather controller to the levels if able
 	if(weather_controller_type)
-		var/datum/weather_controller/weather_controller = new weather_controller_type(space_levels)
-		if(ov_obj)
-			weather_controller.LinkOvermapObject(ov_obj)
+		new weather_controller_type(mapzone)
 	if(day_night_controller_type)
-		var/datum/day_night_controller/day_night = new day_night_controller_type(space_levels)
-		day_night.LinkOvermapObject(ov_obj)
+		new day_night_controller_type(mapzone)
 	space_levels = null
 
 	// load the maps
@@ -311,7 +318,7 @@ Used by the AI doomsday and the self-destruct nuke.
 	// load the station
 	station_start = world.maxz + 1
 	INIT_ANNOUNCE("Loading [config.map_name]...")
-	station_overmap_object = new config.overmap_object_type(SSovermap.main_system, rand(3,10), rand(3,10))
+	var/station_overmap_object = new config.overmap_object_type(SSovermap.main_system, rand(3,10), rand(3,10))
 	var/picked_rock_color = CHECK_AND_PICK_OR_NULL(config.rock_color)
 	var/picked_plant_color = CHECK_AND_PICK_OR_NULL(config.plant_color)
 	var/picked_grass_color = CHECK_AND_PICK_OR_NULL(config.grass_color)
@@ -331,6 +338,7 @@ Used by the AI doomsday and the self-destruct nuke.
 			grass_color = picked_grass_color,
 			water_color = picked_water_color,
 			ore_node_seeder_type = config.ore_node_seeder_type)
+	station_map_zone = map_zones[map_zones.len]
 
 	if(SSdbcore.Connect())
 		var/datum/db_query/query_round_map_name = SSdbcore.NewQuery({"
@@ -344,7 +352,14 @@ Used by the AI doomsday and the self-destruct nuke.
 	if(config.space_ruin_levels)
 		for(var/i in 1 to config.space_ruin_levels)
 			++space_levels_so_far
-			add_new_zlevel("Ruins Area [i]", ZTRAITS_SPACE, overmap_obj = new /datum/overmap_object/ruins(SSovermap.main_system, rand(5,25), rand(5,25)))
+			add_new_zlevel("Ruins Area [i]")
+			var/overmap_obj = new /datum/overmap_object/ruins(SSovermap.main_system, rand(5,25), rand(5,25))
+			var/datum/map_zone/mapzone = new()
+			mapzone.related_overmap_object = overmap_obj
+			var/datum/sub_map_zone/subzone = new()
+			mapzone.add_sub_zone(subzone)
+			subzone.traits = ZTRAITS_SPACE
+			subzone.reserve(1, 1, world.maxx, world.maxy, world.maxz)
 	//Load planets
 	if(config.minetype == "lavaland")
 		var/datum/planet_template/lavaland_template = planet_templates[/datum/planet_template/lavaland]
@@ -599,17 +614,22 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 	if(turf_type_override)
 		reserve.turf_type = turf_type_override
 	if(!z)
-		for(var/i in levels_by_trait(ZTRAIT_RESERVED))
-			if(reserve.Reserve(width, height, i))
+		for(var/datum/sub_map_zone/iterated_subzonesubzone in sub_zones_by_trait(ZTRAIT_RESERVED))
+			if(reserve.Reserve(width, height, iterated_subzonesubzone.z_value))
 				return reserve
 		//If we didn't return at this point, theres a good chance we ran out of room on the exisiting reserved z levels, so lets try a new one
 		num_of_res_levels += 1
-		var/datum/space_level/newReserved = add_new_zlevel("Transit/Reserved [num_of_res_levels]", list(ZTRAIT_RESERVED = TRUE))
+		var/datum/space_level/newReserved = add_new_zlevel("Transit/Reserved [num_of_res_levels]")
+		var/datum/map_zone/mapzone = new()
+		var/datum/sub_map_zone/subzone = new()
+		mapzone.add_sub_zone(subzone)
+		subzone.traits = list(ZTRAIT_RESERVED = TRUE)
+		subzone.reserve(1, 1, world.maxx, world.maxy, world.maxz)
 		initialize_reserved_level(newReserved.z_value)
 		if(reserve.Reserve(width, height, newReserved.z_value))
 			return reserve
 	else
-		if(!level_trait(z, ZTRAIT_RESERVED))
+		if(!sub_zone_trait(locate(1,1,z), ZTRAIT_RESERVED))
 			qdel(reserve)
 			return
 		else
@@ -621,7 +641,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 /datum/controller/subsystem/mapping/proc/initialize_reserved_level(z)
 	UNTIL(!clearing_reserved_turfs) //regardless, lets add a check just in case.
 	clearing_reserved_turfs = TRUE //This operation will likely clear any existing reservations, so lets make sure nothing tries to make one while we're doing it.
-	if(!level_trait(z,ZTRAIT_RESERVED))
+	if(!sub_zone_trait(locate(1,1,z),ZTRAIT_RESERVED))
 		clearing_reserved_turfs = FALSE
 		CRASH("Invalid z level prepared for reservations.")
 	var/turf/A = get_turf(locate(SHUTTLE_TRANSIT_BORDER,SHUTTLE_TRANSIT_BORDER,z))
@@ -678,12 +698,17 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 /datum/controller/subsystem/mapping/proc/get_isolated_ruin_z()
 	if(!isolated_ruins_z)
 		isolated_ruins_z = add_new_zlevel("Isolated Ruins/Reserved", list(ZTRAIT_RESERVED = TRUE, ZTRAIT_ISOLATED_RUINS = TRUE))
+		var/datum/map_zone/mapzone = new()
+		var/datum/sub_map_zone/subzone = new()
+		mapzone.add_sub_zone(subzone)
+		subzone.traits = list(ZTRAIT_RESERVED = TRUE)
+		subzone.reserve(1, 1, world.maxx, world.maxy, world.maxz)
 		initialize_reserved_level(isolated_ruins_z.z_value)
 	return isolated_ruins_z.z_value
 
-/datum/controller/subsystem/mapping/proc/GetLevelWeatherController(z_value)
-	var/datum/space_level/level = z_list[z_value]
-	if(!level)
+/datum/controller/subsystem/mapping/proc/GetMapZoneWeatherController(atom/Atom)
+	var/datum/map_zone/mapzone = get_map_zone(Atom)
+	if(!mapzone)
 		return
-	level.AssertWeatherController()
-	return level.weather_controller
+	mapzone.AssertWeatherController()
+	return mapzone.weather_controller

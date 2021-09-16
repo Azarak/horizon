@@ -63,8 +63,8 @@
 	var/current_parallax_dir = 0
 
 /datum/overmap_object/shuttle/GetAllAliveClientMobs()
-	. = ..()
 	if(my_shuttle)
+		. = list()
 		//About the most efficient way I could think of doing it
 		var/datum/space_level/transit_level = SSmapping.transit
 		for(var/i in SSmobs.clients_by_zlevel[transit_level.z_value])
@@ -72,10 +72,12 @@
 			var/turf/mob_turf = get_turf(iterated_mob)
 			if(my_shuttle.shuttle_areas[mob_turf.loc])
 				. += iterated_mob
+	else
+		. = ..()
 
 /datum/overmap_object/shuttle/GetAllClientMobs()
-	. = ..()
 	if(my_shuttle)
+		. = list()
 		//About the most efficient way I could think of doing it
 		var/datum/space_level/transit_level = SSmapping.transit
 		for(var/i in SSmobs.dead_players_by_zlevel[transit_level.z_value])
@@ -83,6 +85,8 @@
 			var/turf/mob_turf = get_turf(iterated_mob)
 			if(my_shuttle.shuttle_areas[mob_turf.loc])
 				. += iterated_mob
+	else
+		. = ..()
 
 /datum/overmap_object/shuttle/proc/GetSensorTargets()
 	var/list/targets = list()
@@ -269,10 +273,11 @@
 				var/list/freeform_z_levels = list()
 				for(var/i in nearby_objects)
 					var/datum/overmap_object/IO = i
-					for(var/level in IO.related_levels)
-						var/datum/space_level/iterated_space_level = level
-						z_levels["[iterated_space_level.z_value]"] = TRUE
-						freeform_z_levels["[iterated_space_level.name] - Freeform"] = iterated_space_level.z_value
+					if(IO.related_map_zone)
+						for(var/datum/sub_map_zone/subzone in IO.related_map_zone.sub_map_zones)
+							var/subzone_z = subzone.z_value
+							z_levels["[subzone_z]"] = TRUE
+							freeform_z_levels["[subzone.name] - Freeform"] = subzone_z
 			
 				var/list/obj/docking_port/stationary/docks = list()
 				var/list/options = params2list(my_shuttle.possible_destinations)
@@ -421,6 +426,7 @@
 				return
 			if(VECTOR_LENGTH(velocity_x, velocity_y) > SHUTTLE_MAXIMUM_DOCKING_SPEED)
 				return
+			/*
 			switch(href_list["dock_control"])
 				if("normal_dock")
 					if(shuttle_controller.busy)
@@ -457,7 +463,7 @@
 						return
 					shuttle_controller.SetController(usr)
 					shuttle_controller.freeform_docker = new /datum/shuttle_freeform_docker(shuttle_controller, usr, z_level)
-
+			*/
 		if("target")
 			if(!(shuttle_capability & SHUTTLE_CAN_USE_TARGET))
 				return
@@ -610,13 +616,11 @@
 			changed = TRUE
 			var/area/hyperspace_area = transit_instance.dock.assigned_area
 			hyperspace_area.parallax_movedir = current_parallax_dir
-	else if (is_seperate_z_level && length(related_levels))
-		for(var/i in related_levels)
-			var/datum/space_level/level = i
-			current_parallax_dir = (established_direction && fixed_parallax_dir) ? fixed_parallax_dir : established_direction
-			if(current_parallax_dir != level.parallax_direction_override)
-				level.parallax_direction_override = current_parallax_dir
-				changed = TRUE
+	else if (is_seperate_z_level && related_map_zone)
+		current_parallax_dir = (established_direction && fixed_parallax_dir) ? fixed_parallax_dir : established_direction
+		if(current_parallax_dir != related_map_zone.parallax_direction_override)
+			related_map_zone.parallax_direction_override = current_parallax_dir
+			changed = TRUE
 
 	if(changed)
 		for(var/i in GetAllClientMobs())
