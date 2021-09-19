@@ -135,6 +135,7 @@
 /datum/day_night_controller/New(datum/map_zone/passed_mapzone)
 	. = ..()
 	mapzone = passed_mapzone
+	mapzone.day_night_controller = src
 	SSday_night.day_night_controllers += src
 
 	//Compile the lookup tables
@@ -160,5 +161,7 @@
 
 /// In theory this should never be destroyed, unless you plan to dynamically change existing z levels
 /datum/day_night_controller/Destroy()
+	mapzone.day_night_controller = null
+	mapzone = null
 	SSday_night.day_night_controllers -= src
 	return ..()

@@ -101,7 +101,7 @@
 	y_distance = high_y - low_y
 
 /datum/sub_map_zone/proc/is_in_bounds(atom/Atom)
-	if(Atom.x >= low_x && Atom.x <= high_x && Atom.y >= low_y && Atom.y <= high_y)
+	if(Atom.x >= low_x && Atom.x <= high_x && Atom.y >= low_y && Atom.y <= high_y && Atom.z == z_value)
 		return TRUE
 	return FALSE
 

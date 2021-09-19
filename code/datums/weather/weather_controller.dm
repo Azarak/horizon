@@ -21,6 +21,7 @@
 /datum/weather_controller/New(datum/map_zone/passed_mapzone)
 	. = ..()
 	mapzone = passed_mapzone
+	mapzone.weather_controller = src
 	SSweather.weather_controllers += src
 	RollNextWeather()
 
@@ -33,6 +34,8 @@
 
 /// In theory this should never be destroyed, unless you plan to dynamically change existing z levels
 /datum/weather_controller/Destroy()
+	mapzone.weather_controller = null
+	mapzone = null
 	if(current_weathers)
 		for(var/i in current_weathers)
 			var/datum/weather/W = i
