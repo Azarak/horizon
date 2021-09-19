@@ -259,13 +259,25 @@ Used by the AI doomsday and the self-destruct nuke.
 	var/start_z = world.maxz + 1
 	var/i = 0
 	var/list/space_levels = list()
+	var/list/ordered_subzones = list()
 	for (var/list/level as anything in traits)
 		space_levels += add_new_zlevel("[name][i ? " [i + 1]" : ""]")
 		var/datum/sub_map_zone/subzone = new()
 		mapzone.add_sub_zone(subzone)
 		subzone.traits = level.Copy()
 		subzone.reserve(1, 1, world.maxx, world.maxy, start_z + i)
+		ordered_subzones += subzone
 		++i
+	var/subi = 0
+	for(var/datum/sub_map_zone/subzone as anything in ordered_subzones)
+		subi++
+		var/list/subzone_traits = subzone.traits
+		var/up_value = subzone_traits["Up"]
+		var/down_value = subzone_traits["Down"]
+		if(!isnull(up_value))
+			subzone.up_linkage = ordered_subzones[subi+up_value]
+		if(!isnull(down_value))
+			subzone.down_linkage = ordered_subzones[subi+down_value]
 	var/datum/atmosphere/atmos
 	if(atmosphere_type)
 		atmos = new atmosphere_type()
