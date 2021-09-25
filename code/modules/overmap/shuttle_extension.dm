@@ -26,7 +26,7 @@
 		return
 	mapzone = mapzone_to_add
 	mapzone.all_extensions += src
-	if(mapzone.related_overmap_object && mapzone.is_overmap_controllable)
+	if(mapzone.related_overmap_object)
 		AddToOvermapObject(mapzone.related_overmap_object)
 
 /datum/shuttle_extension/proc/RemoveFromZLevel()
