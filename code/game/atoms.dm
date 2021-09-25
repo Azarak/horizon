@@ -1928,10 +1928,11 @@
 	if(A.has_gravity) // Areas which always has gravity
 		return A.has_gravity
 	else
-		// There's a gravity generator on our z level
-		if(GLOB.gravity_generators["[T.z]"])
+		// See if there's a gravity generator on our map zone
+		var/datum/map_zone/mapzone = SSmapping.get_map_zone(T)
+		if(mapzone.gravity_generators.len)
 			var/max_grav = 0
-			for(var/obj/machinery/gravity_generator/main/G in GLOB.gravity_generators["[T.z]"])
+			for(var/obj/machinery/gravity_generator/main/G as anything in mapzone.gravity_generators)
 				max_grav = max(G.setting,max_grav)
 			return max_grav
 	return SSmapping.sub_zone_trait(T, ZTRAIT_GRAVITY)

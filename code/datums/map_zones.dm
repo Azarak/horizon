@@ -21,6 +21,10 @@
 	/// List of all sub map zones this map zone contains
 	var/list/sub_map_zones = list()
 
+	//Content variables
+	/// List of all gravity generators inside of the sub levels of this map zone
+	var/list/gravity_generators = list()
+
 /datum/map_zone/New(passed_name, datum/overmap_object/passed_ov_obj)
 	name = passed_name
 	related_overmap_object = passed_ov_obj
