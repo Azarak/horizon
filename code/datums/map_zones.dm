@@ -21,7 +21,9 @@
 	/// List of all sub map zones this map zone contains
 	var/list/sub_map_zones = list()
 
-/datum/map_zone/New()
+/datum/map_zone/New(passed_name, datum/overmap_object/passed_ov_obj)
+	name = passed_name
+	related_overmap_object = passed_ov_obj
 	SSmapping.map_zones += src
 	. = ..()
 
@@ -86,16 +88,23 @@
 	/// A list of all ore nodes on this level
 	var/list/ore_nodes = list()
 
+/datum/sub_map_zone/New(passed_name, list/passed_traits, datum/map_zone/passed_map, lx, ly, hx, hy, passed_z)
+	name = passed_name
+	traits = passed_traits.Copy()
+	passed_map.add_sub_zone(src)
+	reserve(lx, ly, hx, hy, passed_z)
+	return ..()
+
 /datum/sub_map_zone/proc/get_trait(trait)
 	return traits[trait]
 
-/datum/sub_map_zone/proc/reserve(x1, y1, x2, y2, z)
+/datum/sub_map_zone/proc/reserve(x1, y1, x2, y2, passed_z)
 	low_x = x1
 	low_y = y1
 	high_x = x2
 	high_y = y2
-	z_value = z
-	parent_level = SSmapping.z_list[z]
+	z_value = passed_z
+	parent_level = SSmapping.z_list[z_value]
 	parent_level.sub_map_zones += src
 	x_distance = high_x - low_x
 	y_distance = high_y - low_y

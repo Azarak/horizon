@@ -119,11 +119,8 @@ SUBSYSTEM_DEF(mapping)
 	run_map_generation()
 	// Add the transit level
 	transit = add_new_zlevel("Transit/Reserved")
-	var/datum/map_zone/mapzone = new()
-	var/datum/sub_map_zone/subzone = new()
-	mapzone.add_sub_zone(subzone)
-	subzone.traits = list(ZTRAIT_RESERVED = TRUE)
-	subzone.reserve(1, 1, world.maxx, world.maxy, world.maxz)
+	var/datum/map_zone/mapzone = new("Transit/Reserved")
+	new /datum/sub_map_zone("Transit/Reserved", list(ZTRAIT_RESERVED = TRUE), mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
 	repopulate_sorted_areas()
 	// Set up Z-level transitions.
 	setup_map_transitions()
@@ -226,8 +223,7 @@ Used by the AI doomsday and the self-destruct nuke.
 	)
 	. = list()
 	var/start_time = REALTIMEOFDAY
-	var/datum/map_zone/mapzone = new()
-	mapzone.related_overmap_object = ov_obj
+	var/datum/map_zone/mapzone = new(name, ov_obj)
 
 	if (!islist(files))  // handle single-level maps
 		files = list(files)
@@ -261,11 +257,10 @@ Used by the AI doomsday and the self-destruct nuke.
 	var/list/space_levels = list()
 	var/list/ordered_subzones = list()
 	for (var/list/level as anything in traits)
-		space_levels += add_new_zlevel("[name][i ? " [i + 1]" : ""]")
-		var/datum/sub_map_zone/subzone = new()
-		mapzone.add_sub_zone(subzone)
-		subzone.traits = level.Copy()
-		subzone.reserve(1, 1, world.maxx, world.maxy, start_z + i)
+		var/level_name = "[name][i ? " [i + 1]" : ""]"
+		var/datum/space_level/space_lev = add_new_zlevel(level_name)
+		space_levels += space_lev
+		var/datum/sub_map_zone/subzone = new(level_name, level.Copy(), mapzone, 1, 1, world.maxx, world.maxy, space_lev.z_value)
 		ordered_subzones += subzone
 		++i
 	var/subi = 0
@@ -364,14 +359,11 @@ Used by the AI doomsday and the self-destruct nuke.
 	if(config.space_ruin_levels)
 		for(var/i in 1 to config.space_ruin_levels)
 			++space_levels_so_far
-			add_new_zlevel("Ruins Area [i]")
+			var/ruins_name = "Ruins Area [i]"
+			add_new_zlevel(ruins_name)
 			var/overmap_obj = new /datum/overmap_object/ruins(SSovermap.main_system, rand(5,25), rand(5,25))
-			var/datum/map_zone/mapzone = new()
-			mapzone.related_overmap_object = overmap_obj
-			var/datum/sub_map_zone/subzone = new()
-			mapzone.add_sub_zone(subzone)
-			subzone.traits = ZTRAITS_SPACE
-			subzone.reserve(1, 1, world.maxx, world.maxy, world.maxz)
+			var/datum/map_zone/mapzone = new(ruins_name, overmap_obj)
+			new /datum/sub_map_zone(ruins_name, ZTRAITS_SPACE, mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
 	//Load planets
 	if(config.minetype == "lavaland")
 		var/datum/planet_template/lavaland_template = planet_templates[/datum/planet_template/lavaland]
@@ -631,12 +623,10 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 				return reserve
 		//If we didn't return at this point, theres a good chance we ran out of room on the exisiting reserved z levels, so lets try a new one
 		num_of_res_levels += 1
-		var/datum/space_level/newReserved = add_new_zlevel("Transit/Reserved [num_of_res_levels]")
-		var/datum/map_zone/mapzone = new()
-		var/datum/sub_map_zone/subzone = new()
-		mapzone.add_sub_zone(subzone)
-		subzone.traits = list(ZTRAIT_RESERVED = TRUE)
-		subzone.reserve(1, 1, world.maxx, world.maxy, world.maxz)
+		var/transit_name = "Transit/Reserved [num_of_res_levels]"
+		var/datum/space_level/newReserved = add_new_zlevel(transit_name)
+		var/datum/map_zone/mapzone = new(transit_name)
+		new /datum/sub_map_zone(transit_name, list(ZTRAIT_RESERVED = TRUE), mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
 		initialize_reserved_level(newReserved.z_value)
 		if(reserve.Reserve(width, height, newReserved.z_value))
 			return reserve
@@ -709,12 +699,9 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 
 /datum/controller/subsystem/mapping/proc/get_isolated_ruin_z()
 	if(!isolated_ruins_z)
-		isolated_ruins_z = add_new_zlevel("Isolated Ruins/Reserved", list(ZTRAIT_RESERVED = TRUE, ZTRAIT_ISOLATED_RUINS = TRUE))
-		var/datum/map_zone/mapzone = new()
-		var/datum/sub_map_zone/subzone = new()
-		mapzone.add_sub_zone(subzone)
-		subzone.traits = list(ZTRAIT_RESERVED = TRUE)
-		subzone.reserve(1, 1, world.maxx, world.maxy, world.maxz)
+		isolated_ruins_z = add_new_zlevel("Isolated Ruins/Reserved")
+		var/datum/map_zone/mapzone = new("Isolated Ruins/Reserved")
+		new /datum/sub_map_zone("Isolated Ruins/Reserved", list(ZTRAIT_RESERVED = TRUE), mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
 		initialize_reserved_level(isolated_ruins_z.z_value)
 	return isolated_ruins_z.z_value
 

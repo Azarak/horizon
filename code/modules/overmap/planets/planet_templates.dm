@@ -73,12 +73,8 @@
 		if(!generator_type)
 			WARNING("No generator type passed on planet generation")
 		var/datum/space_level/new_level = SSmapping.add_new_zlevel(name)
-		var/datum/map_zone/mapzone = new()
-		mapzone.related_overmap_object = linked_overmap_object
-		var/datum/sub_map_zone/subzone = new()
-		mapzone.add_sub_zone(subzone)
-		subzone.traits = default_traits_input
-		subzone.reserve(1, 1, world.maxx, world.maxy, new_level.z_value)
+		var/datum/map_zone/mapzone = new(name, linked_overmap_object)
+		new /datum/sub_map_zone(name, default_traits_input, mapzone, 1, 1, world.maxx, world.maxy, new_level.z_value)
 		if(picked_rock_color)
 			mapzone.rock_color = picked_rock_color
 		if(picked_plant_color)
