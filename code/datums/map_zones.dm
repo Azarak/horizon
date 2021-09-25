@@ -2,7 +2,7 @@
 	var/name = "Map Zone"
 	var/list/traits
 	var/datum/overmap_object/related_overmap_object
-	var/is_overmap_controllable = FALSE
+	var/is_overmap_controllable = TRUE
 	var/parallax_direction_override
 	///Extensions for z levels as overmap objects
 	var/list/all_extensions = list()
