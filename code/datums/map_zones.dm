@@ -1,5 +1,8 @@
 /datum/map_zone
 	var/name = "Map Zone"
+	var/id
+	var/static/next_id = 0
+	var/next_subzone_id = 0
 	var/list/traits
 	var/datum/overmap_object/related_overmap_object
 	var/parallax_direction_override
@@ -28,6 +31,8 @@
 	name = passed_name
 	related_overmap_object = passed_ov_obj
 	SSmapping.map_zones += src
+	next_id++ 
+	id = next_id
 	. = ..()
 
 ///If something requires a level to have a weather controller, use this
@@ -57,9 +62,12 @@
 /datum/map_zone/proc/add_sub_zone(datum/sub_map_zone/addsub)
 	sub_map_zones += addsub
 	addsub.parent_map_zone = src
+	next_subzone_id++
+	addsub.id = next_subzone_id
 
 /datum/sub_map_zone
 	var/name = "Sub Map Zone"
+	var/id
 	var/datum/map_zone/parent_map_zone
 	/// Z level which contains this sub map zone
 	var/datum/space_level/parent_level
@@ -91,6 +99,11 @@
 	/// Content variables:
 	/// A list of all ore nodes on this level
 	var/list/ore_nodes = list()
+
+/datum/sub_map_zone/proc/get_relative_coords(atom/A)
+	var/rel_x = A.x - low_x + 1
+	var/rel_y = A.y - low_y + 1
+	return list(rel_x, rel_y)
 
 /datum/sub_map_zone/proc/reserve_margin(margin)
 	if(reserved_margin)
