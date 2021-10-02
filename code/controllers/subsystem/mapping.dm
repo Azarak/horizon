@@ -122,8 +122,6 @@ SUBSYSTEM_DEF(mapping)
 	var/datum/map_zone/mapzone = new("Transit/Reserved")
 	new /datum/sub_map_zone("Transit/Reserved", list(ZTRAIT_RESERVED = TRUE), mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
 	repopulate_sorted_areas()
-	// Set up Z-level transitions.
-	setup_map_transitions()
 	generate_station_area_list()
 	initialize_reserved_level(transit.z_value)
 	return ..()
@@ -219,7 +217,9 @@ Used by the AI doomsday and the self-destruct nuke.
 		plant_color,
 		grass_color,
 		water_color,
-		ore_node_seeder_type
+		ore_node_seeder_type,
+		map_margin,
+		self_looping
 	)
 	. = list()
 	var/start_time = REALTIMEOFDAY
@@ -308,6 +308,11 @@ Used by the AI doomsday and the self-destruct nuke.
 		var/datum/parsed_map/pm = P
 		if (!pm.load(1, 1, start_z + parsed_maps[P], no_changeturf = TRUE))
 			errorList |= pm.original_path
+	for(var/datum/sub_map_zone/subzone as anything in ordered_subzones)
+		if(map_margin)
+			subzone.reserve_margin(map_margin)
+		if(self_looping)
+			subzone.selfloop()
 	if(!silent)
 		INIT_ANNOUNCE("Loaded [name] in [(REALTIMEOFDAY - start_time)/10]s!")
 	return parsed_maps
@@ -344,7 +349,9 @@ Used by the AI doomsday and the self-destruct nuke.
 			plant_color = picked_plant_color,
 			grass_color = picked_grass_color,
 			water_color = picked_water_color,
-			ore_node_seeder_type = config.ore_node_seeder_type)
+			ore_node_seeder_type = config.ore_node_seeder_type,
+			map_margin = config.map_margin,
+			self_looping = config.self_looping)
 	station_map_zone = map_zones[map_zones.len]
 
 	if(SSdbcore.Connect())

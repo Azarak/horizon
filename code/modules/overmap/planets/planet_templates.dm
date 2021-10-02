@@ -38,6 +38,10 @@
 	var/ruin_budget = 40
 	/// Type of our ore node seeder
 	var/ore_node_seeder_type = /datum/ore_node_seeder
+	/// Whether the levels of this planetary level self loop
+	var/self_looping = TRUE
+	/// Amount of margin padding added to each side of the map. This is required to be atleast 2 for selflooping
+	var/map_margin = 5
 
 /datum/planet_template/proc/LoadTemplate(datum/overmap_sun_system/system, coordinate_x, coordinate_y)
 	var/datum/overmap_object/linked_overmap_object = new overmap_type(system, coordinate_x, coordinate_y)
@@ -65,7 +69,9 @@
 							plant_color = picked_plant_color,
 							grass_color = picked_grass_color,
 							water_color = picked_water_color,
-							ore_node_seeder_type = ore_node_seeder_type
+							ore_node_seeder_type = ore_node_seeder_type,
+							map_margin = map_margin,
+							self_looping = self_looping
 							)
 	else
 		if(!area_type)
@@ -74,7 +80,11 @@
 			WARNING("No generator type passed on planet generation")
 		var/datum/space_level/new_level = SSmapping.add_new_zlevel(name)
 		var/datum/map_zone/mapzone = new(name, linked_overmap_object)
-		new /datum/sub_map_zone(name, default_traits_input, mapzone, 1, 1, world.maxx, world.maxy, new_level.z_value)
+		var/datum/sub_map_zone/subzone = new(name, default_traits_input, mapzone, 1, 1, world.maxx, world.maxy, new_level.z_value)
+		if(map_margin)
+			subzone.reserve_margin(map_margin)
+		if(self_looping)
+			subzone.selfloop()
 		if(picked_rock_color)
 			mapzone.rock_color = picked_rock_color
 		if(picked_plant_color)
@@ -92,10 +102,11 @@
 			seeder.SeedToLevel(new_level.z_value)
 			qdel(seeder)
 		var/area/new_area = new area_type()
+		var/list/gen_turfs = block(locate(1 + map_margin,1 + map_margin,new_level.z_value),locate(world.maxx - map_margin,world.maxy - map_margin,new_level.z_value))
 		var/list/turfs = block(locate(1,1,new_level.z_value),locate(world.maxx,world.maxy,new_level.z_value))
 		new_area.contents.Add(turfs)
 		var/datum/map_generator/my_generator = new generator_type()
-		my_generator.generate_terrain(turfs)
+		my_generator.generate_terrain(gen_turfs)
 		qdel(my_generator)
 		//Create weather controller
 		if(weather_controller_type)
@@ -135,6 +146,9 @@
 	plant_color_as_grass = TRUE
 	spawns_planetary_ruins = FALSE
 	planet_flags = PLANET_VOLCANIC|PLANET_WRECKAGES
+
+	self_looping = FALSE
+	map_margin = 0
 
 /datum/planet_template/lavaland/SeedRuins(datum/map_zone/mapzone)
 	seedRuins(mapzone.sub_map_zones, CONFIG_GET(number/lavaland_budget), list(/area/lavaland/surface/outdoors/unexplored), SSmapping.lava_ruins_templates)

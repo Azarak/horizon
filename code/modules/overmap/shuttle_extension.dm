@@ -14,7 +14,7 @@
 			AddToShuttle(M)
 	else
 		var/datum/map_zone/foundzone = SSmapping.get_map_zone(position)
-		if(foundzone && foundzone.related_overmap_object && foundzone.is_overmap_controllable)
+		if(foundzone && foundzone.related_overmap_object && foundzone.related_overmap_object.is_overmap_controllable)
 			AddToZLevel(foundzone)
 
 /datum/shuttle_extension/proc/IsApplied()

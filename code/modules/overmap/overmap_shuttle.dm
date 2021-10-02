@@ -2,6 +2,7 @@
 	name = "Shuttle"
 	visual_type = /obj/effect/abstract/overmap/shuttle
 	overmap_process = TRUE
+	is_overmap_controllable = TRUE
 
 	var/obj/docking_port/mobile/my_shuttle
 	var/datum/transit_instance/transit_instance
