@@ -273,17 +273,16 @@ Used by the AI doomsday and the self-destruct nuke.
 			subzone.up_linkage = ordered_subzones[subi+up_value]
 		if(!isnull(down_value))
 			subzone.down_linkage = ordered_subzones[subi+down_value]
-	var/datum/atmosphere/atmos
 	if(atmosphere_type)
-		atmos = new atmosphere_type()
+		var/datum/atmosphere/atmos = new atmosphere_type()
+		mapzone.set_planetary_atmos(atmos)
+		qdel(atmos)
 	var/datum/ore_node_seeder/ore_node_seeder
 	if(ore_node_seeder_type)
 		ore_node_seeder = new ore_node_seeder_type
 	for(var/datum/sub_map_zone/iterated_subzone in mapzone.sub_map_zones)
 		if(ore_node_seeder)
 			ore_node_seeder.SeedToLevel(iterated_subzone.z_value)
-		if(atmos)
-			SSair.register_planetary_atmos(atmos, iterated_subzone.z_value)
 	if(rock_color)
 		mapzone.rock_color = rock_color
 	if(plant_color)
@@ -292,8 +291,6 @@ Used by the AI doomsday and the self-destruct nuke.
 		mapzone.grass_color = grass_color
 	if(water_color)
 		mapzone.water_color = water_color
-	if(atmos)
-		qdel(atmos)
 	if(ore_node_seeder)
 		qdel(ore_node_seeder)
 	//Apply the weather controller to the levels if able

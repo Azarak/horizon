@@ -20,6 +20,8 @@
 	var/grass_color = COLOR_DARK_MODERATE_LIME_GREEN
 	/// An override of water colors on this level
 	var/water_color = COLOR_WHITE
+	/// Gas string for planetary atmospherics of this map zone
+	var/planetary_gas_string
 	/// List of all sub map zones this map zone contains
 	var/list/sub_map_zones = list()
 
@@ -39,6 +41,10 @@
 /datum/map_zone/proc/AssertWeatherController()
 	if(!weather_controller)
 		new /datum/weather_controller(list(src))
+
+/datum/map_zone/proc/set_planetary_atmos(datum/atmosphere/atmos_datum)
+	planetary_gas_string = atmos_datum.gas_string
+	SSair.register_planetary_atmos(atmos_datum)
 
 /datum/map_zone/proc/get_client_mobs()
 	return get_alive_client_mobs() + get_dead_client_mobs()
