@@ -715,3 +715,11 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 		return
 	mapzone.AssertWeatherController()
 	return mapzone.weather_controller
+
+/datum/controller/subsystem/mapping/proc/get_map_zone_id(mapzone_id)
+	var/datum/map_zone/returned_mapzone
+	for(var/datum/map_zone/iterated_mapzone as anything in map_zones)
+		if(iterated_mapzone.id == mapzone_id)
+			returned_mapzone = iterated_mapzone
+			break
+	return returned_mapzone

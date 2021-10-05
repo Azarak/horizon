@@ -29,9 +29,19 @@
 	/// List of all gravity generators inside of the sub levels of this map zone
 	var/list/gravity_generators = list()
 
+/datum/map_zone/proc/get_sub_zone_id(subzone_id)
+	var/datum/sub_map_zone/found_subzone
+	for(var/datum/sub_map_zone/iterated_subzone as anything in sub_map_zones)
+		if(iterated_subzone.id == subzone_id)
+			found_subzone = iterated_subzone
+			break
+	return found_subzone
+
 /datum/map_zone/New(passed_name, datum/overmap_object/passed_ov_obj)
 	name = passed_name
 	related_overmap_object = passed_ov_obj
+	if(related_overmap_object)
+		related_overmap_object.related_map_zone = src
 	SSmapping.map_zones += src
 	next_id++ 
 	id = next_id
@@ -71,6 +81,8 @@
 	next_subzone_id++
 	addsub.id = next_subzone_id
 
+#define MAPPING_MARGIN 5
+
 /datum/sub_map_zone
 	var/name = "Sub Map Zone"
 	var/id
@@ -101,10 +113,17 @@
 	var/list/traits = list()
 	/// The amount of margin we have reserved in turfs on all sides of the reservation
 	var/reserved_margin = 0
+	/// Margin for dockers and ruins to avoid placing things
+	var/mapping_margin = MAPPING_MARGIN
 
 	/// Content variables:
 	/// A list of all ore nodes on this level
 	var/list/ore_nodes = list()
+
+/datum/sub_map_zone/proc/is_in_mapping_bounds(atom/Atom)
+	if(Atom.x >= low_x + mapping_margin && Atom.x <= high_x - mapping_margin && Atom.y >= low_y + mapping_margin && Atom.y <= high_y - mapping_margin && Atom.z == z_value)
+		return TRUE
+	return FALSE
 
 /datum/sub_map_zone/proc/get_relative_coords(atom/A)
 	var/rel_x = A.x - low_x + 1
@@ -115,6 +134,7 @@
 	if(reserved_margin)
 		CRASH("Sub Map Zone [name] tried reserving a margin while already reserving one.")
 	reserved_margin = margin
+	mapping_margin = reserved_margin + MAPPING_MARGIN
 
 	var/perc_margin = margin - 1
 	var/list/x_pos_beginning = list(low_x, low_x, high_x - perc_margin, low_x)  //x values of the lowest-leftest turfs of the respective 4 blocks on each side of zlevel
@@ -436,6 +456,8 @@
 /// Gets the sub zone that contains the passed atom
 /datum/controller/subsystem/mapping/proc/get_sub_zone(atom/Atom)
 	var/datum/space_level/level = z_list[Atom.z]
+	if(!level) //This can happen with areas trying to get their sub zone, Hyperspace for example, unsure why, areas weird
+		return
 	var/datum/sub_map_zone/sub_map
 	for(var/datum/sub_map_zone/iterated_zone as anything in level.sub_map_zones)
 		if(iterated_zone.is_in_bounds(Atom))

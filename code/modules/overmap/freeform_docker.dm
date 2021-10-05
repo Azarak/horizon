@@ -17,7 +17,6 @@
 	var/shuttleId = ""
 	var/shuttlePortId = ""
 	var/shuttlePortName = "custom location"
-	var/z_level
 
 	var/mob/current_user
 
@@ -42,7 +41,7 @@
 	qdel(eyeobj)
 	return ..()
 
-/datum/shuttle_freeform_docker/New(datum/overmap_shuttle_controller/passed_controller, mob/user, z)
+/datum/shuttle_freeform_docker/New(datum/overmap_shuttle_controller/passed_controller, mob/user, datum/sub_map_zone/subzone)
 	abort_action = new
 	abort_action.target = src
 	jump_action = new
@@ -52,10 +51,9 @@
 	place_action = new
 	place_action.target = src
 	my_controller = passed_controller
-	z_level = z
 	current_user = user
 	whitelist_turfs = typecacheof(whitelist_turfs)
-	StartCameraView()
+	StartCameraView(subzone)
 
 /datum/shuttle_freeform_docker/proc/CreateEye()
 	eyeobj = new()
@@ -109,7 +107,8 @@
 
 /datum/shuttle_freeform_docker/proc/checkLandingTurf(turf/T, list/overlappers)
 	// Too close to the map edge is never allowed
-	if(!T || T.x <= 10 || T.y <= 10 || T.x >= world.maxx - 10 || T.y >= world.maxy - 10)
+	var/datum/sub_map_zone/eyesubzone = SSmapping.get_sub_zone(eyeobj)
+	if(!T || !eyesubzone.is_in_mapping_bounds(T))
 		return SHUTTLE_DOCKER_BLOCKED
 	// If it's one of our shuttle areas assume it's ok to be there
 	if(my_controller.overmap_obj.my_shuttle.shuttle_areas[T.loc])
@@ -167,15 +166,16 @@
 		pic.loc = locate(eyeobj.x + coords[1], eyeobj.y + coords[2], eyeobj.z)
 	checkLandingSpot()
 
-/datum/shuttle_freeform_docker/proc/StartCameraView()
+/datum/shuttle_freeform_docker/proc/StartCameraView(datum/sub_map_zone/subzone)
 	if(!eyeobj)
 		CreateEye()
 	if(!eyeobj.eye_initialized)
 		var/camera_location
-		var/turf/myturf = locate(round(world.maxx/2), round(world.maxy/2), z_level)
+		var/turf/myturf = subzone.get_center()
 		camera_location = myturf
 		eyeobj.eye_initialized = TRUE
 		give_eye_control(current_user)
+		eyeobj.abstract_move(myturf)
 		eyeobj.setLoc(camera_location)
 
 /datum/shuttle_freeform_docker/proc/give_eye_control()

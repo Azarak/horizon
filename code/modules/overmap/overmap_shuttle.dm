@@ -269,36 +269,42 @@
 			if(VECTOR_LENGTH(velocity_x, velocity_y) > SHUTTLE_MAXIMUM_DOCKING_SPEED)
 				dat += "<B>Cannot safely dock in high velocities!</B>"
 			else
-				var/list/z_levels = list()
+				var/list/sub_zones = list()
 				var/list/nearby_objects = current_system.GetObjectsOnCoords(x,y)
-				var/list/freeform_z_levels = list()
+				var/list/freeform_sub_zones = list()
 				for(var/i in nearby_objects)
 					var/datum/overmap_object/IO = i
+					var/iter = 0
 					if(IO.related_map_zone)
 						for(var/datum/sub_map_zone/subzone in IO.related_map_zone.sub_map_zones)
-							var/subzone_z = subzone.z_value
-							z_levels["[subzone_z]"] = TRUE
-							freeform_z_levels["[subzone.name] - Freeform"] = subzone_z
+							iter++
+							sub_zones |= subzone
+							freeform_sub_zones["[iter]. [subzone.name] - Freeform"] = subzone
 			
 				var/list/obj/docking_port/stationary/docks = list()
 				var/list/options = params2list(my_shuttle.possible_destinations)
+				var/iter = 0
 				for(var/i in SSshuttle.stationary)
 					var/obj/docking_port/stationary/iterated_dock = i
-					if(!z_levels["[iterated_dock.z]"])
+					var/datum/sub_map_zone/subzone = SSmapping.get_sub_zone(iterated_dock)
+					if(!(subzone in sub_zones))
 						continue
 					if(!options.Find(iterated_dock.port_destinations))
 						continue
 					if(!my_shuttle.check_dock(iterated_dock, silent = TRUE))
 						continue
-					docks[iterated_dock.name] = iterated_dock
+					iter++
+					docks["[iter]. [iterated_dock.name]"] = iterated_dock
 	
 				dat += "<B>Designated docks:</B>"
 				for(var/key in docks)
 					dat += "<BR> - [key] - <a href='?src=[REF(src)];task=dock;dock_control=normal_dock;dock_id=[docks[key].id]'>Dock</a>"
 	
 				dat += "<BR><BR><B>Freeform docking spaces:</B>"
-				for(var/key in freeform_z_levels)
-					dat += "<BR> - [key] - <a href='?src=[REF(src)];task=dock;dock_control=freeform_dock;z_value=[freeform_z_levels[key]]'>Designate Location</a>"
+				for(var/key in freeform_sub_zones)
+					var/datum/sub_map_zone/subzone = freeform_sub_zones[key]
+					var/datum/map_zone/parent_zone = subzone.parent_map_zone
+					dat += "<BR> - [key] - <a href='?src=[REF(src)];task=dock;dock_control=freeform_dock;map_id=[parent_zone.id];sub_id=[subzone.id]'>Designate Location</a>"
 
 	var/datum/browser/popup = new(user, "overmap_shuttle_control", "Shuttle Control", 400, 440)
 	popup.set_content(dat.Join())
@@ -427,7 +433,7 @@
 				return
 			if(VECTOR_LENGTH(velocity_x, velocity_y) > SHUTTLE_MAXIMUM_DOCKING_SPEED)
 				return
-			/*
+			
 			switch(href_list["dock_control"])
 				if("normal_dock")
 					if(shuttle_controller.busy)
@@ -436,8 +442,8 @@
 					var/obj/docking_port/stationary/target_dock = SSshuttle.getDock(dock_id)
 					if(!target_dock)
 						return
-					var/datum/space_level/level_of_dock = SSmapping.z_list[target_dock.z]
-					var/datum/overmap_object/dock_overmap_object = level_of_dock.related_overmap_object
+					var/datum/map_zone/mapzone = SSmapping.get_map_zone(target_dock)
+					var/datum/overmap_object/dock_overmap_object = mapzone.related_overmap_object
 					if(!dock_overmap_object)
 						return
 					if(!current_system.ObjectsAdjacent(src, dock_overmap_object))
@@ -451,20 +457,24 @@
 						return
 					if(shuttle_controller.freeform_docker)
 						return
-					var/z_level = text2num(href_list["z_value"])
-					if(!z_level)
+					var/sub_id = text2num(href_list["sub_id"])
+					var/map_id = text2num(href_list["map_id"])
+					if(!sub_id || !map_id)
 						return
-					var/datum/space_level/level_to_freeform = SSmapping.z_list[z_level]
-					if(!level_to_freeform)
+					var/datum/map_zone/mapzone = SSmapping.get_map_zone_id(map_id)
+					if(!mapzone)
 						return
-					var/datum/overmap_object/level_overmap_object = level_to_freeform.related_overmap_object
-					if(!level_overmap_object)
+					var/datum/sub_map_zone/subzone = mapzone.get_sub_zone_id(sub_id)
+					if(!subzone)
 						return
-					if(!current_system.ObjectsAdjacent(src, level_overmap_object))
+					var/datum/overmap_object/mapzone_overmap_object = mapzone.related_overmap_object
+					if(!mapzone_overmap_object)
+						return
+					if(!current_system.ObjectsAdjacent(src, mapzone_overmap_object))
 						return
 					shuttle_controller.SetController(usr)
-					shuttle_controller.freeform_docker = new /datum/shuttle_freeform_docker(shuttle_controller, usr, z_level)
-			*/
+					shuttle_controller.freeform_docker = new /datum/shuttle_freeform_docker(shuttle_controller, usr, subzone)
+			
 		if("target")
 			if(!(shuttle_capability & SHUTTLE_CAN_USE_TARGET))
 				return

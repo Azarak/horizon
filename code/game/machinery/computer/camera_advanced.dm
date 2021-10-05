@@ -221,6 +221,9 @@
 	if(eye_user)
 		destination = get_turf(destination)
 		if (destination)
+			var/datum/map_zone/mapzone = SSmapping.get_map_zone(loc)
+			if(!mapzone.is_in_bounds(destination))
+				return
 			abstract_move(destination)
 		else
 			moveToNullspace()
