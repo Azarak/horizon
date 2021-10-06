@@ -5,9 +5,9 @@
 		return place_on_isolated_level(z)
 	while(sanity > 0)
 		sanity--
-		var/width_border = TRANSITIONEDGE + SPACERUIN_MAP_EDGE_PAD + round(width / 2)
-		var/height_border = TRANSITIONEDGE + SPACERUIN_MAP_EDGE_PAD + round(height / 2)
-		var/turf/central_turf = forced_turf ? forced_turf : locate(rand(width_border, world.maxx - width_border), rand(height_border, world.maxy - height_border), z)
+		var/width_border = subzone.mapping_margin + SPACERUIN_MAP_EDGE_PAD + round(width / 2)
+		var/height_border = subzone.mapping_margin + SPACERUIN_MAP_EDGE_PAD + round(height / 2)
+		var/turf/central_turf = forced_turf ? forced_turf : locate(rand(subzone.low_x + width_border, subzone.high_x - width_border), rand(subzone.low_y + height_border, subzone.high_y - height_border), z)
 		var/valid = TRUE
 
 		for(var/turf/check in get_affected_turfs(central_turf,1))
