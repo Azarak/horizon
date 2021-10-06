@@ -175,8 +175,7 @@
 		camera_location = myturf
 		eyeobj.eye_initialized = TRUE
 		give_eye_control(current_user)
-		eyeobj.abstract_move(myturf)
-		eyeobj.setLoc(camera_location)
+		eyeobj.setLoc(camera_location, TRUE)
 
 /datum/shuttle_freeform_docker/proc/give_eye_control()
 	GrantActions()

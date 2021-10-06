@@ -157,12 +157,12 @@
 		if(camera_location)
 			eyeobj.eye_initialized = TRUE
 			give_eye_control(L)
-			eyeobj.setLoc(camera_location)
+			eyeobj.setLoc(camera_location, TRUE)
 		else
 			user.unset_machine()
 	else
 		give_eye_control(L)
-		eyeobj.setLoc(eyeobj.loc)
+		eyeobj.setLoc(eyeobj.loc, TRUE)
 
 /obj/machinery/computer/camera_advanced/attack_robot(mob/user)
 	return attack_hand(user)
@@ -177,7 +177,7 @@
 	eyeobj.name = "Camera Eye ([user.name])"
 	user.remote_control = eyeobj
 	user.reset_perspective(eyeobj)
-	eyeobj.setLoc(eyeobj.loc)
+	eyeobj.setLoc(eyeobj.loc, TRUE)
 	if(should_supress_view_changes )
 		user.client.view_size.supress()
 
@@ -217,13 +217,14 @@
 		return TRUE
 	return FALSE
 
-/mob/camera/ai_eye/remote/setLoc(destination)
+/mob/camera/ai_eye/remote/setLoc(destination, force_update)
 	if(eye_user)
 		destination = get_turf(destination)
 		if (destination)
-			var/datum/map_zone/mapzone = SSmapping.get_map_zone(loc)
-			if(!mapzone.is_in_bounds(destination))
-				return
+			if(!force_update)
+				var/datum/map_zone/mapzone = SSmapping.get_map_zone(loc)
+				if(!mapzone.is_in_bounds(destination))
+					return
 			abstract_move(destination)
 		else
 			moveToNullspace()
@@ -304,7 +305,7 @@
 	playsound(src, "terminal_type", 25, FALSE)
 	if(final)
 		playsound(origin, 'sound/machines/terminal_prompt_confirm.ogg', 25, FALSE)
-		remote_eye.setLoc(get_turf(final))
+		remote_eye.setLoc(get_turf(final), TRUE)
 		C.overlay_fullscreen("flash", /atom/movable/screen/fullscreen/flash/static)
 		C.clear_fullscreen("flash", 3) //Shorter flash than normal since it's an ~~advanced~~ console!
 	else
