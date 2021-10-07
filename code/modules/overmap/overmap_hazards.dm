@@ -1,5 +1,4 @@
 #define SHUTTLE_VELOCITY_METEORS_DIRECTIONAL_THRESHOLD 0.5
-#define ASTEROID_AND_DUST_PADDING 60
 
 /datum/overmap_object/hazard
 	name = "badly coded hazard"
@@ -106,7 +105,7 @@
 				new picked_meteor_type(pickedstart, pickedgoal)
 			else if(shuttle.related_map_zone)
 				var/datum/sub_map_zone/picked_sub = pick(shuttle.related_map_zone.sub_map_zones)
-				spawn_meteor(picked_meteor_type, dir, picked_sub.z_value, ASTEROID_AND_DUST_PADDING)
+				spawn_meteor(picked_meteor_type, dir, picked_sub)
 
 /datum/overmap_object/hazard/asteroid/get_random_icon_state()
 	return pick(list("meteor1", "meteor2", "meteor3", "meteor4"))
@@ -154,7 +153,7 @@
 				new picked_meteor_type(pickedstart, pickedgoal)
 			else if(shuttle.related_map_zone)
 				var/datum/sub_map_zone/picked_sub = pick(shuttle.related_map_zone.sub_map_zones)
-				spawn_meteor(picked_meteor_type, dir, picked_sub.z_value, ASTEROID_AND_DUST_PADDING)
+				spawn_meteor(picked_meteor_type, dir, picked_sub)
 
 /datum/overmap_object/hazard/dust/get_random_icon_state()
 	return pick(list("dust1", "dust2", "dust3", "dust4"))
@@ -262,4 +261,3 @@
 	return pick(list("carp1", "carp2", "carp3", "carp4"))
 
 #undef SHUTTLE_VELOCITY_METEORS_DIRECTIONAL_THRESHOLD
-#undef ASTEROID_AND_DUST_PADDING
