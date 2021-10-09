@@ -38,12 +38,6 @@
 			if(S.id == shuttleId)
 				jumpto_ports[S.id] = TRUE
 
-	for(var/V in SSshuttle.stationary)
-		if(!V)
-			continue
-		var/obj/docking_port/stationary/S = V
-		if(jumpto_ports[S.id])
-			z_lock |= S.z
 	whitelist_turfs = typecacheof(whitelist_turfs)
 
 /obj/machinery/computer/camera_advanced/shuttle_docker/Destroy()
@@ -361,8 +355,10 @@
 			stack_trace("SSshuttle.stationary have null entry!")
 			continue
 		var/obj/docking_port/stationary/S = V
-		if(console.z_lock.len && !(S.z in console.z_lock))
-			continue
+		if(console.trait_lock)
+			var/datum/sub_map_zone/subzone = SSmapping.get_sub_zone(S)
+			if(!(console.trait_lock in subzone.traits))
+				continue
 		if(console.jumpto_ports[S.id])
 			L["([L.len])[S.name]"] = S
 

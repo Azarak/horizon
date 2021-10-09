@@ -80,10 +80,6 @@
 	var/turf/eyeturf = get_turf(eyeobj)
 	if(!eyeturf)
 		return SHUTTLE_DOCKER_BLOCKED
-	/*
-	if(!eyeturf.z || SSmapping.sub_zone_has_any_trait(eyeturf, locked_traits))
-		return SHUTTLE_DOCKER_BLOCKED
-	*/
 
 	. = SHUTTLE_DOCKER_LANDING_CLEAR
 	var/list/bounds = my_controller.overmap_obj.my_shuttle.return_coords(eyeobj.x - x_offset, eyeobj.y - y_offset, eyeobj.dir)
@@ -188,7 +184,6 @@
 		if(should_supress_view_changes)
 			current_user.client.view_size.supress()
 		current_user.client.images += placement_images
-	//current_user.client.view_size.setTo(view_range)
 
 /datum/shuttle_freeform_docker/proc/remove_eye_control()
 	RemoveActions()
@@ -200,7 +195,6 @@
 
 	if(current_user.client)
 		current_user.client.images -= placement_images
-	//current_user.client.view_size.resetToDefault()
 
 	eyeobj.eye_user = null
 	current_user.remote_control = null
@@ -276,19 +270,11 @@
 	if(current_user.client)
 		to_chat(current_user, SPAN_NOTICE("Transit location designated."))
 
-	//my_shuttle.request(my_shuttle.freeform_port)
-
 	switch(SSshuttle.moveShuttle(my_shuttle.id, my_shuttle.freeform_port.id, TRUE))
 		if(0)
 			my_controller.busy = TRUE
 			my_controller.RemoveCurrentControl()
 			return TRUE
-		/*
-		if(1)
-			message_admins("we didnt do it")
-		else
-			message_admins("error")
-		*/
 
 	return TRUE
 
