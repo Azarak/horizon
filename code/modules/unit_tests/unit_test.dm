@@ -125,3 +125,9 @@ GLOBAL_VAR(test_log)
 /datum/map_template/unit_tests
 	name = "Unit Tests Zone"
 	mappath = "_maps/templates/unit_tests.dmm"
+
+///Wrap the loaded z_level into a map_zone
+/datum/map_template/unit_tests/load_new_z()
+	. = ..()
+	var/datum/map_zone/mapzone = new("Integration Test Mapzone")
+	new /datum/sub_map_zone/subzone("Integration Test Subzone", ZTRAITS_STATION, mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
