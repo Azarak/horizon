@@ -77,6 +77,13 @@
 		. += SPAN_NOTICE("You could <b>bolt</b> it to the ground with a <b>wrench</b>.")
 	. += SPAN_NOTICE("You could <b>pry</b> it open.")
 
+/obj/structure/supplies_box/ex_act(severity)
+	if(severity >= EXPLODE_DEVASTATE)
+		drop_loot()
+		qdel(src)
+	else
+		. = ..()
+
 /obj/structure/supplies_box/proc/drop_loot()
 	var/turf/my_turf = get_turf(src)
 	playsound(my_turf, 'sound/items/poster_ripped.ogg', 50, TRUE)
