@@ -3744,6 +3744,7 @@
 #include "code\modules\trading\_trade_hub.dm"
 #include "code\modules\trading\_trader.dm"
 #include "code\modules\trading\_trader_bounty.dm"
+#include "code\modules\trading\supplies_box.dm"
 #include "code\modules\trading\trade_hub_overmap.dm"
 #include "code\modules\trading\trade_machines.dm"
 #include "code\modules\trading\bought_goods\food.dm"
