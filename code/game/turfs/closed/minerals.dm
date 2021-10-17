@@ -13,7 +13,6 @@
 	initial_gas_mix = AIRLESS_ATMOS
 	opacity = TRUE
 	density = TRUE
-	layer = EDGED_TURF_LAYER
 	base_icon_state = "smoothrocks"
 	temperature = TCMB
 	var/smooth_icon = 'icons/turf/smoothrocks.dmi'
@@ -31,9 +30,6 @@
 
 /turf/closed/mineral/Initialize()
 	. = ..()
-	var/matrix/M = new
-	M.Translate(-4, -4)
-	transform = M
 	icon = smooth_icon
 	if(!color && turn_to_level_color)
 		var/datum/space_level/level = SSmapping.z_list[z]

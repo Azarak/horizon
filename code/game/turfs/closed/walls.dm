@@ -3,7 +3,7 @@
 /turf/closed/wall
 	name = "wall"
 	desc = "A huge chunk of iron used to separate rooms."
-	icon = 'icons/turf/walls/wall.dmi'
+	icon = 'icons/turf/walls/solid_wall.dmi'
 	icon_state = "wall-0"
 	base_icon_state = "wall"
 	explosion_block = 1
@@ -17,42 +17,49 @@
 
 	smoothing_flags = SMOOTH_BITMASK
 	smoothing_groups = list(SMOOTH_GROUP_CLOSED_TURFS, SMOOTH_GROUP_WALLS)
-	canSmoothWith = list(SMOOTH_GROUP_WALLS)
+	canSmoothWith = list(SMOOTH_GROUP_WALLS, SMOOTH_GROUP_AIRLOCK, SMOOTH_GROUP_WINDOW_FULLTILE)
 
 	rcd_memory = RCD_MEMORY_WALL
 
 	///lower numbers are harder. Used to determine the probability of a hulk smashing through.
 	var/hardness = 40
 	var/slicing_duration = 100  //default time taken to slice the wall
-	var/sheet_type = /obj/item/stack/sheet/iron
-	var/sheet_amount = 2
+	/// Material type of the plating
+	var/plating_material = /datum/material/iron
+	/// Material type of the reinforcement
+	var/reinf_material
+	/// Paint color of which the stripe has been painted with. Will not overlay a stripe if no paint is applied
+	var/stripe_paint
+
 	var/girder_type = /obj/structure/girder
 
 	var/list/dent_decals
 
-
 /turf/closed/wall/Initialize(mapload)
 	. = ..()
+	set_materials(plating_material, reinf_material)
 	if(is_station_level(z))
 		GLOB.station_turfs += src
-	if(smoothing_flags & SMOOTH_DIAGONAL_CORNERS && fixed_underlay) //Set underlays for the diagonal walls.
-		var/mutable_appearance/underlay_appearance = mutable_appearance(layer = TURF_LAYER, plane = FLOOR_PLANE)
-		if(fixed_underlay["space"])
-			underlay_appearance.icon = 'icons/turf/space.dmi'
-			underlay_appearance.icon_state = SPACE_ICON_STATE
-			underlay_appearance.plane = PLANE_SPACE
-		else
-			underlay_appearance.icon = fixed_underlay["icon"]
-			underlay_appearance.icon_state = fixed_underlay["icon_state"]
-		fixed_underlay = string_assoc_list(fixed_underlay)
-		underlays += underlay_appearance
-
 
 /turf/closed/wall/Destroy()
 	if(is_station_level(z))
 		GLOB.station_turfs -= src
 	return ..()
 
+/turf/closed/wall/copyTurf(turf/closed/wall/pasted_turf)
+	if(istype(pasted_turf, /turf/closed/wall))
+		pasted_turf.plating_material = plating_material
+		pasted_turf.reinf_material = reinf_material
+	return ..()
+
+/turf/closed/wall/update_overlays()
+	//Updating the unmanaged wall overlays (unmanaged for optimisations)
+	overlays = null
+
+	if(dent_decals)
+		add_overlay(dent_decals)
+	//And letting anything else that may want to render on the wall to work (ie components)
+	return ..()
 
 /turf/closed/wall/examine(mob/user)
 	. += ..()
@@ -63,6 +70,24 @@
 
 /turf/closed/wall/attack_tk()
 	return
+
+/turf/closed/wall/proc/set_materials(plating_mat, reinf_mat)
+	var/datum/material/plating_mat_ref
+	if(plating_mat)
+		plating_mat_ref = GET_MATERIAL_REF(plating_mat)
+	var/datum/material/reinf_mat_ref
+	if(reinf_mat)
+		reinf_mat_ref = GET_MATERIAL_REF(reinf_mat)
+
+	if(reinf_mat_ref)
+		icon = plating_mat_ref.reinforced_wall_icon
+	else
+		icon = plating_mat_ref.wall_icon
+
+	color = plating_mat_ref.greyscale_colors
+
+	plating_material = plating_mat
+	reinf_material = reinf_mat
 
 /turf/closed/wall/proc/dismantle_wall(devastated = FALSE, explode = FALSE)
 	if(devastated)
@@ -81,14 +106,18 @@
 	ScrapeAway()
 
 /turf/closed/wall/proc/break_wall()
+	/*
 	new sheet_type(src, sheet_amount)
 	if(girder_type)
 		return new girder_type(src)
+	*/
 
 /turf/closed/wall/proc/devastate_wall()
+	/*
 	new sheet_type(src, sheet_amount)
 	if(girder_type)
 		new /obj/item/stack/sheet/iron(src)
+	*/
 
 /turf/proc/create_rubble(adjacent = FALSE)
 	var/rubble_type = prob(50) ? /obj/structure/rubble/medium : /obj/structure/rubble/large

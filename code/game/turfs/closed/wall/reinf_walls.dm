@@ -1,22 +1,17 @@
 /turf/closed/wall/r_wall
 	name = "reinforced wall"
 	desc = "A huge chunk of reinforced metal used to separate rooms."
-	icon = 'icons/turf/walls/reinforced_wall.dmi'
-	icon_state = "reinforced_wall-0"
-	base_icon_state = "reinforced_wall"
+	icon = 'icons/turf/walls/solid_wall_reinforced.dmi'
 	opacity = TRUE
 	density = TRUE
-	smoothing_flags = SMOOTH_BITMASK
 	hardness = 10
-	sheet_type = /obj/item/stack/sheet/plasteel
-	sheet_amount = 1
-	girder_type = /obj/structure/girder/reinforced
+	reinf_material = /datum/material/iron
+	plating_material = /datum/material/alloy/plasteel
 	explosion_block = 2
 	rad_insulation = RAD_HEAVY_INSULATION
 	heat_capacity = 312500 //a little over 5 cm thick , 312500 for 1 m by 2.5 m by 0.25 m plasteel wall. also indicates the temperature at wich the wall will melt (currently only able to melt with H/E pipes)
 	///Dismantled state, related to deconstruction.
 	var/d_state = INTACT
-
 
 /turf/closed/wall/r_wall/deconstruction_hints(mob/user)
 	switch(d_state)
@@ -34,10 +29,6 @@
 			return SPAN_NOTICE("The bolts anchoring the support rods have been <i>loosened</i>, but are still <b>welded</b> firmly to the girder.")
 		if(SHEATH)
 			return SPAN_NOTICE("The support rods have been <i>sliced through</i>, and the outer sheath is <b>connected loosely</b> to the girder.")
-
-/turf/closed/wall/r_wall/devastate_wall()
-	new sheet_type(src, sheet_amount)
-	new /obj/item/stack/sheet/iron(src, 2)
 
 /turf/closed/wall/r_wall/attack_animal(mob/living/simple_animal/user, list/modifiers)
 	user.changeNext_move(CLICK_CD_MELEE)
@@ -237,30 +228,16 @@
 /turf/closed/wall/r_wall/syndicate
 	name = "hull"
 	desc = "The armored hull of an ominous looking ship."
-	icon = 'icons/turf/walls/plastitanium_wall.dmi'
-	icon_state = "plastitanium_wall-0"
-	base_icon_state = "plastitanium_wall"
+	icon = 'icons/turf/walls/metal_wall.dmi'
 	explosion_block = 20
-	sheet_type = /obj/item/stack/sheet/mineral/plastitanium
-	smoothing_flags = SMOOTH_BITMASK | SMOOTH_DIAGONAL_CORNERS
-	smoothing_groups = list(SMOOTH_GROUP_CLOSED_TURFS, SMOOTH_GROUP_WALLS, SMOOTH_GROUP_SYNDICATE_WALLS)
-	canSmoothWith = list(SMOOTH_GROUP_SYNDICATE_WALLS, SMOOTH_GROUP_PLASTITANIUM_WALLS, SMOOTH_GROUP_AIRLOCK, SMOOTH_GROUP_SHUTTLE_PARTS)
+	reinf_material = /datum/material/iron
+	plating_material = /datum/material/alloy/plastitanium
 
 /turf/closed/wall/r_wall/syndicate/rcd_vals(mob/user, obj/item/construction/rcd/the_rcd)
 	return FALSE
 
 /turf/closed/wall/r_wall/syndicate/nodiagonal
-	icon = 'icons/turf/walls/plastitanium_wall.dmi'
-	icon_state = "map-shuttle_nd"
-	base_icon_state = "plastitanium_wall"
-	smoothing_flags = SMOOTH_BITMASK
 
 /turf/closed/wall/r_wall/syndicate/nosmooth
-	icon = 'icons/turf/shuttle.dmi'
-	icon_state = "wall"
-	smoothing_flags = NONE
 
 /turf/closed/wall/r_wall/syndicate/overspace
-	icon_state = "map-overspace"
-	smoothing_flags = SMOOTH_BITMASK | SMOOTH_DIAGONAL_CORNERS
-	fixed_underlay = list("space" = TRUE)

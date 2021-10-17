@@ -46,6 +46,12 @@ Simple datum which is instanced once per type and is used for every object of sa
 	var/cached_texture_filter_icon
 	///What type of shard the material will shatter to
 	var/obj/item/shard_type
+	///Icon for walls which are plated with this material
+	var/wall_icon = 'icons/turf/walls/solid_wall.dmi'
+	///Icon for reinforced walls which are plated with this material
+	var/reinforced_wall_icon = 'icons/turf/walls/solid_wall_reinforced.dmi'
+	/// Icon for painted stripes on the walls
+	var/wall_stripe_icon = 'icons/turf/walls/wall_stripe.dmi'
 
 /** Handles initializing the material.
  *
