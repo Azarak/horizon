@@ -52,6 +52,8 @@ Simple datum which is instanced once per type and is used for every object of sa
 	var/reinforced_wall_icon = 'icons/turf/walls/solid_wall_reinforced.dmi'
 	/// Icon for painted stripes on the walls
 	var/wall_stripe_icon = 'icons/turf/walls/wall_stripe.dmi'
+	/// Color of walls constructed with this material as their plating
+	var/wall_color
 
 /** Handles initializing the material.
  *
@@ -63,6 +65,9 @@ Simple datum which is instanced once per type and is used for every object of sa
 		id = _id
 	else if(isnull(id))
 		id = type
+
+	if(!wall_color)
+		wall_color = greyscale_colors
 
 	if(texture_layer_icon_state)
 		cached_texture_filter_icon = icon('icons/materials/composite.dmi', texture_layer_icon_state)

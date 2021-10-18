@@ -40,6 +40,7 @@
 	sheet_type = /obj/item/stack/sheet/plasteel
 	categories = list(MAT_CATEGORY_RIGID=TRUE, MAT_CATEGORY_BASE_RECIPES=TRUE, MAT_CATEGORY_ITEM_MATERIAL=TRUE)
 	composition = list(/datum/material/iron=1, /datum/material/plasma=1)
+	wall_color = "#57575c"
 
 /datum/material/alloy/plasteel/on_applied_obj(obj/item/target_item, amount, material_flags)
 	. = ..()

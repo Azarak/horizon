@@ -17,7 +17,7 @@
 
 	smoothing_flags = SMOOTH_BITMASK
 	smoothing_groups = list(SMOOTH_GROUP_CLOSED_TURFS, SMOOTH_GROUP_WALLS)
-	canSmoothWith = list(SMOOTH_GROUP_WALLS, SMOOTH_GROUP_AIRLOCK, SMOOTH_GROUP_WINDOW_FULLTILE)
+	canSmoothWith = list(SMOOTH_GROUP_SHUTTERS_BLASTDOORS, SMOOTH_GROUP_WALLS, SMOOTH_GROUP_AIRLOCK, SMOOTH_GROUP_WINDOW_FULLTILE)
 
 	rcd_memory = RCD_MEMORY_WALL
 
@@ -28,6 +28,8 @@
 	var/plating_material = /datum/material/iron
 	/// Material type of the reinforcement
 	var/reinf_material
+	/// Paint color of which the wall has been painted with.
+	var/wall_paint
 	/// Paint color of which the stripe has been painted with. Will not overlay a stripe if no paint is applied
 	var/stripe_paint
 
@@ -35,9 +37,12 @@
 
 	var/list/dent_decals
 
+	var/static/list/neighbor_typecache
+
 /turf/closed/wall/Initialize(mapload)
 	. = ..()
-	set_materials(plating_material, reinf_material)
+	if(mapload)
+		set_materials(plating_material, reinf_material)
 	if(is_station_level(z))
 		GLOB.station_turfs += src
 
@@ -54,7 +59,28 @@
 
 /turf/closed/wall/update_overlays()
 	//Updating the unmanaged wall overlays (unmanaged for optimisations)
-	overlays = null
+	overlays.Cut()
+	if(stripe_paint)
+		var/datum/material/plating_mat_ref = GET_MATERIAL_REF(plating_material)
+		var/mutable_appearance/smoothed_stripe = mutable_appearance(plating_mat_ref.wall_stripe_icon, icon_state, appearance_flags = RESET_COLOR)
+		smoothed_stripe.color = stripe_paint
+		overlays += smoothed_stripe
+	var/neighbor_stripe = NONE
+	if(!neighbor_typecache)
+		neighbor_typecache = typecacheof(list(/obj/machinery/door/airlock, /obj/structure/window/reinforced/fulltile, /obj/structure/window/fulltile, /obj/structure/window/shuttle, /obj/machinery/door/poddoor))
+	for(var/cardinal in GLOB.cardinals)
+		var/turf/step_turf = get_step(src, cardinal)
+		for(var/atom/movable/movable_thing as anything in step_turf)
+			if(neighbor_typecache[movable_thing.type])
+				neighbor_stripe ^= cardinal
+				break
+	if(neighbor_stripe)
+		var/mutable_appearance/neighb_stripe_appearace = mutable_appearance('icons/turf/walls/neighbor_stripe.dmi', "[neighbor_stripe]", appearance_flags = RESET_COLOR)
+		if(stripe_paint)
+			neighb_stripe_appearace.color = stripe_paint
+		else
+			neighb_stripe_appearace.color = color
+		overlays += neighb_stripe_appearace
 
 	if(dent_decals)
 		add_overlay(dent_decals)
@@ -84,10 +110,13 @@
 	else
 		icon = plating_mat_ref.wall_icon
 
-	color = plating_mat_ref.greyscale_colors
+	if(!wall_paint)
+		color = plating_mat_ref.wall_color
 
 	plating_material = plating_mat
 	reinf_material = reinf_mat
+
+	update_appearance()
 
 /turf/closed/wall/proc/dismantle_wall(devastated = FALSE, explode = FALSE)
 	if(devastated)
