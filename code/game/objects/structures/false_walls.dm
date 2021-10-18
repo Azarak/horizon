@@ -204,7 +204,6 @@
 	desc = "A huge chunk of reinforced metal used to separate rooms."
 	icon = 'icons/turf/walls/solid_wall_reinforced.dmi'
 	reinf_material = /datum/material/alloy/plasteel
-	smoothing_flags = SMOOTH_BITMASK
 
 /obj/structure/falsewall/reinforced/examine_status(mob/user)
 	to_chat(user, SPAN_NOTICE("The outer <b>grille</b> is fully intact."))

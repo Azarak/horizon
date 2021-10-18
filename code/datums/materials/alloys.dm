@@ -41,6 +41,7 @@
 	categories = list(MAT_CATEGORY_RIGID=TRUE, MAT_CATEGORY_BASE_RECIPES=TRUE, MAT_CATEGORY_ITEM_MATERIAL=TRUE)
 	composition = list(/datum/material/iron=1, /datum/material/plasma=1)
 	wall_color = "#57575c"
+	hard_wall_decon = TRUE
 
 /datum/material/alloy/plasteel/on_applied_obj(obj/item/target_item, amount, material_flags)
 	. = ..()
@@ -77,6 +78,7 @@
 	wall_icon = 'icons/turf/walls/metal_wall.dmi'
 	wall_type = /turf/closed/wall/mineral/plastitanium
 	false_wall_type = /obj/structure/falsewall/plastitanium
+	hard_wall_decon = TRUE
 
 /** Plasmaglass
  *
@@ -156,6 +158,7 @@
 	value_per_unit = 0.4
 	categories = list(MAT_CATEGORY_RIGID=TRUE, MAT_CATEGORY_BASE_RECIPES=TRUE, MAT_CATEGORY_ITEM_MATERIAL=TRUE)
 	composition = list(/datum/material/iron=2, /datum/material/plasma=2)
+	hard_wall_decon = TRUE
 
 /datum/material/alloy/alien/on_applied_obj(obj/item/target_item, amount, material_flags)
 	. = ..()

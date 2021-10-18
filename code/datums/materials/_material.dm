@@ -58,6 +58,8 @@ Simple datum which is instanced once per type and is used for every object of sa
 	var/wall_type = /turf/closed/wall
 	/// Type of the false wall this material will make when used as its plating
 	var/false_wall_type
+	/// If true, walls plated with this material that have a reinforcement, will be hard to deconstruct
+	var/hard_wall_decon = FALSE
 
 /** Handles initializing the material.
  *

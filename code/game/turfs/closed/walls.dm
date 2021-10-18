@@ -32,6 +32,10 @@
 	var/wall_paint
 	/// Paint color of which the stripe has been painted with. Will not overlay a stripe if no paint is applied
 	var/stripe_paint
+	/// Whether this wall is hard to deconstruct, like a reinforced plasteel wall. Dictated by material
+	var/hard_decon
+	/// Deconstruction state, matters if the wall is hard to deconstruct (hard_decon)
+	var/d_state = INTACT
 
 	var/list/dent_decals
 
@@ -59,6 +63,7 @@
 /turf/closed/wall/copyTurf(turf/closed/wall/pasted_turf)
 	if(istype(pasted_turf, /turf/closed/wall))
 		pasted_turf.set_wall_information(plating_material, reinf_material, wall_paint, stripe_paint)
+		pasted_turf.d_state = d_state
 	return ..()
 
 /// Most of this code is pasted within /obj/structure/falsewall. Be mindful of this
@@ -87,6 +92,10 @@
 			neighb_stripe_appearace.color = color
 		overlays += neighb_stripe_appearace
 
+	if(hard_decon && d_state)
+		var/mutable_appearance/decon_overlay = mutable_appearance('icons/turf/walls/decon_states.dmi', "[d_state]", appearance_flags = RESET_COLOR)
+		overlays += decon_overlay
+
 	if(dent_decals)
 		add_overlay(dent_decals)
 	//And letting anything else that may want to render on the wall to work (ie components)
@@ -97,7 +106,24 @@
 	. += deconstruction_hints(user)
 
 /turf/closed/wall/proc/deconstruction_hints(mob/user)
-	return SPAN_NOTICE("The outer plating is <b>welded</b> firmly in place.")
+	if(hard_decon)
+		switch(d_state)
+			if(INTACT)
+				return SPAN_NOTICE("The outer <b>grille</b> is fully intact.")
+			if(SUPPORT_LINES)
+				return SPAN_NOTICE("The outer <i>grille</i> has been cut, and the support lines are <b>screwed</b> securely to the outer cover.")
+			if(COVER)
+				return SPAN_NOTICE("The support lines have been <i>unscrewed</i>, and the metal cover is <b>welded</b> firmly in place.")
+			if(CUT_COVER)
+				return SPAN_NOTICE("The metal cover has been <i>sliced through</i>, and is <b>connected loosely</b> to the girder.")
+			if(ANCHOR_BOLTS)
+				return SPAN_NOTICE("The outer cover has been <i>pried away</i>, and the bolts anchoring the support rods are <b>wrenched</b> in place.")
+			if(SUPPORT_RODS)
+				return SPAN_NOTICE("The bolts anchoring the support rods have been <i>loosened</i>, but are still <b>welded</b> firmly to the girder.")
+			if(SHEATH)
+				return SPAN_NOTICE("The support rods have been <i>sliced through</i>, and the outer sheath is <b>connected loosely</b> to the girder.")
+	else
+		return SPAN_NOTICE("The outer plating is <b>welded</b> firmly in place.")
 
 /turf/closed/wall/attack_tk()
 	return
@@ -118,6 +144,11 @@
 	var/datum/material/reinf_mat_ref
 	if(reinf_mat)
 		reinf_mat_ref = GET_MATERIAL_REF(reinf_mat)
+
+	if(reinf_mat_ref && plating_mat_ref.hard_wall_decon)
+		hard_decon = TRUE
+	else
+		hard_decon = null
 
 	if(reinf_mat_ref)
 		icon = plating_mat_ref.reinforced_wall_icon
@@ -223,12 +254,24 @@
 
 
 /turf/closed/wall/attack_animal(mob/living/simple_animal/user, list/modifiers)
-	user.changeNext_move(CLICK_CD_MELEE)
-	user.do_attack_animation(src)
-	if((user.environment_smash & ENVIRONMENT_SMASH_WALLS) || (user.environment_smash & ENVIRONMENT_SMASH_RWALLS))
-		playsound(src, 'sound/effects/meteorimpact.ogg', 100, TRUE)
-		dismantle_wall(1)
-		return
+	if(hard_decon)
+		user.changeNext_move(CLICK_CD_MELEE)
+		user.do_attack_animation(src)
+		if(!user.environment_smash)
+			return
+		if(user.environment_smash & ENVIRONMENT_SMASH_RWALLS)
+			dismantle_wall(1)
+			playsound(src, 'sound/effects/meteorimpact.ogg', 100, TRUE)
+		else
+			playsound(src, 'sound/effects/bang.ogg', 50, TRUE)
+			to_chat(user, SPAN_WARNING("This wall is far too strong for you to destroy."))
+	else
+		user.changeNext_move(CLICK_CD_MELEE)
+		user.do_attack_animation(src)
+		if((user.environment_smash & ENVIRONMENT_SMASH_WALLS) || (user.environment_smash & ENVIRONMENT_SMASH_RWALLS))
+			playsound(src, 'sound/effects/meteorimpact.ogg', 100, TRUE)
+			dismantle_wall(1)
+			return
 
 /turf/closed/wall/attack_hulk(mob/living/carbon/user)
 	..()
@@ -331,16 +374,157 @@
 	return FALSE
 
 /turf/closed/wall/proc/try_decon(obj/item/I, mob/user, turf/T)
-	if(I.tool_behaviour == TOOL_WELDER)
-		if(!I.tool_start_check(user, amount=0))
-			return FALSE
+	if(hard_decon)
+		switch(d_state)
+			if(INTACT)
+				if(I.tool_behaviour == TOOL_WIRECUTTER)
+					I.play_tool_sound(src, 100)
+					d_state = SUPPORT_LINES
+					update_appearance()
+					to_chat(user, SPAN_NOTICE("You cut the outer grille."))
+					return TRUE
+	
+			if(SUPPORT_LINES)
+				if(I.tool_behaviour == TOOL_SCREWDRIVER)
+					to_chat(user, SPAN_NOTICE("You begin unsecuring the support lines..."))
+					if(I.use_tool(src, user, 40, volume=100))
+						if(!istype(src, /turf/closed/wall) || d_state != SUPPORT_LINES)
+							return TRUE
+						d_state = COVER
+						update_appearance()
+						to_chat(user, SPAN_NOTICE("You unsecure the support lines."))
+					return TRUE
+	
+				else if(I.tool_behaviour == TOOL_WIRECUTTER)
+					I.play_tool_sound(src, 100)
+					d_state = INTACT
+					update_appearance()
+					to_chat(user, SPAN_NOTICE("You repair the outer grille."))
+					return TRUE
+	
+			if(COVER)
+				if(I.tool_behaviour == TOOL_WELDER)
+					if(!I.tool_start_check(user, amount=0))
+						return
+					to_chat(user, SPAN_NOTICE("You begin slicing through the metal cover..."))
+					if(I.use_tool(src, user, 60, volume=100))
+						if(!istype(src, /turf/closed/wall) || d_state != COVER)
+							return TRUE
+						d_state = CUT_COVER
+						update_appearance()
+						to_chat(user, SPAN_NOTICE("You press firmly on the cover, dislodging it."))
+					return TRUE
+	
+				if(I.tool_behaviour == TOOL_SCREWDRIVER)
+					to_chat(user, SPAN_NOTICE("You begin securing the support lines..."))
+					if(I.use_tool(src, user, 40, volume=100))
+						if(!istype(src, /turf/closed/wall) || d_state != COVER)
+							return TRUE
+						d_state = SUPPORT_LINES
+						update_appearance()
+						to_chat(user, SPAN_NOTICE("The support lines have been secured."))
+					return TRUE
+	
+			if(CUT_COVER)
+				if(I.tool_behaviour == TOOL_CROWBAR)
+					to_chat(user, SPAN_NOTICE("You struggle to pry off the cover..."))
+					if(I.use_tool(src, user, 100, volume=100))
+						if(!istype(src, /turf/closed/wall) || d_state != CUT_COVER)
+							return TRUE
+						d_state = ANCHOR_BOLTS
+						update_appearance()
+						to_chat(user, SPAN_NOTICE("You pry off the cover."))
+					return TRUE
+	
+				if(I.tool_behaviour == TOOL_WELDER)
+					if(!I.tool_start_check(user, amount=0))
+						return
+					to_chat(user, SPAN_NOTICE("You begin welding the metal cover back to the frame..."))
+					if(I.use_tool(src, user, 60, volume=100))
+						if(!istype(src, /turf/closed/wall) || d_state != CUT_COVER)
+							return TRUE
+						d_state = COVER
+						update_appearance()
+						to_chat(user, SPAN_NOTICE("The metal cover has been welded securely to the frame."))
+					return TRUE
+	
+			if(ANCHOR_BOLTS)
+				if(I.tool_behaviour == TOOL_WRENCH)
+					to_chat(user, SPAN_NOTICE("You start loosening the anchoring bolts which secure the support rods to their frame..."))
+					if(I.use_tool(src, user, 40, volume=100))
+						if(!istype(src, /turf/closed/wall) || d_state != ANCHOR_BOLTS)
+							return TRUE
+						d_state = SUPPORT_RODS
+						update_appearance()
+						to_chat(user, SPAN_NOTICE("You remove the bolts anchoring the support rods."))
+					return TRUE
+	
+				if(I.tool_behaviour == TOOL_CROWBAR)
+					to_chat(user, SPAN_NOTICE("You start to pry the cover back into place..."))
+					if(I.use_tool(src, user, 20, volume=100))
+						if(!istype(src, /turf/closed/wall) || d_state != ANCHOR_BOLTS)
+							return TRUE
+						d_state = CUT_COVER
+						update_appearance()
+						to_chat(user, SPAN_NOTICE("The metal cover has been pried back into place."))
+					return TRUE
+	
+			if(SUPPORT_RODS)
+				if(I.tool_behaviour == TOOL_WELDER)
+					if(!I.tool_start_check(user, amount=0))
+						return
+					to_chat(user, SPAN_NOTICE("You begin slicing through the support rods..."))
+					if(I.use_tool(src, user, 100, volume=100))
+						if(!istype(src, /turf/closed/wall) || d_state != SUPPORT_RODS)
+							return TRUE
+						d_state = SHEATH
+						update_appearance()
+						to_chat(user, SPAN_NOTICE("You slice through the support rods."))
+					return TRUE
+	
+				if(I.tool_behaviour == TOOL_WRENCH)
+					to_chat(user, SPAN_NOTICE("You start tightening the bolts which secure the support rods to their frame..."))
+					I.play_tool_sound(src, 100)
+					if(I.use_tool(src, user, 40))
+						if(!istype(src, /turf/closed/wall) || d_state != SUPPORT_RODS)
+							return TRUE
+						d_state = ANCHOR_BOLTS
+						update_appearance()
+						to_chat(user, SPAN_NOTICE("You tighten the bolts anchoring the support rods."))
+					return TRUE
 
-		to_chat(user, SPAN_NOTICE("You begin slicing through the outer plating..."))
-		if(I.use_tool(src, user, slicing_duration, volume=100))
-			if(iswallturf(src))
-				to_chat(user, SPAN_NOTICE("You remove the outer plating."))
-				dismantle_wall()
-			return TRUE
+			if(SHEATH)
+				if(I.tool_behaviour == TOOL_CROWBAR)
+					to_chat(user, SPAN_NOTICE("You struggle to pry off the outer sheath..."))
+					if(I.use_tool(src, user, 100, volume=100))
+						if(!istype(src, /turf/closed/wall) || d_state != SHEATH)
+							return TRUE
+						to_chat(user, SPAN_NOTICE("You pry off the outer sheath."))
+						dismantle_wall()
+					return TRUE
+	
+				if(I.tool_behaviour == TOOL_WELDER)
+					if(!I.tool_start_check(user, amount=0))
+						return
+					to_chat(user, SPAN_NOTICE("You begin welding the support rods back together..."))
+					if(I.use_tool(src, user, 100, volume=100))
+						if(!istype(src, /turf/closed/wall) || d_state != SHEATH)
+							return TRUE
+						d_state = SUPPORT_RODS
+						update_appearance()
+						to_chat(user, SPAN_NOTICE("You weld the support rods back together."))
+					return TRUE
+	else
+		if(I.tool_behaviour == TOOL_WELDER)
+			if(!I.tool_start_check(user, amount=0))
+				return FALSE
+	
+			to_chat(user, SPAN_NOTICE("You begin slicing through the outer plating..."))
+			if(I.use_tool(src, user, slicing_duration, volume=100))
+				if(iswallturf(src))
+					to_chat(user, SPAN_NOTICE("You remove the outer plating."))
+					dismantle_wall()
+				return TRUE
 
 	return FALSE
 
@@ -349,13 +533,18 @@
 	wall_singularity_pull(current_size)
 
 /turf/closed/wall/proc/wall_singularity_pull(current_size)
-	if(current_size >= STAGE_FIVE)
-		if(prob(50))
-			dismantle_wall()
-		return
-	if(current_size == STAGE_FOUR)
-		if(prob(30))
-			dismantle_wall()
+	if(hard_decon)
+		if(current_size >= STAGE_FIVE)
+			if(prob(30))
+				dismantle_wall()
+	else
+		if(current_size >= STAGE_FIVE)
+			if(prob(50))
+				dismantle_wall()
+			return
+		if(current_size == STAGE_FOUR)
+			if(prob(30))
+				dismantle_wall()
 
 /turf/closed/wall/narsie_act(force, ignore_mobs, probability = 20)
 	. = ..()
@@ -374,12 +563,16 @@
 	dismantle_wall(1)
 
 /turf/closed/wall/rcd_vals(mob/user, obj/item/construction/rcd/the_rcd)
+	if(hard_decon && !the_rcd.canRturf)
+		return
 	switch(the_rcd.mode)
 		if(RCD_DECONSTRUCT)
 			return list("mode" = RCD_DECONSTRUCT, "delay" = 40, "cost" = 26)
 	return FALSE
 
 /turf/closed/wall/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, passed_mode)
+	if(hard_decon && !the_rcd.canRturf)
+		return
 	switch(passed_mode)
 		if(RCD_DECONSTRUCT)
 			to_chat(user, SPAN_NOTICE("You deconstruct the wall."))
