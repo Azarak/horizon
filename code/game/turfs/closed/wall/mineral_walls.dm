@@ -87,7 +87,7 @@
 	..()
 
 /turf/closed/wall/mineral/plasma/proc/PlasmaBurn(temperature)
-	new girder_type(src)
+	break_wall(FALSE)
 	ScrapeAway()
 	var/turf/open/T = src
 	T.atmos_spawn_air("plasma=400;TEMP=[temperature]")
@@ -130,7 +130,6 @@
 
 /turf/closed/wall/mineral/wood/nonmetal
 	desc = "A solidly wooden wall. It's a bit weaker than a wall made with metal."
-	girder_type = /obj/structure/barricade/wooden
 	hardness = 50
 
 /turf/closed/wall/mineral/iron
@@ -145,7 +144,6 @@
 	hardness = 80
 	explosion_block = 0
 	slicing_duration = 30
-	girder_type = null
 	bullet_sizzle = TRUE
 	bullet_bounce_sound = null
 	plating_material = /datum/material/snow

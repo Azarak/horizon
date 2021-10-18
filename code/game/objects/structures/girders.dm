@@ -22,6 +22,15 @@
 	/// Stripe paint to apply to the wall built. Matters for deconstructed and reconstructed walls
 	var/stripe_paint
 
+/obj/structure/girder/Initialize(mapload, reinforced_mat, new_paint, new_stripe_paint)
+	. = ..()
+	wall_paint = new_paint
+	stripe_paint = new_stripe_paint
+	if(reinforced_mat)
+		reinforced_material = reinforced_mat
+		state = GIRDER_REINF
+		update_appearance()
+
 /obj/structure/girder/update_name()
 	. = ..()
 	if(!anchored)

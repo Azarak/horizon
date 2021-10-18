@@ -75,6 +75,8 @@
 	categories = list(MAT_CATEGORY_RIGID=TRUE, MAT_CATEGORY_BASE_RECIPES=TRUE, MAT_CATEGORY_ITEM_MATERIAL=TRUE)
 	composition = list(/datum/material/titanium=1, /datum/material/plasma=1)
 	wall_icon = 'icons/turf/walls/metal_wall.dmi'
+	wall_type = /turf/closed/wall/mineral/plastitanium
+	false_wall_type = /obj/structure/falsewall/plastitanium
 
 /** Plasmaglass
  *
@@ -94,6 +96,7 @@
 	value_per_unit = 0.075
 	categories = list(MAT_CATEGORY_RIGID=TRUE, MAT_CATEGORY_BASE_RECIPES=TRUE, MAT_CATEGORY_ITEM_MATERIAL=TRUE)
 	composition = list(/datum/material/glass=1, /datum/material/plasma=0.5)
+	wall_type = null
 
 /** Titaniumglass
  *
@@ -112,6 +115,7 @@
 	value_per_unit = 0.04
 	categories = list(MAT_CATEGORY_RIGID=TRUE, MAT_CATEGORY_BASE_RECIPES=TRUE, MAT_CATEGORY_ITEM_MATERIAL=TRUE)
 	composition = list(/datum/material/glass=1, /datum/material/titanium=0.5)
+	wall_type = null
 
 /** Plastitanium Glass
  *
@@ -131,6 +135,7 @@
 	value_per_unit = 0.125
 	categories = list(MAT_CATEGORY_RIGID=TRUE, MAT_CATEGORY_BASE_RECIPES=TRUE, MAT_CATEGORY_ITEM_MATERIAL=TRUE)
 	composition = list(/datum/material/glass=1, /datum/material/alloy/plastitanium=0.5)
+	wall_type = null
 
 /** Alien Alloy
  *

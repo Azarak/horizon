@@ -108,12 +108,13 @@
 	return ..()
 
 /obj/structure/falsewall/proc/ChangeToWall(delete = 1)
+	var/datum/material/plating_mat_ref = GET_MATERIAL_REF(plating_material)
 	var/turf/T = get_turf(src)
-	/*
-	T.PlaceOnTop(walltype)
+	T.PlaceOnTop(plating_mat_ref.wall_type)
+	var/turf/closed/wall/placed_wall = T
+	placed_wall.set_wall_information(plating_material, reinf_material, wall_paint, stripe_paint)
 	if(delete)
 		qdel(src)
-	*/
 	return T
 
 /// Painfully copypasted from /turf/closed/wall
@@ -180,14 +181,11 @@
 	deconstruct(disassembled)
 
 /obj/structure/falsewall/deconstruct(disassembled = TRUE)
-	/*
 	if(!(flags_1 & NODECONSTRUCT_1))
 		if(disassembled)
-			new girder_type(loc)
-		if(mineral_amount)
-			for(var/i in 1 to mineral_amount)
-				new mineral(loc)
-	*/
+			new /obj/structure/girder(src.loc, reinf_material, wall_paint, stripe_paint)
+		var/datum/material/plating_mat_ref = GET_MATERIAL_REF(plating_material)
+		new plating_mat_ref.sheet_type(src.loc, 2)
 	qdel(src)
 
 /obj/structure/falsewall/get_dumping_location(obj/item/storage/source,mob/user)

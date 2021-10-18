@@ -33,11 +33,16 @@
 	/// Paint color of which the stripe has been painted with. Will not overlay a stripe if no paint is applied
 	var/stripe_paint
 
-	var/girder_type = /obj/structure/girder
-
 	var/list/dent_decals
 
 	var/static/list/neighbor_typecache
+
+/turf/closed/wall/update_name()
+	. = ..()
+	if(reinf_material)
+		name = "reinforced wall"
+	else
+		name = "wall"
 
 /turf/closed/wall/Initialize(mapload)
 	. = ..()
@@ -56,6 +61,7 @@
 		pasted_turf.set_wall_information(plating_material, reinf_material, wall_paint, stripe_paint)
 	return ..()
 
+/// Most of this code is pasted within /obj/structure/falsewall. Be mindful of this
 /turf/closed/wall/update_overlays()
 	//Updating the unmanaged wall overlays (unmanaged for optimisations)
 	overlays.Cut()
@@ -96,6 +102,7 @@
 /turf/closed/wall/attack_tk()
 	return
 
+/// Most of this code is pasted within /obj/structure/falsewall. Be mindful of this
 /turf/closed/wall/proc/set_wall_information(plating_mat, reinf_mat, new_paint, new_stripe_paint)
 	wall_paint = new_paint
 	if(wall_paint)
@@ -103,6 +110,7 @@
 	stripe_paint = new_stripe_paint
 	set_materials(plating_mat, reinf_mat)
 
+/// Most of this code is pasted within /obj/structure/falsewall. Be mindful of this
 /turf/closed/wall/proc/set_materials(plating_mat, reinf_mat)
 	var/datum/material/plating_mat_ref
 	if(plating_mat)
@@ -140,19 +148,21 @@
 
 	ScrapeAway()
 
-/turf/closed/wall/proc/break_wall()
-	/*
-	new sheet_type(src, sheet_amount)
-	if(girder_type)
-		return new girder_type(src)
-	*/
+/turf/closed/wall/proc/break_wall(drop_mats = TRUE)
+	if(drop_mats)
+		drop_materials_used()
+	return new /obj/structure/girder(src, reinf_material, wall_paint, stripe_paint)
 
 /turf/closed/wall/proc/devastate_wall()
-	/*
-	new sheet_type(src, sheet_amount)
-	if(girder_type)
-		new /obj/item/stack/sheet/iron(src)
-	*/
+	drop_materials_used(TRUE)
+	new /obj/item/stack/sheet/iron(src)
+
+/turf/closed/wall/proc/drop_materials_used(drop_reinf = FALSE)
+	var/datum/material/plating_mat_ref = GET_MATERIAL_REF(plating_material)
+	new plating_mat_ref.sheet_type(src, 2)
+	if(drop_reinf && reinf_material)
+		var/datum/material/reinf_mat_ref = GET_MATERIAL_REF(reinf_material)
+		new reinf_mat_ref.sheet_type(src, 2)
 
 /turf/proc/create_rubble(adjacent = FALSE)
 	var/rubble_type = prob(50) ? /obj/structure/rubble/medium : /obj/structure/rubble/large

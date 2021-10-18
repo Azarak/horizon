@@ -57,7 +57,7 @@ Simple datum which is instanced once per type and is used for every object of sa
 	/// Type of the wall this material makes when its used as a plating, null means can't make a wall out of it.
 	var/wall_type = /turf/closed/wall
 	/// Type of the false wall this material will make when used as its plating
-	var/false_wall_type = /obj/structure/falsewall
+	var/false_wall_type
 
 /** Handles initializing the material.
  *
@@ -72,6 +72,9 @@ Simple datum which is instanced once per type and is used for every object of sa
 
 	if(!wall_color)
 		wall_color = greyscale_colors
+
+	if(wall_type && !false_wall_type)
+		false_wall_type = /obj/structure/falsewall
 
 	if(texture_layer_icon_state)
 		cached_texture_filter_icon = icon('icons/materials/composite.dmi', texture_layer_icon_state)

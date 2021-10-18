@@ -90,7 +90,6 @@
 /turf/closed/wall/concrete
 	name = "concrete wall"
 	desc = "A dense slab of reinforced stone, not much will get through this."
-	girder_type = /obj/structure/girder/reinforced
 	hardness = 10
 	explosion_block = 2
 	rad_insulation = RAD_HEAVY_INSULATION
