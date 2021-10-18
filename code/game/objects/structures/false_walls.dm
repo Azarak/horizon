@@ -23,8 +23,13 @@
 	var/plating_material = /datum/material/iron
 	/// Material type of the reinforcement
 	var/reinf_material
+	/// Paint of the wall
+	var/wall_paint
+	/// Stripe paint of the wall
+	var/stripe_paint
 	var/opening = FALSE
-
+	/// Typecache of the neighboring objects that we want to neighbor stripe overlay with
+	var/static/list/neighbor_typecache
 
 /obj/structure/falsewall/Initialize()
 	. = ..()
@@ -73,6 +78,35 @@
 	icon_state = density ? "[base_icon_state]-[smoothing_junction]" : "fwall_open"
 	return ..()
 
+/// Partially copypasted from /turf/closed/wall
+/obj/structure/falsewall/update_overlays()
+	//Updating the unmanaged wall overlays (unmanaged for optimisations)
+	overlays.Cut()
+	if(density)
+		if(stripe_paint)
+			var/datum/material/plating_mat_ref = GET_MATERIAL_REF(plating_material)
+			var/mutable_appearance/smoothed_stripe = mutable_appearance(plating_mat_ref.wall_stripe_icon, icon_state, appearance_flags = RESET_COLOR)
+			smoothed_stripe.color = stripe_paint
+			overlays += smoothed_stripe
+		var/neighbor_stripe = NONE
+		if(!neighbor_typecache)
+			neighbor_typecache = typecacheof(list(/obj/machinery/door/airlock, /obj/structure/window/reinforced/fulltile, /obj/structure/window/fulltile, /obj/structure/window/shuttle, /obj/machinery/door/poddoor))
+		for(var/cardinal in GLOB.cardinals)
+			var/turf/step_turf = get_step(src, cardinal)
+			for(var/atom/movable/movable_thing as anything in step_turf)
+				if(neighbor_typecache[movable_thing.type])
+					neighbor_stripe ^= cardinal
+					break
+		if(neighbor_stripe)
+			var/mutable_appearance/neighb_stripe_appearace = mutable_appearance('icons/turf/walls/neighbor_stripe.dmi', "[neighbor_stripe]", appearance_flags = RESET_COLOR)
+			if(stripe_paint)
+				neighb_stripe_appearace.color = stripe_paint
+			else
+				neighb_stripe_appearace.color = color
+			overlays += neighb_stripe_appearace
+		//And letting anything else that may want to render on the wall to work (ie components)
+	return ..()
+
 /obj/structure/falsewall/proc/ChangeToWall(delete = 1)
 	var/turf/T = get_turf(src)
 	/*
@@ -81,6 +115,36 @@
 		qdel(src)
 	*/
 	return T
+
+/// Painfully copypasted from /turf/closed/wall
+/obj/structure/falsewall/proc/set_wall_information(plating_mat, reinf_mat, new_paint, new_stripe_paint)
+	wall_paint = new_paint
+	if(wall_paint)
+		color = wall_paint
+	stripe_paint = new_stripe_paint
+	set_materials(plating_mat, reinf_mat)
+
+/// Painfully copypasted from /turf/closed/wall
+/obj/structure/falsewall/proc/set_materials(plating_mat, reinf_mat)
+	var/datum/material/plating_mat_ref
+	if(plating_mat)
+		plating_mat_ref = GET_MATERIAL_REF(plating_mat)
+	var/datum/material/reinf_mat_ref
+	if(reinf_mat)
+		reinf_mat_ref = GET_MATERIAL_REF(reinf_mat)
+
+	if(reinf_mat_ref)
+		icon = plating_mat_ref.reinforced_wall_icon
+	else
+		icon = plating_mat_ref.wall_icon
+
+	if(!wall_paint)
+		color = plating_mat_ref.wall_color
+
+	plating_material = plating_mat
+	reinf_material = reinf_mat
+
+	update_appearance()
 
 /obj/structure/falsewall/attackby(obj/item/W, mob/user, params)
 	if(opening)

@@ -53,8 +53,7 @@
 
 /turf/closed/wall/copyTurf(turf/closed/wall/pasted_turf)
 	if(istype(pasted_turf, /turf/closed/wall))
-		pasted_turf.plating_material = plating_material
-		pasted_turf.reinf_material = reinf_material
+		pasted_turf.set_wall_information(plating_material, reinf_material, wall_paint, stripe_paint)
 	return ..()
 
 /turf/closed/wall/update_overlays()
@@ -96,6 +95,13 @@
 
 /turf/closed/wall/attack_tk()
 	return
+
+/turf/closed/wall/proc/set_wall_information(plating_mat, reinf_mat, new_paint, new_stripe_paint)
+	wall_paint = new_paint
+	if(wall_paint)
+		color = wall_paint
+	stripe_paint = new_stripe_paint
+	set_materials(plating_mat, reinf_mat)
 
 /turf/closed/wall/proc/set_materials(plating_mat, reinf_mat)
 	var/datum/material/plating_mat_ref

@@ -54,6 +54,10 @@ Simple datum which is instanced once per type and is used for every object of sa
 	var/wall_stripe_icon = 'icons/turf/walls/wall_stripe.dmi'
 	/// Color of walls constructed with this material as their plating
 	var/wall_color
+	/// Type of the wall this material makes when its used as a plating, null means can't make a wall out of it.
+	var/wall_type = /turf/closed/wall
+	/// Type of the false wall this material will make when used as its plating
+	var/false_wall_type = /obj/structure/falsewall
 
 /** Handles initializing the material.
  *
