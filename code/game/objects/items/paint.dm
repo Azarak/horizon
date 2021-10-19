@@ -16,6 +16,10 @@
 	/// How many uses are left
 	var/paintleft = 10
 
+/obj/item/paint/examine(mob/user)
+	. = ..()
+	. += SPAN_NOTICE("Paint wall stripes by right clicking a walls.")
+
 /obj/item/paint/red
 	name = "red paint"
 	paint_color = COLOR_RED
@@ -60,7 +64,6 @@
 	. = ..()
 	. += SPAN_NOTICE("Choose a basic color by using the paint.")
 	. += SPAN_NOTICE("Choose any color by alt-clicking the paint.")
-	. += SPAN_NOTICE("Paint wall stripes by right clicking a walls.")
 
 /obj/item/paint/anycolor/AltClick(mob/living/user)
 	var/new_paint_color = input(user, "Choose new paint color", "Paint Color", paint_color) as color|null
