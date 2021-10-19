@@ -64,22 +64,14 @@
 /turf/closed/wall/rust
 	name = "rusted wall"
 	desc = "A rusted metal wall."
-	smoothing_flags = SMOOTH_BITMASK
 	hardness = 45
-
-/turf/closed/wall/rust/rust_heretic_act()
-	ScrapeAway()
+	rusted = TRUE
 
 /turf/closed/wall/r_wall/rust
 	name = "rusted reinforced wall"
 	desc = "A huge chunk of rusted reinforced metal."
-	smoothing_flags = SMOOTH_BITMASK
 	hardness = 15
-
-/turf/closed/wall/r_wall/rust/rust_heretic_act()
-	if(prob(50))
-		return
-	ScrapeAway()
+	rusted = TRUE
 
 /turf/closed/wall/mineral/bronze
 	name = "clockwork wall"

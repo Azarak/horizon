@@ -36,6 +36,8 @@
 	var/hard_decon
 	/// Deconstruction state, matters if the wall is hard to deconstruct (hard_decon)
 	var/d_state = INTACT
+	/// Whether this wall is rusted or not, to apply the rusted overlay
+	var/rusted
 
 	var/list/dent_decals
 
@@ -91,6 +93,10 @@
 		else
 			neighb_stripe_appearace.color = color
 		overlays += neighb_stripe_appearace
+
+	if(rusted)
+		var/mutable_appearance/rust_overlay = mutable_appearance('icons/turf/rust_overlay.dmi', "rust", appearance_flags = RESET_COLOR)
+		overlays += rust_overlay
 
 	if(hard_decon && d_state)
 		var/mutable_appearance/decon_overlay = mutable_appearance('icons/turf/walls/decon_states.dmi', "[d_state]", appearance_flags = RESET_COLOR)
@@ -603,8 +609,13 @@
 	add_overlay(dent_decals)
 
 /turf/closed/wall/rust_heretic_act()
+	if(rusted)
+		return
+	if(hard_decon && prob(50))
+		return
 	if(prob(70))
 		new /obj/effect/temp_visual/glowing_rune(src)
-	ChangeTurf(/turf/closed/wall/rust)
+	rusted = TRUE
+	update_appearance()
 
 #undef MAX_DENT_DECALS
