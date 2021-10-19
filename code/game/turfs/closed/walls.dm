@@ -41,17 +41,22 @@
 
 	var/list/dent_decals
 
+	/// Typecache of all objects that we seek out to apply a neighbor stripe overlay
 	var/static/list/neighbor_typecache
 
 /turf/closed/wall/update_name()
 	. = ..()
+	name = ""
+	if(rusted)
+		name = "rusted "
 	if(reinf_material)
-		name = "reinforced wall"
+		name += "reinforced wall"
 	else
-		name = "wall"
+		name += "wall"
 
 /turf/closed/wall/Initialize(mapload)
 	. = ..()
+	paint_wall(wall_paint) //To ensure varedit wall paint works properly
 	if(mapload)
 		set_materials(plating_material, reinf_material)
 	if(is_station_level(z))
@@ -109,6 +114,10 @@
 
 /turf/closed/wall/examine(mob/user)
 	. += ..()
+	if(wall_paint)
+		. += SPAN_NOTICE("It's coated with a <font color=[wall_paint]>layer of paint</font>.")
+	if(stripe_paint)
+		. += SPAN_NOTICE("It has a <font color=[stripe_paint]>painted stripe</font> around its base.")
 	. += deconstruction_hints(user)
 
 /turf/closed/wall/proc/deconstruction_hints(mob/user)
@@ -133,6 +142,22 @@
 
 /turf/closed/wall/attack_tk()
 	return
+
+/// Most of this code is pasted within /obj/structure/falsewall. Be mindful of this
+/turf/closed/wall/proc/paint_wall(new_paint)
+	wall_paint = new_paint
+	if(wall_paint)
+		color = wall_paint
+	else
+		/// Reset color to material color
+		var/datum/material/plating_mat_ref = GET_MATERIAL_REF(plating_material)
+		color = plating_mat_ref.wall_color
+	update_appearance()
+
+/// Most of this code is pasted within /obj/structure/falsewall. Be mindful of this
+/turf/closed/wall/proc/paint_stripe(new_paint)
+	stripe_paint = new_paint
+	update_appearance()
 
 /// Most of this code is pasted within /obj/structure/falsewall. Be mindful of this
 /turf/closed/wall/proc/set_wall_information(plating_mat, reinf_mat, new_paint, new_stripe_paint)

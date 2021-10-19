@@ -35,6 +35,13 @@
 	. = ..()
 	air_update_turf(TRUE, TRUE)
 
+/obj/structure/falsewall/update_name()
+	. = ..()
+	if(reinf_material)
+		name = "reinforced wall"
+	else
+		name = "wall"
+
 /obj/structure/falsewall/attack_hand(mob/user, list/modifiers)
 	if(opening)
 		return
@@ -116,6 +123,22 @@
 	if(delete)
 		qdel(src)
 	return T
+
+/// Painfully copypasted from /turf/closed/wall
+/obj/structure/falsewall/proc/paint_wall(new_paint)
+	wall_paint = new_paint
+	if(wall_paint)
+		color = wall_paint
+	else
+		/// Reset color to material color
+		var/datum/material/plating_mat_ref = GET_MATERIAL_REF(plating_material)
+		color = plating_mat_ref.wall_color
+	update_appearance()
+
+/// Painfully copypasted from /turf/closed/wall
+/obj/structure/falsewall/proc/paint_stripe(new_paint)
+	stripe_paint = new_paint
+	update_appearance()
 
 /// Painfully copypasted from /turf/closed/wall
 /obj/structure/falsewall/proc/set_wall_information(plating_mat, reinf_mat, new_paint, new_stripe_paint)
