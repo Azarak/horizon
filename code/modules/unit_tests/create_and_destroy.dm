@@ -102,6 +102,8 @@
 	ignore += typesof(/obj/effect/abstract/overmap)
 	//Those expect to be handled by the delivery system
 	ignore += typesof(/obj/item/delivery_cargo)
+	//Mold structures expect to be managed by a controller
+	ignore += typesof(/obj/structure/mold)
 
 	var/list/cached_contents = spawn_at.contents.Copy()
 	var/baseturf_count = length(spawn_at.baseturfs)
