@@ -92,8 +92,6 @@
 	ignore += typesof(/obj/item/pinpointer/shuttle)
 	//This spawns beams as a part of init, which can sleep past an async proc. This hangs a ref, and fucks us. It's only a problem here because the beam sleeps with CHECK_TICK
 	ignore += typesof(/obj/structure/alien/resin/flower_bud)
-	//Needs a linked mecha
-	ignore += typesof(/obj/effect/skyfall_landingzone)
 	//Leads to errors as a consequence of the logic behind moving back to a tile that's moving you somewhere else
 	ignore += typesof(/obj/effect/mapping_helpers/component_injector/areabound)
 	//Expects a mob to holderize, we have nothing to give
