@@ -186,6 +186,8 @@
 	name = "pod wall"
 	desc = "An easily-compressable wall used for temporary shelter."
 	canSmoothWith = list(SMOOTH_GROUP_SURVIVAL_TIANIUM_POD, SMOOTH_GROUP_AIRLOCK, SMOOTH_GROUP_WINDOW_FULLTILE, SMOOTH_GROUP_SHUTTLE_PARTS)
+	wall_paint = "#242424"
+	stripe_paint = "#824621"
 
 /turf/closed/wall/mineral/titanium/survival/nodiagonal
 
