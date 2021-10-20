@@ -96,6 +96,12 @@
 	ignore += typesof(/obj/effect/mapping_helpers/component_injector/areabound)
 	//Expects a mob to holderize, we have nothing to give
 	ignore += typesof(/obj/item/clothing/head/mob_holder)
+	//Those require connections, and work fine
+	ignore += typesof(/obj/effect/mapping_helpers/smart_pipe)
+	//Those expect to be handled by a datum overmap object
+	ignore += typesof(/obj/effect/abstract/overmap)
+	//Those expect to be handled by the delivery system
+	ignore += typesof(/obj/item/delivery_cargo)
 
 	var/list/cached_contents = spawn_at.contents.Copy()
 	var/baseturf_count = length(spawn_at.baseturfs)
