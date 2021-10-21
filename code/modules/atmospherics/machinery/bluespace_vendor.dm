@@ -90,10 +90,6 @@
 	for(var/obj/machinery/atmospherics/components/unary/bluespace_sender/sender in GLOB.machines)
 		register_machine(sender)
 
-/obj/machinery/bluespace_vendor/Destroy()
-	unregister_machine()
-	return ..()
-
 /obj/machinery/bluespace_vendor/update_icon_state()
 	switch(mode)
 		if(BS_MODE_OFF)

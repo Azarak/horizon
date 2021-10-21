@@ -29,6 +29,14 @@
 		/mob/dview,
 		//Template,
 		/obj/effect/mapping_helpers/custom_icon,
+		//Is initialized with a trauma
+		/mob/camera/imaginary_friend,
+		//Created and managed by a projector
+		/obj/structure/projected_forcefield,
+		//Deepfrying logic manages this
+		/obj/item/food/deepfryholder,
+		//Managed by aux contruction console
+		/mob/camera/ai_eye/remote/base_construction,
 	)
 	//This turf existing is an error in and of itself
 	ignore += typesof(/turf/baseturf_skipover)
@@ -104,6 +112,12 @@
 	ignore += typesof(/obj/item/delivery_cargo)
 	//Mold structures expect to be managed by a controller
 	ignore += typesof(/obj/structure/mold)
+	//Screen objects have all sorts of dependencies
+	ignore += typesof(/atom/movable/screen)
+	//Plane master controllers expect to be managed by huds
+	ignore += typesof(/atom/movable/plane_master_controller)
+	//Magic hands from the cult are managed by their spells
+	ignore += typesof(/obj/item/melee/blood_magic)
 
 	var/list/cached_contents = spawn_at.contents.Copy()
 	var/baseturf_count = length(spawn_at.baseturfs)
