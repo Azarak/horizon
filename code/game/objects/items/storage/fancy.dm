@@ -449,7 +449,8 @@
 
 /obj/item/storage/fancy/cigarettes/cigars/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state][is_open ? "_open" : null]"
+	//reset any changes the parent call may have made
+	icon_state = base_icon_state
 
 /obj/item/storage/fancy/cigarettes/cigars/update_overlays()
 	. = ..()
