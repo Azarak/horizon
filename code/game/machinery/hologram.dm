@@ -527,7 +527,7 @@ For the other part of the code, check silicon say.dm. Particularly robot talk.*/
 		var/transfered = FALSE
 		if(!validate_location(new_turf))
 			if(!transfer_to_nearby_pad(new_turf,user))
-				clear_holo(user)
+				holo.HC.eye.setLoc(get_turf(holo)) //Set back the eye to where the hologram is
 				return FALSE
 			else
 				transfered = TRUE
