@@ -5,6 +5,7 @@
 	smoothing_flags = SMOOTH_BITMASK
 	canSmoothWith = null
 	plating_material = /datum/material/runedmetal
+	color = "#3C3434" //To display in mapping softwares
 
 /turf/closed/wall/mineral/cult/Initialize()
 	new /obj/effect/temp_visual/cult/turf(src)
@@ -78,6 +79,7 @@
 	desc = "A huge chunk of bronze, decorated like gears and cogs."
 	smoothing_flags = SMOOTH_BITMASK
 	plating_material = /datum/material/bronze
+	color = "#92661A" //To display in mapping softwares
 
 /turf/closed/wall/concrete
 	name = "concrete wall"

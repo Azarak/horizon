@@ -18,6 +18,7 @@
 	explosion_block = 20
 	reinf_material = /datum/material/iron
 	plating_material = /datum/material/alloy/plastitanium
+	color = "#3a313a" //To display in mapping softwares
 
 /turf/closed/wall/r_wall/syndicate/rcd_vals(mob/user, obj/item/construction/rcd/the_rcd)
 	return FALSE
