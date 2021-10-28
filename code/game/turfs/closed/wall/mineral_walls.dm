@@ -11,11 +11,13 @@
 	desc = "A wall with gold plating. Swag!"
 	explosion_block = 0 //gold is a soft metal you dingus.
 	plating_material = /datum/material/gold
+	color = "#dbdd4c" //To display in mapping softwares
 
 /turf/closed/wall/mineral/silver
 	name = "silver wall"
 	desc = "A wall with silver plating. Shiny!"
 	plating_material = /datum/material/silver
+	color = "#e3f1f8" //To display in mapping softwares
 
 /turf/closed/wall/mineral/diamond
 	name = "diamond wall"
@@ -23,6 +25,7 @@
 	slicing_duration = 200   //diamond wall takes twice as much time to slice
 	explosion_block = 3
 	plating_material = /datum/material/diamond
+	color = "#71c8f7" //To display in mapping softwares
 
 /turf/closed/wall/mineral/diamond/hulk_recoil(obj/item/bodypart/arm, mob/living/carbon/human/hulkman, damage = 41)
 	return ..()
@@ -31,6 +34,7 @@
 	name = "bananium wall"
 	desc = "A wall with bananium plating. Honk!"
 	plating_material = /datum/material/bananium
+	color = "#ffff00" //To display in mapping softwares
 
 /turf/closed/wall/mineral/sandstone
 	name = "sandstone wall"
@@ -38,12 +42,14 @@
 	icon = 'icons/turf/walls/stone_wall.dmi'
 	explosion_block = 0
 	plating_material = /datum/material/sandstone
+	color = "#B77D31" //To display in mapping softwares
 
 /turf/closed/wall/mineral/uranium
 	article = "a"
 	name = "uranium wall"
 	desc = "A wall with uranium plating. This is probably a bad idea."
 	plating_material = /datum/material/uranium
+	color = "#30f71a" //To display in mapping softwares
 
 /turf/closed/wall/mineral/uranium/proc/radiate()
 	if(!active)
@@ -77,6 +83,7 @@
 	desc = "A wall with plasma plating. This is definitely a bad idea."
 	thermal_conductivity = 0.04
 	plating_material = /datum/material/plasma
+	color = "#c162ec" //To display in mapping softwares
 
 /turf/closed/wall/mineral/plasma/attackby(obj/item/W, mob/user, params)
 	if(W.get_temperature() > 300)//If the temperature of the object is over 300, then ignite
@@ -114,6 +121,7 @@
 	hardness = 70
 	explosion_block = 0
 	plating_material = /datum/material/wood
+	color = "#bb8e53" //To display in mapping softwares
 
 /turf/closed/wall/mineral/wood/attackby(obj/item/W, mob/user)
 	if(W.get_sharpness() && W.force)
