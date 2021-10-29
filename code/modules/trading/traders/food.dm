@@ -16,17 +16,20 @@
 				"compliment_accept" = "Thanks, sir! You're very nice!",
 				"insult_good"       = "Please stop that, sir.",
 				"insult_bad"        = "Sir, just because I'm contractually obligated to keep you on the line for a minute doesn't mean I have to take this.")
-	possible_sold_goods = list(/datum/sold_goods/pizzabox = 100,
-								/datum/sold_goods/pizzabox/two = 100,
-								/datum/sold_goods/pizzabox/three = 100,
-								/datum/sold_goods/pizzabox/four = 100)
-	possible_bought_goods = list(/datum/bought_goods/dough = 100,
-								/datum/bought_goods/tomato = 100,
-								/datum/bought_goods/cheesewheels = 100,
-								/datum/bought_goods/chanterelle = 100,
-								/datum/bought_goods/pineapple = 100)
-	target_sold_goods_amount = 4
-	target_bought_goods_amount = 3
+	sold_goods = list(
+		/datum/sold_goods/pizzabox/margherita,
+		/datum/sold_goods/pizzabox/vegetable,
+		/datum/sold_goods/pizzabox/mushroom,
+		/datum/sold_goods/pizzabox/meat,
+		/datum/sold_goods/pizzabox/pineapple
+		)
+	bought_goods = list(
+		/datum/bought_goods/dough,
+		/datum/bought_goods/tomato,
+		/datum/bought_goods/cheesewheels,
+		/datum/bought_goods/chanterelle,
+		/datum/bought_goods/pineapple
+		)
 	delivery_gain_chance = 35
 	possible_deliveries = list(
 		/datum/delivery_run/food_delivery/pizza = 100
@@ -34,6 +37,9 @@
 	possible_bounties = list(
 		/datum/trader_bounty/kitchen_restock_botany = 100,
 		/datum/trader_bounty/kitchen_restock_meat = 100
+		)
+	possible_supplies_bounties = list(
+		/datum/trader_bounty/food_supplies = 100
 		)
 
 /datum/trader/chinese
@@ -54,15 +60,17 @@
 				"compliment_accept"  = "Good philosophy, see good in bad, I like.",
 				"insult_good"        = "As a man said long ago, \"When anger rises, think of the consequences.\" Think on that.",
 				"insult_bad"         = "I do not need to take this from you.")
-	possible_sold_goods = list(/datum/sold_goods/meatkebab = 100,
-								/datum/sold_goods/monkeysoup = 100,
-								/datum/sold_goods/ricepudding = 100,
-								/datum/sold_goods/cupramen = 100)
-	possible_bought_goods = list(/datum/bought_goods/carpmeat = 100,
-								/datum/bought_goods/cabbage = 100,
-								/datum/bought_goods/batter = 100)
-	target_sold_goods_amount = 5
-	target_bought_goods_amount = 3
+	sold_goods = list(
+		/datum/sold_goods/meatkebab,
+		/datum/sold_goods/monkeysoup,
+		/datum/sold_goods/ricepudding,
+		/datum/sold_goods/cupramen
+		)
+	bought_goods = list(
+		/datum/bought_goods/carpmeat,
+		/datum/bought_goods/cabbage,
+		/datum/bought_goods/batter
+		)
 	delivery_gain_chance = 35
 	possible_deliveries = list(
 		/datum/delivery_run/food_delivery/chinese = 100
@@ -71,6 +79,9 @@
 		/datum/trader_bounty/kitchen_restock_botany = 100,
 		/datum/trader_bounty/kitchen_restock_meat = 100,
 		/datum/trader_bounty/festive_preparations = 150
+		)
+	possible_supplies_bounties = list(
+		/datum/trader_bounty/food_supplies = 100
 		)
 	var/list/fortunes = list("Today it's up to you to create the peacefulness you long for.",
 							"If you refuse to accept anything but the best, you very often get it.",
@@ -111,21 +122,20 @@
 		"insult_good" = "Knock eet the fuck off! *Racks shotgun*.",
 		"insult_bad" = "Y'all really wanna start all this? I'll get my employers on the line and run ya outta fucking town!",
 	)
-	possible_sold_goods = list(
-		/datum/sold_goods/cow = 100,
-		/datum/sold_goods/goat = 100,
-		/datum/sold_goods/chicken = 100,
-		/datum/sold_goods/wheat = 100,
-		/datum/sold_goods/corn = 100,
-		/datum/sold_goods/pumpkin = 100
+	sold_goods = list(
+		/datum/sold_goods/cow,
+		/datum/sold_goods/goat,
+		/datum/sold_goods/chicken,
+		/datum/sold_goods/wheat,
+		/datum/sold_goods/corn,
+		/datum/sold_goods/pumpkin,
+		/datum/sold_goods/food_supplies
 		)
-	possible_bought_goods = list(
-		/datum/bought_goods/eggs = 100,
-		/datum/bought_goods/produce = 100,
-		/datum/bought_goods/logs = 100
+	bought_goods = list(
+		/datum/bought_goods/eggs,
+		/datum/bought_goods/produce,
+		/datum/bought_goods/logs
 		)
-	target_sold_goods_amount = 6
-	target_bought_goods_amount = 3
 	possible_bounties = list(
 		/datum/trader_bounty/reagent/fertilizer_shortage = 100
 		)
