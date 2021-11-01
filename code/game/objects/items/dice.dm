@@ -274,9 +274,10 @@
 			display_color = "#34ebeb" //Neon color
 	var/result_string = "[result]"
 	var/characters = length(result_string)
+	var/offset = (characters == 1) ? 6 : (characters * 4)
 	for(var/i in 1 to characters)
 		var/letter = result_string[i]
-		var/x_shift = i * 4 - (characters * 4)
+		var/x_shift = i * 4 - offset
 		var/mutable_appearance/letter_overlay = mutable_appearance(icon, letter, appearance_flags = RESET_COLOR|KEEP_TOGETHER)
 		letter_overlay.color = display_color
 		letter_overlay.pixel_x = x_shift
