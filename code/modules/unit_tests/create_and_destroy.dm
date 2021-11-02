@@ -37,6 +37,8 @@
 		/obj/item/food/deepfryholder,
 		//Managed by aux contruction console
 		/mob/camera/ai_eye/remote/base_construction,
+		//Testing
+		/turf/open/floor/material,
 	)
 	//This turf existing is an error in and of itself
 	ignore += typesof(/turf/baseturf_skipover)
