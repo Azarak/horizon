@@ -37,8 +37,6 @@
 		/obj/item/food/deepfryholder,
 		//Managed by aux contruction console
 		/mob/camera/ai_eye/remote/base_construction,
-		//Testing
-		/turf/open/floor/material,
 	)
 	//This turf existing is an error in and of itself
 	ignore += typesof(/turf/baseturf_skipover)
@@ -126,9 +124,9 @@
 
 	for(var/type_path in typesof(/atom/movable, /turf) - ignore) //No areas please
 		if(ispath(type_path, /turf))
-			spawn_at.ChangeTurf(type_path, /turf/baseturf_skipover)
+			spawn_at.ChangeTurf(type_path)
 			//We change it back to prevent pain, please don't ask
-			spawn_at.ChangeTurf(/turf/open/floor/wood, /turf/baseturf_skipover)
+			spawn_at.ChangeTurf(/turf/open/floor/wood)
 			if(baseturf_count != length(spawn_at.baseturfs))
 				Fail("[type_path] changed the amount of baseturfs we have [baseturf_count] -> [length(spawn_at.baseturfs)]")
 				baseturf_count = length(spawn_at.baseturfs)
