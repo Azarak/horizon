@@ -75,7 +75,6 @@
 	if(machine_stat & NOPOWER)
 		return
 
-	. += "fire_overlay"
 	if(is_station_level(src))
 		. += "fire_[SSsecurity_level.current_level]"
 		. += mutable_appearance(icon, "fire_[SSsecurity_level.current_level]")

@@ -17,7 +17,7 @@
 
 	smoothing_flags = SMOOTH_BITMASK
 	smoothing_groups = list(SMOOTH_GROUP_CLOSED_TURFS, SMOOTH_GROUP_WALLS)
-	canSmoothWith = list(SMOOTH_GROUP_SHUTTERS_BLASTDOORS, SMOOTH_GROUP_WALLS, SMOOTH_GROUP_AIRLOCK, SMOOTH_GROUP_WINDOW_FULLTILE)
+	canSmoothWith = list(SMOOTH_GROUP_SHUTTERS_BLASTDOORS, SMOOTH_GROUP_WALLS, SMOOTH_GROUP_AIRLOCK, SMOOTH_GROUP_WINDOW_FULLTILE, SMOOTH_GROUP_LOW_WALL)
 
 	rcd_memory = RCD_MEMORY_WALL
 
@@ -69,11 +69,12 @@
 		GLOB.station_turfs -= src
 	return ..()
 
-/turf/closed/wall/copyTurf(turf/closed/wall/pasted_turf)
-	if(istype(pasted_turf, /turf/closed/wall))
-		pasted_turf.set_wall_information(plating_material, reinf_material, wall_paint, stripe_paint)
+/turf/closed/wall/copyTurf(turf/T)
+	. = ..()
+	if(istype(., /turf/closed/wall))
+		var/turf/closed/wall/pasted_turf = .
 		pasted_turf.d_state = d_state
-	return ..()
+		pasted_turf.set_wall_information(plating_material, reinf_material, wall_paint, stripe_paint)
 
 /// Most of this code is pasted within /obj/structure/falsewall. Be mindful of this
 /turf/closed/wall/update_overlays()
@@ -86,7 +87,16 @@
 		overlays += smoothed_stripe
 	var/neighbor_stripe = NONE
 	if(!neighbor_typecache)
-		neighbor_typecache = typecacheof(list(/obj/machinery/door/airlock, /obj/structure/window/reinforced/fulltile, /obj/structure/window/fulltile, /obj/structure/window/shuttle, /obj/machinery/door/poddoor))
+		neighbor_typecache = typecacheof(list(
+			/obj/machinery/door/airlock, 
+			/obj/structure/window/reinforced/fulltile, 
+			/obj/structure/window/fulltile, 
+			/obj/structure/window/shuttle, 
+			/obj/machinery/door/poddoor, 
+			/obj/structure/window/plasma/reinforced/fulltile, 
+			/obj/structure/window/plasma/fulltile,
+			/obj/structure/low_wall
+			))
 	for(var/cardinal in GLOB.cardinals)
 		var/turf/step_turf = get_step(src, cardinal)
 		for(var/atom/movable/movable_thing as anything in step_turf)
