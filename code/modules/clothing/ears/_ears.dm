@@ -2,6 +2,7 @@
 //Ears: currently only used for headsets and earmuffs
 /obj/item/clothing/ears
 	name = "ears"
+	worn_icon = 'icons/mob/clothing/ears.dmi'
 	w_class = WEIGHT_CLASS_TINY
 	throwforce = 0
 	slot_flags = ITEM_SLOT_EARS
@@ -27,7 +28,6 @@
 	name = "headphones"
 	desc = "Unce unce unce unce. Boop!"
 	icon = 'icons/horizon/obj/clothing/accessories.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/ears.dmi'
 	icon_state = "headphones"
 	inhand_icon_state = "headphones"
 	slot_flags = ITEM_SLOT_EARS | ITEM_SLOT_HEAD | ITEM_SLOT_NECK		//Fluff item, put it whereever you want!

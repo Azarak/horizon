@@ -101,19 +101,17 @@
 	name = "coordinator jumpsuit"
 	desc = "A jumpsuit made by party people, from party people, for party people."
 	icon = 'icons/obj/clothing/under/captain.dmi'
-	worn_icon = 'icons/mob/clothing/under/captain.dmi'
 	icon_state = "captain_parade"
 	inhand_icon_state = "by_suit"
 	can_adjust = FALSE
 
 /obj/item/clothing/under/misc/stripper
 	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/uniform.dmi'
 	name = "pink stripper outfit"
 	icon_state = "stripper_p"
 	body_parts_covered = CHEST|GROIN
 	can_adjust = FALSE
-	mutant_variants = NONE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/misc/stripper/green
 	name = "green stripper outfit"
@@ -125,7 +123,6 @@
 
 /obj/item/clothing/under/croptop
 	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/uniform.dmi'
 	name = "crop top"
 	desc = "We've saved money by giving you half a shirt!"
 	icon_state = "croptop"
@@ -135,22 +132,20 @@
 
 /obj/item/clothing/under/misc/gear_harness
 	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/uniform.dmi'
 	name = "gear harness"
 	desc = "A simple, inconspicuous harness replacement for a jumpsuit."
 	icon_state = "gear_harness"
 	body_parts_covered = CHEST|GROIN
 	can_adjust = FALSE
-	mutant_variants = NONE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/misc/poly_kilt
 	name = "polychromic kilt"
 	desc = "It's not a skirt!"
 	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/uniform.dmi'
 	icon_state = "polykilt"
 	body_parts_covered = CHEST|GROIN|ARMS|LEGS
-	mutant_variants = NONE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/misc/poly_kilt/ComponentInitialize()
 	. = ..()
@@ -158,13 +153,12 @@
 
 /obj/item/clothing/under/sweater
 	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/uniform.dmi'
 	name = "cream sweater"
 	desc = "Why trade style for comfort? Now you can go commando down south and still be cozy up north."
 	icon_state = "bb_turtle"
 	body_parts_covered = CHEST|GROIN|ARMS
 	can_adjust = TRUE
-	mutant_variants = NONE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/sweater/black
 	name = "black sweater"
@@ -194,7 +188,6 @@
 
 /obj/item/clothing/under/trishirt
 	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/uniform.dmi'
 	name = "tri shirt"
 	desc = "Fashion from a bygone age."
 	icon_state = "tri_shirt"

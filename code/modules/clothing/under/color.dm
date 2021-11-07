@@ -6,7 +6,6 @@
 	greyscale_config_inhand_left = /datum/greyscale_config/jumpsuit_inhand_left
 	greyscale_config_inhand_right = /datum/greyscale_config/jumpsuit_inhand_right
 	greyscale_config_worn = /datum/greyscale_config/jumpsuit_worn
-	greyscale_config_worn_digi = /datum/greyscale_config/jumpsuit_worn/digi
 	icon = 'icons/obj/clothing/under/color.dmi'
 	icon_state = "jumpsuit"
 	inhand_icon_state = "jumpsuit"
@@ -18,8 +17,8 @@
 	dying_key = DYE_REGISTRY_JUMPSKIRT
 	fitted = FEMALE_UNIFORM_TOP
 	icon_state = "jumpskirt"
-	mutant_variants = NONE
-	greyscale_config_worn_digi = null
+	worn_icon_state = "jumpskirt"
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/color/random
 	icon_state = "random_jumpsuit"

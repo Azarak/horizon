@@ -627,7 +627,6 @@
 
 /obj/item/clothing/shoes/wraps
 	icon = 'icons/horizon/obj/clothing/shoes.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/feet.dmi'
 	name = "gilded leg wraps"
 	desc = "Ankle coverings. These ones have a golden design."
 	icon_state = "gildedcuffs"
@@ -650,7 +649,6 @@
 
 /obj/item/clothing/shoes/cowboyboots
 	icon = 'icons/horizon/obj/clothing/shoes.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/feet.dmi'
 	name = "cowboy boots"
 	desc = "A standard pair of brown cowboy boots."
 	icon_state = "cowboyboots"
@@ -662,7 +660,6 @@
 
 /obj/item/clothing/shoes/high_heels
 	icon = 'icons/horizon/obj/clothing/shoes.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/feet.dmi'
 	name = "high heels"
 	desc = "A fancy pair of high heels. Won't compensate for your below average height that much."
 	icon_state = "heels"

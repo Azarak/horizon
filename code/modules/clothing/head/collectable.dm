@@ -5,7 +5,7 @@
 	name = "collectable hat"
 	desc = "A rare collectable hat."
 	icon_state = null
-	mutant_variants = NONE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/head/collectable/Initialize()
 	. = ..()

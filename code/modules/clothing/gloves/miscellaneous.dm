@@ -194,7 +194,6 @@
 
 /obj/item/clothing/gloves/evening
 	icon = 'icons/horizon/obj/clothing/gloves.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/hands.dmi'
 	name = "evening gloves"
 	desc = "Thin, pretty gloves intended for use in regal feminine attire, but knowing Space China these are just for some maid fetish."
 	icon_state = "evening"
@@ -205,7 +204,6 @@
 
 /obj/item/clothing/gloves/ring
 	icon = 'icons/horizon/obj/ring.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/hands.dmi'
 	name = "gold ring"
 	desc = "A tiny gold ring, sized to wrap around a finger."
 	gender = NEUTER

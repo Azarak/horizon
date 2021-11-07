@@ -12,7 +12,7 @@
 		/obj/item/gun/energy/pulse/pistol/m1911,
 		/obj/item/storage/backpack/holding,
 	)
-	mutant_variants = NONE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/space/chronos/hrvfoxcat
 	name = "HRV FoxCat Armor"

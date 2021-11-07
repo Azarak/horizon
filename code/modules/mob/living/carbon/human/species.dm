@@ -847,7 +847,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 		if(!(DIGITIGRADE in species_traits)) //Someone cut off a digitigrade leg and tacked it on
 			species_traits += DIGITIGRADE
 		var/should_be_squished = FALSE
-		if((source.wear_suit && source.wear_suit.flags_inv & HIDEJUMPSUIT && !(source.wear_suit.mutant_variants & STYLE_DIGITIGRADE) && (source.wear_suit.body_parts_covered & LEGS)) || (source.w_uniform && (source.w_uniform.body_parts_covered & LEGS) && !(source.w_uniform.mutant_variants & STYLE_DIGITIGRADE)))
+		if((source.wear_suit && source.wear_suit.flags_inv & HIDEJUMPSUIT && !(source.wear_suit.fitted_bodytypes & BODYTYPE_DIGITIGRADE) && (source.wear_suit.body_parts_covered & LEGS)) || (source.w_uniform && (source.w_uniform.body_parts_covered & LEGS) && !(source.w_uniform.fitted_bodytypes & BODYTYPE_DIGITIGRADE)))
 			should_be_squished = TRUE
 		if(bodypart.use_digitigrade == FULL_DIGITIGRADE && should_be_squished)
 			bodypart.use_digitigrade = SQUISHED_DIGITIGRADE
@@ -1122,8 +1122,10 @@ GLOBAL_LIST_EMPTY(customizable_races)
 			excused = TRUE
 		if(!excused)
 			return FALSE
+		
+	var/perceived_bodytype = get_bodytype(slot, I)
 
-	if(!excused && !(I.allowed_bodytypes & bodytype))
+	if(!excused && !(I.allowed_bodytypes & perceived_bodytype))
 		if(!disable_warning)
 			to_chat(H, SPAN_WARNING("[I] doesn't fit on you!"))
 		return FALSE
@@ -2421,3 +2423,23 @@ GLOBAL_LIST_EMPTY(customizable_races)
 
 /datum/species/proc/spec_revival(mob/living/carbon/human/H)
 	return
+
+//Gets the bodytype of the species. This can be mutable to digitigrade or taur if fitting slot and conditions are met.
+/datum/species/proc/get_bodytype(item_slot = NONE, obj/item/checked_item_for)
+	if(!item_slot)
+		return bodytype
+	var/perceived_bodytype = bodytype
+	if((item_slot == ITEM_SLOT_FEET || item_slot == ITEM_SLOT_OCLOTHING || item_slot == ITEM_SLOT_ICLOTHING) && (DIGITIGRADE in species_traits))
+		perceived_bodytype = BODYTYPE_DIGITIGRADE
+	if((item_slot == ITEM_SLOT_HEAD || item_slot == ITEM_SLOT_MASK) && mutant_bodyparts["snout"])
+		var/datum/sprite_accessory/snouts/snout_accessory = GLOB.sprite_accessories["snout"][mutant_bodyparts["snout"][MUTANT_INDEX_NAME]]
+		if(snout_accessory.use_muzzled_sprites)
+			perceived_bodytype = BODYTYPE_DIGITIGRADE
+	if((item_slot == ITEM_SLOT_OCLOTHING || item_slot == ITEM_SLOT_ICLOTHING) && mutant_bodyparts["taur"])
+		var/datum/sprite_accessory/taur/taur_accessory = GLOB.sprite_accessories["taur"][mutant_bodyparts["taur"][MUTANT_INDEX_NAME]]
+		///Special check of applying a style 2 taur bodytype because taurs are spagheti
+		if(checked_item_for && !(checked_item_for.allowed_bodytypes & taur_accessory.taur_mode) && (checked_item_for.allowed_bodytypes & taur_accessory.alt_taur_mode))
+			perceived_bodytype = taur_accessory.alt_taur_mode
+		else
+			perceived_bodytype = taur_accessory.taur_mode
+	return perceived_bodytype

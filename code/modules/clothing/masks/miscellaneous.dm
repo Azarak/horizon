@@ -27,7 +27,6 @@
 	gas_transfer_coefficient = 0.1
 	permeability_coefficient = 0.01
 	equip_delay_other = 25 // my sprite has 4 straps, a-la a head harness. takes a while to equip, longer than a muzzle
-	mutant_variants = NONE
 
 /obj/item/clothing/mask/breathmuzzle/attack_paw(mob/user, list/modifiers)
 	// The breathmuzzle is similar enough to a regular muzzle that similar rules would apply to both.
@@ -114,9 +113,9 @@
 /obj/item/clothing/mask/bandana/adjustmask(mob/living/user)
 	..()
 	if(mask_adjusted)
-		mutant_variants = NONE
+		fitted_bodytypes = NONE
 	else
-		mutant_variants = STYLE_MUZZLE | STYLE_VOX
+		fitted_bodytypes = ALL_BODYTYPES
 
 /obj/item/clothing/mask/bandana/AltClick(mob/user)
 	. = ..()

@@ -10,7 +10,7 @@
 	max_integrity = 250
 	resistance_flags = NONE
 	armor = list(MELEE = 35, BULLET = 30, LASER = 30, ENERGY = 40, BOMB = 25, BIO = 0, RAD = 0, FIRE = 50, ACID = 50, WOUND = 10)
-	mutant_variants = NONE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/armor/Initialize()
 	. = ..()
@@ -95,6 +95,7 @@
 	cold_protection = CHEST|GROIN|LEGS|ARMS
 	heat_protection = CHEST|GROIN|LEGS|ARMS
 	dog_fashion = null
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 /obj/item/clothing/suit/armor/vest/capcarapace
 	name = "captain's carapace"
@@ -333,7 +334,6 @@
 	name = "security officer's jacket"
 	desc = "This jacket is for those special occasions when a security officer isn't required to wear their armor."
 	icon = 'icons/horizon/obj/clothing/suits.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/suit.dmi'
 	icon_state = "officerbluejacket"
 	body_parts_covered = CHEST|ARMS
 
@@ -341,7 +341,6 @@
 	name = "head of security's jacket"
 	desc = "This piece of clothing was specifically designed for asserting superior authority."
 	icon = 'icons/horizon/obj/clothing/suits.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/suit.dmi'
 	icon_state = "hosbluejacket"
 	body_parts_covered = CHEST|ARMS
 	cold_protection = CHEST|ARMS
@@ -351,6 +350,5 @@
 	name = "warden's jacket"
 	desc = "Perfectly suited for the warden that wants to leave an impression of style on those who visit the brig."
 	icon = 'icons/horizon/obj/clothing/suits.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/suit.dmi'
 	icon_state = "wardenbluejacket"
 	body_parts_covered = CHEST|ARMS
