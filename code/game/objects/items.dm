@@ -26,7 +26,7 @@ GLOBAL_DATUM_INIT(fire_overlay, /mutable_appearance, mutable_appearance('icons/e
 	var/icon/worn_icon
 	///Icon file for bodytypes which require a bigger dimension. Used mainly for taurs (They're pixel shifted by -16 in x dimension)
 	var/icon/large_worn_icon
-	///Icon state for mob worn overlays, if null the normal icon_state will be used.
+	///Icon state >SUFFIX< for mob worn overlays, if null the normal icon_state will be used. The icon state of the overlay is structured: [slot]_[bodytype]_[worn_icon_state]
 	var/worn_icon_state
 	///Icon state for the belt overlay, if null the normal icon_state will be used.
 	var/belt_icon_state
@@ -200,12 +200,21 @@ GLOBAL_DATUM_INIT(fire_overlay, /mutable_appearance, mutable_appearance('icons/e
 
 	var/canMouseDown = FALSE
 
+	/// Which bodytypes can wear the item.
 	var/allowed_bodytypes = ALL_BODYTYPES
+	/// Which bodytypes have a special worn icon state for the item. Assumes BODYTYPE_HUMANOID is fitted, if it is allowed.
 	var/fitted_bodytypes = NONE
+	/// Which bodytypes default to a template icon when worn.
 	var/worn_template_bodytypes = NONE
+	//Note: Worn icons are structured like this: [slot]_[bodytype]_[worn_icon_state]
+	// - bodytype is either BODYTYPE_HUMANOID or, whatever bodytype is matching and is in `fitted_boytypes`
+	// - check translations of slots and bodytypes in `code/__DEFINES/inventory.dm` and ` code/__DEFINES/customization/inventory.dm`
 
+	/// Icon that is defaulted to when `worn_template_bodytypes` dictates we use a template icon.
 	var/worn_template_icon
+	/// Large worn template icon, for bodytypes requiring larger icons. (taurs)
 	var/large_worn_template_icon
+	/// Color of the worn icon template. (Gags support coming soon)
 	var/worn_template_color
 
 /obj/item/Initialize()
