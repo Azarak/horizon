@@ -280,6 +280,7 @@
 
 /obj/item/clothing/mask/gas/glass
 	icon = 'icons/horizon/obj/clothing/masks.dmi'
+	worn_icon = 'icons/mob/clothing/mask/glass_gas.dmi'
 	name = "glass gas mask"
 	desc = "A face-covering mask that can be connected to an air supply. This one doesn't obscure your face however."
 	icon_state = "gas_clear"

@@ -3,11 +3,23 @@
 	var/list/slot_translation = SLOT_TRANSLATION_LIST
 	var/list/bodytype_translation = BODYTYPE_TRANSLATION_LIST
 
+	// Types we ignore, put in abstract types that make the CI complain here
+	var/list/ignored_types = list(
+		/obj/item/clothing/head/hooded/cloakhood,
+		/obj/item/clothing/head/hooded,
+		/obj/item/clothing/head
+		)
+	ignored_types += typesof(/obj/item/clothing/head/chameleon)
+	ignored_types += typesof(/obj/item/clothing/suit/chameleon)
+	ignored_types += typesof(/obj/item/clothing/under/chameleon)
+
 	// The turf we will spawn clothes that need to get their GAGS icon
 	var/turf/spawn_at = run_loc_floor_bottom_left
 
 	/// Iterate over all items and get relevant initials
 	for(var/clothing_type_path in typesof(/obj/item))
+		if(clothing_type_path in ignored_types)
+			continue
 		var/obj/item/cast_clothing = clothing_type_path
 		var/clothing_slot_flags = initial(cast_clothing.slot_flags)
 		var/clothing_worn_icon_state = initial(cast_clothing.worn_icon_state) || initial(cast_clothing.icon_state)

@@ -447,6 +447,7 @@
 	desc = "A cool wig for cool people."
 	icon_state = "drfreeze_hat"
 	flags_inv = HIDEHAIR
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/head/pharaoh
 	name = "pharaoh hat"
@@ -592,6 +593,7 @@
 	name = "flak helmet"
 	icon_state = "m1helm"
 	inhand_icon_state = "helmet"
+	worn_icon = 'icons/mob/clothing/head/m1helm.dmi'
 	armor = list("melee" = 0, "bullet" = 0, "laser" = 0, "energy" = 0, "bomb" = 0.1, "bio" = 0, "rad" = 0, "fire" = -10, "acid" = -15, "wound" = 1)
 	desc = "A dilapidated helmet used in ancient wars. This one is brittle and essentially useless. An ace of spades is tucked into the band around the outer shell."
 	pocket_storage_component_path = /datum/component/storage/concrete/pockets/tiny/spacenam	//So you can stuff other things in the elastic band instead of it simply being a fluff thing.
@@ -602,6 +604,7 @@
 
 /obj/item/clothing/head/cowboyhat
 	icon = 'icons/horizon/obj/clothing/hats.dmi'
+	worn_icon = 'icons/mob/clothing/head/cowboyhats.dmi'
 	name = "cowboy hat"
 	desc = "A standard brown cowboy hat, yeehaw."
 	icon_state = "cowboyhat"
@@ -634,6 +637,7 @@
 
 /obj/item/clothing/head/kepi
 	icon = 'icons/horizon/obj/clothing/hats.dmi'
+	worn_icon = 'icons/mob/clothing/head/kepi.dmi'
 	name = "kepi"
 	desc = "A white cap with visor. Oui oui, mon capitane!"
 	icon_state = "kepi"
@@ -645,6 +649,7 @@
 
 /obj/item/clothing/head/maid
 	icon = 'icons/horizon/obj/clothing/hats.dmi'
+	worn_icon = 'icons/mob/clothing/head/maidband.dmi'
 	name = "maid headband"
 	desc = "Maid in China."
 	icon_state = "maid"
@@ -653,5 +658,6 @@
 
 /obj/item/clothing/head/beret/white
 	icon = 'icons/horizon/obj/clothing/hats.dmi'
+	worn_icon = 'icons/mob/clothing/head/beretwhite.dmi'
 	name = "beret"
 	icon_state = "beret_white"

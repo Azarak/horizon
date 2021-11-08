@@ -101,12 +101,14 @@
 	name = "coordinator jumpsuit"
 	desc = "A jumpsuit made by party people, from party people, for party people."
 	icon = 'icons/obj/clothing/under/captain.dmi'
+	worn_icon = 'icons/mob/clothing/under/captain.dmi'
 	icon_state = "captain_parade"
 	inhand_icon_state = "by_suit"
 	can_adjust = FALSE
 
 /obj/item/clothing/under/misc/stripper
 	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
+	worn_icon = 'icons/mob/clothing/under/stripper.dmi'
 	name = "pink stripper outfit"
 	icon_state = "stripper_p"
 	body_parts_covered = CHEST|GROIN
@@ -121,7 +123,7 @@
 	name = "pink mankini"
 	icon_state = "mankini"
 
-/obj/item/clothing/under/croptop
+/obj/item/clothing/under/misc/croptop
 	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
 	name = "crop top"
 	desc = "We've saved money by giving you half a shirt!"
@@ -129,6 +131,7 @@
 	body_parts_covered = CHEST|GROIN|ARMS
 	fitted = FEMALE_UNIFORM_TOP
 	can_adjust = FALSE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/misc/gear_harness
 	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
@@ -151,8 +154,18 @@
 	. = ..()
 	AddElement(/datum/element/polychromic, list("FFF", "F88", "FFF"))
 
+/obj/item/clothing/under/misc/trishirt
+	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
+	name = "tri shirt"
+	desc = "Fashion from a bygone age."
+	icon_state = "tri_shirt"
+	body_parts_covered = CHEST|GROIN|ARMS
+	can_adjust = FALSE
+	fitted_bodytypes = NONE
+
 /obj/item/clothing/under/sweater
 	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
+	worn_icon = 'icons/mob/clothing/under/sweaters.dmi'
 	name = "cream sweater"
 	desc = "Why trade style for comfort? Now you can go commando down south and still be cozy up north."
 	icon_state = "bb_turtle"
@@ -186,10 +199,3 @@
 	icon_state = "keyholesweater"
 	can_adjust = FALSE
 
-/obj/item/clothing/under/trishirt
-	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
-	name = "tri shirt"
-	desc = "Fashion from a bygone age."
-	icon_state = "tri_shirt"
-	body_parts_covered = CHEST|GROIN|ARMS
-	can_adjust = FALSE

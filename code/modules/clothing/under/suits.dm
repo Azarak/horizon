@@ -142,6 +142,7 @@
 	inhand_icon_state = "henchmen"
 	body_parts_covered = CHEST|GROIN|LEGS|FEET|ARMS|HANDS|HEAD
 	flags_inv = HIDEGLOVES|HIDESHOES|HIDEEARS|HIDEEYES|HIDEHAIR
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/suit/tuxedo
 	name = "tuxedo"

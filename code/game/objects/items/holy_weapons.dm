@@ -30,6 +30,7 @@
 	flags_cover = HEADCOVERSEYES | HEADCOVERSMOUTH
 	strip_delay = 80
 	dog_fashion = null
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 /obj/item/clothing/suit/armor/riot/chaplain
 	name = "crusader armour"
@@ -142,6 +143,7 @@
 	icon_state = "witchhunter"
 	inhand_icon_state = "witchhunter"
 	body_parts_covered = CHEST|GROIN|LEGS|ARMS
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/head/helmet/chaplain/witchunter_hat
 	name = "witchunter hat"
@@ -192,7 +194,6 @@
 	body_parts_covered = CHEST|GROIN|LEGS|ARMS
 	allowed = list(/obj/item/storage/book/bible, /obj/item/nullrod, /obj/item/reagent_containers/food/drinks/bottle/holywater, /obj/item/storage/fancy/candle_box, /obj/item/candle, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman)
 	hoodtype = /obj/item/clothing/head/hooded/chaplain_hood
-	fitted_bodytypes = NONE
 
 /obj/item/clothing/head/hooded/chaplain_hood
 	name = "follower hood"

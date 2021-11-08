@@ -45,7 +45,6 @@
 	icon_state = "engine"
 	inhand_icon_state = "engi_suit"
 	species_exception = list(/datum/species/golem/uranium)
-	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/rank/engineering/engineer/hazard
 	name = "engineer's hazard jumpsuit"

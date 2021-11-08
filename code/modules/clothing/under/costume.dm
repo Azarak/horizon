@@ -101,11 +101,11 @@
 	fitted = NO_FEMALE_UNIFORM
 	can_adjust = FALSE
 	resistance_flags = NONE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/costume/gladiator/ash_walker
 	desc = "This gladiator uniform appears to be covered in ash and fairly dated."
 	has_sensor = NO_SENSORS
-	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/costume/maid
 	name = "maid costume"
@@ -128,6 +128,7 @@
 	icon_state = "geisha"
 	body_parts_covered = CHEST|GROIN|ARMS
 	can_adjust = FALSE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/costume/villain
 	name = "villain suit"
@@ -147,6 +148,7 @@
 	body_parts_covered = CHEST|GROIN|ARMS
 	alternate_worn_layer = ABOVE_SHOES_LAYER
 	can_adjust = FALSE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/costume/singer/yellow
 	name = "yellow performer's outfit"
@@ -188,7 +190,6 @@
 	body_parts_covered = CHEST|GROIN|ARMS
 	fitted = FEMALE_UNIFORM_TOP
 	can_adjust = FALSE
-	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/costume/drfreeze
 	name = "doctor freeze's jumpsuit"
@@ -204,6 +205,7 @@
 	inhand_icon_state = "lobster"
 	fitted = NO_FEMALE_UNIFORM
 	can_adjust = FALSE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/costume/gondola
 	name = "gondola hide suit"
@@ -290,6 +292,7 @@
 // Lunar Clothes
 /obj/item/clothing/under/costume/qipao
 	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
+	worn_icon = 'icons/mob/clothing/under/lunar.dmi'
 	name = "black qipao"
 	desc = "A qipao, traditionally worn in ancient Earth China by women during social events and lunar new years. This one is black."
 	icon_state = "qipao"
@@ -313,6 +316,7 @@
 
 /obj/item/clothing/under/costume/cheongsam
 	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
+	worn_icon = 'icons/mob/clothing/under/lunar.dmi'
 	name = "black cheongsam"
 	desc = "A cheongsam, traditionally worn in ancient Earth China by men during social events and lunar new years. This one is black."
 	icon_state = "cheong"

@@ -197,6 +197,7 @@
 	name = "evening gloves"
 	desc = "Thin, pretty gloves intended for use in regal feminine attire, but knowing Space China these are just for some maid fetish."
 	icon_state = "evening"
+	worn_icon = 'icons/mob/clothing/hands/evening.dmi'
 	strip_delay = 40
 	equip_delay_other = 20
 	cold_protection = HANDS
@@ -211,6 +212,7 @@
 	icon = 'icons/horizon/obj/ring.dmi'
 	icon_state = "ringgold"
 	inhand_icon_state = "gring"
+	worn_icon = 'icons/mob/clothing/hands/rings.dmi'
 	worn_icon_state = "gring"
 	body_parts_covered = 0
 	transfer_prints = TRUE

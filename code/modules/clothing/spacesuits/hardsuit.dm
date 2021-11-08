@@ -494,6 +494,7 @@
 	visor_flags_inv = 0
 	visor_flags = 0
 	on = FALSE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/space/hardsuit/syndi/owl
 	name = "owl hardsuit"
@@ -665,6 +666,7 @@
 	heat_protection = HEAD
 	max_heat_protection_temperature = FIRE_IMMUNITY_MAX_TEMP_PROTECT
 	actions_types = list()
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/head/helmet/space/hardsuit/swat/attack_self()
 
@@ -691,6 +693,7 @@
 	icon_state = "capspace"
 	inhand_icon_state = "capspacehelmet"
 	desc = "A tactical MK.II SWAT helmet boasting better protection and a reasonable fashion sense."
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 /obj/item/clothing/suit/space/hardsuit/swat/captain
 	name = "captain's SWAT suit"
@@ -709,6 +712,7 @@
 	inhand_icon_state = "hardsuit0-clown"
 	armor = list(MELEE = 30, BULLET = 5, LASER = 10, ENERGY = 20, BOMB = 10, BIO = 100, RAD = 75, FIRE = 60, ACID = 30)
 	hardsuit_type = "clown"
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/space/hardsuit/clown
 	name = "cosmohonk hardsuit"
@@ -880,6 +884,7 @@
 	icon_state = "hardsuit0-ert_green"
 	inhand_icon_state = "hardsuit0-ert_green"
 	hardsuit_type = "ert_green"
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/head/helmet/space/hardsuit/shielded/ctf/yellow
 	icon_state = "hardsuit0-ert_engineer"

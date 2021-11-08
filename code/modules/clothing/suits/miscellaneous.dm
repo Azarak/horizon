@@ -17,6 +17,7 @@
 	body_parts_covered = CHEST
 	allowed = list (/obj/item/gun/energy/laser/bluetag)
 	resistance_flags = NONE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/redtag
 	name = "red laser tag armor"
@@ -27,6 +28,7 @@
 	body_parts_covered = CHEST
 	allowed = list (/obj/item/gun/energy/laser/redtag)
 	resistance_flags = NONE
+	fitted_bodytypes = NONE
 
 /*
  * Costume
@@ -55,7 +57,7 @@
 	inhand_icon_state = "pirate"
 	allowed = list(/obj/item/melee/transforming/energy/sword/pirate, /obj/item/clothing/glasses/eyepatch, /obj/item/reagent_containers/food/drinks/bottle/rum)
 	species_exception = list(/datum/species/golem)
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 /obj/item/clothing/suit/pirate/armored
 	armor = list(MELEE = 30, BULLET = 50, LASER = 30,ENERGY = 40, BOMB = 30, BIO = 30, RAD = 30, FIRE = 60, ACID = 75)
@@ -117,6 +119,7 @@
 	icon_state = "purplebartenderapron"
 	inhand_icon_state = "purplebartenderapron"
 	body_parts_covered = CHEST|GROIN|LEGS
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/syndicatefake
 	name = "black and red space suit replica"
@@ -219,6 +222,7 @@
 	inhand_icon_state = "snowman"
 	body_parts_covered = CHEST|GROIN
 	flags_inv = HIDEJUMPSUIT
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/poncho
 	name = "poncho"
@@ -226,6 +230,7 @@
 	icon_state = "classicponcho"
 	inhand_icon_state = "classicponcho"
 	species_exception = list(/datum/species/golem)
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/poncho/green
 	name = "green poncho"
@@ -256,6 +261,7 @@
 	inhand_icon_state = "w_suit"
 	body_parts_covered = CHEST|GROIN|LEGS|FEET
 	flags_inv = HIDEJUMPSUIT|HIDESHOES
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/hooded/carp_costume
 	name = "carp costume"
@@ -299,7 +305,7 @@
 	allowed = list()
 	hoodtype = /obj/item/clothing/head/hooded/ian_hood
 	dog_fashion = /datum/dog_fashion/back
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 /obj/item/clothing/head/hooded/ian_hood
 	name = "corgi hood"
@@ -309,6 +315,7 @@
 	//cold_protection = HEAD
 	//min_cold_protection_temperature = FIRE_SUIT_MIN_TEMP_PROTECT
 	flags_inv = HIDEHAIR|HIDEEARS
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/hooded/bee_costume // It's Hip!
 	name = "bee costume"
@@ -348,6 +355,7 @@
 	body_parts_covered = HEAD
 	flags_cover = HEADCOVERSEYES
 	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|HIDEHAIR|HIDEFACIALHAIR|HIDESNOUT
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/security/officer/russian
 	name = "\improper Russian officer's jacket"
@@ -363,6 +371,7 @@
 	inhand_icon_state = "shrine_maiden"
 	body_parts_covered = CHEST|GROIN|LEGS|ARMS
 	flags_inv = HIDEJUMPSUIT
+	fitted_bodytypes = NONE
 
 /*
  * Misc
@@ -379,7 +388,6 @@
 	equip_delay_self = 50
 	strip_delay = 60
 	breakouttime = 5 MINUTES
-	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/ianshirt
 	name = "worn shirt"
@@ -681,6 +689,7 @@
 	inhand_icon_state = "mystichood"
 	body_parts_covered = HEAD
 	flags_inv = HIDEHAIR|HIDEEARS|HIDEFACIALHAIR|HIDEFACE|HIDEMASK
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/coordinator
 	name = "coordinator jacket"
@@ -695,6 +704,7 @@
 	icon_state = "hawaiian_blue"
 	inhand_icon_state = "hawaiian_blue"
 	species_exception = list(/datum/species/golem)
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/yakuza
 	name = "tojo clan jacket"
@@ -702,6 +712,7 @@
 	icon_state = "MajimaJacket"
 	inhand_icon_state = "MajimaJacket"
 	body_parts_covered = ARMS
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/dutch
 	name = "dutch's jacket"
@@ -709,6 +720,7 @@
 	icon_state = "DutchJacket"
 	inhand_icon_state = "DutchJacket"
 	body_parts_covered = ARMS
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/hooded/wintercoat/aformal
 	icon = 'icons/horizon/obj/clothing/suits.dmi'
@@ -774,6 +786,7 @@
 
 /obj/item/clothing/suit/flakjack
 	icon = 'icons/horizon/obj/clothing/suits.dmi'
+	worn_icon = 'icons/mob/clothing/suits/flakjack.dmi'
 	name = "flak jacket"
 	desc = "A dilapidated jacket made of a supposedly bullet-proof material (Hint: It isn't.). Smells faintly of napalm."
 	icon_state = "flakjack"
@@ -785,26 +798,24 @@
 	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/hooded/cloak/david
-	icon = 'icons/horizon/obj/clothing/suits.dmi'
 	name = "red cloak"
 	icon_state = "goliath_cloak"
 	desc = "Ever wanted to look like a badass without ANY effort? Try this nanotrasen brand red cloak, perfect for kids"
 	hoodtype = /obj/item/clothing/head/hooded/cloakhood/david
 	body_parts_covered = CHEST|GROIN|ARMS
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 /obj/item/clothing/head/hooded/cloakhood/david
-	icon = 'icons/horizon/obj/clothing/hats.dmi'
 	name = "red cloak hood"
 	icon_state = "golhood"
 	desc = "conceal your face in shame with this nanotrasen brand hood"
 	flags_inv = HIDEEARS|HIDEEYES|HIDEHAIR|HIDEFACIALHAIR
-	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/wornshirt
 	name = "worn shirt"
 	desc = "A worn out (or perhaps just baggy), curiously comfortable t-shirt."
 	icon = 'icons/horizon/obj/clothing/suits.dmi'
+	worn_icon = 'icons/mob/clothing/suits/wornshirt.dmi'
 	icon_state = "wornshirt"
 	inhand_icon_state = "labcoat"
 	body_parts_covered = CHEST|GROIN

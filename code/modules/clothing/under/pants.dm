@@ -5,6 +5,7 @@
 	can_adjust = FALSE
 	custom_price = PAYCHECK_EASY
 	icon = 'icons/obj/clothing/under/shorts_pants.dmi'
+	worn_icon = 'icons/mob/clothing/under/shorts_pants.dmi'
 	species_exception = list(/datum/species/golem)
 
 /obj/item/clothing/under/pants/classicjeans
@@ -85,7 +86,6 @@
 	name = "denim skirt"
 	desc = "These are really just a jean leg hole cut from a pair"
 	icon_state = "denim_skirt"
-	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/pants/chaps
 	icon = 'icons/horizon/obj/clothing/uniforms.dmi'

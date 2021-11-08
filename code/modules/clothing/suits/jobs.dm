@@ -54,7 +54,7 @@
 	blood_overlay_type = "armor"
 	body_parts_covered = CHEST|GROIN
 	allowed = list(/obj/item/kitchen)
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 //Detective
 /obj/item/clothing/suit/det_suit
@@ -168,7 +168,7 @@
 	desc = "A sterile blue surgical apron."
 	icon_state = "surgical"
 	allowed = list(/obj/item/scalpel, /obj/item/surgical_drapes, /obj/item/cautery, /obj/item/hemostat, /obj/item/retractor)
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 //Curator
 /obj/item/clothing/suit/curator

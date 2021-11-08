@@ -294,6 +294,7 @@
 
 /obj/item/clothing/neck/human_petcollar
 	icon = 'icons/horizon/obj/clothing/neck.dmi'
+	worn_icon = 'icons/mob/clothing/neck/collars.dmi'
 	name = "pet collar"
 	desc = "It's for pets. Though you probably could wear it yourself, you'd doubtless be the subject of ridicule. It seems to be made out of a polychromic material."
 	icon_state = "petcollar_poly"

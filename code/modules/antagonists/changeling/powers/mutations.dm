@@ -505,6 +505,7 @@
 	clothing_flags = STOPSPRESSUREDAMAGE
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 0, RAD = 0, FIRE = 90, ACID = 90)
 	flags_cover = HEADCOVERSEYES | HEADCOVERSMOUTH
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/head/helmet/space/changeling/Initialize()
 	. = ..()
@@ -538,6 +539,7 @@
 	flags_inv = HIDEJUMPSUIT
 	cold_protection = 0
 	heat_protection = 0
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 /obj/item/clothing/suit/armor/changeling/Initialize()
 	. = ..()

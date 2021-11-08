@@ -44,6 +44,7 @@
 	body_parts_covered = CHEST|GROIN|ARMS
 	fitted = NO_FEMALE_UNIFORM
 	can_adjust = FALSE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/under/rank/medical/doctor
 	desc = "It's made of a special fiber that provides minor protection against biohazards. It has a cross on the chest denoting that the wearer is trained medical personnel."

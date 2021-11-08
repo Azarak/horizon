@@ -126,7 +126,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	body_parts_covered = null
 	grind_results = list()
 	heat = 1000
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 	var/dragtime = 10
 	var/nextdragtime = 0
 	var/lit = FALSE

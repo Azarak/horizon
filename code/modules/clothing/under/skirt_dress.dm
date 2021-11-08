@@ -121,15 +121,6 @@
 	fitted = FEMALE_UNIFORM_TOP
 	can_adjust = FALSE
 
-/obj/item/clothing/under/dress/blacktango
-	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
-	name = "black tango dress"
-	desc = "Filled with Latin fire."
-	icon_state = "black_tango"
-	inhand_icon_state = "wcoat"
-	fitted = FEMALE_UNIFORM_TOP
-	can_adjust = FALSE
-
 /obj/item/clothing/under/dress/westernbustle
 	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
 	name = "western bustle dress"
@@ -146,16 +137,6 @@
 	icon_state = "flamenco"
 	inhand_icon_state = "wcoat"
 	fitted = FEMALE_UNIFORM_TOP
-	can_adjust = FALSE
-
-/obj/item/clothing/under/dress/striped
-	icon = 'icons/horizon/obj/clothing/uniforms.dmi'
-	name = "striped dress"
-	desc = "Fashion in space."
-	icon_state = "striped_dress"
-	inhand_icon_state = "stripeddress"
-	body_parts_covered = CHEST|GROIN|ARMS
-	fitted = FEMALE_UNIFORM_FULL
 	can_adjust = FALSE
 
 /obj/item/clothing/under/dress/flower

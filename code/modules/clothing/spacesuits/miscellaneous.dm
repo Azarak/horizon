@@ -142,6 +142,7 @@ Contains:
 	armor = list(MELEE = 30, BULLET = 50, LASER = 30,ENERGY = 40, BOMB = 30, BIO = 30, RAD = 30, FIRE = 60, ACID = 75)
 	strip_delay = 40
 	equip_delay_other = 20
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/head/helmet/space/pirate/bandana
 	icon_state = "spacebandana"
@@ -250,6 +251,7 @@ Contains:
 	icon_state = "hardsuit0-ert_janitor"
 	inhand_icon_state = "hardsuit0-ert_janitor"
 	hardsuit_type = "ert_janitor"
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/space/hardsuit/ert/jani
 	name = "emergency response team janitorial hardsuit"
@@ -267,6 +269,7 @@ Contains:
 	icon_state = "hardsuit0-ert_clown"
 	inhand_icon_state = "hardsuit0-ert_clown"
 	hardsuit_type = "ert_clown"
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/space/hardsuit/ert/clown
 	name = "emergency response team clown hardsuit"
@@ -325,6 +328,7 @@ Contains:
 	light_range = 0 //luminosity when on
 	actions_types = list()
 	flags_inv = HIDEEARS|HIDEHAIR|HIDEFACIALHAIR //facial hair will clip with the helm, this'll need a dynamic_fhair_suffix at some point.
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/head/helmet/space/hardsuit/carp/Initialize()
 	. = ..()
@@ -547,6 +551,7 @@ Contains:
 	inhand_icon_state = "hardsuit0-combatmedic"
 	armor = list(MELEE = 35, BULLET = 10, LASER = 20, ENERGY = 30, BOMB = 5, BIO = 100, RAD = 50, FIRE = 65, ACID = 75)
 	hardsuit_type = "combatmedic"
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/space/hardsuit/combatmedic
 	name = "endemic combat medic hardsuit"

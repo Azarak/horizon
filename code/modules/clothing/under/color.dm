@@ -74,6 +74,7 @@
 	name = "ancient jumpsuit"
 	desc = "A terribly ragged and frayed grey jumpsuit. It looks like it hasn't been washed in over a decade."
 	icon_state = "grey_ancient"
+	worn_icon_state = "grey_ancient"
 	inhand_icon_state = "gy_suit"
 	greyscale_config = null
 	greyscale_config_inhand_left = null
@@ -199,6 +200,7 @@
 	name = "rainbow jumpsuit"
 	desc = "A multi-colored jumpsuit!"
 	icon_state = "rainbow"
+	worn_icon_state = "rainbow"
 	inhand_icon_state = "rainbow"
 	greyscale_config = null
 	greyscale_config_inhand_left = null
@@ -210,6 +212,7 @@
 	name = "rainbow jumpskirt"
 	desc = "A multi-colored jumpskirt!"
 	icon_state = "rainbow_skirt"
+	worn_icon_state = "rainbow_skirt"
 	inhand_icon_state = "rainbow"
 	greyscale_config = null
 	greyscale_config_inhand_left = null

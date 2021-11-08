@@ -52,6 +52,7 @@
 	icon_state = "magus"
 	inhand_icon_state = "magus"
 	dog_fashion = null
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 /obj/item/clothing/head/wizard/santa
 	name = "Santa's hat"
@@ -98,6 +99,7 @@
 	desc = "Magic is all about the spell power, ZE!"
 	icon_state = "marisa"
 	inhand_icon_state = "marisarobe"
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/wizrobe/magusblue
 	name = "\improper Magus robe"

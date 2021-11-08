@@ -58,6 +58,9 @@
 	hoodtype = /obj/item/clothing/head/hooded/cloakhood/goliath
 	body_parts_covered = CHEST|GROIN|ARMS
 
+/obj/item/clothing/head/hooded/cloakhood
+	fitted_bodytypes = NONE
+
 /obj/item/clothing/head/hooded/cloakhood/goliath
 	name = "goliath cloak hood"
 	icon_state = "golhood"

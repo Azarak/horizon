@@ -92,6 +92,7 @@
 	desc = "Express your happiness or hide your sorrows with this laughing face with crying tears of joy cutout."
 	icon_state = "joy"
 	flags_inv = HIDESNOUT
+	fitted_bodytypes = NONE
 
 
 /obj/item/clothing/mask/bandana
@@ -184,6 +185,7 @@
 	icon_state = "mummy_mask"
 	inhand_icon_state = "mummy_mask"
 	flags_inv = HIDEFACE|HIDEHAIR|HIDEFACIALHAIR|HIDESNOUT
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/mask/scarecrow
 	name = "sack mask"
@@ -191,6 +193,7 @@
 	icon_state = "scarecrow_sack"
 	inhand_icon_state = "scarecrow_sack"
 	flags_inv = HIDEFACE|HIDEHAIR|HIDEFACIALHAIR|HIDESNOUT
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/mask/gondola
 	name = "gondola mask"
@@ -200,6 +203,7 @@
 	flags_inv = HIDEFACE|HIDEHAIR|HIDEFACIALHAIR|HIDESNOUT
 	w_class = WEIGHT_CLASS_SMALL
 	modifies_speech = TRUE
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/mask/gondola/handle_speech(datum/source, list/speech_args)
 	var/message = speech_args[SPEECH_MESSAGE]

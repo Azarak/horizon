@@ -73,6 +73,7 @@
 	icon_state = "welding"
 	inhand_icon_state = "welding"
 	clothing_flags = SNUG_FIT
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 /obj/item/clothing/head/collectable/slime
 	name = "collectable slime hat"

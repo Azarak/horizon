@@ -240,6 +240,7 @@
 	name = "blue galaxy suit"
 	icon_state = "lawyer_galaxy_blue"
 	inhand_icon_state = "b_suit"
+	fitted_bodytypes = NONE //yeah not doing digi variants for those
 
 /obj/item/clothing/under/rank/civilian/lawyer/galaxy/red
 	name = "red galaxy suit"
