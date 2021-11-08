@@ -48,7 +48,7 @@
 	icon_state = "flashsuit"
 	body_parts_covered = HEAD
 	flags_inv = HIDEHAIR|HIDEEARS|HIDEFACIALHAIR|HIDEFACE|HIDEMASK|HIDESNOUT
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/suit/pirate
 	name = "pirate coat"
@@ -283,7 +283,7 @@
 	cold_protection = HEAD
 	min_cold_protection_temperature = FIRE_SUIT_MIN_TEMP_PROTECT
 	flags_inv = HIDEHAIR|HIDEEARS
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/head/hooded/carp_hood/equipped(mob/living/carbon/human/user, slot)
 	..()
@@ -316,7 +316,7 @@
 	//cold_protection = HEAD
 	//min_cold_protection_temperature = FIRE_SUIT_MIN_TEMP_PROTECT
 	flags_inv = HIDEHAIR|HIDEEARS
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/suit/hooded/bee_costume // It's Hip!
 	name = "bee costume"
@@ -336,6 +336,7 @@
 	clothing_flags = THICKMATERIAL
 	flags_inv = HIDEHAIR|HIDEEARS
 	dynamic_hair_suffix = ""
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE|BODYTYPE_VOX
 
 /obj/item/clothing/suit/hooded/bloated_human //OH MY GOD WHAT HAVE YOU DONE!?!?!?
 	name = "bloated human suit"
@@ -356,7 +357,7 @@
 	body_parts_covered = HEAD
 	flags_cover = HEADCOVERSEYES
 	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|HIDEHAIR|HIDEFACIALHAIR|HIDESNOUT
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/suit/security/officer/russian
 	name = "\improper Russian officer's jacket"

@@ -5,7 +5,7 @@
 	icon_state = "tophat"
 	inhand_icon_state = "that"
 	body_parts_covered = HEAD
-	fitted_bodytypes = BODYTYPE_DIGITIGRADE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE|BODYTYPE_VOX
 	slot_flags = ITEM_SLOT_HEAD
 	var/blockTracking = 0 //For AI tracking
 	var/can_toggle = null

@@ -21,6 +21,7 @@
 	icon = 'icons/horizon/~donator/obj/clothing/hats.dmi'
 	worn_icon = 'icons/horizon/~donator/mob/clothing/head.dmi'
 	icon_state = "winterhood_poly"
+	fitted_bodytypes = NONE
 
 //SCARVES
 /obj/item/clothing/neck/cloak/polychromic

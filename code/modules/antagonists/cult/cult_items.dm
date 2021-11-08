@@ -325,7 +325,7 @@
 	min_cold_protection_temperature = HELMET_MIN_TEMP_PROTECT
 	heat_protection = HEAD
 	max_heat_protection_temperature = HELMET_MAX_TEMP_PROTECT
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/suit/hooded/cultrobes
 	name = "ancient cultist robes"
@@ -392,6 +392,7 @@
 	light_system = NO_LIGHT_SUPPORT
 	light_range = 0
 	actions_types = list()
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 /obj/item/clothing/suit/space/hardsuit/cult
 	name = "\improper Nar'Sien hardened armor"

@@ -312,9 +312,11 @@
 
 /obj/item/clothing/head/helmet/plate/crusader/prophet/red
 	icon_state = "prophet-red"
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/head/helmet/plate/crusader/prophet/blue
 	icon_state = "prophet-blue"
+	fitted_bodytypes = NONE
 
 //Structure conversion staff
 /obj/item/godstaff

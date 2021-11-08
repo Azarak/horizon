@@ -58,9 +58,6 @@
 	hoodtype = /obj/item/clothing/head/hooded/cloakhood/goliath
 	body_parts_covered = CHEST|GROIN|ARMS
 
-/obj/item/clothing/head/hooded/cloakhood
-	fitted_bodytypes = NONE
-
 /obj/item/clothing/head/hooded/cloakhood/goliath
 	name = "goliath cloak hood"
 	icon_state = "golhood"
@@ -133,6 +130,7 @@
 	flash_protect = FLASH_PROTECTION_WELDER
 	flags_cover = HEADCOVERSEYES | HEADCOVERSMOUTH | PEPPERPROOF
 	resistance_flags = FIRE_PROOF | ACID_PROOF | FREEZE_PROOF
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/suit/hooded/cloak/godslayer/examine(mob/user)
 	. = ..()

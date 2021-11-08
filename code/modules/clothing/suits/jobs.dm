@@ -203,3 +203,4 @@
 	inhand_icon_state = "techpriesthood"
 	body_parts_covered = HEAD
 	flags_inv = HIDEHAIR|HIDEEARS
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE|BODYTYPE_VOX

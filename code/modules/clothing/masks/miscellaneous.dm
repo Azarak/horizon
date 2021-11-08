@@ -26,6 +26,7 @@
 	clothing_flags = MASKINTERNALS | BLOCKS_SPEECH
 	gas_transfer_coefficient = 0.1
 	permeability_coefficient = 0.01
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 	equip_delay_other = 25 // my sprite has 4 straps, a-la a head harness. takes a while to equip, longer than a muzzle
 
 /obj/item/clothing/mask/breathmuzzle/attack_paw(mob/user, list/modifiers)
@@ -92,7 +93,7 @@
 	desc = "Express your happiness or hide your sorrows with this laughing face with crying tears of joy cutout."
 	icon_state = "joy"
 	flags_inv = HIDESNOUT
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 
 /obj/item/clothing/mask/bandana
@@ -115,7 +116,7 @@
 /obj/item/clothing/mask/bandana/adjustmask(mob/living/user)
 	..()
 	if(mask_adjusted)
-		fitted_bodytypes = NONE
+		fitted_bodytypes = BODYTYPE_VOX
 	else
 		fitted_bodytypes = ALL_BODYTYPES
 
@@ -186,7 +187,7 @@
 	icon_state = "mummy_mask"
 	inhand_icon_state = "mummy_mask"
 	flags_inv = HIDEFACE|HIDEHAIR|HIDEFACIALHAIR|HIDESNOUT
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/mask/scarecrow
 	name = "sack mask"
@@ -194,7 +195,7 @@
 	icon_state = "scarecrow_sack"
 	inhand_icon_state = "scarecrow_sack"
 	flags_inv = HIDEFACE|HIDEHAIR|HIDEFACIALHAIR|HIDESNOUT
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/mask/gondola
 	name = "gondola mask"
@@ -204,7 +205,7 @@
 	flags_inv = HIDEFACE|HIDEHAIR|HIDEFACIALHAIR|HIDESNOUT
 	w_class = WEIGHT_CLASS_SMALL
 	modifies_speech = TRUE
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/mask/gondola/handle_speech(datum/source, list/speech_args)
 	var/message = speech_args[SPEECH_MESSAGE]

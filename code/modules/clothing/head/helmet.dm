@@ -12,7 +12,7 @@
 	clothing_flags = SNUG_FIT
 	flags_cover = HEADCOVERSEYES
 	flags_inv = HIDEHAIR
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 	dog_fashion = /datum/dog_fashion/head/helmet
 
@@ -72,7 +72,6 @@
 
 /obj/item/clothing/head/helmet/sec
 	can_flashlight = TRUE
-	fitted_bodytypes = NONE
 
 /obj/item/clothing/head/helmet/sec/attackby(obj/item/I, mob/user, params)
 	if(issignaler(I))
@@ -128,7 +127,7 @@
 	flags_cover = HEADCOVERSEYES | HEADCOVERSMOUTH | PEPPERPROOF
 	visor_flags_cover = HEADCOVERSEYES | HEADCOVERSMOUTH | PEPPERPROOF
 	dog_fashion = null
-	fitted_bodytypes = BODYTYPE_DIGITIGRADE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE|BODYTYPE_VOX
 
 /obj/item/clothing/head/helmet/attack_self(mob/user)
 	if(can_toggle && !user.incapacitated())
@@ -156,7 +155,6 @@
 	can_toggle = 1
 	toggle_cooldown = 20
 	dog_fashion = null
-	fitted_bodytypes = NONE
 	///Looping sound datum for the siren helmet
 	var/datum/looping_sound/siren/weewooloop
 
@@ -210,6 +208,7 @@
 	inhand_icon_state = "constable"
 	custom_price = PAYCHECK_HARD * 1.5
 	worn_y_offset = 4
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/head/helmet/swat/nanotrasen
 	name = "\improper SWAT helmet"
@@ -301,7 +300,7 @@
 	flags_cover = HEADCOVERSEYES | HEADCOVERSMOUTH
 	strip_delay = 80
 	dog_fashion = null
-	fitted_bodytypes = BODYTYPE_DIGITIGRADE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE|BODYTYPE_VOX
 
 
 /obj/item/clothing/head/helmet/knight/Initialize(mapload)
@@ -338,7 +337,7 @@
 	icon_state = "skull"
 	inhand_icon_state = "skull"
 	strip_delay = 100
-	fitted_bodytypes = BODYTYPE_DIGITIGRADE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE|BODYTYPE_VOX
 
 /obj/item/clothing/head/helmet/durathread
 	name = "durathread helmet"
@@ -378,13 +377,14 @@
 	flags_inv = HIDEHAIR|HIDEFACIALHAIR|HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|HIDESNOUT
 	flags_cover = HEADCOVERSEYES | HEADCOVERSMOUTH | PEPPERPROOF
 	strip_delay = 80
-	fitted_bodytypes = BODYTYPE_DIGITIGRADE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE|BODYTYPE_VOX
 
 /obj/item/clothing/head/helmet/elder_atmosian
 	name = "\improper Elder Atmosian Helmet"
 	desc = "A superb helmet made with the toughest and rarest materials available to man."
 	icon_state = "h2helmet"
 	inhand_icon_state = "h2helmet"
+	fitted_bodytypes = NONE
 	armor = list(MELEE = 15, BULLET = 10, LASER = 30, ENERGY = 30, BOMB = 10, BIO = 10, RAD = 20, FIRE = 65, ACID = 40, WOUND = 15)
 	material_flags = MATERIAL_COLOR | MATERIAL_AFFECT_STATISTICS //Can change color and add prefix
 	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|HIDEHAIR|HIDESNOUT

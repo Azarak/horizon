@@ -5,7 +5,7 @@
 	name = "collectable hat"
 	desc = "A rare collectable hat."
 	icon_state = null
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/head/collectable/Initialize()
 	. = ..()
@@ -73,7 +73,7 @@
 	icon_state = "welding"
 	inhand_icon_state = "welding"
 	clothing_flags = SNUG_FIT
-	fitted_bodytypes = BODYTYPE_DIGITIGRADE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE|BODYTYPE_VOX
 
 /obj/item/clothing/head/collectable/slime
 	name = "collectable slime hat"

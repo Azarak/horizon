@@ -21,6 +21,7 @@
 	gas_transfer_coefficient = 0.001 //cargo cult time, this var does nothing but just in case someone actually makes it do something
 	permeability_coefficient = 0.001
 	resistance_flags = FIRE_PROOF
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 /obj/item/clothing/mask/gas/atmos/captain
 	name = "captain's gas mask"
@@ -185,7 +186,7 @@
 	inhand_icon_state = "monkeymask"
 	flags_cover = MASKCOVERSEYES
 	resistance_flags = FLAMMABLE
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/mask/gas/sexymime
 	name = "sexy mime mask"
@@ -215,7 +216,7 @@
 	name = "carp mask"
 	desc = "Gnash gnash."
 	icon_state = "carp_mask"
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/mask/gas/tiki_mask
 	name = "tiki mask"
@@ -262,6 +263,7 @@
 
 /obj/item/clothing/mask/gas/tiki_mask/yalp_elor
 	icon_state = "tiki_yalp"
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 	actions_types = list()
 
 /obj/item/clothing/mask/gas/hunter
@@ -270,6 +272,7 @@
 	icon_state = "hunter"
 	inhand_icon_state = "hunter"
 	resistance_flags = FIRE_PROOF | ACID_PROOF
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 	flags_inv = HIDEFACIALHAIR|HIDEFACE|HIDEEYES|HIDEEARS|HIDEHAIR|HIDESNOUT
 
 /obj/item/clothing/mask/breath/vox
@@ -285,3 +288,4 @@
 	desc = "A face-covering mask that can be connected to an air supply. This one doesn't obscure your face however."
 	icon_state = "gas_clear"
 	flags_inv = HIDEEYES
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE

@@ -34,6 +34,7 @@
 	name = "dark green space helmet"
 	icon_state = "syndicate-helm-green-dark"
 	inhand_icon_state = "syndicate-helm-green-dark"
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 /obj/item/clothing/suit/space/syndicate/green/dark
 	name = "dark green space suit"

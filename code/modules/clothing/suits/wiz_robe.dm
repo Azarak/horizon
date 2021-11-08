@@ -10,7 +10,7 @@
 	clothing_flags = SNUG_FIT
 	resistance_flags = FIRE_PROOF | ACID_PROOF
 	dog_fashion = /datum/dog_fashion/head/blue_wizard
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/head/wizard/red
 	name = "red wizard hat"
@@ -52,7 +52,7 @@
 	icon_state = "magus"
 	inhand_icon_state = "magus"
 	dog_fashion = null
-	fitted_bodytypes = BODYTYPE_DIGITIGRADE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE|BODYTYPE_VOX
 
 /obj/item/clothing/head/wizard/santa
 	name = "Santa's hat"

@@ -70,7 +70,7 @@ Contains:
 	strip_delay = 130
 	max_heat_protection_temperature = FIRE_IMMUNITY_MAX_TEMP_PROTECT
 	resistance_flags = FIRE_PROOF | ACID_PROOF
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/suit/space/officer
 	name = "officer's jacket"
@@ -123,7 +123,7 @@ Contains:
 	desc = "Ho ho ho. Merrry X-mas!"
 	icon_state = "santahat"
 	flags_cover = HEADCOVERSEYES
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 	dog_fashion = /datum/dog_fashion/head/santa
 
@@ -311,7 +311,7 @@ Contains:
 	strip_delay = 130
 	max_heat_protection_temperature = FIRE_IMMUNITY_MAX_TEMP_PROTECT
 	resistance_flags = ACID_PROOF | FIRE_PROOF
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/suit/space/freedom
 	name = "eagle suit"
@@ -337,7 +337,7 @@ Contains:
 	light_range = 0 //luminosity when on
 	actions_types = list()
 	flags_inv = HIDEEARS|HIDEHAIR|HIDEFACIALHAIR //facial hair will clip with the helm, this'll need a dynamic_fhair_suffix at some point.
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/head/helmet/space/hardsuit/carp/Initialize()
 	. = ..()

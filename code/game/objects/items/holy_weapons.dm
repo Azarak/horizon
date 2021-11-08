@@ -31,7 +31,7 @@
 	flags_cover = HEADCOVERSEYES | HEADCOVERSMOUTH
 	strip_delay = 80
 	dog_fashion = null
-	fitted_bodytypes = BODYTYPE_DIGITIGRADE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE|BODYTYPE_VOX
 
 /obj/item/clothing/suit/armor/riot/chaplain
 	name = "crusader armour"
@@ -153,7 +153,7 @@
 	inhand_icon_state = "witchhunterhat"
 	flags_cover = HEADCOVERSEYES
 	flags_inv = HIDEEYES|HIDEHAIR
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/storage/box/holy/adept
 	name = "Divine Adept Kit"
@@ -169,7 +169,7 @@
 	inhand_icon_state = "crusader"
 	flags_cover = HEADCOVERSEYES
 	flags_inv = HIDEHAIR|HIDEFACE|HIDEEARS
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/suit/armor/riot/chaplain/adept
 	name = "adept robes"
@@ -202,7 +202,7 @@
 	icon_state = "chaplain_hood"
 	body_parts_covered = HEAD
 	flags_inv = HIDEHAIR|HIDEFACE|HIDEEARS
-	fitted_bodytypes = NONE
+	fitted_bodytypes = BODYTYPE_VOX
 
 /obj/item/clothing/suit/hooded/chaplain_hoodie/leader
 	name = "leader hoodie"
