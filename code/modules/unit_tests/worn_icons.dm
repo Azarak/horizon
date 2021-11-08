@@ -60,7 +60,7 @@
 				for(var/bodytype_string in bodytype_translation)
 					var/bodytype = text2num(bodytype_string)
 					/// If a bodytype is allowed and fitted, check its icon state
-					if(clothing_allowed_bodytypes & bodytype && !(clothing_template_bodytypes & bodytype))
+					if(clothing_allowed_bodytypes & bodytype)
 						var/real_bodytype_string = bodytype_translation[bodytype_string]
 						var/real_item_slot_string = slot_translation[item_slot_string]
 						var/worn_string = "[real_item_slot_string]_[real_bodytype_string]_[clothing_worn_icon_state]"
@@ -76,7 +76,7 @@
 								states_to_check += "[worn_string]_d"
 
 						for(var/state_to_check in states_to_check)
-							if(clothing_fitted_bodytypes & bodytype)
+							if(clothing_fitted_bodytypes & bodytype  && !(clothing_template_bodytypes & bodytype))
 								if(!used_lookup_list)
 									Fail("[clothing_type_path] has taur fitted worn icons, but no large_worn_icon")
 								///If we are missing the state in our icons, print a fail
@@ -87,4 +87,4 @@
 									continue
 								//Check if there is a icon state for this bodytype, but isn't fitted for it
 								if(state_to_check in used_lookup_list)
-									Fail("[clothing_type_path] has worn state that isn't fitted: [state_to_check]")
+									Fail("[clothing_type_path] has worn state that will not be used: [state_to_check]")

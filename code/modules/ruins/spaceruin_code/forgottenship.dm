@@ -151,6 +151,7 @@ GLOBAL_VAR_INIT(fscpassword, generate_password())
 	actions_types = list(/datum/action/item_action/toggle_helmet, /datum/action/item_action/toggle_spacesuit)
 	jetpack = /obj/item/tank/jetpack/suit
 	hardsuit_tail_colors = list("333", "345", "335")
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 //Special NT NPCs
 

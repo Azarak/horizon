@@ -479,6 +479,7 @@
 	actions_types = list()
 	cell = null
 	show_hud = FALSE
+	fitted_bodytypes = BODYTYPE_DIGITIGRADE
 
 /obj/item/clothing/suit/space/changeling/Initialize()
 	. = ..()

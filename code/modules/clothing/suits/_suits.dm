@@ -13,7 +13,7 @@
 	var/togglename = null
 	var/suittoggled = FALSE
 	limb_integrity = 0 // disabled for most exo-suits
-	//large_worn_icon = 'icons/mob/clothing/wide_suits.dmi'
+	large_worn_icon = 'icons/mob/clothing/wide_suits.dmi'
 
 
 /obj/item/clothing/suit/worn_overlays(mutable_appearance/standing, isinhands = FALSE, file2use, bodytype = BODYTYPE_HUMANOID)

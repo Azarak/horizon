@@ -107,6 +107,7 @@
 	adjusted_flags = ITEM_SLOT_HEAD
 	icon_state = "bandbotany"
 	species_exception = list(/datum/species/golem)
+	worn_icon = 'icons/mob/clothing/mask/bandana.dmi'
 
 /obj/item/clothing/mask/bandana/attack_self(mob/user)
 	adjustmask(user)
