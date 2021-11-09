@@ -729,7 +729,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 					hair_overlay.color = forced_colour
 
 				hair_overlay.alpha = hair_alpha
-				if(offset_features && OFFSET_FACE in H.dna.species.offset_features)
+				if(offset_features && (OFFSET_FACE in H.dna.species.offset_features))
 					hair_overlay.pixel_x += H.dna.species.offset_features[OFFSET_FACE][1]
 					hair_overlay.pixel_y += H.dna.species.offset_features[OFFSET_FACE][2]
 		if(hair_overlay.icon)
@@ -765,7 +765,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 		if(species_human.lip_style && (LIPS in species_traits))
 			var/mutable_appearance/lip_overlay = mutable_appearance('icons/mob/sprite_accessory/human_face.dmi', "lips_[species_human.lip_style]", -BODY_LAYER)
 			lip_overlay.color = species_human.lip_color
-			if(offset_features && OFFSET_FACE in species_human.dna.species.offset_features)
+			if(offset_features && (OFFSET_FACE in species_human.dna.species.offset_features))
 				lip_overlay.pixel_x += species_human.dna.species.offset_features[OFFSET_FACE][1]
 				lip_overlay.pixel_y += species_human.dna.species.offset_features[OFFSET_FACE][2]
 			standing += lip_overlay
@@ -782,7 +782,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 			//cut any possible vis overlays
 			if(body_vis_overlays.len)
 				SSvis_overlays.remove_vis_overlay(species_human, body_vis_overlays)
-			if(OFFSET_FACE in species_human.dna.species.offset_features)
+			if(species_human.dna.species.offset_features && (OFFSET_FACE in species_human.dna.species.offset_features))
 				add_pixel_x = species_human.dna.species.offset_features[OFFSET_FACE][1]
 				add_pixel_y = species_human.dna.species.offset_features[OFFSET_FACE][2]
 			if(!eye_organ)

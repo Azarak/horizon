@@ -643,7 +643,7 @@ generate/load female uniform sprites matching all previously decided variables
 		if(lip_style && (LIPS in dna.species.species_traits))
 			var/mutable_appearance/lip_overlay = mutable_appearance('icons/mob/sprite_accessory/human_face.dmi', "lips_[lip_style]", -BODY_LAYER)
 			lip_overlay.color = lip_color
-			if(dna.species.offset_features && OFFSET_FACE in dna.species.offset_features)
+			if(dna.species.offset_features && (OFFSET_FACE in dna.species.offset_features))
 				lip_overlay.pixel_x += dna.species.offset_features[OFFSET_FACE][1]
 				lip_overlay.pixel_y += dna.species.offset_features[OFFSET_FACE][2]
 			add_overlay(lip_overlay)
@@ -658,7 +658,7 @@ generate/load female uniform sprites matching all previously decided variables
 				eye_overlay = mutable_appearance('icons/mob/sprite_accessory/human_face.dmi', E.eye_icon_state, -BODY_LAYER)
 			if((EYECOLOR in dna.species.species_traits) && E)
 				eye_overlay.color = "#" + eye_color
-			if(dna.species.offset_features && OFFSET_FACE in dna.species.offset_features)
+			if(dna.species.offset_features && (OFFSET_FACE in dna.species.offset_features))
 				eye_overlay.pixel_x += dna.species.offset_features[OFFSET_FACE][1]
 				eye_overlay.pixel_y += dna.species.offset_features[OFFSET_FACE][2]
 			add_overlay(eye_overlay)
