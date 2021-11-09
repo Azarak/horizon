@@ -49,6 +49,7 @@ GLOBAL_LIST_INIT(admin_verbs_debug_mapping, list(
 	/client/proc/stop_line_profiling,
 	/client/proc/show_line_profiling,
 	/client/proc/create_mapping_job_icons,
+	/client/proc/debug_z_levels,
 	/client/proc/place_ruin
 ))
 GLOBAL_PROTECT(admin_verbs_debug_mapping)
@@ -313,3 +314,31 @@ GLOBAL_VAR_INIT(say_disabled, FALSE)
 	for(var/x_number in 1 to 4)
 		final.Insert(icon('icons/hud/screen_gen.dmi', "x[x_number == 1 ? "" : x_number]"), "x[x_number == 1 ? "" : x_number]")
 	fcopy(final, "icons/mob/landmarks.dmi")
+
+/client/proc/debug_z_levels()
+	set name = "Debug Z-Levels"
+	set category = "Mapping"
+
+	var/list/z_list = SSmapping.z_list
+	var/list/messages = list()
+	messages += "<b>World</b>: [world.maxx] x [world.maxy] x [world.maxz]<br>"
+
+	for(var/z in 1 to max(world.maxz, z_list.len))
+		if (z > z_list.len)
+			messages += "Z level: <b>[z]</b>: Unmanaged (out of bounds)<br>"
+			continue
+		var/datum/space_level/space_level = z_list[z]
+		if (!space_level)
+			messages += "Z level: <b>[z]</b>: Unmanaged (null)<br>"
+			continue
+
+		messages += "Z level: <b>[z]</b>: [space_level.name]<br>"
+		if (space_level.z_value != z)
+			messages += "-- z_value is [space_level.z_value], should be [z]<br>"
+		if (z > world.maxz)
+			messages += "-- exceeds max z"
+
+	messages += "<table border='1'>"
+	messages += "</table>"
+
+	to_chat(src, messages.Join(""), confidential = TRUE)
