@@ -364,15 +364,14 @@ GLOBAL_VAR_INIT(say_disabled, FALSE)
 				for(var/dir in sub_zone.crosslinked)
 					var/datum/sub_map_zone/linked_zone = sub_zone.crosslinked[dir]
 					var/dir_string
-					switch(dir)
-						if("[NORTH]")
-							dir_string = "North"
-						if("[SOUTH]")
-							dir_string = "South"
-						if("[WEST]")
-							dir_string = "West"
-						if("[EAST]")
-							dir_string = "East"
+					if(dir == "[NORTH]")
+						dir_string = "North"
+					else if(dir == "[SOUTH]")
+						dir_string = "South"
+					else if(dir == "[WEST]")
+						dir_string = "West"
+					else if(dir == "[EAST]")
+						dir_string = "East"
 					var/zone_string
 					if(linked_zone == sub_zone)
 						zone_string = "SELF LINKED"
