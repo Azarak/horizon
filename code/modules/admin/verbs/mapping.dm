@@ -365,13 +365,13 @@ GLOBAL_VAR_INIT(say_disabled, FALSE)
 					var/datum/sub_map_zone/linked_zone = sub_zone.crosslinked[dir]
 					var/dir_string
 					switch(dir)
-						if(NORTH)
+						if("[NORTH]")
 							dir_string = "North"
-						if(SOUTH)
+						if("[SOUTH]")
 							dir_string = "South"
-						if(WEST)
+						if("[WEST]")
 							dir_string = "West"
-						if(EAST)
+						if("[EAST]")
 							dir_string = "East"
 					var/zone_string
 					if(linked_zone == sub_zone)
