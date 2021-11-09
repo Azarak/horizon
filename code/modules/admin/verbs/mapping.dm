@@ -50,6 +50,7 @@ GLOBAL_LIST_INIT(admin_verbs_debug_mapping, list(
 	/client/proc/show_line_profiling,
 	/client/proc/create_mapping_job_icons,
 	/client/proc/debug_z_levels,
+	/client/proc/map_zones_info,
 	/client/proc/place_ruin
 ))
 GLOBAL_PROTECT(admin_verbs_debug_mapping)
@@ -342,3 +343,59 @@ GLOBAL_VAR_INIT(say_disabled, FALSE)
 	messages += "</table>"
 
 	to_chat(src, messages.Join(""), confidential = TRUE)
+
+#define SUB_ZONE_INFO_FULL(sub_zone) "[sub_zone.parent_map_zone.id]. [sub_zone.id]. [sub_zone.name]"
+#define MAP_ZONE_INFO(map_zone) "[map_zone.id]. [map_zone.name]" //Works for sub zone or map zones
+
+/client/proc/map_zones_info()
+	set name = "Map-Zones Info"
+	set category = "Mapping"
+
+	var/list/dat = list()
+	for(var/datum/map_zone/map_zone as anything in SSmapping.map_zones)
+		dat += "[MAP_ZONE_INFO(map_zone)]:"
+		for(var/datum/sub_map_zone/sub_zone as anything in map_zone.sub_map_zones)
+			dat += "<BR> - [MAP_ZONE_INFO(sub_zone)]:"
+			dat += "<BR> -- Reservation: LowX: [sub_zone.low_x], LowY: [sub_zone.low_y], HighX: [sub_zone.high_x], HighY: [sub_zone.high_y]"
+			dat += "<BR> -- Reserved Margin: [sub_zone.reserved_margin]"
+			dat += "<BR> -- Traits: [json_encode(sub_zone.traits)]"
+			if(length(sub_zone.crosslinked))
+				dat += "<BR> -- Crosslinkage: (map zone ID, zone ID, name)"
+				for(var/dir in sub_zone.crosslinked)
+					var/datum/sub_map_zone/linked_zone = sub_zone.crosslinked[dir]
+					var/dir_string
+					switch(dir)
+						if(NORTH)
+							dir_string = "North"
+						if(SOUTH)
+							dir_string = "South"
+						if(WEST)
+							dir_string = "West"
+						if(EAST)
+							dir_string = "East"
+					var/zone_string
+					if(linked_zone == sub_zone)
+						zone_string = "SELF LINKED"
+					else
+						zone_string = SUB_ZONE_INFO_FULL(linked_zone)
+					dat += "<BR> --- [dir_string]: [zone_string]"
+			if(sub_zone.up_linkage)
+				dat += "<BR> -- Up-linkage: [SUB_ZONE_INFO_FULL(sub_zone.up_linkage)]"
+			if(sub_zone.down_linkage)
+				dat += "<BR> -- Down-linkage: [SUB_ZONE_INFO_FULL(sub_zone.down_linkage)]"
+		dat += "<HR>"
+	dat += "Physical map dimensions: [world.maxx], [world.maxy], [world.maxz]"
+	dat += "<BR>Physical levels:"
+	for(var/z in 1 to SSmapping.z_list.len)
+		var/datum/space_level/space_level = SSmapping.z_list[z]
+		dat += "<BR> - [z]. [space_level.name]"
+		if(length(space_level.sub_map_zones))
+			dat += "<BR> -- Contained sub map zone reservations:"
+			for(var/datum/sub_map_zone/sub_zone as anything in space_level.sub_map_zones)
+				dat += "<BR> --- [SUB_ZONE_INFO_FULL(sub_zone)]"
+	var/datum/browser/popup = new(usr, "map zone debug", "Map-Zones info", 600, 600)
+	popup.set_content(dat.Join())
+	popup.open()
+
+#undef SUB_ZONE_INFO_FULL
+#undef MAP_ZONE_INFO
