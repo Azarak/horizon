@@ -48,10 +48,17 @@
 	var/divable = TRUE
 	/// true whenever someone with the strong pull component is dragging this, preventing opening
 	var/strong_grab = FALSE
+	/// If we are installed with a lock, this is the ID to the key that opens us
+	var/key_id
+	/// If we are locked by a physical lock
+	var/lock_locked = FALSE
 
 /obj/structure/closet/Initialize(mapload)
 	if(mapload && !opened) // if closed, any item at the crate's loc is put in the contents
 		addtimer(CALLBACK(src, .proc/take_contents), 0)
+	//If we initialize with a lock, lock the closet
+	if(key_id)
+		lock_locked = TRUE
 	. = ..()
 	update_appearance()
 	PopulateContents()
@@ -80,6 +87,8 @@
 
 /obj/structure/closet/update_overlays()
 	. = ..()
+	if(!opened && key_id) //We have a lock
+		. += "lock"
 	closet_update_overlays(.)
 
 /obj/structure/closet/proc/closet_update_overlays(list/new_overlays)
@@ -127,6 +136,9 @@
 /obj/structure/closet/proc/can_open(mob/living/user, force = FALSE)
 	if(force)
 		return TRUE
+	if(lock_locked)
+		playsound(src, 'sound/misc/knuckles.ogg', 50, TRUE)
+		return FALSE
 	if(welded || locked)
 		return FALSE
 	if(strong_grab)
@@ -266,6 +278,37 @@
 
 /obj/structure/closet/attackby(obj/item/W, mob/user, params)
 	if(user in src)
+		return
+	if(istype(W, /obj/item/lock))
+		var/obj/item/lock/lock_item = W
+		if(secure)
+			to_chat(user, SPAN_WARNING("\The [src] can't have a lock installed!"))
+			return
+		if(key_id)
+			to_chat(user, SPAN_WARNING("\The [src] already has a lock!"))
+			return
+		to_chat(user, SPAN_NOTICE("You install \the [lock_item] on \the [src]."))
+		key_id = lock_item.key_id
+		update_appearance()
+		qdel(lock_item)
+		return
+	if(istype(W, /obj/item/key))
+		var/obj/item/key/key_item = W
+		if(!key_id)
+			to_chat(user, SPAN_WARNING("\The [src] does not have a lock!"))
+			return
+		if(opened)
+			to_chat(user, SPAN_WARNING("Close \the [src] first!"))
+			return
+		if(key_item.key_id != key_id)
+			to_chat(user, SPAN_WARNING("\The [key_item] does not fit \the [src]!"))
+			return
+		if(lock_locked)
+			to_chat(user, SPAN_NOTICE("You unlock \the [src]."))
+		else
+			to_chat(user, SPAN_NOTICE("You lock \the [src]."))
+		lock_locked = !lock_locked
+		playsound(src, 'sound/misc/knuckles.ogg', 50, TRUE)
 		return
 	if(src.tool_interact(W,user))
 		return 1 // No afterattack
