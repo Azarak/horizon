@@ -87,8 +87,6 @@
 
 /obj/structure/closet/update_overlays()
 	. = ..()
-	if(!opened && key_id) //We have a lock
-		. += "lock"
 	closet_update_overlays(.)
 
 /obj/structure/closet/proc/closet_update_overlays(list/new_overlays)
@@ -104,6 +102,9 @@
 
 	if(opened)
 		return
+
+	if(key_id) //We have a lock
+		. += "lock"
 
 	if(welded)
 		. += icon_welded
@@ -138,6 +139,7 @@
 		return TRUE
 	if(lock_locked)
 		playsound(src, 'sound/misc/knuckles.ogg', 50, TRUE)
+		to_chat(user, SPAN_WARNING("\The [src] is locked!"))
 		return FALSE
 	if(welded || locked)
 		return FALSE
@@ -278,6 +280,31 @@
 
 /obj/structure/closet/attackby(obj/item/W, mob/user, params)
 	if(user in src)
+		return
+	if(istype(W, /obj/item/lockpick))
+		var/obj/item/lockpick/lockpick_item = W
+		if(!key_id)
+			to_chat(user, SPAN_WARNING("\The [src] does not have a lock!"))
+			return
+		if(!lock_locked)
+			to_chat(user, SPAN_WARNING("\The [src] is unlocked!"))
+			return
+		user.visible_message(SPAN_NOTICE("[user] begins lockpicking \the [src]."), SPAN_NOTICE("You begin lockpicking \the [src]."))
+		user.changeNext_move(CLICK_CD_MELEE)
+		playsound(src, 'sound/misc/knuckles.ogg', 50, TRUE)
+		if(do_after(user, LOCKPICK_TIME, target = src))
+			if(!lock_locked)
+				return
+			if(prob(LOCKPICK_BREAK_CHANCE))
+				to_chat(user, SPAN_WARNING("\The [lockpick_item] breaks!"))
+				qdel(lockpick_item)
+				return
+			if(prob(LOCKPICK_SUCCESS_CHANCE))
+				to_chat(user, SPAN_NOTICE("You unlock \the [src]!"))
+				lock_locked = FALSE
+			else
+				to_chat(user, SPAN_WARNING("You fail to unlock \the [src]!"))
+			playsound(src, 'sound/misc/knuckles.ogg', 50, TRUE)
 		return
 	if(istype(W, /obj/item/lock))
 		var/obj/item/lock/lock_item = W

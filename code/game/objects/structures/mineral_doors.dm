@@ -35,10 +35,10 @@
 /obj/structure/mineral_door/Initialize()
 	. = ..()
 	var/turf/my_turf = get_turf(src)
-	var/turf/north_turf = get_step(my_turf, NORTH)
-	var/turf/south_turf = get_step(my_turf, SOUTH)
-	//If north or south is blocked, face west/east doesn't matter
-	if(north_turf.is_blocked_turf() || south_turf.is_blocked_turf())
+	var/turf/east_turf = get_step(my_turf, EAST)
+	var/turf/west_turf = get_step(my_turf, WEST)
+	//If east and west isn't blocked, face that direction
+	if(!east_turf.is_blocked_turf() && !west_turf.is_blocked_turf())
 		setDir(WEST)
 	/// If we initialize with a key id (lock, most likely mapped by mappers), and are not opened, lock us.
 	if(key_id && !door_opened)
@@ -88,6 +88,7 @@
 		return
 	if(locked)
 		playsound(src, 'sound/misc/knuckles.ogg', 50, TRUE)
+		to_chat(user, SPAN_WARNING("\The [src] is locked!"))
 		return
 	if(isliving(user))
 		var/mob/living/M = user
@@ -171,6 +172,31 @@
 		. += mutable_appearance(icon, lock_state, appearance_flags = RESET_COLOR)
 
 /obj/structure/mineral_door/attackby(obj/item/I, mob/living/user)
+	if(istype(I, /obj/item/lockpick))
+		var/obj/item/lockpick/lockpick_item = I
+		if(!key_id)
+			to_chat(user, SPAN_WARNING("\The [src] does not have a lock!"))
+			return
+		if(!locked)
+			to_chat(user, SPAN_WARNING("\The [src] is unlocked!"))
+			return
+		user.visible_message(SPAN_NOTICE("[user] begins lockpicking \the [src]."), SPAN_NOTICE("You begin lockpicking \the [src]."))
+		user.changeNext_move(CLICK_CD_MELEE)
+		playsound(src, 'sound/misc/knuckles.ogg', 50, TRUE)
+		if(do_after(user, LOCKPICK_TIME, target = src))
+			if(!locked)
+				return
+			if(prob(LOCKPICK_BREAK_CHANCE))
+				to_chat(user, SPAN_WARNING("\The [lockpick_item] breaks!"))
+				qdel(lockpick_item)
+				return
+			if(prob(LOCKPICK_SUCCESS_CHANCE))
+				to_chat(user, SPAN_NOTICE("You unlock \the [src]!"))
+				locked = FALSE
+			else
+				to_chat(user, SPAN_WARNING("You fail to unlock \the [src]!"))
+			playsound(src, 'sound/misc/knuckles.ogg', 50, TRUE)
+		return
 	if(istype(I, /obj/item/lock))
 		var/obj/item/lock/lock_item = I
 		if(key_id)
@@ -216,6 +242,7 @@
 /obj/structure/mineral_door/wrench_act(mob/living/user, obj/item/I)
 	if(locked)
 		to_chat(user, SPAN_WARNING("Can't unwrench \the [src] while it's locked."))
+		return
 	..()
 	default_unfasten_wrench(user, I, 40)
 	return TRUE
@@ -238,6 +265,7 @@
 /obj/structure/mineral_door/welder_act(mob/living/user, obj/item/I) //override if the door is supposed to be flammable.
 	if(locked)
 		to_chat(user, SPAN_WARNING("Can't weld \the [src] while it's locked."))
+		return
 	..()
 	. = TRUE
 	if(anchored)

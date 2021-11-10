@@ -1,5 +1,9 @@
 ///Defines regarding key id's
 
+#define LOCKPICK_SUCCESS_CHANCE 20
+#define LOCKPICK_BREAK_CHANCE 20
+#define LOCKPICK_TIME 4 SECONDS
+
 /// ID's reserved for mapping purposes
 #define KEY_ID_MAPPING_RESERVED 10000
 /// Unique ID's that the game will generate starting from
