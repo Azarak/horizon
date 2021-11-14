@@ -1,10 +1,12 @@
 /obj/item/clothing/neck
 	name = "necklace"
 	icon = 'icons/obj/clothing/neck.dmi'
+	worn_icon = 'icons/mob/clothing/neck.dmi'
 	body_parts_covered = NECK
 	slot_flags = ITEM_SLOT_NECK
 	strip_delay = 40
 	equip_delay_other = 40
+	fitted_bodytypes = NONE
 
 /obj/item/clothing/neck/worn_overlays(mutable_appearance/standing, isinhands = FALSE)
 	. = ..()
@@ -292,7 +294,7 @@
 
 /obj/item/clothing/neck/human_petcollar
 	icon = 'icons/horizon/obj/clothing/neck.dmi'
-	worn_icon = 'icons/horizon/mob/clothing/neck.dmi'
+	worn_icon = 'icons/mob/clothing/neck/collars.dmi'
 	name = "pet collar"
 	desc = "It's for pets. Though you probably could wear it yourself, you'd doubtless be the subject of ridicule. It seems to be made out of a polychromic material."
 	icon_state = "petcollar_poly"
@@ -336,14 +338,19 @@
 	var/lock = FALSE
 
 /obj/item/clothing/neck/human_petcollar/locked/attackby(obj/item/K, mob/user, params)
-	if(istype(K, /obj/item/key/collar))
-		if(lock != FALSE)
-			to_chat(user, SPAN_WARNING("With a click the collar unlocks!"))
-			lock = FALSE
+	if(istype(K, /obj/item/key))
+		var/obj/item/key/key_item = K
+		if(key_item.key_id == KEY_ID_COLLAR)
+			if(lock != FALSE)
+				to_chat(user, SPAN_NOTICE("With a click the collar unlocks!"))
+				lock = FALSE
+			else
+				to_chat(user, SPAN_NOTICE("With a click the collar locks!"))
+				lock = TRUE
 		else
-			to_chat(user, SPAN_WARNING("With a click the collar locks!"))
-			lock = TRUE
-	return
+			to_chat(user, SPAN_WARNING("This key does not fit!"))
+		return TRUE
+	return ..()
 
 /obj/item/clothing/neck/human_petcollar/locked/attack_hand(mob/user)
 	if(loc == user && user.get_item_by_slot(ITEM_SLOT_NECK) && lock != FALSE)
@@ -362,7 +369,3 @@
 	icon_state = "choker"
 	is_polychromic = FALSE
 	color = "#222222"
-
-/obj/item/key/collar
-	name = "Collar Key"
-	desc = "A key for a tiny lock on a collar or bag."
