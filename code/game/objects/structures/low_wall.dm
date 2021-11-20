@@ -12,7 +12,7 @@
 	max_integrity = 150
 	smoothing_flags = SMOOTH_BITMASK
 	smoothing_groups = list(SMOOTH_GROUP_LOW_WALL)
-	canSmoothWith = list(SMOOTH_GROUP_LOW_WALL, SMOOTH_GROUP_WALLS, SMOOTH_GROUP_AIRLOCK)
+	canSmoothWith = list(SMOOTH_GROUP_LOW_WALL, SMOOTH_GROUP_WALLS, SMOOTH_GROUP_AIRLOCK, SMOOTH_GROUP_SHUTTERS_BLASTDOORS)
 	armor = list(MELEE = 20, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 25, BIO = 100, RAD = 100, FIRE = 80, ACID = 100)
 	/// Material used in construction
 	var/plating_material = /datum/material/iron
@@ -20,8 +20,8 @@
 	var/wall_paint
 	/// Paint colour of our stripe
 	var/stripe_paint
-	/// Typecache of airlocks to apply a neighboring stripe overlay to
-	var/static/list/airlock_typecache
+	/// Typecache of all machine doors to apply a neighboring stripe overlay to
+	var/static/list/doors_typecache
 
 /obj/structure/low_wall/examine(mob/user)
 	. = ..()
@@ -52,13 +52,13 @@
 		smoothed_stripe.color = color
 	overlays += smoothed_stripe
 
-	if(!airlock_typecache)
-		airlock_typecache = typecacheof(/obj/machinery/door/airlock)
+	if(!doors_typecache)
+		doors_typecache = typecacheof(/obj/machinery/door)
 	var/neighbor_stripe = NONE
 	for(var/cardinal in GLOB.cardinals)
 		var/turf/step_turf = get_step(src, cardinal)
 		for(var/atom/movable/movable_thing as anything in step_turf)
-			if(airlock_typecache[movable_thing.type])
+			if(doors_typecache[movable_thing.type])
 				neighbor_stripe ^= cardinal
 				break
 	if(neighbor_stripe)
