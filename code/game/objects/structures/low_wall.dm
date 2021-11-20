@@ -20,8 +20,8 @@
 	var/wall_paint
 	/// Paint colour of our stripe
 	var/stripe_paint
-	/// Typecache of all machine doors to apply a neighboring stripe overlay to
-	var/static/list/doors_typecache
+	/// Typecache of airlocks to apply a neighboring stripe overlay to
+	var/static/list/airlock_typecache
 
 /obj/structure/low_wall/examine(mob/user)
 	. = ..()
@@ -52,13 +52,13 @@
 		smoothed_stripe.color = color
 	overlays += smoothed_stripe
 
-	if(!doors_typecache)
-		doors_typecache = typecacheof(list(/obj/machinery/door/airlock, /obj/machinery/door/poddoor))
+	if(!airlock_typecache)
+		airlock_typecache = typecacheof(/obj/machinery/door/airlock)
 	var/neighbor_stripe = NONE
 	for(var/cardinal in GLOB.cardinals)
 		var/turf/step_turf = get_step(src, cardinal)
 		for(var/atom/movable/movable_thing as anything in step_turf)
-			if(doors_typecache[movable_thing.type])
+			if(airlock_typecache[movable_thing.type])
 				neighbor_stripe ^= cardinal
 				break
 	if(neighbor_stripe)
