@@ -323,7 +323,7 @@ again.
 /obj/effect/spawner/structure/window/reinforced/plasma
 	name = "reinforced plasma window spawner"
 	icon_state = "prwindow_spawner"
-	spawn_list = list(/obj/structure/low_wall, /obj/structure/window/reinforced/plasma/fulltile)
+	spawn_list = list(/obj/structure/low_wall, /obj/structure/window/plasma/reinforced/fulltile)
 
 /obj/effect/spawner/structure/window/plasma/reinforced/grille
 	name = "reinforced plasma window with grille spawner"
