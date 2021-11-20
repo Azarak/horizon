@@ -53,7 +53,7 @@
 	overlays += smoothed_stripe
 
 	if(!doors_typecache)
-		doors_typecache = typecacheof(/obj/machinery/door)
+		doors_typecache = typecacheof(list(/obj/machinery/door/airlock, /obj/machinery/door/poddoor))
 	var/neighbor_stripe = NONE
 	for(var/cardinal in GLOB.cardinals)
 		var/turf/step_turf = get_step(src, cardinal)
