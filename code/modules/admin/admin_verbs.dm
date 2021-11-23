@@ -181,8 +181,6 @@ GLOBAL_PROTECT(admin_verbs_debug)
 	/client/proc/print_cards,
 	#ifdef TESTING
 	/client/proc/check_missing_sprites,
-	/client/proc/export_dynamic_json,
-	/client/proc/run_dynamic_simulations,
 	#endif
 	#ifdef SENDMAPS_PROFILE
 	/client/proc/display_sendmaps,
