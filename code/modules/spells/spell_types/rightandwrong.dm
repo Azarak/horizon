@@ -163,19 +163,19 @@ GLOBAL_LIST_INIT(summoned_magic_objectives, list(
 		CRASH("Bad summon_type given: [summon_type]")
 
 /proc/summonevents()
-	if(!SSevents.wizardmode)
-		SSevents.frequency_lower = 600 //1 minute lower bound
-		SSevents.frequency_upper = 3000 //5 minutes upper bound
-		SSevents.toggleWizardmode()
-		SSevents.reschedule()
+	if(!SSgamemode.wizardmode)
+		SSgamemode.frequency_lower = 600 //1 minute lower bound
+		SSgamemode.frequency_upper = 3000 //5 minutes upper bound
+		SSgamemode.toggleWizardmode()
+		SSgamemode.reschedule()
 
 	else //Speed it up
-		SSevents.frequency_upper -= 600 //The upper bound falls a minute each time, making the AVERAGE time between events lessen
-		if(SSevents.frequency_upper < SSevents.frequency_lower) //Sanity
-			SSevents.frequency_upper = SSevents.frequency_lower
+		SSgamemode.frequency_upper -= 600 //The upper bound falls a minute each time, making the AVERAGE time between events lessen
+		if(SSgamemode.frequency_upper < SSgamemode.frequency_lower) //Sanity
+			SSgamemode.frequency_upper = SSgamemode.frequency_lower
 
-		SSevents.reschedule()
-		message_admins("Summon Events intensifies, events will now occur every [SSevents.frequency_lower / 600] to [SSevents.frequency_upper / 600] minutes.")
+		SSgamemode.reschedule()
+		message_admins("Summon Events intensifies, events will now occur every [SSgamemode.frequency_lower / 600] to [SSgamemode.frequency_upper / 600] minutes.")
 		log_game("Summon Events was increased!")
 
 #undef SPECIALIST_MAGIC_PROB

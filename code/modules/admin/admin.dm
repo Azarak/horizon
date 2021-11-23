@@ -410,6 +410,7 @@
 		return
 
 	var/dat = "<center><B>Game Panel</B></center><hr>"
+	/*
 	if(SSticker.current_state <= GAME_STATE_PREGAME)
 		dat += "<A href='?src=[REF(src)];[HrefToken()];f_dynamic_roundstart=1'>(Force Roundstart Rulesets)</A><br>"
 		if (GLOB.dynamic_forced_roundstart_ruleset.len > 0)
@@ -418,6 +419,7 @@
 			dat += "<A href='?src=[REF(src)];[HrefToken()];f_dynamic_roundstart_clear=1'>(Clear Rulesets)</A><br>"
 		dat += "<A href='?src=[REF(src)];[HrefToken()];f_dynamic_options=1'>(Dynamic mode options)</A><br>"
 	dat += "<hr/>"
+	*/
 	if(SSticker.IsRoundInProgress())
 		dat += "<a href='?src=[REF(src)];[HrefToken()];gamemode_panel=1'>(Game Mode Panel)</a><BR>"
 	dat += {"
@@ -851,6 +853,7 @@
 	browser.set_content(dat.Join())
 	browser.open()
 
+/*
 /datum/admins/proc/dynamic_mode_options(mob/user)
 	var/dat = {"
 		<center><B><h2>Dynamic Mode Options</h2></B></center><hr>
@@ -873,6 +876,7 @@
 		"}
 
 	user << browse(dat, "window=dyn_mode_options;size=900x650")
+*/
 
 /datum/admins/proc/create_or_modify_area()
 	set category = "Debug"

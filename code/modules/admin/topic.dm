@@ -50,7 +50,7 @@
 	else if(href_list["forceevent"])
 		if(!check_rights(R_FUN))
 			return
-		var/datum/round_event_control/E = locate(href_list["forceevent"]) in SSevents.control
+		var/datum/round_event_control/E = locate(href_list["forceevent"]) in SSgamemode.control
 		if(E)
 			E.admin_setup(usr)
 			var/datum/round_event/event = E.runEvent()
@@ -91,7 +91,7 @@
 	else if(href_list["gamemode_panel"])
 		if(!check_rights(R_ADMIN))
 			return
-		SSticker.mode.admin_panel()
+		SSgamemode.admin_panel()
 
 	else if(href_list["call_shuttle"])
 		if(!check_rights(R_ADMIN))
@@ -467,6 +467,7 @@
 			return
 		cmd_admin_mute(href_list["mute"], text2num(href_list["mute_type"]))
 
+	/*
 	else if(href_list["f_dynamic_roundstart"])
 		if(!check_rights(R_ADMIN))
 			return
@@ -549,6 +550,7 @@
 		log_admin("[key_name(usr)] set 'forced_threat_level' to [GLOB.dynamic_forced_threat_level].")
 		message_admins("[key_name(usr)] set 'forced_threat_level' to [GLOB.dynamic_forced_threat_level].")
 		dynamic_mode_options(usr)
+	*/
 
 	else if(href_list["monkeyone"])
 		if(!check_rights(R_SPAWN))

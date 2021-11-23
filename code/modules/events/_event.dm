@@ -17,7 +17,7 @@
 	var/max_occurrences = 20 //The maximum number of times this event can occur (naturally), it can still be forced.
 									//By setting this to 0 you can effectively disable an event.
 
-	var/holidayID = "" //string which should be in the SSeventss.holidays list if you wish this event to be holiday-specific
+	var/holidayID = "" //string which should be in the SSgamemodes.holidays list if you wish this event to be holiday-specific
 									//anything with a (non-null) holidayID which does not match holiday, cannot run.
 	var/wizardevent = FALSE
 	var/alert_observers = TRUE //should we let the ghosts and admins know this event is firing
@@ -26,7 +26,7 @@
 	var/triggering //admin cancellation
 
 	/// Whether or not dynamic should hijack this event
-	var/dynamic_should_hijack = FALSE
+	var/dynamic_should_hijack = FALSE //TODO remove this
 
 /datum/round_event_control/New()
 	if(config && !wizardevent) // Magic is unaffected by configs
@@ -43,19 +43,15 @@
 		return FALSE
 	if(earliest_start >= world.time-SSticker.round_start_time)
 		return FALSE
-	if(wizardevent != SSevents.wizardmode)
+	if(wizardevent != SSgamemode.wizardmode)
 		return FALSE
 	if(players_amt < min_players)
 		return FALSE
-	if(holidayID && (!SSevents.holidays || !SSevents.holidays[holidayID]))
+	if(holidayID && (!SSgamemode.holidays || !SSgamemode.holidays[holidayID]))
 		return FALSE
 	if(EMERGENCY_ESCAPED_OR_ENDGAMED)
 		return FALSE
 	if(ispath(typepath, /datum/round_event/ghost_role) && !(GLOB.ghost_role_flags & GHOSTROLE_MIDROUND_EVENT))
-		return FALSE
-
-	var/datum/game_mode/dynamic/dynamic = SSticker.mode
-	if (istype(dynamic) && dynamic_should_hijack && dynamic.random_event_hijacked != HIJACKED_NOTHING)
 		return FALSE
 
 	return TRUE
@@ -63,9 +59,6 @@
 /datum/round_event_control/proc/preRunEvent()
 	if(!ispath(typepath, /datum/round_event))
 		return EVENT_CANT_RUN
-
-	if (SEND_GLOBAL_SIGNAL(COMSIG_GLOB_PRE_RANDOM_EVENT, src) & CANCEL_PRE_RANDOM_EVENT)
-		return EVENT_INTERRUPTED
 
 	triggering = TRUE
 	if (alert_observers)
@@ -211,14 +204,14 @@
 //which should be the only place it's referenced.
 //Called when start(), announce() and end() has all been called.
 /datum/round_event/proc/kill()
-	SSevents.running -= src
+	SSgamemode.running -= src
 
 
 //Sets up the event then adds the event to the the list of running events
 /datum/round_event/New(my_processing = TRUE)
 	setup()
 	processing = my_processing
-	SSevents.running += src
+	SSgamemode.running += src
 	return ..()
 
 #undef RANDOM_EVENT_ADMIN_INTERVENTION_TIME
