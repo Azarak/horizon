@@ -1,0 +1,102 @@
+///The storyteller datum. He operates with the SSgamemode data to run events
+/datum/storyteller
+	/// Name of our storyteller.
+	var/name = "Cool Dude"
+	/// Description of our storyteller.
+	var/desc = "He is very cool."
+	/// This is the multiplier for repetition penalty in event weight.
+	var/event_repetition_multiplier = 0.6
+	/// Multipliers for starting points.
+	var/list/starting_point_multipliers = list(
+		EVENT_TRACK_MUNDANE = 1, 
+		EVENT_TRACK_MODERATE = 1, 
+		EVENT_TRACK_MAJOR = 1, 
+		EVENT_TRACK_ROLESET = 1, 
+		EVENT_TRACK_OBJECTIVES = 1
+		)
+	/// Multipliers for point gains.
+	var/list/point_gains_multipliers = list(
+		EVENT_TRACK_MUNDANE = 1, 
+		EVENT_TRACK_MODERATE = 1, 
+		EVENT_TRACK_MAJOR = 1, 
+		EVENT_TRACK_ROLESET = 1, 
+		EVENT_TRACK_OBJECTIVES = 1
+		)
+	/// Multipliers of weight to apply for each tag of an event.
+	var/list/tag_multipliers
+
+	/// Variance in cost of the purchased events. Effectively affects frequency of events
+	var/cost_variance = 15
+
+	/// Whether people can vote for the storyteller
+	var/votable = TRUE
+	/// If defined, will need a minimum of population to be votable
+	var/population_min
+	/// If defined, it will not be votable if exceeding the population
+	var/population_max
+
+/datum/storyteller/New()
+	. = ..()
+
+/datum/storyteller/process(delta_time)
+	add_points(delta_time)
+	handle_tracks()
+
+/// Add points to all tracks while respecting the multipliers.
+/datum/storyteller/proc/add_points(delta_time)
+	var/datum/controller/subsystem/gamemode/mode = SSgamemode
+	var/base_point = EVENT_POINT_GAINED_PER_SECOND * delta_time * mode.event_frequency_multiplier
+	for(var/track in mode.event_track_points)
+		mode.event_track_points[track] += base_point * point_gains_multipliers[track]
+
+/// Goes through every track of the gamemode and checks if it passes a threshold to buy an event, if does, buys one.
+/datum/storyteller/proc/handle_tracks()
+	var/datum/controller/subsystem/gamemode/mode = SSgamemode
+	for(var/track in mode.event_track_points)
+		var/points = mode.event_track_points[track]
+		if(points >= mode.point_thresholds[track])
+			find_and_buy_event_from_track(track)
+
+/// Find and buy a valid event from a track.
+/datum/storyteller/proc/find_and_buy_event_from_track(track)
+	calculate_weights(track)
+	var/datum/controller/subsystem/gamemode/mode = SSgamemode
+	mode.update_crew_infos()
+	var/list/valid_events = list()
+	// Determine which events are valid to pick
+	for(var/datum/round_event_control/event as anything in mode.event_pools[track])
+		if(event.canSpawnEvent())
+			valid_events[event] = event.calculated_weight
+	///If we didn't get any events, remove the points inform admins and dont do anything
+	if(!length(valid_events))
+		message_admins("Storyteller failed to pick an event for track of [track].")
+		mode.event_track_points[track] = 0
+		return
+	var/datum/round_event_control/picked_event = pickweight(valid_events)
+	buy_event(picked_event, track)
+
+/// Find and buy a valid event from a track.
+/datum/storyteller/proc/buy_event(datum/round_event_control/bought_event, track)
+	var/datum/controller/subsystem/gamemode/mode = SSgamemode
+	// Perhaps use some bell curve instead of a flat variance?
+	var/total_cost = bought_event.cost * mode.point_thresholds[track] * (1 + (rand(-cost_variance, cost_variance)/100))
+	mode.event_track_points[track] -= total_cost
+	message_admins("Storyteller purchased and triggered [bought_event] event, on [track] track, for [total_cost] cost.")
+	mode.schedule_event(bought_event, (rand(3, 5) MINUTES), total_cost)
+
+/// Calculates the weights of the events from a passed track.
+/datum/storyteller/proc/calculate_weights(track)
+	var/datum/controller/subsystem/gamemode/mode = SSgamemode
+	for(var/datum/round_event_control/event as anything in mode.event_pools[track])
+		var/weight_total = event.weight
+		/// Apply tag multipliers if able
+		if(tag_multipliers)
+			for(var/tag in tag_multipliers)
+				if(tag in event.tags)
+					weight_total *= tag_multipliers[tag]
+		/// Apply occurence multipliers if able
+		var/occurences = event.get_occurences()
+		if(occurences)
+			weight_total *= event_repetition_multiplier ** occurences
+		/// Write it
+		event.calculated_weight = weight_total

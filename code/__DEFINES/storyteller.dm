@@ -1,15 +1,22 @@
-#define TAG_COMBAT 1
-#define TAG_SPOOKY 2
-#define TAG_DESTRUCTIVE 3
-#define TAG_COMMUNAL 4
-#define TAG_TARGETED 5
-#define TAG_POSITIVE 6
-#define TAG_OVERMAP 7
-#define TAG_SPACE 8
-#define TAG_PLANETARY 9
+//Could be bitflags, but that would require a good amount of translations, which eh, either way works for me
+#define TAG_COMBAT "combat"
+#define TAG_SPOOKY "spooky"
+#define TAG_DESTRUCTIVE "destructive"
+#define TAG_COMMUNAL "communal"
+#define TAG_TARGETED "targeted"
+#define TAG_POSITIVE "positive"
+#define TAG_OVERMAP "overmap"
+#define TAG_SPACE "space"
+#define TAG_PLANETARY "planetary"
 
-#define EVENT_TRACK_MUNDANE 1
-#define EVENT_TRACK_MODERATE 2
-#define EVENT_TRACK_MAJOR 3
-#define EVENT_TRACK_ROLESET 4
-#define EVENT_TRACK_OBJECTIVES 5
+#define EVENT_TRACK_MUNDANE "track_mundane"
+#define EVENT_TRACK_MODERATE "track_moderate"
+#define EVENT_TRACK_MAJOR "track_major"
+#define EVENT_TRACK_ROLESET "track_roleset"
+#define EVENT_TRACK_OBJECTIVES "track_objectives"
+
+#define STORYTELLER_WAIT_TIME 20 SECONDS
+
+#define EVENT_POINT_GAINED_PER_SECOND 0.05
+
+#define EVENT_TRACKS list(EVENT_TRACK_MUNDANE, EVENT_TRACK_MODERATE, EVENT_TRACK_MAJOR, EVENT_TRACK_ROLESET, EVENT_TRACK_OBJECTIVES)

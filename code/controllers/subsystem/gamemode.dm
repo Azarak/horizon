@@ -1,34 +1,101 @@
 SUBSYSTEM_DEF(gamemode)
 	name = "Gamemode"
-	init_order = INIT_ORDER_EVENTS
+	init_order = INIT_ORDER_GAMEMODE
 	runlevels = RUNLEVEL_GAME
+
+	wait = 20
+
+	/// List of our event tracks for fast access during for loops.
+	var/list/event_tracks = EVENT_TRACKS
+	/// Our storyteller. He progresses our trackboards and picks out events
+	var/datum/storyteller/storyteller
+	/// Next process for our storyteller. The wait time is STORYTELLER_WAIT_TIME
+	var/next_storyteller_process = 0
+	/// Associative list of even track points.
+	var/list/event_track_points = list(
+		EVENT_TRACK_MUNDANE = 0, 
+		EVENT_TRACK_MODERATE = 0, 
+		EVENT_TRACK_MAJOR = 0, 
+		EVENT_TRACK_ROLESET = 0, 
+		EVENT_TRACK_OBJECTIVES = 0
+		)
+	/// Point thresholds at which the events are supposed to be rolled, it is also the base cost for events.
+	var/list/point_thresholds = list(
+		EVENT_TRACK_MUNDANE = 25, 
+		EVENT_TRACK_MODERATE = 50, 
+		EVENT_TRACK_MAJOR = 90, 
+		EVENT_TRACK_ROLESET = 120, 
+		EVENT_TRACK_OBJECTIVES = 130
+		)
+
+	/// Associative list of control events by their track category. Compiled in Init
+	var/list/event_pools = list()
+
+	/// Events that we have scheduled to run in the nearby future
+	var/list/scheduled_events = list()
 
 	var/list/control = list() //list of all datum/round_event_control. Used for selecting events based on weight and occurrences.
 	var/list/running = list() //list of all existing /datum/round_event
 	var/list/currentrun = list()
 
-	var/scheduled = 0 //The next world.time that a naturally occuring random event can be selected.
-	var/frequency_lower = 6000 //5 minutes lower bound.
-	var/frequency_upper = 18000 //15 minutes upper bound. Basically an event will happen every 5 to 15 minutes.
-
 	var/list/holidays //List of all holidays occuring today or null if no holidays
+
+	/// Event frequency multiplier, it exists because wizard, eugh.
+	var/event_frequency_multiplier = 1
+
+	var/active_players = 0
+	var/eng_crew = 0
+	var/sec_crew = 0
+	var/med_crew = 0
+
 	var/wizardmode = FALSE
 
 /datum/controller/subsystem/gamemode/Initialize(time, zlevel)
+	// Populate event pools
+	for(var/track in event_tracks)
+		event_pools[track] = list()
+
+	storyteller = new() //TODO: Make the type of the storyteller come out from voting
+	next_storyteller_process = world.time + STORYTELLER_WAIT_TIME
+
 	for(var/type in typesof(/datum/round_event_control))
-		var/datum/round_event_control/E = new type()
-		if(!E.typepath)
+		var/datum/round_event_control/event = new type()
+		if(!event.typepath)
 			continue //don't want this one! leave it for the garbage collector
-		control += E //add it to the list of all events (controls)
-	reschedule()
+		control += event //add it to the list of all events (controls)
+		event_pools[event.track] += event //Add it to the categorized event pools
 	getHoliday()
 	return ..()
 
 
 /datum/controller/subsystem/gamemode/fire(resumed = FALSE)
 	if(!resumed)
-		checkEvent() //only check these if we aren't resuming a paused fire
 		src.currentrun = running.Copy()
+
+	///Handle scheduled events
+	for(var/datum/scheduled_event/sch_event in scheduled_events)
+		if(world.time >= sch_event.start_time)
+			/// Remove our fake occurence pre-emptively for the checks.
+			sch_event.remove_occurence()
+
+			///If we can't spawn the scheduled event, refund it.
+			if(!sch_event.event.canSpawnEvent(FALSE)) //FALSE argument to ignore popchecks, to prevent scheduled events from failing from people dying/cryoing etc.
+				message_admins("Scheduled Event: [sch_event.event] was unable to run and has been refunded.")
+				refund_scheduled_event(sch_event)
+				continue
+
+			///Trigger the event and remove the scheduled datum
+			message_admins("Scheduled Event: [sch_event.event] successfully triggered.")
+			TriggerEvent(sch_event.event)
+			remove_scheduled_event(sch_event)
+
+		else if(!sch_event.alerted_admins && world.time >= sch_event.start_time - 1 MINUTES)
+			sch_event.alerted_admins = TRUE
+			message_admins("Scheduled Event: [sch_event.event] will run in [(sch_event.start_time - world.time) / 10] seconds. (<a href='?src=[REF(sch_event)];action=cancel'>CANCEL</a>) (<a href='?src=[REF(sch_event)];action=refund'>REFUND</a>)")
+	
+	if(next_storyteller_process <= world.time && storyteller)
+		next_storyteller_process = world.time + STORYTELLER_WAIT_TIME
+		storyteller.process(STORYTELLER_WAIT_TIME * 0.1)
 
 	//cache for sanic speed (lists are references anyways)
 	var/list/currentrun = src.currentrun
@@ -43,47 +110,24 @@ SUBSYSTEM_DEF(gamemode)
 		if (MC_TICK_CHECK)
 			return
 
-//checks if we should select a random event yet, and reschedules if necessary
-/datum/controller/subsystem/gamemode/proc/checkEvent()
-	if(scheduled <= world.time)
-		spawnEvent()
-		reschedule()
+/datum/controller/subsystem/gamemode/proc/refund_scheduled_event(datum/scheduled_event/refunded)
+	if(refunded.cost)
+		var/track_type = refunded.event.track
+		event_track_points[track_type] += refunded.cost
+	remove_scheduled_event(refunded)
 
-//decides which world.time we should select another random event at.
-/datum/controller/subsystem/gamemode/proc/reschedule()
-	scheduled = world.time + rand(frequency_lower, max(frequency_lower,frequency_upper))
+/datum/controller/subsystem/gamemode/proc/remove_scheduled_event(datum/scheduled_event/removed)
+	scheduled_events -= removed
+	qdel(removed)
 
-//selects a random event based on whether it can occur and it's 'weight'(probability)
-/datum/controller/subsystem/gamemode/proc/spawnEvent()
-	set waitfor = FALSE //for the admin prompt
-	if(!CONFIG_GET(flag/allow_random_events))
-		return
+/datum/controller/subsystem/gamemode/proc/schedule_event(datum/round_event_control/passed_event, passed_time, passed_cost)
+	var/datum/scheduled_event/scheduled = new (passed_event, world.time + passed_time, passed_cost)
+	message_admins("Event: [passed_event] has been scheduled to run in [passed_time / 10] seconds. (<a href='?src=[REF(scheduled)];action=cancel'>CANCEL</a>) (<a href='?src=[REF(scheduled)];action=refund'>REFUND</a>)")
+	scheduled_events += scheduled
 
-	var/players_amt = get_active_player_count(alive_check = 1, afk_check = 1, human_check = 1)
+/datum/controller/subsystem/gamemode/proc/update_crew_infos()
 	// Only alive, non-AFK human players count towards this.
-
-	var/sum_of_weights = 0
-	for(var/datum/round_event_control/E in control)
-		if(!E.canSpawnEvent(players_amt))
-			continue
-		if(E.weight < 0) //for round-start events etc.
-			var/res = TriggerEvent(E)
-			if(res == EVENT_INTERRUPTED)
-				continue //like it never happened
-			if(res == EVENT_CANT_RUN)
-				return
-		sum_of_weights += E.weight
-
-	sum_of_weights = rand(0,sum_of_weights) //reusing this variable. It now represents the 'weight' we want to select
-
-	for(var/datum/round_event_control/E in control)
-		if(!E.canSpawnEvent(players_amt))
-			continue
-		sum_of_weights -= E.weight
-
-		if(sum_of_weights <= 0) //we've hit our goal
-			if(TriggerEvent(E))
-				return
+	active_players = get_active_player_count(alive_check = TRUE, afk_check = TRUE, human_check = TRUE)
 
 /datum/controller/subsystem/gamemode/proc/TriggerEvent(datum/round_event_control/E)
 	. = E.preRunEvent()
@@ -91,6 +135,10 @@ SUBSYSTEM_DEF(gamemode)
 		E.max_occurrences = 0
 	else if(. == EVENT_READY)
 		E.runEvent(random = TRUE)
+
+///Resets frequency multiplier.
+/datum/controller/subsystem/gamemode/proc/resetFrequency()
+	event_frequency_multiplier = 1
 
 //allows a client to trigger an event
 //aka Badmin Central
@@ -178,14 +226,9 @@ SUBSYSTEM_DEF(gamemode)
 		world.update_status()
 
 /datum/controller/subsystem/gamemode/proc/toggleWizardmode()
-	wizardmode = !wizardmode
-	message_admins("Summon Events has been [wizardmode ? "enabled, events will occur every [SSgamemode.frequency_lower / 600] to [SSgamemode.frequency_upper / 600] minutes" : "disabled"]!")
+	wizardmode = !wizardmode //TODO: decide what to do with wiz events
+	message_admins("Summon Events has been [wizardmode ? "enabled, events will occur [SSgamemode.event_frequency_multiplier] times as fast" : "disabled"]!")
 	log_game("Summon Events was [wizardmode ? "enabled" : "disabled"]!")
-
-
-/datum/controller/subsystem/gamemode/proc/resetFrequency()
-	frequency_lower = initial(frequency_lower)
-	frequency_upper = initial(frequency_upper)
 
 ///Attempts to select players for special roles the mode might have.
 /datum/controller/subsystem/gamemode/proc/pre_setup()
