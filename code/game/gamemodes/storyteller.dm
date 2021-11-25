@@ -107,6 +107,6 @@
 		var/occurences = event.get_occurences()
 		if(occurences)
 			///If the event has occured already, apply a penalty multiplier based on amount of occurences
-			weight_total -= reoccurence_penalty_multiplier * weight_total * (1 - (event_repetition_multiplier ** occurences))
+			weight_total -= event.reoccurence_penalty_multiplier * weight_total * (1 - (event_repetition_multiplier ** occurences))
 		/// Write it
 		event.calculated_weight = weight_total
