@@ -28,7 +28,9 @@
 	var/calculated_weight = 10
 	/// Tags of the event
 	var/tags = list()
-	/// Whether this event uses a shared occurence type, sharing occurence counts with the ones that also do have this set.
+	/// Multiplier to the penalty applied to weight for re-occurance. The smaller the lesser the penalty
+	var/reoccurence_penalty_multiplier = 1
+	/// Whether this event uses a shared occurence type, sharing occurence counts with the ones that also do have this set. Important if you want different event types to share weight penalties for recurrence.
 	var/shared_occurence_type
 	/// List of the shared occurence types.
 	var/static/list/shared_occurences = list()
@@ -41,6 +43,7 @@
 /datum/round_event_control/wizard
 	wizardevent = TRUE
 
+///Adds an occurence. Has to use the setter to properly handle shared occurences
 /datum/round_event_control/proc/add_occurence()
 	if(shared_occurence_type)
 		if(!shared_occurences[shared_occurence_type])
@@ -48,6 +51,7 @@
 		shared_occurences[shared_occurence_type]++
 	occurrences++
 
+///Subtracts an occurence. Has to use the setter to properly handle shared occurences
 /datum/round_event_control/proc/subtract_occurence()
 	if(shared_occurence_type)
 		if(!shared_occurences[shared_occurence_type])
@@ -55,6 +59,7 @@
 		shared_occurences[shared_occurence_type]--
 	occurrences--
 
+///Gets occurences. Has to use the getter to properly handle shared occurences
 /datum/round_event_control/proc/get_occurences()
 	if(shared_occurence_type)
 		if(!shared_occurences[shared_occurence_type])

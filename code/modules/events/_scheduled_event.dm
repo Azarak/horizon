@@ -10,12 +10,15 @@
 	var/alerted_admins = FALSE
 	/// Whether we are faking an occurence or not
 	var/fakes_occurence = TRUE
+	/// Whether this ignores event can run checks. If bussed by an admin, you want to ignore checks
+	var/ignores_checks
 
-/datum/scheduled_event/New(datum/round_event_control/passed_event, passed_time, passed_cost)
+/datum/scheduled_event/New(datum/round_event_control/passed_event, passed_time, passed_cost, passed_ignore)
 	. = ..()
 	event = passed_event
 	start_time = passed_time
 	cost = passed_cost
+	ignores_checks = passed_ignore
 	/// Add a fake occurence to make the weightings/checks properly respect the scheduled event.
 	event.add_occurence()
 	fakes_occurence = TRUE
@@ -25,6 +28,11 @@
 		/// Remove the fake occurence if we still have it
 		event.subtract_occurence()
 		fakes_occurence = FALSE
+
+/// For admins who want to reschedule the event.
+/datum/scheduled_event/proc/reschedule(new_time)
+	start_time = new_time
+	alerted_admins = FALSE
 
 /datum/scheduled_event/Destroy()
 	remove_occurence()

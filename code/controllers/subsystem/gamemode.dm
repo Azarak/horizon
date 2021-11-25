@@ -28,6 +28,15 @@ SUBSYSTEM_DEF(gamemode)
 		EVENT_TRACK_OBJECTIVES = 130
 		)
 
+	/// Minimum population thresholds for the tracks to fire off events.
+	var/list/min_pop_thresholds = list(
+		EVENT_TRACK_MUNDANE = 4, 
+		EVENT_TRACK_MODERATE = 6, 
+		EVENT_TRACK_MAJOR = 10, 
+		EVENT_TRACK_ROLESET = 10, 
+		EVENT_TRACK_OBJECTIVES = 10
+		)
+
 	/// Associative list of control events by their track category. Compiled in Init
 	var/list/event_pools = list()
 
@@ -79,7 +88,7 @@ SUBSYSTEM_DEF(gamemode)
 			sch_event.remove_occurence()
 
 			///If we can't spawn the scheduled event, refund it.
-			if(!sch_event.event.canSpawnEvent(FALSE)) //FALSE argument to ignore popchecks, to prevent scheduled events from failing from people dying/cryoing etc.
+			if(!sch_event.ignores_checks && !sch_event.event.canSpawnEvent(FALSE)) //FALSE argument to ignore popchecks, to prevent scheduled events from failing from people dying/cryoing etc.
 				message_admins("Scheduled Event: [sch_event.event] was unable to run and has been refunded.")
 				refund_scheduled_event(sch_event)
 				continue
@@ -90,6 +99,7 @@ SUBSYSTEM_DEF(gamemode)
 			remove_scheduled_event(sch_event)
 
 		else if(!sch_event.alerted_admins && world.time >= sch_event.start_time - 1 MINUTES)
+			///Alert admins 1 minute before running and allow them to cancel or refund the event, once again.
 			sch_event.alerted_admins = TRUE
 			message_admins("Scheduled Event: [sch_event.event] will run in [(sch_event.start_time - world.time) / 10] seconds. (<a href='?src=[REF(sch_event)];action=cancel'>CANCEL</a>) (<a href='?src=[REF(sch_event)];action=refund'>REFUND</a>)")
 	
@@ -110,18 +120,21 @@ SUBSYSTEM_DEF(gamemode)
 		if (MC_TICK_CHECK)
 			return
 
+/// Refunds and removes a scheduled event.
 /datum/controller/subsystem/gamemode/proc/refund_scheduled_event(datum/scheduled_event/refunded)
 	if(refunded.cost)
 		var/track_type = refunded.event.track
 		event_track_points[track_type] += refunded.cost
 	remove_scheduled_event(refunded)
 
+/// Removes a scheduled event.
 /datum/controller/subsystem/gamemode/proc/remove_scheduled_event(datum/scheduled_event/removed)
 	scheduled_events -= removed
 	qdel(removed)
 
-/datum/controller/subsystem/gamemode/proc/schedule_event(datum/round_event_control/passed_event, passed_time, passed_cost)
-	var/datum/scheduled_event/scheduled = new (passed_event, world.time + passed_time, passed_cost)
+/// Schedules an event to run later.
+/datum/controller/subsystem/gamemode/proc/schedule_event(datum/round_event_control/passed_event, passed_time, passed_cost, passed_ignore)
+	var/datum/scheduled_event/scheduled = new (passed_event, world.time + passed_time, passed_cost, passed_ignore)
 	message_admins("Event: [passed_event] has been scheduled to run in [passed_time / 10] seconds. (<a href='?src=[REF(scheduled)];action=cancel'>CANCEL</a>) (<a href='?src=[REF(scheduled)];action=refund'>REFUND</a>)")
 	scheduled_events += scheduled
 

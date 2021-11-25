@@ -59,9 +59,14 @@
 
 /// Find and buy a valid event from a track.
 /datum/storyteller/proc/find_and_buy_event_from_track(track)
-	calculate_weights(track)
 	var/datum/controller/subsystem/gamemode/mode = SSgamemode
 	mode.update_crew_infos()
+	var/pop_required = mode.min_pop_thresholds[track]
+	if(mode.active_players < pop_required)
+		message_admins("Storyteller failed to pick an event for track of [track] due to insufficient population. (required: [pop_required] active pop for [track])")
+		mode.event_track_points[track] *= TRACK_FAIL_POINT_PENALTY_MULTIPLIER
+		return
+	calculate_weights(track)
 	var/list/valid_events = list()
 	// Determine which events are valid to pick
 	for(var/datum/round_event_control/event as anything in mode.event_pools[track])
@@ -70,9 +75,13 @@
 	///If we didn't get any events, remove the points inform admins and dont do anything
 	if(!length(valid_events))
 		message_admins("Storyteller failed to pick an event for track of [track].")
-		mode.event_track_points[track] = 0
+		mode.event_track_points[track] *= TRACK_FAIL_POINT_PENALTY_MULTIPLIER
 		return
 	var/datum/round_event_control/picked_event = pickweight(valid_events)
+	if(!picked_event)
+		message_admins("WARNING: Storyteller picked a null from event pool. Aborting event roll.")
+		stack_trace("WARNING: Storyteller picked a null from event pool.")
+		return
 	buy_event(picked_event, track)
 
 /// Find and buy a valid event from a track.
@@ -97,6 +106,7 @@
 		/// Apply occurence multipliers if able
 		var/occurences = event.get_occurences()
 		if(occurences)
-			weight_total *= event_repetition_multiplier ** occurences
+			///If the event has occured already, apply a penalty multiplier based on amount of occurences
+			weight_total -= reoccurence_penalty_multiplier * weight_total * (1 - (event_repetition_multiplier ** occurences))
 		/// Write it
 		event.calculated_weight = weight_total
