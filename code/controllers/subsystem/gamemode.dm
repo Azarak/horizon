@@ -102,12 +102,16 @@ SUBSYSTEM_DEF(gamemode)
 		if(!event.typepath)
 			continue //don't want this one! leave it for the garbage collector
 		control += event //add it to the list of all events (controls)
-		if(event.holidayID || event.wizardevent)
-			continue
-		event_pools[event.track] += event //Add it to the categorized event pools
 	getHoliday()
 
 	load_config_vars()
+	load_event_config_vars()
+
+	///Seeding events into track event pools needs to happen after event config vars are loaded
+	for(var/datum/round_event_control/event as anything in control)
+		if(event.holidayID || event.wizardevent)
+			continue
+		event_pools[event.track] += event //Add it to the categorized event pools
 	return ..()
 
 
@@ -464,6 +468,45 @@ SUBSYSTEM_DEF(gamemode)
 		if(SSshuttle.emergency.is_hijacked())
 			SSticker.news_report = SHUTTLE_HIJACK
 
+/// Loads json event config values from events.txt
+/datum/controller/subsystem/gamemode/proc/load_event_config_vars()
+	var/json_file = file("[global.config.directory]/events.json")
+	if(!fexists(json_file))
+		return
+	var/list/decoded = json_decode(file2text(json_file))
+	for(var/event_text_path in decoded)
+		var/event_path = text2path(event_text_path)
+		var/datum/round_event_control/event
+		for(var/datum/round_event_control/iterated_event as anything in control)
+			if(iterated_event.type == event_path)
+				event = iterated_event
+				break
+		if(!event)
+			continue
+		var/list/var_list = decoded[event_text_path]
+		for(var/variable in var_list)
+			var/value = var_list[variable]
+			switch(variable)
+				if("weight")
+					event.weight = value
+				if("min_players")
+					event.min_players = value
+				if("max_occurrences")
+					event.max_occurrences = value
+				if("earliest_start")
+					event.earliest_start = value * (1 MINUTES)
+				if("track")
+					if(value in event_tracks)
+						event.track = value
+				if("cost")
+					event.cost = value
+				if("reoccurence_penalty_multiplier")
+					event.reoccurence_penalty_multiplier = value
+				if("shared_occurence_type")
+					if(!isnull(value))
+						value = text2path(value)
+					event.shared_occurence_type = value
+
 /// Loads config values from game_options.txt
 /datum/controller/subsystem/gamemode/proc/load_config_vars()
 	point_gain_multipliers[EVENT_TRACK_MUNDANE] = CONFIG_GET(number/mundane_point_gain_multiplier)
@@ -504,30 +547,34 @@ SUBSYSTEM_DEF(gamemode)
 	dat += "<HR>"
 	switch(panel_page)
 		if(GAMEMODE_PANEL_VARIABLES)
-			dat += "<a href='?src=[REF(src)];panel=main;action=reload_config_vars'>Reload Config Vars</a>"
-			dat += "<BR><b>Point Gains Multiplier:</b>"
+			dat += "<a href='?src=[REF(src)];panel=main;action=reload_config_vars'>Reload Config Vars</a> <font color='#888888'><i>Configs located in game_options.txt.</i></font>"
+			dat += "<BR><b>Point Gains Multipliers (only over time):</b>"
+			dat += "<BR><font color='#888888'><i>This affects points gained over time towards scheduling new events of the tracks.</i></font>"
 			for(var/track in event_tracks)
 				dat += "<BR>[track]: <a href='?src=[REF(src)];panel=main;action=vars;var=pts_multiplier;track=[track]'>[point_gain_multipliers[track]]</a>"
 			dat += "<HR>"
 
-			dat += "<b>Roundstart Points Multiplier:</b>"
+			dat += "<b>Roundstart Points Multipliers:</b>"
+			dat += "<BR><font color='#888888'><i>This affects points generated for roundstart events and antagonists.</i></font>"
 			for(var/track in event_tracks)
 				dat += "<BR>[track]: <a href='?src=[REF(src)];panel=main;action=vars;var=roundstart_pts;track=[track]'>[roundstart_point_multipliers[track]]</a>"
 			dat += "<HR>"
 
 			dat += "<b>Minimum Population for Tracks:</b>"
+			dat += "<BR><font color='#888888'><i>This are the minimum population caps for events to be able to run.</i></font>"
 			for(var/track in event_tracks)
 				dat += "<BR>[track]: <a href='?src=[REF(src)];panel=main;action=vars;var=min_pop;track=[track]'>[min_pop_thresholds[track]]</a>"
 			dat += "<HR>"
 
 			dat += "<b>Point Thresholds:</b>"
+			dat += "<BR><font color='#888888'><i>Those are thresholds the tracks require to reach with points to make an event.</i></font>"
 			for(var/track in event_tracks)
 				dat += "<BR>[track]: <a href='?src=[REF(src)];panel=main;action=vars;var=pts_threshold;track=[track]'>[point_thresholds[track]]</a>"
-			dat += "<HR>"
 
 		if(GAMEMODE_PANEL_MAIN)
 			var/even = TRUE
 			dat += "<h2>Event Tracks:</h2>"
+			dat += "<font color='#888888'><i>Every track represents progression towards scheduling an event of it's severity</i></font>"
 			dat += "<table align='center'; width='100%'; height='100%'; style='background-color:#13171C'>"
 			dat += "<tr style='vertical-align:top'>"
 			dat += "<td width=25%><b>Track</b></td>"
