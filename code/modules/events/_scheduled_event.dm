@@ -52,3 +52,10 @@
 			message_admins("[key_name_admin(usr)] refunded scheduled event [event.name].")
 			log_admin_private("[key_name(usr)] refunded scheduled event [event.name].")
 			SSgamemode.refund_scheduled_event(src)
+		if("reschedule")
+			var/new_schedule = input(usr, "New schedule time (in seconds):", "Reschedule Event") as num|null
+			if(isnull(new_schedule) || QDELETED(src))
+				return
+			start_time = world.time + new_schedule * 1 SECONDS
+			message_admins("[key_name_admin(usr)] rescheduled event [event.name] to [new_schedule] seconds.")
+			log_admin_private("[key_name(usr)] rrescheduled event [event.name] to [new_schedule] seconds.")

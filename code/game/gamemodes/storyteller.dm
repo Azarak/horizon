@@ -4,7 +4,7 @@
 	var/name = "Cool Dude"
 	/// Description of our storyteller.
 	var/desc = "He is very cool."
-	/// This is the multiplier for repetition penalty in event weight.
+	/// This is the multiplier for repetition penalty in event weight. The lower the harsher it is
 	var/event_repetition_multiplier = 0.6
 	/// Multipliers for starting points.
 	var/list/starting_point_multipliers = list(
@@ -47,7 +47,9 @@
 	var/datum/controller/subsystem/gamemode/mode = SSgamemode
 	var/base_point = EVENT_POINT_GAINED_PER_SECOND * delta_time * mode.event_frequency_multiplier
 	for(var/track in mode.event_track_points)
-		mode.event_track_points[track] += base_point * point_gains_multipliers[track]
+		var/point_gain = base_point * point_gains_multipliers[track] * mode.point_gain_multipliers[track]
+		mode.event_track_points[track] += point_gain
+		mode.last_point_gains[track] = point_gain
 
 /// Goes through every track of the gamemode and checks if it passes a threshold to buy an event, if does, buys one.
 /datum/storyteller/proc/handle_tracks()
@@ -63,7 +65,7 @@
 	mode.update_crew_infos()
 	var/pop_required = mode.min_pop_thresholds[track]
 	if(mode.active_players < pop_required)
-		message_admins("Storyteller failed to pick an event for track of [track] due to insufficient population. (required: [pop_required] active pop for [track])")
+		message_admins("Storyteller failed to pick an event for track of [track] due to insufficient population. (required: [pop_required] active pop for [track]. Current: [mode.active_players])")
 		mode.event_track_points[track] *= TRACK_FAIL_POINT_PENALTY_MULTIPLIER
 		return
 	calculate_weights(track)

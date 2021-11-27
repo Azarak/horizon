@@ -19,22 +19,47 @@ SUBSYSTEM_DEF(gamemode)
 		EVENT_TRACK_ROLESET = 0, 
 		EVENT_TRACK_OBJECTIVES = 0
 		)
+	/// Last point amount gained of each track. Those are recorded for purposes of estimating how long until next event.
+	var/list/last_point_gains = list(
+		EVENT_TRACK_MUNDANE = 0, 
+		EVENT_TRACK_MODERATE = 0, 
+		EVENT_TRACK_MAJOR = 0, 
+		EVENT_TRACK_ROLESET = 0, 
+		EVENT_TRACK_OBJECTIVES = 0
+		)
 	/// Point thresholds at which the events are supposed to be rolled, it is also the base cost for events.
 	var/list/point_thresholds = list(
-		EVENT_TRACK_MUNDANE = 25, 
-		EVENT_TRACK_MODERATE = 50, 
-		EVENT_TRACK_MAJOR = 90, 
-		EVENT_TRACK_ROLESET = 120, 
-		EVENT_TRACK_OBJECTIVES = 130
+		EVENT_TRACK_MUNDANE = MUNDANE_POINT_THRESHOLD, 
+		EVENT_TRACK_MODERATE = MODERATE_POINT_THRESHOLD, 
+		EVENT_TRACK_MAJOR = MAJOR_POINT_THRESHOLD, 
+		EVENT_TRACK_ROLESET = ROLESET_POINT_THRESHOLD, 
+		EVENT_TRACK_OBJECTIVES = OBJECTIVES_POINT_THRESHOLD
 		)
 
 	/// Minimum population thresholds for the tracks to fire off events.
 	var/list/min_pop_thresholds = list(
-		EVENT_TRACK_MUNDANE = 4, 
-		EVENT_TRACK_MODERATE = 6, 
-		EVENT_TRACK_MAJOR = 10, 
-		EVENT_TRACK_ROLESET = 10, 
-		EVENT_TRACK_OBJECTIVES = 10
+		EVENT_TRACK_MUNDANE = MUNDANE_MIN_POP, 
+		EVENT_TRACK_MODERATE = MODERATE_MIN_POP, 
+		EVENT_TRACK_MAJOR = MAJOR_MIN_POP, 
+		EVENT_TRACK_ROLESET = ROLESET_MIN_POP, 
+		EVENT_TRACK_OBJECTIVES = OBJECTIVES_MIN_POP
+		)
+
+	/// Configurable multipliers for point gain over time.
+	var/list/point_gain_multipliers = list(
+		EVENT_TRACK_MUNDANE = 1, 
+		EVENT_TRACK_MODERATE = 1, 
+		EVENT_TRACK_MAJOR = 1, 
+		EVENT_TRACK_ROLESET = 1, 
+		EVENT_TRACK_OBJECTIVES = 1
+		)
+	/// Configurable multipliers for roundstart points.
+	var/list/roundstart_point_multipliers = list(
+		EVENT_TRACK_MUNDANE = 1, 
+		EVENT_TRACK_MODERATE = 1, 
+		EVENT_TRACK_MAJOR = 1, 
+		EVENT_TRACK_ROLESET = 1, 
+		EVENT_TRACK_OBJECTIVES = 1
 		)
 
 	/// Associative list of control events by their track category. Compiled in Init
@@ -51,6 +76,11 @@ SUBSYSTEM_DEF(gamemode)
 
 	/// Event frequency multiplier, it exists because wizard, eugh.
 	var/event_frequency_multiplier = 1
+
+	/// Current preview page for the statistics UI.
+	var/statistics_track_page = EVENT_TRACK_MUNDANE
+	/// Page of the UI panel.
+	var/panel_page = GAMEMODE_PANEL_MAIN
 
 	var/active_players = 0
 	var/eng_crew = 0
@@ -72,8 +102,12 @@ SUBSYSTEM_DEF(gamemode)
 		if(!event.typepath)
 			continue //don't want this one! leave it for the garbage collector
 		control += event //add it to the list of all events (controls)
+		if(event.holidayID || event.wizardevent)
+			continue
 		event_pools[event.track] += event //Add it to the categorized event pools
 	getHoliday()
+
+	load_config_vars()
 	return ..()
 
 
@@ -264,6 +298,9 @@ SUBSYSTEM_DEF(gamemode)
 	if(SSdbcore.Connect())
 		var/list/to_set = list()
 		var/arguments = list()
+		if(storyteller)
+			to_set += "game_mode = :game_mode"
+			arguments["game_mode"] = storyteller.name
 		if(GLOB.revdata.originmastercommit)
 			to_set += "commit_hash = :commit_hash"
 			arguments["commit_hash"] = GLOB.revdata.originmastercommit
@@ -427,6 +464,273 @@ SUBSYSTEM_DEF(gamemode)
 		if(SSshuttle.emergency.is_hijacked())
 			SSticker.news_report = SHUTTLE_HIJACK
 
-/// Mode specific admin panel.
-/datum/controller/subsystem/gamemode/proc/admin_panel()
-	return
+/// Loads config values from game_options.txt
+/datum/controller/subsystem/gamemode/proc/load_config_vars()
+	point_gain_multipliers[EVENT_TRACK_MUNDANE] = CONFIG_GET(number/mundane_point_gain_multiplier)
+	point_gain_multipliers[EVENT_TRACK_MODERATE] = CONFIG_GET(number/moderate_point_gain_multiplier)
+	point_gain_multipliers[EVENT_TRACK_MAJOR] = CONFIG_GET(number/major_point_gain_multiplier)
+	point_gain_multipliers[EVENT_TRACK_ROLESET] = CONFIG_GET(number/roleset_point_gain_multiplier)
+	point_gain_multipliers[EVENT_TRACK_OBJECTIVES] = CONFIG_GET(number/objectives_point_gain_multiplier)
+
+	roundstart_point_multipliers[EVENT_TRACK_MUNDANE] = CONFIG_GET(number/mundane_roundstart_point_multiplier)
+	roundstart_point_multipliers[EVENT_TRACK_MODERATE] = CONFIG_GET(number/moderate_roundstart_point_multiplier)
+	roundstart_point_multipliers[EVENT_TRACK_MAJOR] = CONFIG_GET(number/major_roundstart_point_multiplier)
+	roundstart_point_multipliers[EVENT_TRACK_ROLESET] = CONFIG_GET(number/roleset_roundstart_point_multiplier)
+	roundstart_point_multipliers[EVENT_TRACK_OBJECTIVES] = CONFIG_GET(number/objectives_roundstart_point_multiplier)
+
+	min_pop_thresholds[EVENT_TRACK_MUNDANE] = CONFIG_GET(number/mundane_min_pop)
+	min_pop_thresholds[EVENT_TRACK_MODERATE] = CONFIG_GET(number/moderate_min_pop)
+	min_pop_thresholds[EVENT_TRACK_MAJOR] = CONFIG_GET(number/major_min_pop)
+	min_pop_thresholds[EVENT_TRACK_ROLESET] = CONFIG_GET(number/roleset_min_pop)
+	min_pop_thresholds[EVENT_TRACK_OBJECTIVES] = CONFIG_GET(number/objectives_min_pop)
+
+	point_thresholds[EVENT_TRACK_MUNDANE] = CONFIG_GET(number/mundane_point_threshold)
+	point_thresholds[EVENT_TRACK_MODERATE] = CONFIG_GET(number/moderate_point_threshold)
+	point_thresholds[EVENT_TRACK_MAJOR] = CONFIG_GET(number/major_point_threshold)
+	point_thresholds[EVENT_TRACK_ROLESET] = CONFIG_GET(number/roleset_point_threshold)
+	point_thresholds[EVENT_TRACK_OBJECTIVES] = CONFIG_GET(number/objectives_point_threshold)
+
+
+/// Panel containing information, variables and controls about the gamemode and scheduled event
+/datum/controller/subsystem/gamemode/proc/admin_panel(mob/user)
+	update_crew_infos()
+	var/list/dat = list()
+	dat += "Storyteller: [storyteller ? "[storyteller.name]" : "None"]"
+	dat += " <a href='?src=[REF(src)];panel=main;action=open_stats'>Statistics Panel</a> <a href='?src=[REF(src)];panel=main'>Refresh</a>"
+	dat += "<BR>Active Players: [active_players]"
+	dat += "<HR>"
+	dat += "<a href='?src=[REF(src)];panel=main;action=tab;tab=[GAMEMODE_PANEL_MAIN]' [panel_page == GAMEMODE_PANEL_MAIN ? "class='linkOn'" : ""]>Main</a>"
+	dat += " <a href='?src=[REF(src)];panel=main;action=tab;tab=[GAMEMODE_PANEL_VARIABLES]' [panel_page == GAMEMODE_PANEL_VARIABLES ? "class='linkOn'" : ""]>Variables</a>"
+	dat += "<HR>"
+	switch(panel_page)
+		if(GAMEMODE_PANEL_VARIABLES)
+			dat += "<a href='?src=[REF(src)];panel=main;action=reload_config_vars'>Reload Config Vars</a>"
+			dat += "<BR><b>Point Gains Multiplier:</b>"
+			for(var/track in event_tracks)
+				dat += "<BR>[track]: <a href='?src=[REF(src)];panel=main;action=vars;var=pts_multiplier;track=[track]'>[point_gain_multipliers[track]]</a>"
+			dat += "<HR>"
+
+			dat += "<b>Roundstart Points Multiplier:</b>"
+			for(var/track in event_tracks)
+				dat += "<BR>[track]: <a href='?src=[REF(src)];panel=main;action=vars;var=roundstart_pts;track=[track]'>[roundstart_point_multipliers[track]]</a>"
+			dat += "<HR>"
+
+			dat += "<b>Minimum Population for Tracks:</b>"
+			for(var/track in event_tracks)
+				dat += "<BR>[track]: <a href='?src=[REF(src)];panel=main;action=vars;var=min_pop;track=[track]'>[min_pop_thresholds[track]]</a>"
+			dat += "<HR>"
+
+			dat += "<b>Point Thresholds:</b>"
+			for(var/track in event_tracks)
+				dat += "<BR>[track]: <a href='?src=[REF(src)];panel=main;action=vars;var=pts_threshold;track=[track]'>[point_thresholds[track]]</a>"
+			dat += "<HR>"
+
+		if(GAMEMODE_PANEL_MAIN)
+			var/even = TRUE
+			dat += "<h2>Event Tracks:</h2>"
+			dat += "<table align='center'; width='100%'; height='100%'; style='background-color:#13171C'>"
+			dat += "<tr style='vertical-align:top'>"
+			dat += "<td width=25%><b>Track</b></td>"
+			dat += "<td width=20%><b>Progress</b></td>"
+			dat += "<td width=10%><b>Next</b></td>"
+			dat += "<td width=45%><b>Actions</b></td>"
+			dat += "</tr>"
+			for(var/track in event_tracks)
+				even = !even
+				var/background_cl = even ? "#17191C" : "#23273C"
+				var/lower = event_track_points[track]
+				var/upper = point_thresholds[track]
+				var/percent = round((lower/upper)*100)
+				var/next = 0
+				var/last_points = last_point_gains[track]
+				if(last_points)
+					next = round((upper - lower) / last_points / STORYTELLER_WAIT_TIME * 40 / 6) / 10
+				dat += "<tr style='vertical-align:top; background-color: [background_cl];'>"
+				dat += "<td>[track]</td>" //Track
+				dat += "<td>[percent]% ([lower]/[upper])</td>" //Progress
+				dat += "<td>~[next] m.</td>" //Next
+				dat += "<td><a href='?src=[REF(src)];panel=main;action=track_action;track_action=set_pts;track=[track]'>Set Pts.</a> <a href='?src=[REF(src)];panel=main;action=track_action;track_action=next_event;track=[track]'>Next Event</a></td>" //Actions
+				dat += "</tr>"
+			dat += "</table>"
+		
+			dat += "<h2>Scheduled Events:</h2>"
+			dat += "<table align='center'; width='100%'; height='100%'; style='background-color:#13171C'>"
+			dat += "<tr style='vertical-align:top'>"
+			dat += "<td width=30%><b>Name</b></td>"
+			dat += "<td width=20%><b>Severity</b></td>"
+			dat += "<td width=15%><b>Time</b></td>"
+			dat += "<td width=35%><b>Actions</b></td>"
+			dat += "</tr>"
+			var/sorted_scheduled = list()
+			for(var/datum/scheduled_event/scheduled as anything in scheduled_events)
+				sorted_scheduled[scheduled] = scheduled.start_time
+			sortTim(sorted_scheduled, cmp=/proc/cmp_numeric_asc, associative = TRUE)
+			even = TRUE
+			for(var/datum/scheduled_event/scheduled as anything in sorted_scheduled)
+				even = !even
+				var/background_cl = even ? "#17191C" : "#23273C"
+				dat += "<tr style='vertical-align:top; background-color: [background_cl];'>"
+				dat += "<td>[scheduled.event.name]</td>" //Name
+				dat += "<td>[scheduled.event.track]</td>" //Severity
+				dat += "<td>[(scheduled.start_time - world.time) / (1 SECONDS)] s.</td>" //Time
+				dat += "<td><a href='?src=[REF(scheduled)];action=reschedule'>Reschedule</a> <a href='?src=[REF(scheduled)];action=cancel'>Cancel</a> <a href='?src=[REF(scheduled)];action=refund'>Refund</a></td>" //Actions
+				dat += "</tr>"
+			dat += "</table>"
+		
+			dat += "<h2>Running Events:</h2>"
+			dat += "<table align='center'; width='100%'; height='100%'; style='background-color:#13171C'>"
+			dat += "<tr style='vertical-align:top'>"
+			dat += "<td width=30%><b>Name</b></td>"
+			dat += "<td width=70%><b>Actions</b></td>"
+			dat += "</tr>"
+			even = TRUE
+			for(var/datum/round_event/event as anything in running)
+				even = !even
+				var/background_cl = even ? "#17191C" : "#23273C"
+				dat += "<tr style='vertical-align:top; background-color: [background_cl];'>"
+				dat += "<td>[event.control.name]</td>" //Name
+				dat += "<td>-TBA-</td>" //Actions
+				dat += "</tr>"
+			dat += "</table>"
+
+	var/datum/browser/popup = new(user, "gamemode_admin_panel", "Gamemode Panel", 650, 650)
+	popup.set_content(dat.Join())
+	popup.open()
+
+/// Panel containing information about various statistics and probabilities.
+/datum/controller/subsystem/gamemode/proc/statistics_panel(mob/user)
+	var/list/dat = list()
+	if(storyteller)
+		dat += "Storyteller: [storyteller.name]"
+		dat += "<BR>Repetition penalty multiplier: [storyteller.event_repetition_multiplier]"
+		dat += "<BR>Cost variance: [storyteller.cost_variance]"
+		if(storyteller.tag_multipliers)
+			dat += "<BR>Tag multipliers:"
+			for(var/tag in storyteller.tag_multipliers)
+				dat += "[tag]:[storyteller.tag_multipliers[tag]] | "
+		dat += "<BR>Avg. event intervals: "
+		for(var/track in event_tracks)
+			if(last_point_gains[track])
+				var/est_time = round(point_thresholds[track] / last_point_gains[track] / STORYTELLER_WAIT_TIME * 40 / 6) / 10
+				dat += "[track]: ~[est_time] m. | "
+		dat += "<HR>"
+		for(var/track in event_tracks)
+			dat += "<a href='?src=[REF(src)];panel=stats;action=set_cat;cat=[track]'[(statistics_track_page == track) ? "class='linkOn'" : ""]>[track]</a>"
+		dat += "<HR>"
+		storyteller.calculate_weights(statistics_track_page)
+		/// Create event info and stats table
+		dat += "<table align='center'; width='100%'; height='100%'; style='background-color:#13171C'>"
+		dat += "<tr style='vertical-align:top'>"
+		dat += "<td width=30%><b>Name</b></td>"
+		dat += "<td width=25%><b>Tags</b></td>"
+		dat += "<td width=10%><b>Occurences</b></td>"
+		dat += "<td width=10%><b>Can Occur</b></td>"
+		dat += "<td width=25%><b>Weight</b></td>"
+		dat += "</tr>"
+		var/even = TRUE
+		var/total_weight = 0
+		var/list/assoc_spawn_weight = list()
+		for(var/datum/round_event_control/event as anything in event_pools[statistics_track_page])
+			if(event.canSpawnEvent())
+				total_weight += event.calculated_weight
+				assoc_spawn_weight[event] = event.calculated_weight
+			else
+				assoc_spawn_weight[event] = 0
+		sortTim(assoc_spawn_weight, cmp=/proc/cmp_numeric_dsc, associative = TRUE)
+		for(var/datum/round_event_control/event as anything in assoc_spawn_weight)
+			even = !even
+			var/background_cl = even ? "#17191C" : "#23273C"
+			dat += "<tr style='vertical-align:top; background-color: [background_cl];'>"
+			dat += "<td>[event.name]</td>" //Name
+			dat += "<td>" //Tags
+			for(var/tag in event.tags)
+				dat += "[tag] "
+			dat += "</td>"
+			var/occurence_string = "[event.occurrences]"
+			if(event.shared_occurence_type)
+				occurence_string += " (shared: [event.get_occurences()])"
+			dat += "<td>[occurence_string]</td>" //Occurences
+			dat += "<td>[assoc_spawn_weight[event] ? "Yes" : "No"]</td>" //Can happen?
+			var/weight_string = "([event.calculated_weight] /raw.[event.weight])"
+			if(assoc_spawn_weight[event])
+				var/percent = round((event.calculated_weight / total_weight) * 100)
+				weight_string = "[percent]% - [weight_string]"
+			dat += "<td>[weight_string]</td>" //Weight
+			dat += "</tr>"
+		dat += "</table>"
+	else
+		dat += "No storyteller present. Data is missing."
+	var/datum/browser/popup = new(user, "gamemode_statistics_panel", "Gamemode Statistics", 900, 600)
+	popup.set_content(dat.Join())
+	popup.open()
+
+/datum/controller/subsystem/gamemode/Topic(href, href_list)
+	. = ..()
+	var/mob/user = usr
+	if(!check_rights(R_ADMIN))
+		return
+	switch(href_list["panel"])
+		if("main")
+			switch(href_list["action"])
+				if("vars")
+					var/track = href_list["track"]
+					switch(href_list["var"])
+						if("pts_multiplier")
+							var/new_value = input(usr, "New value:", "Set new value") as num|null
+							if(isnull(new_value) || new_value < 0)
+								return
+							message_admins("[key_name_admin(usr)] set point gain multiplier for [track] track to [new_value].")
+							point_gain_multipliers[track] = new_value
+						if("roundstart_pts")
+							var/new_value = input(usr, "New value:", "Set new value") as num|null
+							if(isnull(new_value) || new_value < 0)
+								return
+							message_admins("[key_name_admin(usr)] set roundstart pts multiplier for [track] track to [new_value].")
+							roundstart_point_multipliers[track] = new_value
+						if("min_pop")
+							var/new_value = input(usr, "New value:", "Set new value") as num|null
+							if(isnull(new_value) || new_value < 0)
+								return
+							message_admins("[key_name_admin(usr)] set minimum population for [track] track to [new_value].")
+							min_pop_thresholds[track] = new_value
+						if("pts_threshold")
+							var/new_value = input(usr, "New value:", "Set new value") as num|null
+							if(isnull(new_value) || new_value < 0)
+								return
+							message_admins("[key_name_admin(usr)] set point threshold of [track] track to [new_value].")
+							point_thresholds[track] = new_value
+				if("reload_config_vars")
+					message_admins("[key_name_admin(usr)] reloaded gamemode config vars.")
+					load_config_vars()
+				if("tab")
+					var/tab = href_list["tab"]
+					panel_page = tab
+				if("open_stats")
+					statistics_panel(user)
+					return
+				if("track_action")
+					var/track = href_list["track"]
+					if(!track in event_tracks)
+						return
+					switch(href_list["track_action"])
+						if("set_pts")
+							var/set_pts = input(usr, "New point amount ([point_thresholds[track]]+ invokes event):", "Set points for [track]") as num|null
+							if(isnull(set_pts))
+								return
+							event_track_points[track] = set_pts
+							message_admins("[key_name_admin(usr)] set points of [track] track to [set_pts].")
+							log_admin_private("[key_name(usr)] set points of [track] track to [set_pts].")
+						if("next_event")
+							message_admins("[key_name_admin(usr)] invoked next event for [track] track.")
+							log_admin_private("[key_name(usr)] invoked next event for [track] track.")
+							event_track_points[track] = point_thresholds[track]
+							if(storyteller)
+								storyteller.handle_tracks()
+			admin_panel(user)
+		if("stats")
+			switch(href_list["action"])
+				if("set_cat")
+					var/new_category = href_list["cat"]
+					if(new_category in event_tracks)
+						statistics_track_page = new_category
+			statistics_panel(user)
