@@ -757,7 +757,7 @@ SUBSYSTEM_DEF(gamemode)
 					return
 				if("track_action")
 					var/track = href_list["track"]
-					if(!track in event_tracks)
+					if(!(track in event_tracks))
 						return
 					switch(href_list["track_action"])
 						if("set_pts")
