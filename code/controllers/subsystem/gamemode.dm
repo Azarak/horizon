@@ -68,9 +68,15 @@ SUBSYSTEM_DEF(gamemode)
 	/// Events that we have scheduled to run in the nearby future
 	var/list/scheduled_events = list()
 
+	/// Associative list of tracks to forced event controls. For admins to force events (though they can still invoke them freely outside of the track system)
+	var/list/forced_next_events = list()
+
 	var/list/control = list() //list of all datum/round_event_control. Used for selecting events based on weight and occurrences.
 	var/list/running = list() //list of all existing /datum/round_event
 	var/list/currentrun = list()
+
+	/// List of all uncategorized events, because they were wizard or holiday events
+	var/list/uncategorized = list()
 
 	var/list/holidays //List of all holidays occuring today or null if no holidays
 
@@ -81,6 +87,9 @@ SUBSYSTEM_DEF(gamemode)
 	var/statistics_track_page = EVENT_TRACK_MUNDANE
 	/// Page of the UI panel.
 	var/panel_page = GAMEMODE_PANEL_MAIN
+
+	/// Whether the storyteller has been halted
+	var/halted_storyteller = FALSE
 
 	var/active_players = 0
 	var/eng_crew = 0
@@ -110,6 +119,7 @@ SUBSYSTEM_DEF(gamemode)
 	///Seeding events into track event pools needs to happen after event config vars are loaded
 	for(var/datum/round_event_control/event as anything in control)
 		if(event.holidayID || event.wizardevent)
+			uncategorized += event
 			continue
 		event_pools[event.track] += event //Add it to the categorized event pools
 	return ..()
@@ -122,26 +132,13 @@ SUBSYSTEM_DEF(gamemode)
 	///Handle scheduled events
 	for(var/datum/scheduled_event/sch_event in scheduled_events)
 		if(world.time >= sch_event.start_time)
-			/// Remove our fake occurence pre-emptively for the checks.
-			sch_event.remove_occurence()
-
-			///If we can't spawn the scheduled event, refund it.
-			if(!sch_event.ignores_checks && !sch_event.event.canSpawnEvent(FALSE)) //FALSE argument to ignore popchecks, to prevent scheduled events from failing from people dying/cryoing etc.
-				message_admins("Scheduled Event: [sch_event.event] was unable to run and has been refunded.")
-				refund_scheduled_event(sch_event)
-				continue
-
-			///Trigger the event and remove the scheduled datum
-			message_admins("Scheduled Event: [sch_event.event] successfully triggered.")
-			TriggerEvent(sch_event.event)
-			remove_scheduled_event(sch_event)
-
+			sch_event.try_fire()
 		else if(!sch_event.alerted_admins && world.time >= sch_event.start_time - 1 MINUTES)
 			///Alert admins 1 minute before running and allow them to cancel or refund the event, once again.
 			sch_event.alerted_admins = TRUE
 			message_admins("Scheduled Event: [sch_event.event] will run in [(sch_event.start_time - world.time) / 10] seconds. (<a href='?src=[REF(sch_event)];action=cancel'>CANCEL</a>) (<a href='?src=[REF(sch_event)];action=refund'>REFUND</a>)")
 	
-	if(next_storyteller_process <= world.time && storyteller)
+	if(!halted_storyteller && next_storyteller_process <= world.time && storyteller)
 		next_storyteller_process = world.time + STORYTELLER_WAIT_TIME
 		storyteller.process(STORYTELLER_WAIT_TIME * 0.1)
 
@@ -171,8 +168,8 @@ SUBSYSTEM_DEF(gamemode)
 	qdel(removed)
 
 /// Schedules an event to run later.
-/datum/controller/subsystem/gamemode/proc/schedule_event(datum/round_event_control/passed_event, passed_time, passed_cost, passed_ignore)
-	var/datum/scheduled_event/scheduled = new (passed_event, world.time + passed_time, passed_cost, passed_ignore)
+/datum/controller/subsystem/gamemode/proc/schedule_event(datum/round_event_control/passed_event, passed_time, passed_cost, passed_ignore, passed_announce)
+	var/datum/scheduled_event/scheduled = new (passed_event, passed_time, passed_cost, passed_ignore, passed_announce)
 	message_admins("Event: [passed_event] has been scheduled to run in [passed_time / 10] seconds. (<a href='?src=[REF(scheduled)];action=cancel'>CANCEL</a>) (<a href='?src=[REF(scheduled)];action=refund'>REFUND</a>)")
 	scheduled_events += scheduled
 
@@ -191,11 +188,6 @@ SUBSYSTEM_DEF(gamemode)
 /datum/controller/subsystem/gamemode/proc/resetFrequency()
 	event_frequency_multiplier = 1
 
-//allows a client to trigger an event
-//aka Badmin Central
-// > Not in modules/admin
-// REEEEEEEEE
-// Why the heck is this here! Took me so damn long to find!
 /client/proc/forceEvent()
 	set name = "Trigger Event"
 	set category = "Admin.Events"
@@ -203,28 +195,10 @@ SUBSYSTEM_DEF(gamemode)
 	if(!holder ||!check_rights(R_FUN))
 		return
 
-	holder.forceEvent()
+	holder.forceEvent(usr)
 
-/datum/admins/proc/forceEvent()
-	var/dat = ""
-	var/normal = ""
-	var/magic = ""
-	var/holiday = ""
-	for(var/datum/round_event_control/E in SSgamemode.control)
-		dat = "<BR><A href='?src=[REF(src)];[HrefToken()];forceevent=[REF(E)]'>[E]</A>"
-		if(E.holidayID)
-			holiday += dat
-		else if(E.wizardevent)
-			magic += dat
-		else
-			normal += dat
-
-	dat = normal + "<BR>" + magic + "<BR>" + holiday
-
-	var/datum/browser/popup = new(usr, "forceevent", "Force Random Event", 300, 750)
-	popup.set_content(dat)
-	popup.open()
-
+/datum/admins/proc/forceEvent(mob/user)
+	SSgamemode.event_panel(user)
 
 /*
 //////////////
@@ -538,8 +512,9 @@ SUBSYSTEM_DEF(gamemode)
 /datum/controller/subsystem/gamemode/proc/admin_panel(mob/user)
 	update_crew_infos()
 	var/list/dat = list()
-	dat += "Storyteller: [storyteller ? "[storyteller.name]" : "None"]"
-	dat += " <a href='?src=[REF(src)];panel=main;action=open_stats'>Statistics Panel</a> <a href='?src=[REF(src)];panel=main'>Refresh</a>"
+	dat += "Storyteller: [storyteller ? "[storyteller.name]" : "None"] "
+	dat += " <a href='?src=[REF(src)];panel=main;action=halt_storyteller' [halted_storyteller ? "class='linkOn'" : ""]>HALT Storyteller</a> <a href='?src=[REF(src)];panel=main;action=open_stats'>Event Panel</a> <a href='?src=[REF(src)];panel=main'>Refresh</a>"
+	dat += "<BR><font color='#888888'><i>Storyteller determines points gained, event chances, and is the entity responsible for rolling events.</i></font>"
 	dat += "<BR>Active Players: [active_players]"
 	dat += "<HR>"
 	dat += "<a href='?src=[REF(src)];panel=main;action=tab;tab=[GAMEMODE_PANEL_MAIN]' [panel_page == GAMEMODE_PANEL_MAIN ? "class='linkOn'" : ""]>Main</a>"
@@ -580,7 +555,8 @@ SUBSYSTEM_DEF(gamemode)
 			dat += "<td width=25%><b>Track</b></td>"
 			dat += "<td width=20%><b>Progress</b></td>"
 			dat += "<td width=10%><b>Next</b></td>"
-			dat += "<td width=45%><b>Actions</b></td>"
+			dat += "<td width=10%><b>Forced</b></td>"
+			dat += "<td width=35%><b>Actions</b></td>"
 			dat += "</tr>"
 			for(var/track in event_tracks)
 				even = !even
@@ -596,6 +572,8 @@ SUBSYSTEM_DEF(gamemode)
 				dat += "<td>[track]</td>" //Track
 				dat += "<td>[percent]% ([lower]/[upper])</td>" //Progress
 				dat += "<td>~[next] m.</td>" //Next
+				var/forced = forced_next_events[track] ? "[forced_next_events[track].name] <a href='?src=[REF(src)];panel=main;action=track_action;track_action=remove_forced;track=[track]'>X</a>" : ""
+				dat += "<td>[forced]</td>" //Forced
 				dat += "<td><a href='?src=[REF(src)];panel=main;action=track_action;track_action=set_pts;track=[track]'>Set Pts.</a> <a href='?src=[REF(src)];panel=main;action=track_action;track_action=next_event;track=[track]'>Next Event</a></td>" //Actions
 				dat += "</tr>"
 			dat += "</table>"
@@ -604,9 +582,9 @@ SUBSYSTEM_DEF(gamemode)
 			dat += "<table align='center'; width='100%'; height='100%'; style='background-color:#13171C'>"
 			dat += "<tr style='vertical-align:top'>"
 			dat += "<td width=30%><b>Name</b></td>"
-			dat += "<td width=20%><b>Severity</b></td>"
-			dat += "<td width=15%><b>Time</b></td>"
-			dat += "<td width=35%><b>Actions</b></td>"
+			dat += "<td width=17%><b>Severity</b></td>"
+			dat += "<td width=12%><b>Time</b></td>"
+			dat += "<td width=41%><b>Actions</b></td>"
 			dat += "</tr>"
 			var/sorted_scheduled = list()
 			for(var/datum/scheduled_event/scheduled as anything in scheduled_events)
@@ -620,7 +598,7 @@ SUBSYSTEM_DEF(gamemode)
 				dat += "<td>[scheduled.event.name]</td>" //Name
 				dat += "<td>[scheduled.event.track]</td>" //Severity
 				dat += "<td>[(scheduled.start_time - world.time) / (1 SECONDS)] s.</td>" //Time
-				dat += "<td><a href='?src=[REF(scheduled)];action=reschedule'>Reschedule</a> <a href='?src=[REF(scheduled)];action=cancel'>Cancel</a> <a href='?src=[REF(scheduled)];action=refund'>Refund</a></td>" //Actions
+				dat += "<td><a href='?src=[REF(scheduled)];action=fire'>Fire</a> <a href='?src=[REF(scheduled)];action=reschedule'>Reschedule</a> <a href='?src=[REF(scheduled)];action=cancel'>Cancel</a> <a href='?src=[REF(scheduled)];action=refund'>Refund</a></td>" //Actions
 				dat += "</tr>"
 			dat += "</table>"
 		
@@ -640,12 +618,12 @@ SUBSYSTEM_DEF(gamemode)
 				dat += "</tr>"
 			dat += "</table>"
 
-	var/datum/browser/popup = new(user, "gamemode_admin_panel", "Gamemode Panel", 650, 650)
+	var/datum/browser/popup = new(user, "gamemode_admin_panel", "Gamemode Panel", 670, 650)
 	popup.set_content(dat.Join())
 	popup.open()
 
-/// Panel containing information about various statistics and probabilities.
-/datum/controller/subsystem/gamemode/proc/statistics_panel(mob/user)
+/// Panel containing information and actions regarding events
+/datum/controller/subsystem/gamemode/proc/event_panel(mob/user)
 	var/list/dat = list()
 	if(storyteller)
 		dat += "Storyteller: [storyteller.name]"
@@ -661,23 +639,32 @@ SUBSYSTEM_DEF(gamemode)
 				var/est_time = round(point_thresholds[track] / last_point_gains[track] / STORYTELLER_WAIT_TIME * 40 / 6) / 10
 				dat += "[track]: ~[est_time] m. | "
 		dat += "<HR>"
-		for(var/track in event_tracks)
+		for(var/track in EVENT_PANEL_TRACKS)
 			dat += "<a href='?src=[REF(src)];panel=stats;action=set_cat;cat=[track]'[(statistics_track_page == track) ? "class='linkOn'" : ""]>[track]</a>"
 		dat += "<HR>"
 		storyteller.calculate_weights(statistics_track_page)
 		/// Create event info and stats table
 		dat += "<table align='center'; width='100%'; height='100%'; style='background-color:#13171C'>"
 		dat += "<tr style='vertical-align:top'>"
-		dat += "<td width=30%><b>Name</b></td>"
-		dat += "<td width=25%><b>Tags</b></td>"
+		dat += "<td width=20%><b>Name</b></td>"
+		dat += "<td width=18%><b>Tags</b></td>"
 		dat += "<td width=10%><b>Occurences</b></td>"
-		dat += "<td width=10%><b>Can Occur</b></td>"
-		dat += "<td width=25%><b>Weight</b></td>"
+		dat += "<td width=8%><b>Can Occur</b></td>"
+		dat += "<td width=18%><b>Weight</b></td>"
+		dat += "<td width=26%><b>Actions</b></td>"
 		dat += "</tr>"
 		var/even = TRUE
 		var/total_weight = 0
+		var/list/event_lookup
+		switch(statistics_track_page)
+			if(ALL_EVENTS)
+				event_lookup = control
+			if(UNCATEGORIZED_EVENTS)
+				event_lookup = uncategorized
+			else
+				event_lookup = event_pools[statistics_track_page]
 		var/list/assoc_spawn_weight = list()
-		for(var/datum/round_event_control/event as anything in event_pools[statistics_track_page])
+		for(var/datum/round_event_control/event as anything in event_lookup)
 			if(event.canSpawnEvent())
 				total_weight += event.calculated_weight
 				assoc_spawn_weight[event] = event.calculated_weight
@@ -703,11 +690,12 @@ SUBSYSTEM_DEF(gamemode)
 				var/percent = round((event.calculated_weight / total_weight) * 100)
 				weight_string = "[percent]% - [weight_string]"
 			dat += "<td>[weight_string]</td>" //Weight
+			dat += "<td><a href='?src=[REF(event)];action=fire'>Fire</a> <a href='?src=[REF(event)];action=schedule'>Schedule</a> <a href='?src=[REF(event)];action=force_next'>Force Next</a></td>" //Actions
 			dat += "</tr>"
 		dat += "</table>"
 	else
 		dat += "No storyteller present. Data is missing."
-	var/datum/browser/popup = new(user, "gamemode_statistics_panel", "Gamemode Statistics", 900, 600)
+	var/datum/browser/popup = new(user, "gamemode_event_panel", "Event Panel", 950, 600)
 	popup.set_content(dat.Join())
 	popup.open()
 
@@ -719,6 +707,9 @@ SUBSYSTEM_DEF(gamemode)
 	switch(href_list["panel"])
 		if("main")
 			switch(href_list["action"])
+				if("halt_storyteller")
+					halted_storyteller = !halted_storyteller
+					message_admins("[key_name_admin(usr)] has [halted_storyteller ? "HALTED" : "un-halted"] the Storyteller.")
 				if("vars")
 					var/track = href_list["track"]
 					switch(href_list["var"])
@@ -753,13 +744,18 @@ SUBSYSTEM_DEF(gamemode)
 					var/tab = href_list["tab"]
 					panel_page = tab
 				if("open_stats")
-					statistics_panel(user)
+					event_panel(user)
 					return
 				if("track_action")
 					var/track = href_list["track"]
 					if(!(track in event_tracks))
 						return
 					switch(href_list["track_action"])
+						if("remove_forced")
+							if(forced_next_events[track])
+								var/datum/round_event_control/event = forced_next_events[track]
+								message_admins("[key_name_admin(usr)] removed forced event [event.name] from track [track].")
+								forced_next_events -= track
 						if("set_pts")
 							var/set_pts = input(usr, "New point amount ([point_thresholds[track]]+ invokes event):", "Set points for [track]") as num|null
 							if(isnull(set_pts))
@@ -778,6 +774,6 @@ SUBSYSTEM_DEF(gamemode)
 			switch(href_list["action"])
 				if("set_cat")
 					var/new_category = href_list["cat"]
-					if(new_category in event_tracks)
+					if(new_category in EVENT_PANEL_TRACKS)
 						statistics_track_page = new_category
-			statistics_panel(user)
+			event_panel(user)

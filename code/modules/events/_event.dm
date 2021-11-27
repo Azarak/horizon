@@ -40,6 +40,28 @@
 		earliest_start = CEILING(earliest_start * CONFIG_GET(number/events_min_time_mul), 1)
 		min_players = CEILING(min_players * CONFIG_GET(number/events_min_players_mul), 1)
 
+/datum/round_event_control/Topic(href, href_list)
+	. = ..()
+	if(QDELETED(src))
+		return
+	switch(href_list["action"])
+		if("force_next")
+			message_admins("[key_name_admin(usr)] forced event [name] to be the next rolled event.")
+			log_admin_private("[key_name(usr)] forced event[name] to be the next rolled event.")
+			SSgamemode.forced_next_events[track] = src
+		if("schedule")
+			var/schedule_time = input(usr, "Schedule event [name] in time (in seconds):", "Schedule Event") as num|null
+			if(isnull(schedule_time) || QDELETED(src))
+				return
+			var/start_time = schedule_time * 1 SECONDS
+			SSgamemode.schedule_event(src, start_time, 0, TRUE)
+			message_admins("[key_name_admin(usr)] scheduled event [name] to fire in [schedule_time] seconds.")
+			log_admin_private("[key_name(usr)] scheduled event [name] to fire in [schedule_time] seconds.")
+		if("fire")
+			message_admins("[key_name_admin(usr)] has fired event [name].")
+			log_admin_private("[key_name(usr)] has fired event [name].")
+			SSgamemode.TriggerEvent(src)
+
 /datum/round_event_control/wizard
 	wizardevent = TRUE
 
