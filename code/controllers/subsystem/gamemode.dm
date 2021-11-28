@@ -572,7 +572,8 @@ SUBSYSTEM_DEF(gamemode)
 				dat += "<td>[track]</td>" //Track
 				dat += "<td>[percent]% ([lower]/[upper])</td>" //Progress
 				dat += "<td>~[next] m.</td>" //Next
-				var/forced = forced_next_events[track] ? "[forced_next_events[track].name] <a href='?src=[REF(src)];panel=main;action=track_action;track_action=remove_forced;track=[track]'>X</a>" : ""
+				var/datum/round_event_control/forced_event = forced_next_events[track]
+				var/forced = forced_event ? "[forced_event.name] <a href='?src=[REF(src)];panel=main;action=track_action;track_action=remove_forced;track=[track]'>X</a>" : ""
 				dat += "<td>[forced]</td>" //Forced
 				dat += "<td><a href='?src=[REF(src)];panel=main;action=track_action;track_action=set_pts;track=[track]'>Set Pts.</a> <a href='?src=[REF(src)];panel=main;action=track_action;track_action=next_event;track=[track]'>Next Event</a></td>" //Actions
 				dat += "</tr>"
