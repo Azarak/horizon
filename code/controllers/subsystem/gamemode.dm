@@ -92,6 +92,7 @@ SUBSYSTEM_DEF(gamemode)
 	var/halted_storyteller = FALSE
 
 	var/active_players = 0
+	var/head_crew = 0
 	var/eng_crew = 0
 	var/sec_crew = 0
 	var/med_crew = 0
@@ -169,13 +170,37 @@ SUBSYSTEM_DEF(gamemode)
 
 /// Schedules an event to run later.
 /datum/controller/subsystem/gamemode/proc/schedule_event(datum/round_event_control/passed_event, passed_time, passed_cost, passed_ignore, passed_announce)
-	var/datum/scheduled_event/scheduled = new (passed_event, passed_time, passed_cost, passed_ignore, passed_announce)
+	var/datum/scheduled_event/scheduled = new (passed_event, world.time + passed_time, passed_cost, passed_ignore, passed_announce)
 	message_admins("Event: [passed_event] has been scheduled to run in [passed_time / 10] seconds. (<a href='?src=[REF(scheduled)];action=cancel'>CANCEL</a>) (<a href='?src=[REF(scheduled)];action=refund'>REFUND</a>)")
 	scheduled_events += scheduled
 
 /datum/controller/subsystem/gamemode/proc/update_crew_infos()
-	// Only alive, non-AFK human players count towards this.
-	active_players = get_active_player_count(alive_check = TRUE, afk_check = TRUE, human_check = TRUE)
+	// Very similar logic to `get_active_player_count()`
+	active_players = 0
+	head_crew = 0
+	eng_crew = 0
+	med_crew = 0
+	sec_crew = 0
+	for(var/mob/player_mob as anything in GLOB.player_list)
+		if(!player_mob.client)
+			continue
+		if(player_mob.stat) //If they're alive
+			continue
+		if(player_mob.client.is_afk()) //If afk
+			continue
+		if(!ishuman(player_mob))
+			continue
+		active_players++
+		if(player_mob.mind?.assigned_role)
+			var/datum/job/player_role = player_mob.mind.assigned_role
+			if(player_role.departments_bitflags & DEPARTMENT_BITFLAG_COMMAND)
+				head_crew++
+			if(player_role.departments_bitflags & DEPARTMENT_BITFLAG_ENGINEERING)
+				eng_crew++
+			if(player_role.departments_bitflags & DEPARTMENT_BITFLAG_MEDICAL)
+				med_crew++
+			if(player_role.departments_bitflags & DEPARTMENT_BITFLAG_SECURITY)
+				sec_crew++
 
 /datum/controller/subsystem/gamemode/proc/TriggerEvent(datum/round_event_control/E)
 	. = E.preRunEvent()
@@ -515,7 +540,7 @@ SUBSYSTEM_DEF(gamemode)
 	dat += "Storyteller: [storyteller ? "[storyteller.name]" : "None"] "
 	dat += " <a href='?src=[REF(src)];panel=main;action=halt_storyteller' [halted_storyteller ? "class='linkOn'" : ""]>HALT Storyteller</a> <a href='?src=[REF(src)];panel=main;action=open_stats'>Event Panel</a> <a href='?src=[REF(src)];panel=main'>Refresh</a>"
 	dat += "<BR><font color='#888888'><i>Storyteller determines points gained, event chances, and is the entity responsible for rolling events.</i></font>"
-	dat += "<BR>Active Players: [active_players]"
+	dat += "<BR>Active Players: [active_players]   (Head: [head_crew], Sec: [sec_crew], Eng: [eng_crew], Med: [med_crew])"
 	dat += "<HR>"
 	dat += "<a href='?src=[REF(src)];panel=main;action=tab;tab=[GAMEMODE_PANEL_MAIN]' [panel_page == GAMEMODE_PANEL_MAIN ? "class='linkOn'" : ""]>Main</a>"
 	dat += " <a href='?src=[REF(src)];panel=main;action=tab;tab=[GAMEMODE_PANEL_VARIABLES]' [panel_page == GAMEMODE_PANEL_VARIABLES ? "class='linkOn'" : ""]>Variables</a>"

@@ -6,6 +6,9 @@
 	earliest_start = 20 MINUTES
 	min_players = 20
 
+	track = EVENT_TRACK_MAJOR
+	tags = list(TAG_COMBAT)
+
 /datum/round_event/ghost_role/space_ninja
 	minimum_required = 1
 	role_name = "Space Ninja"

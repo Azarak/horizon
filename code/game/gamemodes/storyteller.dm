@@ -35,9 +35,6 @@
 	/// If defined, it will not be votable if exceeding the population
 	var/population_max
 
-/datum/storyteller/New()
-	. = ..()
-
 /datum/storyteller/process(delta_time)
 	add_points(delta_time)
 	handle_tracks()

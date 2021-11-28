@@ -4,6 +4,9 @@
 	max_occurrences = 1
 	min_players = 20
 
+	track = EVENT_TRACK_MAJOR
+	tags = list(TAG_COMBAT, TAG_SPOOKY)
+
 /datum/round_event/ghost_role/nightmare
 	minimum_required = 1
 	role_name = "nightmare"

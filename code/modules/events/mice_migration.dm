@@ -3,6 +3,9 @@
 	typepath = /datum/round_event/mice_migration
 	weight = 10
 
+	track = EVENT_TRACK_MUNDANE
+	tags = list(TAG_COMMUNAL)
+
 /datum/round_event/mice_migration
 	var/minimum_mice = 5
 	var/maximum_mice = 15

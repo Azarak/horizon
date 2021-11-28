@@ -6,6 +6,10 @@
 	min_players = 10
 	earliest_start = 30 MINUTES
 
+	track = EVENT_TRACK_MAJOR
+	tags = list(TAG_COMBAT, TAG_DESTRUCTIVE)
+	min_sec_crew = 1
+
 #define PIRATES_ROGUES "Rogues"
 #define PIRATES_SILVERSCALES "Silverscales"
 #define PIRATES_DUTCHMAN "Flying Dutchman"

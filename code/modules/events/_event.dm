@@ -25,7 +25,7 @@
 	/// How much event points will this event spend. It's a multiplier to the track threshold and effectively affects how long until the next event of the same track type. Affected by random bell curve for variance.
 	var/cost = 1
 	/// Last calculated weight that the storyteller assigned this event
-	var/calculated_weight = 10
+	var/calculated_weight = 0
 	/// Tags of the event
 	var/tags = list()
 	/// Multiplier to the penalty applied to weight for re-occurance. The smaller the lesser the penalty
@@ -34,6 +34,14 @@
 	var/shared_occurence_type
 	/// List of the shared occurence types.
 	var/static/list/shared_occurences = list()
+	/// Minimum engineering crew required for the event to spawn
+	var/min_eng_crew = 0
+	/// Minimum medical crew required for the event to spawn
+	var/min_med_crew = 0
+	/// Minimum security crew required for the event to spawn
+	var/min_sec_crew = 0
+	/// Minimum head role crew required for the event to spawn
+	var/min_head_crew = 0
 
 /datum/round_event_control/New()
 	if(config && !wizardevent) // Magic is unaffected by configs
@@ -92,7 +100,7 @@
 // Checks if the event can be spawned. Used by event controller and "false alarm" event.
 // Admin-created events override this.
 /datum/round_event_control/proc/canSpawnEvent(popchecks = TRUE)
-	var/players_amt = SSgamemode.active_players
+	var/datum/controller/subsystem/gamemode/mode = SSgamemode
 	if(get_occurences() >= max_occurrences)
 		return FALSE
 	if(earliest_start >= world.time-SSticker.round_start_time)
@@ -100,7 +108,15 @@
 	if(wizardevent != SSgamemode.wizardmode)
 		return FALSE
 	if(popchecks)
-		if(players_amt < min_players)
+		if(mode.active_players < min_players)
+			return FALSE
+		if(mode.eng_crew < min_eng_crew)
+			return FALSE
+		if(mode.head_crew < min_head_crew)
+			return FALSE
+		if(mode.sec_crew < min_sec_crew)
+			return FALSE
+		if(mode.med_crew < min_med_crew)
 			return FALSE
 	if(holidayID && (!SSgamemode.holidays || !SSgamemode.holidays[holidayID]))
 		return FALSE

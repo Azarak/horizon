@@ -6,6 +6,9 @@
 	earliest_start = 0 MINUTES
 	alert_observers = FALSE
 
+	track = EVENT_TRACK_MUNDANE
+	tags = list(TAG_DESTRUCTIVE)
+
 /datum/round_event/space_dust
 	startWhen = 1
 	endWhen = 2

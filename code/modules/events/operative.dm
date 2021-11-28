@@ -4,6 +4,9 @@
 	weight = 0 //Admin only
 	max_occurrences = 1
 
+	track = EVENT_TRACK_MAJOR
+	tags = list(TAG_COMBAT, TAG_DESTRUCTIVE)
+
 /datum/round_event/ghost_role/operative
 	minimum_required = 1
 	role_name = "lone operative"

@@ -3,6 +3,10 @@
 	typepath = /datum/round_event/falsealarm
 	weight = 20
 	max_occurrences = 5
+
+	track = EVENT_TRACK_MUNDANE
+	tags = list(TAG_SPOOKY)
+
 	var/forced_type //Admin abuse
 
 

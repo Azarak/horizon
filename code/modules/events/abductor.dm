@@ -5,6 +5,9 @@
 	max_occurrences = 1
 	min_players = 20
 
+	track = EVENT_TRACK_MAJOR
+	tags = list(TAG_TARGETED, TAG_SPOOKY)
+
 /datum/round_event/ghost_role/abductor
 	minimum_required = 2
 	role_name = "abductor team"
