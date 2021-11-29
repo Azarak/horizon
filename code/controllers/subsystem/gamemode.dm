@@ -9,6 +9,10 @@ SUBSYSTEM_DEF(gamemode)
 	var/list/event_tracks = EVENT_TRACKS
 	/// Our storyteller. He progresses our trackboards and picks out events
 	var/datum/storyteller/storyteller
+	/// Result of the storyteller vote. Defaults to the guide.
+	var/voted_storyteller = /datum/storyteller/guide
+	/// List of all the storytellers. Populated at init. Associative from type
+	var/list/storytellers = list()
 	/// Next process for our storyteller. The wait time is STORYTELLER_WAIT_TIME
 	var/next_storyteller_process = 0
 	/// Associative list of even track points.
@@ -104,8 +108,9 @@ SUBSYSTEM_DEF(gamemode)
 	for(var/track in event_tracks)
 		event_pools[track] = list()
 
-	storyteller = new() //TODO: Make the type of the storyteller come out from voting
-	next_storyteller_process = world.time + STORYTELLER_WAIT_TIME
+	// Populate storytellers
+	for(var/type in subtypesof(/datum/storyteller))
+		storytellers[type] = new type()
 
 	for(var/type in typesof(/datum/round_event_control))
 		var/datum/round_event_control/event = new type()
@@ -532,13 +537,27 @@ SUBSYSTEM_DEF(gamemode)
 	point_thresholds[EVENT_TRACK_ROLESET] = CONFIG_GET(number/roleset_point_threshold)
 	point_thresholds[EVENT_TRACK_OBJECTIVES] = CONFIG_GET(number/objectives_point_threshold)
 
+/datum/controller/subsystem/gamemode/proc/init_storyteller()
+	if(storyteller) // If this is true, then an admin bussed one, don't overwrite it
+		return
+	set_storyteller(voted_storyteller)
+
+/datum/controller/subsystem/gamemode/proc/set_storyteller(passed_type)
+	if(!storytellers[passed_type])
+		message_admins("Attempted to set an invalid storyteller type: [passed_type].")
+		CRASH("Attempted to set an invalid storyteller type: [passed_type].")
+	if(storyteller)
+		QDEL_NULL(storyteller)
+	storyteller = storytellers[passed_type]
+	to_chat(world, SPAN_NOTICE("<b>Storyteller is [storyteller.name]!</b>"))
+	to_chat(world, SPAN_NOTICE("[storyteller.welcome_text]"))
 
 /// Panel containing information, variables and controls about the gamemode and scheduled event
 /datum/controller/subsystem/gamemode/proc/admin_panel(mob/user)
 	update_crew_infos()
 	var/list/dat = list()
 	dat += "Storyteller: [storyteller ? "[storyteller.name]" : "None"] "
-	dat += " <a href='?src=[REF(src)];panel=main;action=halt_storyteller' [halted_storyteller ? "class='linkOn'" : ""]>HALT Storyteller</a> <a href='?src=[REF(src)];panel=main;action=open_stats'>Event Panel</a> <a href='?src=[REF(src)];panel=main'>Refresh</a>"
+	dat += " <a href='?src=[REF(src)];panel=main;action=halt_storyteller' [halted_storyteller ? "class='linkOn'" : ""]>HALT Storyteller</a> <a href='?src=[REF(src)];panel=main;action=open_stats'>Event Panel</a> <a href='?src=[REF(src)];panel=main;action=set_storyteller'>Set Storyteller</a> <a href='?src=[REF(src)];panel=main'>Refresh</a>"
 	dat += "<BR><font color='#888888'><i>Storyteller determines points gained, event chances, and is the entity responsible for rolling events.</i></font>"
 	dat += "<BR>Active Players: [active_players]   (Head: [head_crew], Sec: [sec_crew], Eng: [eng_crew], Med: [med_crew])"
 	dat += "<HR>"
@@ -733,6 +752,19 @@ SUBSYSTEM_DEF(gamemode)
 	switch(href_list["panel"])
 		if("main")
 			switch(href_list["action"])
+				if("set_storyteller")
+					message_admins("[key_name_admin(usr)] is picking a new Storyteller.")
+					var/list/name_list = list()
+					for(var/storyteller_type in storytellers)
+						var/datum/storyteller/storyboy = storytellers[storyteller_type]
+						name_list[storyboy.name] = storyboy.type
+					var/new_storyteller_name = input(usr, "Choose new storyteller (circumvents voted one):", "Storyteller")  as null|anything in name_list
+					if(!new_storyteller_name)
+						message_admins("[key_name_admin(usr)] has cancelled picking a Storyteller.")
+						return
+					message_admins("[key_name_admin(usr)] has chosen [new_storyteller_name] as the new Storyteller.")
+					var/new_storyteller_type = name_list[new_storyteller_name]
+					set_storyteller(new_storyteller_type)
 				if("halt_storyteller")
 					halted_storyteller = !halted_storyteller
 					message_admins("[key_name_admin(usr)] has [halted_storyteller ? "HALTED" : "un-halted"] the Storyteller.")

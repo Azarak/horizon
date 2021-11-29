@@ -1,9 +1,11 @@
 ///The storyteller datum. He operates with the SSgamemode data to run events
 /datum/storyteller
 	/// Name of our storyteller.
-	var/name = "Cool Dude"
+	var/name = "Badly coded storyteller"
 	/// Description of our storyteller.
-	var/desc = "He is very cool."
+	var/desc = "Report this to the coders."
+	/// Text that the players will be greeted with when this storyteller is chosen.
+	var/welcome_text = "Set your eyes on the horizon."
 	/// This is the multiplier for repetition penalty in event weight. The lower the harsher it is
 	var/event_repetition_multiplier = 0.6
 	/// Multipliers for starting points.
@@ -28,6 +30,9 @@
 	/// Variance in cost of the purchased events. Effectively affects frequency of events
 	var/cost_variance = 15
 
+	/// Whether the storyteller has the distributions disabled. Important for ghost storytellers
+	var/disable_distribution = FALSE
+
 	/// Whether people can vote for the storyteller
 	var/votable = TRUE
 	/// If defined, will need a minimum of population to be votable
@@ -36,6 +41,8 @@
 	var/population_max
 
 /datum/storyteller/process(delta_time)
+	if(disable_distribution)
+		return
 	add_points(delta_time)
 	handle_tracks()
 

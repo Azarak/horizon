@@ -952,6 +952,7 @@
 #include "code\game\gamemodes\objective.dm"
 #include "code\game\gamemodes\objective_items.dm"
 #include "code\game\gamemodes\storyteller.dm"
+#include "code\game\gamemodes\storytellers\various.dm"
 #include "code\game\machinery\_machinery.dm"
 #include "code\game\machinery\accounting.dm"
 #include "code\game\machinery\ai_slipper.dm"

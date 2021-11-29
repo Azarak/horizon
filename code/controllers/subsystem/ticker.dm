@@ -207,6 +207,7 @@ SUBSYSTEM_DEF(ticker)
 	var/init_start = world.timeofday
 
 	mode = TRUE
+	SSgamemode.init_storyteller()
 
 	CHECK_TICK
 	//Configure mode and assign player to special mode stuff
