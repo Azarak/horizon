@@ -537,6 +537,29 @@ SUBSYSTEM_DEF(gamemode)
 	point_thresholds[EVENT_TRACK_ROLESET] = CONFIG_GET(number/roleset_point_threshold)
 	point_thresholds[EVENT_TRACK_OBJECTIVES] = CONFIG_GET(number/objectives_point_threshold)
 
+/datum/controller/subsystem/gamemode/proc/storyteller_vote_choices()
+	var/client_amount = GLOB.clients.len
+	var/list/choices = list()
+	for(var/storyteller_type in storytellers)
+		var/datum/storyteller/storyboy = storytellers[storyteller_type]
+		if(!storyboy.votable)
+			continue
+		if((storyboy.population_min && storyboy.population_min > client_amount) || (storyboy.population_max && storyboy.population_max < client_amount))
+			continue
+		choices += storyboy.name
+		///Because the vote subsystem is dumb and does not support any descriptions, we dump them into world.
+		to_chat(world, SPAN_NOTICE("<b>[storyboy.name]</b>"))
+		to_chat(world, SPAN_NOTICE("[storyboy.desc]"))
+	return choices
+
+/datum/controller/subsystem/gamemode/proc/storyteller_vote_result(winner_name)
+	/// Find the winner
+	for(var/storyteller_type in storytellers)
+		var/datum/storyteller/storyboy = storytellers[storyteller_type]
+		if(storyboy.name == winner_name)
+			voted_storyteller = storyteller_type
+			break
+
 /datum/controller/subsystem/gamemode/proc/init_storyteller()
 	if(storyteller) // If this is true, then an admin bussed one, don't overwrite it
 		return

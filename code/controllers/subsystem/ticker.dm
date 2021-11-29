@@ -54,6 +54,9 @@ SUBSYSTEM_DEF(ticker)
 	var/mode_result = "undefined"
 	var/end_state = "undefined"
 
+	/// Whether we have startred the vote for storytellers
+	var/storyteller_vote = FALSE
+
 	/// People who have been commended and will receive a heart
 	var/list/hearts
 
@@ -163,6 +166,10 @@ SUBSYSTEM_DEF(ticker)
 				var/mob/dead/new_player/player = i
 				if(player.ready == PLAYER_READY_TO_PLAY)
 					++totalPlayersReady
+
+			if(!storyteller_vote)
+				storyteller_vote = TRUE
+				SSvote.initiate_vote(STORYTELLER_VOTE, "the gamemode")
 
 			if(start_immediately)
 				timeLeft = 0
