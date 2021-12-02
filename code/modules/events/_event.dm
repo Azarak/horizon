@@ -42,8 +42,11 @@
 	var/min_sec_crew = 0
 	/// Minimum head role crew required for the event to spawn
 	var/min_head_crew = 0
+	/// Whether this is a roundstart event or not. Not exactly sure how I should handle this.
+	var/roundstart = FALSE
 
 /datum/round_event_control/New()
+	calculated_weight = weight
 	if(config && !wizardevent) // Magic is unaffected by configs
 		earliest_start = CEILING(earliest_start * CONFIG_GET(number/events_min_time_mul), 1)
 		min_players = CEILING(min_players * CONFIG_GET(number/events_min_players_mul), 1)
@@ -52,20 +55,37 @@
 	. = ..()
 	if(QDELETED(src))
 		return
+	var/round_started = SSticker.HasRoundStarted()
 	switch(href_list["action"])
 		if("force_next")
-			message_admins("[key_name_admin(usr)] forced event [name] to be the next rolled event.")
-			log_admin_private("[key_name(usr)] forced event[name] to be the next rolled event.")
+			if(round_started && roundstart)
+				return
+			if(roundstart)
+				message_admins("[key_name_admin(usr)] forced event [name] to be picked by roundstart rolling.")
+				log_admin_private("[key_name(usr)] forced event[name] to be picked by roundstart rolling.")
+			else
+				message_admins("[key_name_admin(usr)] forced event [name] to be the next rolled event.")
+				log_admin_private("[key_name(usr)] forced event[name] to be the next rolled event.")
 			SSgamemode.forced_next_events[track] = src
 		if("schedule")
-			var/schedule_time = input(usr, "Schedule event [name] in time (in seconds):", "Schedule Event") as num|null
-			if(isnull(schedule_time) || QDELETED(src))
-				return
-			var/start_time = schedule_time * 1 SECONDS
+			var/start_time
+			if(roundstart && !round_started)
+				message_admins("[key_name_admin(usr)] added event [name] to the roundstart events.")
+				log_admin_private("[key_name(usr)] added event [name] to the roundstart events.")
+				start_time = 0
+			else
+				if(!round_started) //Only roundstart events can be scheduled before round start
+					return
+				var/schedule_time = input(usr, "Schedule event [name] in time (in seconds):", "Schedule Event") as num|null
+				if(isnull(schedule_time) || QDELETED(src))
+					return
+				start_time = schedule_time * 1 SECONDS
+				message_admins("[key_name_admin(usr)] scheduled event [name] to fire in [schedule_time] seconds.")
+				log_admin_private("[key_name(usr)] scheduled event [name] to fire in [schedule_time] seconds.")
 			SSgamemode.schedule_event(src, start_time, 0, TRUE)
-			message_admins("[key_name_admin(usr)] scheduled event [name] to fire in [schedule_time] seconds.")
-			log_admin_private("[key_name(usr)] scheduled event [name] to fire in [schedule_time] seconds.")
 		if("fire")
+			if(!round_started)
+				return
 			message_admins("[key_name_admin(usr)] has fired event [name].")
 			log_admin_private("[key_name(usr)] has fired event [name].")
 			SSgamemode.TriggerEvent(src)
@@ -97,27 +117,48 @@
 		return shared_occurences[shared_occurence_type]
 	return occurrences
 
+/// Prints the action buttons for this event.
+/datum/round_event_control/proc/get_href_actions()
+	if(SSticker.HasRoundStarted())
+		if(roundstart)
+			return "<a href='?src=[REF(src)];action=fire'>Fire</a> <a href='?src=[REF(src)];action=schedule'>Schedule</a>"
+		else
+			return "<a href='?src=[REF(src)];action=fire'>Fire</a> <a href='?src=[REF(src)];action=schedule'>Schedule</a> <a href='?src=[REF(src)];action=force_next'>Force Next</a>"
+	else
+		if(roundstart)
+			return "<a href='?src=[REF(src)];action=schedule'>Add Roundstart</a> <a href='?src=[REF(src)];action=force_next'>Force Roundstart</a>"
+		else
+			return "<a class='linkOff'>Fire</a> <a class='linkOff'>Schedule</a> <a class='linkOff'>Force Next</a>"
+
 // Checks if the event can be spawned. Used by event controller and "false alarm" event.
 // Admin-created events override this.
 /datum/round_event_control/proc/canSpawnEvent(popchecks = TRUE)
 	var/datum/controller/subsystem/gamemode/mode = SSgamemode
 	if(get_occurences() >= max_occurrences)
 		return FALSE
-	if(earliest_start >= world.time-SSticker.round_start_time)
-		return FALSE
 	if(wizardevent != SSgamemode.wizardmode)
 		return FALSE
-	if(popchecks)
-		if(mode.active_players < min_players)
+	if(roundstart)
+		if(SSticker.HasRoundStarted())
 			return FALSE
-		if(mode.eng_crew < min_eng_crew)
+		if(popchecks && mode.ready_players < min_players)
 			return FALSE
-		if(mode.head_crew < min_head_crew)
+	else
+		if(!SSticker.HasRoundStarted())
 			return FALSE
-		if(mode.sec_crew < min_sec_crew)
+		if(earliest_start >= world.time-SSticker.round_start_time)
 			return FALSE
-		if(mode.med_crew < min_med_crew)
-			return FALSE
+		if(popchecks)
+			if(mode.active_players < min_players)
+				return FALSE
+			if(mode.eng_crew < min_eng_crew)
+				return FALSE
+			if(mode.head_crew < min_head_crew)
+				return FALSE
+			if(mode.sec_crew < min_sec_crew)
+				return FALSE
+			if(mode.med_crew < min_med_crew)
+				return FALSE
 	if(holidayID && (!SSgamemode.holidays || !SSgamemode.holidays[holidayID]))
 		return FALSE
 	if(EMERGENCY_ESCAPED_OR_ENDGAMED)
@@ -163,6 +204,9 @@
 	var/activeFor = 0 //How long the event has existed. You don't need to change this.
 	var/current_players = 0 //Amount of of alive, non-AFK human players on server at the time of event start
 	var/fakeable = TRUE //Can be faked by fake news event.
+
+	/// Whether the event called its start() yet or not.
+	var/has_started = FALSE
 
 //Called first before processing.
 //Allows you to setup your event, such as randomly
@@ -211,7 +255,14 @@
 /datum/round_event/proc/end()
 	return
 
-
+/// This section of event processing is in a proc because roundstart events may get their start invoked.
+/datum/round_event/proc/try_start()
+	if(has_started)
+		return
+	has_started = TRUE
+	processing = FALSE
+	start()
+	processing = TRUE
 
 //Do not override this proc, instead use the appropiate procs.
 //This proc will handle the calls to the appropiate procs.
@@ -221,9 +272,7 @@
 		return
 
 	if(activeFor == startWhen)
-		processing = FALSE
-		start()
-		processing = TRUE
+		try_start()
 
 	if(activeFor == announceWhen && prob(announceChance))
 		processing = FALSE

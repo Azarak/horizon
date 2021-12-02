@@ -91,10 +91,14 @@ SUBSYSTEM_DEF(gamemode)
 	var/statistics_track_page = EVENT_TRACK_MUNDANE
 	/// Page of the UI panel.
 	var/panel_page = GAMEMODE_PANEL_MAIN
+	/// Whether we are viewing the roundstart events or not
+	var/roundstart_event_view = TRUE
 
 	/// Whether the storyteller has been halted
 	var/halted_storyteller = FALSE
 
+	/// Ready players for roundstart events.
+	var/ready_players = 0
 	var/active_players = 0
 	var/head_crew = 0
 	var/eng_crew = 0
@@ -173,10 +177,63 @@ SUBSYSTEM_DEF(gamemode)
 	scheduled_events -= removed
 	qdel(removed)
 
+/// We need to calculate ready players for the sake of roundstart events becoming eligible.
+/datum/controller/subsystem/gamemode/proc/calculate_ready_players()
+	ready_players = 0
+	for(var/mob/dead/new_player/player as anything in GLOB.new_player_list)
+		if(player.ready == PLAYER_READY_TO_PLAY)
+			ready_players++
+
+/// We roll points to be spent for roundstart events, including antagonists.
+/datum/controller/subsystem/gamemode/proc/roll_pre_setup_points()
+	if(storyteller.disable_distribution || halted_storyteller)
+		return
+	/// Distribute points
+	for(var/track in event_track_points)
+		event_track_points[track] = point_thresholds[track]
+
+	/// If the storyteller guarantees an antagonist roll, add points to make it so.
+	if(storyteller.guarantees_roundstart_roleset && event_track_points[EVENT_TRACK_ROLESET] < point_thresholds[EVENT_TRACK_ROLESET])
+		event_track_points[EVENT_TRACK_ROLESET] = point_thresholds[EVENT_TRACK_ROLESET]
+
+	/// If we have any forced events, ensure we get enough points for them
+	for(var/track in event_tracks)
+		if(forced_next_events[track] && event_track_points[track] < point_thresholds[track])
+			event_track_points[track] = point_thresholds[track]
+
+/// At this point we've rolled roundstart events and antags and we handle leftover points here.
+/datum/controller/subsystem/gamemode/proc/handle_post_setup_points()
+	for(var/track in event_track_points)
+		event_track_points[track] = 10
+
+/// Because roundstart events need 2 steps of firing for purposes of antags, here is the first step handled, happening before occupation division.
+/datum/controller/subsystem/gamemode/proc/handle_pre_setup_roundstart_events()
+	calculate_ready_players()
+	if(storyteller.disable_distribution)
+		return
+	if(halted_storyteller)
+		message_admins("WARNING: Didn't roll roundstart events (including antagonists) due to the storyteller being halted.")
+		return
+	while(TRUE)
+		if(!storyteller.handle_tracks())
+			break
+
+/// Second step of handlind roundstart events, happening after people spawn.
+/datum/controller/subsystem/gamemode/proc/handle_post_setup_roundstart_events()
+	/// Start all roundstart events on post_setup immediately
+	for(var/datum/round_event/event as anything in running)
+		if(!event.control.roundstart)
+			continue
+		INVOKE_ASYNC(event, /datum/round_event.proc/try_start)
+
 /// Schedules an event to run later.
 /datum/controller/subsystem/gamemode/proc/schedule_event(datum/round_event_control/passed_event, passed_time, passed_cost, passed_ignore, passed_announce)
 	var/datum/scheduled_event/scheduled = new (passed_event, world.time + passed_time, passed_cost, passed_ignore, passed_announce)
-	message_admins("Event: [passed_event] has been scheduled to run in [passed_time / 10] seconds. (<a href='?src=[REF(scheduled)];action=cancel'>CANCEL</a>) (<a href='?src=[REF(scheduled)];action=refund'>REFUND</a>)")
+	var/round_started = SSticker.HasRoundStarted()
+	if(round_started)
+		message_admins("Event: [passed_event] has been scheduled to run in [passed_time / 10] seconds. (<a href='?src=[REF(scheduled)];action=cancel'>CANCEL</a>) (<a href='?src=[REF(scheduled)];action=refund'>REFUND</a>)")
+	else //Only roundstart events can be scheduled before round start
+		message_admins("Event: [passed_event] has been scheduled to run on roundstart. (<a href='?src=[REF(scheduled)];action=cancel'>CANCEL</a>)")
 	scheduled_events += scheduled
 
 /datum/controller/subsystem/gamemode/proc/update_crew_infos()
@@ -207,12 +264,12 @@ SUBSYSTEM_DEF(gamemode)
 			if(player_role.departments_bitflags & DEPARTMENT_BITFLAG_SECURITY)
 				sec_crew++
 
-/datum/controller/subsystem/gamemode/proc/TriggerEvent(datum/round_event_control/E)
-	. = E.preRunEvent()
+/datum/controller/subsystem/gamemode/proc/TriggerEvent(datum/round_event_control/event)
+	. = event.preRunEvent()
 	if(. == EVENT_CANT_RUN)//we couldn't run this event for some reason, set its max_occurrences to 0
-		E.max_occurrences = 0
+		event.max_occurrences = 0
 	else if(. == EVENT_READY)
-		E.runEvent(random = TRUE)
+		event.runEvent(random = TRUE)
 
 ///Resets frequency multiplier.
 /datum/controller/subsystem/gamemode/proc/resetFrequency()
@@ -287,6 +344,8 @@ SUBSYSTEM_DEF(gamemode)
 
 ///Attempts to select players for special roles the mode might have.
 /datum/controller/subsystem/gamemode/proc/pre_setup()
+	roll_pre_setup_points()
+	handle_pre_setup_roundstart_events()
 	return TRUE
 
 ///Everyone should now be on the station and have their normal gear.  This is the place to give the special roles extra things
@@ -321,6 +380,9 @@ SUBSYSTEM_DEF(gamemode)
 			query_round_game_mode.Execute()
 			qdel(query_round_game_mode)
 	generate_station_goals()
+	handle_post_setup_roundstart_events()
+	handle_post_setup_points()
+	roundstart_event_view = FALSE
 	return TRUE
 
 
@@ -578,6 +640,7 @@ SUBSYSTEM_DEF(gamemode)
 /// Panel containing information, variables and controls about the gamemode and scheduled event
 /datum/controller/subsystem/gamemode/proc/admin_panel(mob/user)
 	update_crew_infos()
+	var/round_started = SSticker.HasRoundStarted()
 	var/list/dat = list()
 	dat += "Storyteller: [storyteller ? "[storyteller.name]" : "None"] "
 	dat += " <a href='?src=[REF(src)];panel=main;action=halt_storyteller' [halted_storyteller ? "class='linkOn'" : ""]>HALT Storyteller</a> <a href='?src=[REF(src)];panel=main;action=open_stats'>Event Panel</a> <a href='?src=[REF(src)];panel=main;action=set_storyteller'>Set Storyteller</a> <a href='?src=[REF(src)];panel=main'>Refresh</a>"
@@ -665,8 +728,9 @@ SUBSYSTEM_DEF(gamemode)
 				dat += "<tr style='vertical-align:top; background-color: [background_cl];'>"
 				dat += "<td>[scheduled.event.name]</td>" //Name
 				dat += "<td>[scheduled.event.track]</td>" //Severity
-				dat += "<td>[(scheduled.start_time - world.time) / (1 SECONDS)] s.</td>" //Time
-				dat += "<td><a href='?src=[REF(scheduled)];action=fire'>Fire</a> <a href='?src=[REF(scheduled)];action=reschedule'>Reschedule</a> <a href='?src=[REF(scheduled)];action=cancel'>Cancel</a> <a href='?src=[REF(scheduled)];action=refund'>Refund</a></td>" //Actions
+				var/time = (scheduled.event.roundstart && !round_started) ? "ROUNDSTART" : "[(scheduled.start_time - world.time) / (1 SECONDS)] s."
+				dat += "<td>[time]</td>" //Time
+				dat += "<td>[scheduled.get_href_actions()]</td>" //Actions
 				dat += "</tr>"
 			dat += "</table>"
 		
@@ -701,69 +765,76 @@ SUBSYSTEM_DEF(gamemode)
 			dat += "<BR>Tag multipliers:"
 			for(var/tag in storyteller.tag_multipliers)
 				dat += "[tag]:[storyteller.tag_multipliers[tag]] | "
-		dat += "<BR>Avg. event intervals: "
-		for(var/track in event_tracks)
-			if(last_point_gains[track])
-				var/est_time = round(point_thresholds[track] / last_point_gains[track] / STORYTELLER_WAIT_TIME * 40 / 6) / 10
-				dat += "[track]: ~[est_time] m. | "
-		dat += "<HR>"
-		for(var/track in EVENT_PANEL_TRACKS)
-			dat += "<a href='?src=[REF(src)];panel=stats;action=set_cat;cat=[track]'[(statistics_track_page == track) ? "class='linkOn'" : ""]>[track]</a>"
-		dat += "<HR>"
 		storyteller.calculate_weights(statistics_track_page)
-		/// Create event info and stats table
-		dat += "<table align='center'; width='100%'; height='100%'; style='background-color:#13171C'>"
-		dat += "<tr style='vertical-align:top'>"
-		dat += "<td width=20%><b>Name</b></td>"
-		dat += "<td width=18%><b>Tags</b></td>"
-		dat += "<td width=10%><b>Occurences</b></td>"
-		dat += "<td width=8%><b>Can Occur</b></td>"
-		dat += "<td width=18%><b>Weight</b></td>"
-		dat += "<td width=26%><b>Actions</b></td>"
-		dat += "</tr>"
-		var/even = TRUE
-		var/total_weight = 0
-		var/list/event_lookup
-		switch(statistics_track_page)
-			if(ALL_EVENTS)
-				event_lookup = control
-			if(UNCATEGORIZED_EVENTS)
-				event_lookup = uncategorized
-			else
-				event_lookup = event_pools[statistics_track_page]
-		var/list/assoc_spawn_weight = list()
-		for(var/datum/round_event_control/event as anything in event_lookup)
-			if(event.canSpawnEvent())
-				total_weight += event.calculated_weight
-				assoc_spawn_weight[event] = event.calculated_weight
-			else
-				assoc_spawn_weight[event] = 0
-		sortTim(assoc_spawn_weight, cmp=/proc/cmp_numeric_dsc, associative = TRUE)
-		for(var/datum/round_event_control/event as anything in assoc_spawn_weight)
-			even = !even
-			var/background_cl = even ? "#17191C" : "#23273C"
-			dat += "<tr style='vertical-align:top; background-color: [background_cl];'>"
-			dat += "<td>[event.name]</td>" //Name
-			dat += "<td>" //Tags
-			for(var/tag in event.tags)
-				dat += "[tag] "
-			dat += "</td>"
-			var/occurence_string = "[event.occurrences]"
-			if(event.shared_occurence_type)
-				occurence_string += " (shared: [event.get_occurences()])"
-			dat += "<td>[occurence_string]</td>" //Occurences
-			dat += "<td>[assoc_spawn_weight[event] ? "Yes" : "No"]</td>" //Can happen?
-			var/weight_string = "([event.calculated_weight] /raw.[event.weight])"
-			if(assoc_spawn_weight[event])
-				var/percent = round((event.calculated_weight / total_weight) * 100)
-				weight_string = "[percent]% - [weight_string]"
-			dat += "<td>[weight_string]</td>" //Weight
-			dat += "<td><a href='?src=[REF(event)];action=fire'>Fire</a> <a href='?src=[REF(event)];action=schedule'>Schedule</a> <a href='?src=[REF(event)];action=force_next'>Force Next</a></td>" //Actions
-			dat += "</tr>"
-		dat += "</table>"
 	else
-		dat += "No storyteller present. Data is missing."
-	var/datum/browser/popup = new(user, "gamemode_event_panel", "Event Panel", 950, 600)
+		dat += "Storyteller: None<BR>Weight and chance statistics will be inaccurate due to the present lack of a storyteller."
+	dat += "<BR><a href='?src=[REF(src)];panel=stats;action=set_roundstart'[roundstart_event_view ? "class='linkOn'" : ""]>Roundstart Events</a> Forced Roundstart events will use rolled points, and are guaranteed to trigger (even if the used points are not enough)"
+	dat += "<BR>Avg. event intervals: "
+	for(var/track in event_tracks)
+		if(last_point_gains[track])
+			var/est_time = round(point_thresholds[track] / last_point_gains[track] / STORYTELLER_WAIT_TIME * 40 / 6) / 10
+			dat += "[track]: ~[est_time] m. | "
+	dat += "<HR>"
+	for(var/track in EVENT_PANEL_TRACKS)
+		dat += "<a href='?src=[REF(src)];panel=stats;action=set_cat;cat=[track]'[(statistics_track_page == track) ? "class='linkOn'" : ""]>[track]</a>"
+	dat += "<HR>"
+	/// Create event info and stats table
+	dat += "<table align='center'; width='100%'; height='100%'; style='background-color:#13171C'>"
+	dat += "<tr style='vertical-align:top'>"
+	dat += "<td width=17%><b>Name</b></td>"
+	dat += "<td width=16%><b>Tags</b></td>"
+	dat += "<td width=8%><b>Occurences</b></td>"
+	dat += "<td width=5%><b>M.Pop</b></td>"
+	dat += "<td width=5%><b>M.Time</b></td>"
+	dat += "<td width=7%><b>Can Occur</b></td>"
+	dat += "<td width=16%><b>Weight</b></td>"
+	dat += "<td width=26%><b>Actions</b></td>"
+	dat += "</tr>"
+	var/even = TRUE
+	var/total_weight = 0
+	var/list/event_lookup
+	switch(statistics_track_page)
+		if(ALL_EVENTS)
+			event_lookup = control
+		if(UNCATEGORIZED_EVENTS)
+			event_lookup = uncategorized
+		else
+			event_lookup = event_pools[statistics_track_page]
+	var/list/assoc_spawn_weight = list()
+	for(var/datum/round_event_control/event as anything in event_lookup)
+		if(event.roundstart != roundstart_event_view)
+			continue
+		if(event.canSpawnEvent())
+			total_weight += event.calculated_weight
+			assoc_spawn_weight[event] = event.calculated_weight
+		else
+			assoc_spawn_weight[event] = 0
+	sortTim(assoc_spawn_weight, cmp=/proc/cmp_numeric_dsc, associative = TRUE)
+	for(var/datum/round_event_control/event as anything in assoc_spawn_weight)
+		even = !even
+		var/background_cl = even ? "#17191C" : "#23273C"
+		dat += "<tr style='vertical-align:top; background-color: [background_cl];'>"
+		dat += "<td>[event.name]</td>" //Name
+		dat += "<td>" //Tags
+		for(var/tag in event.tags)
+			dat += "[tag] "
+		dat += "</td>"
+		var/occurence_string = "[event.occurrences]"
+		if(event.shared_occurence_type)
+			occurence_string += " (shared: [event.get_occurences()])"
+		dat += "<td>[occurence_string]</td>" //Occurences
+		dat += "<td>[event.min_players]</td>" //Minimum pop
+		dat += "<td>[event.earliest_start / (1 MINUTES)] m.</td>" //Minimum time
+		dat += "<td>[assoc_spawn_weight[event] ? "Yes" : "No"]</td>" //Can happen?
+		var/weight_string = "([event.calculated_weight] /raw.[event.weight])"
+		if(assoc_spawn_weight[event])
+			var/percent = round((event.calculated_weight / total_weight) * 100)
+			weight_string = "[percent]% - [weight_string]"
+		dat += "<td>[weight_string]</td>" //Weight
+		dat += "<td>[event.get_href_actions()]</td>" //Actions
+		dat += "</tr>"
+	dat += "</table>"
+	var/datum/browser/popup = new(user, "gamemode_event_panel", "Event Panel", 1000, 600)
 	popup.set_content(dat.Join())
 	popup.open()
 
@@ -853,6 +924,8 @@ SUBSYSTEM_DEF(gamemode)
 			admin_panel(user)
 		if("stats")
 			switch(href_list["action"])
+				if("set_roundstart")
+					roundstart_event_view = !roundstart_event_view
 				if("set_cat")
 					var/new_category = href_list["cat"]
 					if(new_category in EVENT_PANEL_TRACKS)

@@ -30,6 +30,9 @@
 	/// Variance in cost of the purchased events. Effectively affects frequency of events
 	var/cost_variance = 15
 
+	/// Whether the storyteller guaranteed a roleset roll (antag) on roundstart.
+	var/guarantees_roundstart_roleset = TRUE
+
 	/// Whether the storyteller has the distributions disabled. Important for ghost storytellers
 	var/disable_distribution = FALSE
 
@@ -57,14 +60,16 @@
 
 /// Goes through every track of the gamemode and checks if it passes a threshold to buy an event, if does, buys one.
 /datum/storyteller/proc/handle_tracks()
+	. = FALSE //Has return value for the roundstart loop
 	var/datum/controller/subsystem/gamemode/mode = SSgamemode
 	for(var/track in mode.event_track_points)
 		var/points = mode.event_track_points[track]
-		if(points >= mode.point_thresholds[track])
-			find_and_buy_event_from_track(track)
+		if(points >= mode.point_thresholds[track] && find_and_buy_event_from_track(track))
+			. = TRUE
 
 /// Find and buy a valid event from a track.
 /datum/storyteller/proc/find_and_buy_event_from_track(track)
+	. = FALSE
 	var/datum/controller/subsystem/gamemode/mode = SSgamemode
 	var/datum/round_event_control/picked_event
 	if(mode.forced_next_events[track]) //Forced event by admin
@@ -95,15 +100,21 @@
 			stack_trace("WARNING: Storyteller picked a null from event pool.")
 			return
 	buy_event(picked_event, track)
+	. = TRUE
 
 /// Find and buy a valid event from a track.
 /datum/storyteller/proc/buy_event(datum/round_event_control/bought_event, track)
 	var/datum/controller/subsystem/gamemode/mode = SSgamemode
 	// Perhaps use some bell curve instead of a flat variance?
-	var/total_cost = bought_event.cost * mode.point_thresholds[track] * (1 + (rand(-cost_variance, cost_variance)/100))
+	var/total_cost = bought_event.cost * mode.point_thresholds[track]
+	if(!bought_event.roundstart)
+		total_cost *= (1 + (rand(-cost_variance, cost_variance)/100)) //Apply cost variance if not roundstart event
 	mode.event_track_points[track] -= total_cost
 	message_admins("Storyteller purchased and triggered [bought_event] event, on [track] track, for [total_cost] cost.")
-	mode.schedule_event(bought_event, (rand(3, 4) MINUTES), total_cost)
+	if(bought_event.roundstart)
+		mode.TriggerEvent(bought_event)
+	else
+		mode.schedule_event(bought_event, (rand(3, 4) MINUTES), total_cost)
 
 /// Calculates the weights of the events from a passed track.
 /datum/storyteller/proc/calculate_weights(track)

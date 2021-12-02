@@ -2182,6 +2182,7 @@
 #include "code\modules\error_handler\error_viewer.dm"
 #include "code\modules\events\_event.dm"
 #include "code\modules\events\_scheduled_event.dm"
+#include "code\modules\events\_roundstart_event.dm"
 #include "code\modules\events\abductor.dm"
 #include "code\modules\events\alien_infestation.dm"
 #include "code\modules\events\anomaly.dm"

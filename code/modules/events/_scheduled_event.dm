@@ -37,6 +37,13 @@
 	start_time = new_time
 	alerted_admins = FALSE
 
+/datum/scheduled_event/proc/get_href_actions()
+	var/round_started = SSticker.HasRoundStarted()
+	if(round_started)
+		return "<a href='?src=[REF(src)];action=fire'>Fire</a> <a href='?src=[REF(src)];action=reschedule'>Reschedule</a> <a href='?src=[REF(src)];action=cancel'>Cancel</a> <a href='?src=[REF(src)];action=refund'>Refund</a></td>"
+	else
+		return "<a href='?src=[REF(src)];action=cancel'>Cancel</a>"
+
 /// Try and fire off the scheduled event
 /datum/scheduled_event/proc/try_fire()
 	/// Remove our fake occurence pre-emptively for the checks.
@@ -62,6 +69,7 @@
 	. = ..()
 	if(QDELETED(src))
 		return
+	var/round_started = SSticker.HasRoundStarted()
 	switch(href_list["action"])
 		if("cancel")
 			message_admins("[key_name_admin(usr)] cancelled scheduled event [event.name].")
@@ -79,6 +87,8 @@
 			message_admins("[key_name_admin(usr)] rescheduled event [event.name] to [new_schedule] seconds.")
 			log_admin_private("[key_name(usr)] rescheduled event [event.name] to [new_schedule] seconds.")
 		if("fire")
+			if(!round_started)
+				return
 			message_admins("[key_name_admin(usr)] has fired scheduled event [event.name].")
 			log_admin_private("[key_name(usr)] has fired scheduled event [event.name].")
 			try_fire()
