@@ -93,6 +93,10 @@
 /datum/round_event_control/wizard
 	wizardevent = TRUE
 
+/datum/round_event_control/roundstart
+	roundstart = TRUE
+	earliest_start = 0
+
 ///Adds an occurence. Has to use the setter to properly handle shared occurences
 /datum/round_event_control/proc/add_occurence()
 	if(shared_occurence_type)

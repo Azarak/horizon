@@ -6,7 +6,7 @@
 	min_players = 10
 	earliest_start = 30 MINUTES
 
-	track = EVENT_TRACK_MAJOR
+	track = EVENT_TRACK_ROLESET
 	tags = list(TAG_COMBAT, TAG_DESTRUCTIVE)
 	min_sec_crew = 1
 

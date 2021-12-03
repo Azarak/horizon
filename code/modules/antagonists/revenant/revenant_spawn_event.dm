@@ -7,6 +7,9 @@
 	max_occurrences = 1
 	min_players = 5
 
+	track = EVENT_TRACK_ROLESET
+	tags = list(TAG_DESTRUCTIVE, TAG_SPOOKY)
+
 
 /datum/round_event/ghost_role/revenant
 	var/ignore_mobcheck = FALSE
