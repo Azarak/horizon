@@ -118,7 +118,7 @@ SUBSYSTEM_DEF(gamemode)
 
 	for(var/type in typesof(/datum/round_event_control))
 		var/datum/round_event_control/event = new type()
-		if(!event.typepath)
+		if(!event.typepath || !event.name)
 			continue //don't want this one! leave it for the garbage collector
 		control += event //add it to the list of all events (controls)
 	getHoliday()
@@ -164,6 +164,58 @@ SUBSYSTEM_DEF(gamemode)
 			running.Remove(thing)
 		if (MC_TICK_CHECK)
 			return
+
+/// Gets candidates for antagonist roles.
+/datum/controller/subsystem/gamemode/proc/get_candidates(be_special, job_ban, observers, ready_newplayers, living_players, required_time, inherit_required_time = TRUE, midround_antag_pref, no_antags = TRUE, list/restricted_roles)
+	var/list/candidates = list()
+	var/list/candidate_candidates = list() //lol
+	
+	for(var/mob/player as anything in GLOB.player_list)
+		if(ready_newplayers && isnewplayer(player))
+			var/mob/dead/new_player/new_player = player
+			if(new_player.ready == PLAYER_READY_TO_PLAY && new_player.mind && new_player.check_preferences())
+				candidate_candidates += player
+		else if (observers && isobserver(player))
+			candidate_candidates += player
+		else if (living_players && isliving(player))
+			candidate_candidates += player
+
+	for(var/mob/candidate as anything in candidate_candidates)
+		if(QDELETED(candidate) || !candidate.key || !candidate.client || !candidate.mind)
+			continue
+		if(no_antags && candidate.mind.special_role)
+			continue
+		if(restricted_roles && (candidate.mind.assigned_role.title in restricted_roles))
+			continue
+		if(be_special)
+			if(!(candidate.client.prefs) || !(be_special in candidate.client.prefs.be_special))
+				continue
+
+			var/time_to_check
+			if(required_time)
+				time_to_check = required_time
+			else if (inherit_required_time)
+				time_to_check = GLOB.special_roles[be_special]
+
+			if(time_to_check && candidate.client.get_remaining_days(time_to_check) > 0)
+				continue
+
+		if(midround_antag_pref && !candidate.client.prefs.allow_midround_antag)
+			continue
+
+		if(job_ban && is_banned_from(candidate.ckey, list(job_ban, ROLE_SYNDICATE)))
+			continue
+		candidates += candidate
+	return candidates
+
+/// Gets the correct popcount, returning READY people if roundstart, and active people if not.
+/datum/controller/subsystem/gamemode/proc/get_correct_popcount()
+	if(SSticker.HasRoundStarted())
+		update_crew_infos()
+		return active_players
+	else
+		calculate_ready_players()
+		return ready_players
 
 /// Refunds and removes a scheduled event.
 /datum/controller/subsystem/gamemode/proc/refund_scheduled_event(datum/scheduled_event/refunded)

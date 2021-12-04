@@ -44,6 +44,9 @@
 	var/min_head_crew = 0
 	/// Whether this is a roundstart event or not. Not exactly sure how I should handle this.
 	var/roundstart = FALSE
+	/// Whether a roundstart event can happen post roundstart. Very important for events which override job assignments.
+	var/can_run_post_roundstart = TRUE
+
 
 /datum/round_event_control/New()
 	calculated_weight = weight
@@ -76,6 +79,8 @@
 			else
 				if(!round_started) //Only roundstart events can be scheduled before round start
 					return
+				if(roundstart && !can_run_post_roundstart)
+					return
 				var/schedule_time = input(usr, "Schedule event [name] in time (in seconds):", "Schedule Event") as num|null
 				if(isnull(schedule_time) || QDELETED(src))
 					return
@@ -85,6 +90,8 @@
 			SSgamemode.schedule_event(src, start_time, 0, TRUE)
 		if("fire")
 			if(!round_started)
+				return
+			if(roundstart && !can_run_post_roundstart)
 				return
 			message_admins("[key_name_admin(usr)] has fired event [name].")
 			log_admin_private("[key_name(usr)] has fired event [name].")
@@ -125,6 +132,8 @@
 /datum/round_event_control/proc/get_href_actions()
 	if(SSticker.HasRoundStarted())
 		if(roundstart)
+			if(!can_run_post_roundstart)
+				return "<a class='linkOff'>Fire</a> <a class='linkOff'>Schedule</a>"
 			return "<a href='?src=[REF(src)];action=fire'>Fire</a> <a href='?src=[REF(src)];action=schedule'>Schedule</a>"
 		else
 			return "<a href='?src=[REF(src)];action=fire'>Fire</a> <a href='?src=[REF(src)];action=schedule'>Schedule</a> <a href='?src=[REF(src)];action=force_next'>Force Next</a>"
@@ -178,9 +187,8 @@
 	return EVENT_READY
 
 /datum/round_event_control/proc/runEvent(random = FALSE)
-	var/datum/round_event/E = new typepath()
+	var/datum/round_event/E = new typepath(my_control = src)
 	E.current_players = get_active_player_count(alive_check = 1, afk_check = 1, human_check = 1)
-	E.control = src
 	SSblackbox.record_feedback("tally", "event_ran", 1, "[E]")
 	add_occurence()
 
@@ -309,8 +317,9 @@
 
 
 //Sets up the event then adds the event to the the list of running events
-/datum/round_event/New(my_processing = TRUE)
-	setup()
+/datum/round_event/New(my_processing = TRUE, datum/round_event_control/my_control)
+	control = my_control
 	processing = my_processing
 	SSgamemode.running += src
+	setup()
 	return ..()
