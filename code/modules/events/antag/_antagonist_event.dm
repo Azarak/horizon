@@ -1,8 +1,9 @@
 /datum/round_event_control/antagonist
 	reoccurence_penalty_multiplier = 0
 	track = EVENT_TRACK_ROLESET
-
+	/// Protected roles from the antag roll. People will not get those roles if a config is enabled
 	var/list/protected_roles
+	/// Restricted roles from the antag roll
 	var/list/restricted_roles
 
 /datum/round_event_control/antagonist/New()
@@ -16,11 +17,15 @@
 
 /datum/round_event_control/antagonist/roundstart/solo
 	typepath = /datum/round_event/antagonist/solo //Dont change this
+	/// How many baseline antags do we spawn
 	var/base_antags = 1
+	/// How many maximum antags can we spawn
 	var/maximum_antags = 3
+	/// For this many players we'll add 1 up to the maximum antag amount
 	var/denominator = 20
-
+	/// The antag flag to be used
 	var/antag_flag
+	/// The antag datum to be applied
 	var/antag_datum
 
 /datum/round_event_control/antagonist/roundstart/solo/canSpawnEvent(popchecks = TRUE)
@@ -41,10 +46,16 @@
 	fakeable = FALSE
 
 /datum/round_event/antagonist/solo
+	// ALL of those variables are internal. Check the control event to change them
+	/// The antag flag passed from control
 	var/antag_flag
+	/// The antag datum passed from control
 	var/antag_datum
+	/// The antag count passed from control
 	var/antag_count
+	/// The restricted roles (jobs) passed from control
 	var/list/restricted_roles
+	/// The minds we've setup in setup() and need to finalize in start()
 	var/list/setup_minds = list()
 
 /datum/round_event/antagonist/solo/setup()
