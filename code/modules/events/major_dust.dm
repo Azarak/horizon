@@ -4,7 +4,7 @@
 	weight = 8
 
 	track = EVENT_TRACK_MODERATE
-	tags = list(TAG_DESTRUCTIVE)
+	tags = list(TAG_DESTRUCTIVE, TAG_SPACE)
 
 /datum/round_event/meteor_wave/major_dust
 	wave_name = "space dust"

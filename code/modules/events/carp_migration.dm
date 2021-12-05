@@ -7,7 +7,7 @@
 	max_occurrences = 6
 
 	track = EVENT_TRACK_MODERATE
-	tags = list(TAG_COMBAT)
+	tags = list(TAG_COMBAT, TAG_SPACE)
 
 /datum/round_event_control/carp_migration/New()
 	. = ..()

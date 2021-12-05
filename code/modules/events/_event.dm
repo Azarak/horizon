@@ -178,6 +178,12 @@
 		return FALSE
 	if(ispath(typepath, /datum/round_event/ghost_role) && !(GLOB.ghost_role_flags & GHOSTROLE_MIDROUND_EVENT))
 		return FALSE
+	// Check if the event has a banned tag by map config (meteors cant run in icebox etc.)
+	var/datum/map_config/map_config = SSmapping.config
+	if(map_config) //May not be loaded yet, admin previewing events in the panel etc.
+		for(var/tag in tags)
+			if(tag in map_config.banned_event_tags)
+				return FALSE
 
 	return TRUE
 

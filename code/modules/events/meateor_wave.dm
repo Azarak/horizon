@@ -5,7 +5,7 @@
 	max_occurrences = 1
 
 	track = EVENT_TRACK_MODERATE
-	tags = list(TAG_DESTRUCTIVE)
+	tags = list(TAG_DESTRUCTIVE, TAG_SPACE)
 
 /datum/round_event/meteor_wave/meaty
 	wave_name = "meaty"

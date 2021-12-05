@@ -9,7 +9,7 @@
 	earliest_start = 25 MINUTES
 
 	track = EVENT_TRACK_MAJOR
-	tags = list(TAG_DESTRUCTIVE)
+	tags = list(TAG_DESTRUCTIVE, TAG_SPACE)
 	min_eng_crew = 1
 
 /datum/round_event/meteor_wave
