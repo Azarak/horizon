@@ -82,11 +82,6 @@
 	restricted_roles = cast_control.restricted_roles
 	prompted_picking = cast_control.prompted_picking
 
-	var/round_started = SSticker.HasRoundStarted()
-	var/new_players_arg = round_started ? FALSE : TRUE
-	var/living_players_arg = round_started ? TRUE : FALSE
-	var/midround_antag_pref_arg = round_started ? FALSE : TRUE
-
 	var/list/candidates = cast_control.get_candidates()
 	for(var/i in 1 to antag_count)
 		if(!candidates.len)
@@ -159,7 +154,7 @@
 	roundstart = TRUE
 	weight = 2
 	min_players = 35
-	max_occurences = 1
+	max_occurrences = 1
 
 /datum/round_event_control/antagonist/solo/wizard/canSpawnEvent(popchecks = TRUE)
 	. = ..()
