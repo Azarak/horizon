@@ -311,10 +311,6 @@
 	min_val = 0
 	integer = FALSE
 
-/datum/config_entry/number/mice_roundstart
-	config_entry_value = 10
-	min_val = 0
-
 /datum/config_entry/number/bombcap
 	config_entry_value = 14
 	min_val = 4

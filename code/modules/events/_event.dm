@@ -292,7 +292,7 @@
 	if(activeFor == startWhen)
 		try_start()
 
-	if(activeFor == announceWhen && prob(announceChance))
+	if(activeFor == announceWhen && !control.roundstart && prob(announceChance))
 		processing = FALSE
 		announce(FALSE)
 		processing = TRUE
