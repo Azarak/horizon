@@ -30,7 +30,10 @@
 	/// Variance in cost of the purchased events. Effectively affects frequency of events
 	var/cost_variance = 15
 
-	/// Whether the storyteller guaranteed a roleset roll (antag) on roundstart.
+	/// Variance in the budget of roundstart points.
+	var/roundstart_points_variance = 15
+
+	/// Whether the storyteller guaranteed a roleset roll (antag) on roundstart. (Still needs to pass pop check)
 	var/guarantees_roundstart_roleset = TRUE
 
 	/// Whether the storyteller has the distributions disabled. Important for ghost storytellers

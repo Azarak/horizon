@@ -251,7 +251,29 @@ SUBSYSTEM_DEF(gamemode)
 		return
 	/// Distribute points
 	for(var/track in event_track_points)
-		event_track_points[track] = point_thresholds[track]
+		var/base_amt
+		var/gain_amt
+		switch(track)
+			if(EVENT_TRACK_MUNDANE)
+				base_amt = ROUNDSTART_MUNDANE_BASE
+				gain_amt = ROUNDSTART_MUNDANE_GAIN
+			if(EVENT_TRACK_MODERATE)
+				base_amt = ROUNDSTART_MODERATE_BASE
+				gain_amt = ROUNDSTART_MODERATE_GAIN
+			if(EVENT_TRACK_MAJOR)
+				base_amt = ROUNDSTART_MAJOR_BASE
+				gain_amt = ROUNDSTART_MAJOR_GAIN
+			if(EVENT_TRACK_ROLESET)
+				base_amt = ROUNDSTART_ROLESET_BASE
+				gain_amt = ROUNDSTART_ROLESET_GAIN
+			if(EVENT_TRACK_OBJECTIVES)
+				base_amt = ROUNDSTART_OBJECTIVES_BASE
+				gain_amt = ROUNDSTART_OBJECTIVES_GAIN
+		var/calc_value = base_amt + (gain_amt * ready_players)
+		calc_value *= roundstart_point_multipliers[track]
+		calc_value *= storyteller.starting_point_multipliers[track]
+		calc_value *= (rand(100 - storyteller.roundstart_points_variance,100 + storyteller.roundstart_points_variance)/100)
+		event_track_points[track] = round(calc_value)
 
 	/// If the storyteller guarantees an antagonist roll, add points to make it so.
 	if(storyteller.guarantees_roundstart_roleset && event_track_points[EVENT_TRACK_ROLESET] < point_thresholds[EVENT_TRACK_ROLESET])
@@ -264,12 +286,11 @@ SUBSYSTEM_DEF(gamemode)
 
 /// At this point we've rolled roundstart events and antags and we handle leftover points here.
 /datum/controller/subsystem/gamemode/proc/handle_post_setup_points()
-	for(var/track in event_track_points)
-		event_track_points[track] = 10
+	for(var/track in event_track_points) //Just halve the points for now.
+		event_track_points[track] *= 0.5
 
 /// Because roundstart events need 2 steps of firing for purposes of antags, here is the first step handled, happening before occupation division.
 /datum/controller/subsystem/gamemode/proc/handle_pre_setup_roundstart_events()
-	calculate_ready_players()
 	if(storyteller.disable_distribution)
 		return
 	if(halted_storyteller)
@@ -405,6 +426,7 @@ SUBSYSTEM_DEF(gamemode)
 
 ///Attempts to select players for special roles the mode might have.
 /datum/controller/subsystem/gamemode/proc/pre_setup()
+	calculate_ready_players()
 	roll_pre_setup_points()
 	handle_pre_setup_roundstart_events()
 	return TRUE
