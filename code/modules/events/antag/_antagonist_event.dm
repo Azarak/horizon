@@ -11,6 +11,13 @@
 	if(CONFIG_GET(flag/protect_roles_from_antagonist))
 		restricted_roles |= protected_roles
 
+/datum/round_event_control/antagonist/canSpawnEvent(popchecks = TRUE)
+	. = ..()
+	if(!.)
+		return
+	if(!roundstart && !SSgamemode.can_inject_antags())
+		return FALSE
+
 /datum/round_event_control/antagonist/solo
 	typepath = /datum/round_event/antagonist/solo
 	/// How many baseline antags do we spawn
@@ -116,7 +123,7 @@
 	protected_roles = list("Prisoner","Security Officer", "Warden", "Detective", "Head of Security", "Captain")
 	restricted_roles = list("AI", "Cyborg")
 	weight = 4
-	min_players = 25
+	min_players = 20
 
 /datum/round_event_control/antagonist/solo/changeling/roundstart
 	name = "Changelings"
@@ -132,7 +139,7 @@
 	protected_roles = list("Prisoner","Security Officer", "Warden", "Detective", "Head of Security", "Captain")
 	restricted_roles = list("AI", "Cyborg")
 	weight = 4
-	min_players = 25
+	min_players = 20
 
 /datum/round_event_control/antagonist/solo/heretic/roundstart
 	name = "Heretics"

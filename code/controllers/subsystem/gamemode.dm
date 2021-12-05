@@ -165,6 +165,15 @@ SUBSYSTEM_DEF(gamemode)
 		if (MC_TICK_CHECK)
 			return
 
+/// Gets the number of antagonists the antagonist injection events will stop rolling after.
+/datum/controller/subsystem/gamemode/proc/get_antag_cap()
+	var/cap = FLOOR((get_correct_popcount() / ANTAG_CAP_DENOMINATOR), 1) + ANTAG_CAP_FLAT
+	return cap
+
+/// Whether events can inject more antagonists into the round
+/datum/controller/subsystem/gamemode/proc/can_inject_antags()
+	return (get_antag_cap() > GLOB.antagonists.len)
+
 /// Gets candidates for antagonist roles.
 /datum/controller/subsystem/gamemode/proc/get_candidates(be_special, job_ban, observers, ready_newplayers, living_players, required_time, inherit_required_time = TRUE, midround_antag_pref, no_antags = TRUE, list/restricted_roles)
 	var/list/candidates = list()
