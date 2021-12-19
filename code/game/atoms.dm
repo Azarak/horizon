@@ -1928,7 +1928,7 @@
 			for(var/obj/machinery/gravity_generator/main/G as anything in mapzone.gravity_generators)
 				max_grav = max(G.setting,max_grav)
 			return max_grav
-	return SSmapping.sub_zone_trait(T, ZTRAIT_GRAVITY)
+	return SSmapping.virtual_level_trait(T, ZTRAIT_GRAVITY)
 
 /**
  * Causes effects when the atom gets hit by a rust effect from heretics

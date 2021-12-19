@@ -82,7 +82,7 @@
 		return FALSE
 	if(!A.power_equip)
 		return FALSE
-	if(!SSmapping.sub_zone_trait(T,ZTRAIT_STATION))
+	if(!SSmapping.virtual_level_trait(T,ZTRAIT_STATION))
 		return FALSE
 	if(!istype(T, /turf/open/floor))
 		return FALSE

@@ -167,9 +167,9 @@
 								if(PLACE_SAME_Z)
 									forced_ruins[linked] = target_z //I guess you might want a chain somehow
 								if(PLACE_LAVA_RUIN)
-									forced_ruins[linked] = pick(SSmapping.sub_zones_by_trait(ZTRAIT_LAVA_RUINS))
+									forced_ruins[linked] = pick(SSmapping.virtual_levels_by_trait(ZTRAIT_LAVA_RUINS))
 								if(PLACE_SPACE_RUIN)
-									forced_ruins[linked] = pick(SSmapping.sub_zones_by_trait(ZTRAIT_SPACE_RUINS))
+									forced_ruins[linked] = pick(SSmapping.virtual_levels_by_trait(ZTRAIT_SPACE_RUINS))
 								if(PLACE_DEFAULT)
 									forced_ruins[linked] = -1
 								if(PLACE_BELOW)

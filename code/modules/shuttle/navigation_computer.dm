@@ -218,7 +218,7 @@
 	var/turf/eyeturf = get_turf(the_eye)
 	if(!eyeturf)
 		return SHUTTLE_DOCKER_BLOCKED
-	if(!eyeturf.z || SSmapping.sub_zone_has_any_trait(eyeturf, locked_traits))
+	if(!eyeturf.z || SSmapping.virtual_level_has_any_trait(eyeturf, locked_traits))
 		return SHUTTLE_DOCKER_BLOCKED
 
 	. = SHUTTLE_DOCKER_LANDING_CLEAR
@@ -355,7 +355,7 @@
 			continue
 		var/obj/docking_port/stationary/S = V
 		if(console.trait_lock)
-			var/datum/virtual_level/vlevel = SSmapping.get_sub_zone(S)
+			var/datum/virtual_level/vlevel = SSmapping.get_virtual_level(S)
 			if(!(console.trait_lock in vlevel.traits))
 				continue
 		if(console.jumpto_ports[S.id])
@@ -366,7 +366,7 @@
 			stack_trace("SSshuttle.beacons have null entry!")
 			continue
 		var/obj/machinery/spaceship_navigation_beacon/nav_beacon = V
-		if(!nav_beacon.z || SSmapping.sub_zone_has_any_trait(nav_beacon, console.locked_traits))
+		if(!nav_beacon.z || SSmapping.virtual_level_has_any_trait(nav_beacon, console.locked_traits))
 			break
 		if(!nav_beacon.locked)
 			L["([L.len]) [nav_beacon.name] located: [nav_beacon.x] [nav_beacon.y] [nav_beacon.z]"] = nav_beacon

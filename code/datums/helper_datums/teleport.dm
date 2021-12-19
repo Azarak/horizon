@@ -99,7 +99,7 @@
 		if (zlevel)
 			zlevels = list(zlevel)
 		else
-			zlevels = SSmapping.sub_zones_by_trait(ZTRAIT_STATION)
+			zlevels = SSmapping.virtual_levels_by_trait(ZTRAIT_STATION)
 	var/cycles = 1000
 	for(var/cycle in 1 to cycles)
 		// DRUNK DIALLING WOOOOOOOOO
@@ -166,7 +166,7 @@
 /proc/get_teleport_turfs(turf/center, precision = 0)
 	if(!precision)
 		return list(center)
-	var/datum/virtual_level/center_vlevel = SSmapping.get_sub_zone(center)
+	var/datum/virtual_level/center_vlevel = SSmapping.get_virtual_level(center)
 	var/list/posturfs = list()
 	for(var/turf/T as anything in RANGE_TURFS(precision,center))
 		if(T.is_transition_turf())

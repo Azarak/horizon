@@ -269,25 +269,25 @@
 			if(VECTOR_LENGTH(velocity_x, velocity_y) > SHUTTLE_MAXIMUM_DOCKING_SPEED)
 				dat += "<B>Cannot safely dock in high velocities!</B>"
 			else
-				var/list/sub_zones = list()
+				var/list/virtual_levels = list()
 				var/list/nearby_objects = current_system.GetObjectsOnCoords(x,y)
-				var/list/freeform_sub_zones = list()
+				var/list/freeform_virtual_levels = list()
 				for(var/i in nearby_objects)
 					var/datum/overmap_object/IO = i
 					var/iter = 0
 					if(IO.related_map_zone)
 						for(var/datum/virtual_level/vlevel in IO.related_map_zone.virtual_levels)
 							iter++
-							sub_zones |= vlevel
-							freeform_sub_zones["[iter]. [vlevel.name] - Freeform"] = vlevel
+							virtual_levels |= vlevel
+							freeform_virtual_levels["[iter]. [vlevel.name] - Freeform"] = vlevel
 			
 				var/list/obj/docking_port/stationary/docks = list()
 				var/list/options = params2list(my_shuttle.possible_destinations)
 				var/iter = 0
 				for(var/i in SSshuttle.stationary)
 					var/obj/docking_port/stationary/iterated_dock = i
-					var/datum/virtual_level/vlevel = SSmapping.get_sub_zone(iterated_dock)
-					if(!(vlevel in sub_zones))
+					var/datum/virtual_level/vlevel = SSmapping.get_virtual_level(iterated_dock)
+					if(!(vlevel in virtual_levels))
 						continue
 					if(!options.Find(iterated_dock.port_destinations))
 						continue
@@ -301,8 +301,8 @@
 					dat += "<BR> - [key] - <a href='?src=[REF(src)];task=dock;dock_control=normal_dock;dock_id=[docks[key].id]'>Dock</a>"
 	
 				dat += "<BR><BR><B>Freeform docking spaces:</B>"
-				for(var/key in freeform_sub_zones)
-					var/datum/virtual_level/vlevel = freeform_sub_zones[key]
+				for(var/key in freeform_virtual_levels)
+					var/datum/virtual_level/vlevel = freeform_virtual_levels[key]
 					var/datum/map_zone/parent_zone = vlevel.parent_map_zone
 					dat += "<BR> - [key] - <a href='?src=[REF(src)];task=dock;dock_control=freeform_dock;map_id=[parent_zone.id];sub_id=[vlevel.id]'>Designate Location</a>"
 
@@ -464,7 +464,7 @@
 					var/datum/map_zone/mapzone = SSmapping.get_map_zone_id(map_id)
 					if(!mapzone)
 						return
-					var/datum/virtual_level/vlevel = mapzone.get_sub_zone_id(sub_id)
+					var/datum/virtual_level/vlevel = mapzone.get_virtual_level_id(sub_id)
 					if(!vlevel)
 						return
 					var/datum/overmap_object/mapzone_overmap_object = mapzone.related_overmap_object

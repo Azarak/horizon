@@ -96,21 +96,21 @@ SUBSYSTEM_DEF(mapping)
 	// Generate mining ruins
 	loading_ruins = TRUE
 
-	var/list/ice_ruins = sub_zones_by_trait(ZTRAIT_ICE_RUINS)
+	var/list/ice_ruins = virtual_levels_by_trait(ZTRAIT_ICE_RUINS)
 	if (ice_ruins.len)
 		// needs to be whitelisted for underground too so place_below ruins work
 		seedRuins(ice_ruins, CONFIG_GET(number/icemoon_budget), list(/area/icemoon/surface/outdoors/unexplored, /area/icemoon/underground/unexplored), ice_ruins_templates)
 		for (var/datum/virtual_level/ice_sub in ice_ruins)
 			spawn_rivers(ice_sub, 4, /turf/open/openspace/icemoon, /area/icemoon/surface/outdoors/unexplored/rivers)
 
-	var/list/ice_ruins_underground = sub_zones_by_trait(ZTRAIT_ICE_RUINS_UNDERGROUND)
+	var/list/ice_ruins_underground = virtual_levels_by_trait(ZTRAIT_ICE_RUINS_UNDERGROUND)
 	if (ice_ruins_underground.len)
 		seedRuins(ice_ruins_underground, CONFIG_GET(number/icemoon_budget), list(/area/icemoon/underground/unexplored), ice_ruins_underground_templates)
 		for (var/datum/virtual_level/ice_sub in ice_ruins_underground)
 			spawn_rivers(ice_sub, 4, ice_sub.get_trait(ZTRAIT_BASETURF), /area/icemoon/underground/unexplored/rivers)
 
 	// Generate deep space ruins
-	var/list/space_ruins = sub_zones_by_trait(ZTRAIT_SPACE_RUINS)
+	var/list/space_ruins = virtual_levels_by_trait(ZTRAIT_SPACE_RUINS)
 	if (space_ruins.len)
 		seedRuins(space_ruins, CONFIG_GET(number/space_budget), list(/area/space), space_ruins_templates)
 	loading_ruins = FALSE
@@ -622,7 +622,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 	if(turf_type_override)
 		reserve.turf_type = turf_type_override
 	if(!z)
-		for(var/datum/virtual_level/iterated_vlevel in sub_zones_by_trait(ZTRAIT_RESERVED))
+		for(var/datum/virtual_level/iterated_vlevel in virtual_levels_by_trait(ZTRAIT_RESERVED))
 			if(reserve.Reserve(width, height, iterated_vlevel.z_value))
 				return reserve
 		//If we didn't return at this point, theres a good chance we ran out of room on the exisiting reserved z levels, so lets try a new one
@@ -635,7 +635,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 		if(reserve.Reserve(width, height, newReserved.z_value))
 			return reserve
 	else
-		if(!sub_zone_trait(locate(1,1,z), ZTRAIT_RESERVED))
+		if(!virtual_level_trait(locate(1,1,z), ZTRAIT_RESERVED))
 			qdel(reserve)
 			return
 		else
@@ -647,7 +647,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 /datum/controller/subsystem/mapping/proc/initialize_reserved_level(z)
 	UNTIL(!clearing_reserved_turfs) //regardless, lets add a check just in case.
 	clearing_reserved_turfs = TRUE //This operation will likely clear any existing reservations, so lets make sure nothing tries to make one while we're doing it.
-	if(!sub_zone_trait(locate(1,1,z),ZTRAIT_RESERVED))
+	if(!virtual_level_trait(locate(1,1,z),ZTRAIT_RESERVED))
 		clearing_reserved_turfs = FALSE
 		CRASH("Invalid z level prepared for reservations.")
 	var/turf/A = get_turf(locate(SHUTTLE_TRANSIT_BORDER,SHUTTLE_TRANSIT_BORDER,z))

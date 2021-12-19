@@ -29,7 +29,7 @@
 	/// List of all gravity generators inside of the sub levels of this map zone
 	var/list/gravity_generators = list()
 
-/datum/map_zone/proc/get_sub_zone_id(vlevel_id)
+/datum/map_zone/proc/get_virtual_level_id(vlevel_id)
 	var/datum/virtual_level/found_vlevel
 	for(var/datum/virtual_level/iterated_vlevel as anything in virtual_levels)
 		if(iterated_vlevel.id == vlevel_id)
@@ -75,7 +75,7 @@
 			return TRUE
 	return FALSE
 
-/datum/map_zone/proc/add_sub_zone(datum/virtual_level/addsub)
+/datum/map_zone/proc/add_virtual_level(datum/virtual_level/addsub)
 	virtual_levels += addsub
 	addsub.parent_map_zone = src
 	next_vlevel_id++
@@ -392,7 +392,7 @@
 /datum/virtual_level/New(passed_name, list/passed_traits, datum/map_zone/passed_map, lx, ly, hx, hy, passed_z)
 	name = passed_name
 	traits = passed_traits.Copy()
-	passed_map.add_sub_zone(src)
+	passed_map.add_virtual_level(src)
 	reserve(lx, ly, hx, hy, passed_z)
 	return ..()
 
@@ -454,7 +454,7 @@
 			. += Mob
 
 /// Gets the sub zone that contains the passed atom
-/datum/controller/subsystem/mapping/proc/get_sub_zone(atom/Atom)
+/datum/controller/subsystem/mapping/proc/get_virtual_level(atom/Atom)
 	var/datum/space_level/level = z_list[Atom.z]
 	if(!level) //This can happen with areas trying to get their sub zone, Hyperspace for example, unsure why, areas weird
 		return
@@ -467,7 +467,7 @@
 
 /// A helper pretty much
 /datum/controller/subsystem/mapping/proc/get_map_zone(atom/Atom)
-	var/datum/virtual_level/sub_map = get_sub_zone(Atom)
+	var/datum/virtual_level/sub_map = get_virtual_level(Atom)
 	if(sub_map)
 		return sub_map.parent_map_zone
 

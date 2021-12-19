@@ -15,12 +15,12 @@
 	range = _range
 	scanner_range = range * 3
 	//Add to the level list
-	var/datum/virtual_level/vlevel = SSmapping.get_sub_zone(locate(x,y,z))
+	var/datum/virtual_level/vlevel = SSmapping.get_virtual_level(locate(x,y,z))
 	vlevel.ore_nodes += src
 
 /datum/ore_node/Destroy()
 	//Remove from the level list
-	var/datum/virtual_level/vlevel = SSmapping.get_sub_zone(locate(x_coord,y_coord,z_coord))
+	var/datum/virtual_level/vlevel = SSmapping.get_virtual_level(locate(x_coord,y_coord,z_coord))
 	vlevel.ore_nodes -= src
 	return ..()
 
@@ -132,7 +132,7 @@
 	return ore_to_return
 
 /proc/GetNearbyOreNode(turf/T)
-	var/datum/virtual_level/vlevel = SSmapping.get_sub_zone(T)
+	var/datum/virtual_level/vlevel = SSmapping.get_virtual_level(T)
 	if(!length(vlevel.ore_nodes))
 		return
 	var/list/iterated = vlevel.ore_nodes
@@ -142,7 +142,7 @@
 			return ON
 
 /proc/GetOreNodeInScanRange(turf/T)
-	var/datum/virtual_level/vlevel = SSmapping.get_sub_zone(T)
+	var/datum/virtual_level/vlevel = SSmapping.get_virtual_level(T)
 	if(!length(vlevel.ore_nodes))
 		return
 	var/list/iterated = vlevel.ore_nodes
