@@ -18,7 +18,7 @@
 		var/datum/space_level/S = new(I, name)
 		z_list += S
 		var/datum/map_zone/mapzone = new(name)
-		new /datum/sub_map_zone(name, traits, mapzone, 1, 1, world.maxx, world.maxy, I)
+		new /datum/virtual_level(name, traits, mapzone, 1, 1, world.maxx, world.maxy, I)
 
 /datum/controller/subsystem/mapping/proc/add_new_zlevel(name, traits = list(), z_type = /datum/space_level)
 	UNTIL(!adding_new_zlevel)

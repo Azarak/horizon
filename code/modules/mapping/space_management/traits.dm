@@ -5,7 +5,7 @@
 		if (z > z_list.len)
 			stack_trace("Unmanaged z-level [z]! maxz = [world.maxz], z_list.len = [z_list.len]")
 			return list()
-		var/datum/sub_map_zone/zone = get_sub_zone(Atom)
+		var/datum/virtual_level/zone = get_sub_zone(Atom)
 		return zone.traits[trait]
 	else
 		var/list/default = DEFAULT_MAP_TRAITS
@@ -25,25 +25,25 @@
 /datum/controller/subsystem/mapping/proc/sub_zones_by_trait(trait)
 	. = list()
 	for(var/datum/map_zone/map_zone as anything in map_zones)
-		for(var/datum/sub_map_zone/sub_map_zone as anything in map_zone.sub_map_zones)
-			if(sub_map_zone.traits[trait])
-				. += sub_map_zone
+		for(var/datum/virtual_level/virtual_level as anything in map_zone.virtual_levels)
+			if(virtual_level.traits[trait])
+				. += virtual_level
 
 // Get a list of all z which have any of the specified traits
 /datum/controller/subsystem/mapping/proc/sub_zones_by_any_trait(list/traits)
 	. = list()
 	for(var/datum/map_zone/map_zone as anything in map_zones)
-		for(var/datum/sub_map_zone/sub_map_zone as anything in map_zone.sub_map_zones)
+		for(var/datum/virtual_level/virtual_level as anything in map_zone.virtual_levels)
 			for(var/trait in traits)
-				if(sub_map_zone.traits[trait])
-					. += sub_map_zone
+				if(virtual_level.traits[trait])
+					. += virtual_level
 					break
 
 // Attempt to get the turf below the provided one according to Z traits
 /datum/controller/subsystem/mapping/proc/get_turf_below(turf/T)
 	if (!T)
 		return
-	var/datum/sub_map_zone/zone = get_sub_zone(T)
+	var/datum/virtual_level/zone = get_sub_zone(T)
 	if (!zone)
 		return
 	return zone.get_below_turf(T)
@@ -52,12 +52,12 @@
 /datum/controller/subsystem/mapping/proc/get_turf_above(turf/T)
 	if (!T)
 		return
-	var/datum/sub_map_zone/zone = get_sub_zone(T)
+	var/datum/virtual_level/zone = get_sub_zone(T)
 	if (!zone)
 		return
 	return zone.get_above_turf(T)
 
 // Prefer not to use this one too often
 /datum/controller/subsystem/mapping/proc/get_station_center()
-	var/datum/sub_map_zone/sub_zone = sub_zones_by_trait(ZTRAIT_STATION)[1]
+	var/datum/virtual_level/sub_zone = sub_zones_by_trait(ZTRAIT_STATION)[1]
 	return sub_zone.get_center()

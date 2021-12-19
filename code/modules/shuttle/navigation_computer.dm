@@ -355,8 +355,8 @@
 			continue
 		var/obj/docking_port/stationary/S = V
 		if(console.trait_lock)
-			var/datum/sub_map_zone/subzone = SSmapping.get_sub_zone(S)
-			if(!(console.trait_lock in subzone.traits))
+			var/datum/virtual_level/vlevel = SSmapping.get_sub_zone(S)
+			if(!(console.trait_lock in vlevel.traits))
 				continue
 		if(console.jumpto_ports[S.id])
 			L["([L.len])[S.name]"] = S

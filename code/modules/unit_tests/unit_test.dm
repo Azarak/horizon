@@ -139,5 +139,5 @@ GLOBAL_VAR(test_log)
 ///Wrap the loaded z_level into a map_zone
 /datum/map_template/unit_tests/initTemplateBounds()
 	var/datum/map_zone/mapzone = new("Integration Test Mapzone")
-	new /datum/sub_map_zone("Integration Test Subzone", ZTRAITS_STATION, mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
+	new /datum/virtual_level("Integration Test Subzone", ZTRAITS_STATION, mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
 	. = ..()

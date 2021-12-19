@@ -27,13 +27,13 @@ GLOBAL_LIST_INIT(meteorsC, list(/obj/effect/meteor/dust)) //for space dust event
 	for(var/i = 0; i < number; i++)
 		spawn_meteor(pickweight(meteortypes))
 
-/proc/spawn_meteor(meteor_type, dir, datum/sub_map_zone/subzone, padding = MAP_EDGE_PAD)
+/proc/spawn_meteor(meteor_type, dir, datum/virtual_level/vlevel, padding = MAP_EDGE_PAD)
 	var/turf/pickedstart
 	var/turf/pickedgoal
 	var/max_i = 10//number of tries to spawn meteor.
 	while(!isspaceturf(pickedstart) && !isopenspaceturf(pickedstart))
 		var/startSide = dir || pick(GLOB.cardinals)
-		var/datum/sub_map_zone/startsub = subzone || pick(SSmapping.sub_zones_by_trait(ZTRAIT_STATION))
+		var/datum/virtual_level/startsub = vlevel || pick(SSmapping.sub_zones_by_trait(ZTRAIT_STATION))
 		pickedstart = spaceDebrisStartLoc(startSide, startsub, padding)
 		pickedgoal = spaceDebrisFinishLoc(startSide, startsub, padding)
 		max_i--
@@ -41,41 +41,41 @@ GLOBAL_LIST_INIT(meteorsC, list(/obj/effect/meteor/dust)) //for space dust event
 			return
 	new meteor_type(pickedstart, pickedgoal)
 
-/proc/spaceDebrisStartLoc(startSide, datum/sub_map_zone/subzone, padding = MAP_EDGE_PAD)
+/proc/spaceDebrisStartLoc(startSide, datum/virtual_level/vlevel, padding = MAP_EDGE_PAD)
 	var/starty
 	var/startx
 	switch(startSide)
 		if(NORTH)
-			starty = subzone.high_y-(subzone.reserved_margin + padding)
-			startx = rand(subzone.low_x + (subzone.reserved_margin + padding), subzone.high_x-(subzone.reserved_margin + padding))
+			starty = vlevel.high_y-(vlevel.reserved_margin + padding)
+			startx = rand(vlevel.low_x + (vlevel.reserved_margin + padding), vlevel.high_x-(vlevel.reserved_margin + padding))
 		if(EAST)
-			starty = rand(subzone.low_y + (subzone.reserved_margin + padding),subzone.high_y-(subzone.reserved_margin + padding))
-			startx = subzone.high_x-(subzone.reserved_margin + padding)
+			starty = rand(vlevel.low_y + (vlevel.reserved_margin + padding),vlevel.high_y-(vlevel.reserved_margin + padding))
+			startx = vlevel.high_x-(vlevel.reserved_margin + padding)
 		if(SOUTH)
-			starty = (subzone.reserved_margin + padding)
-			startx = rand(subzone.low_x + (subzone.reserved_margin + padding),subzone.high_x-(subzone.reserved_margin + padding))
+			starty = (vlevel.reserved_margin + padding)
+			startx = rand(vlevel.low_x + (vlevel.reserved_margin + padding),vlevel.high_x-(vlevel.reserved_margin + padding))
 		if(WEST)
-			starty = rand(subzone.low_y + (subzone.reserved_margin + padding), subzone.high_y-(subzone.reserved_margin + padding))
-			startx = (subzone.reserved_margin + padding)
-	. = locate(startx, starty, subzone.z_value)
+			starty = rand(vlevel.low_y + (vlevel.reserved_margin + padding), vlevel.high_y-(vlevel.reserved_margin + padding))
+			startx = (vlevel.reserved_margin + padding)
+	. = locate(startx, starty, vlevel.z_value)
 
-/proc/spaceDebrisFinishLoc(startSide, datum/sub_map_zone/subzone, padding = MAP_EDGE_PAD)
+/proc/spaceDebrisFinishLoc(startSide, datum/virtual_level/vlevel, padding = MAP_EDGE_PAD)
 	var/endy
 	var/endx
 	switch(startSide)
 		if(NORTH)
-			endy = (subzone.reserved_margin + padding)
-			endx = rand(subzone.low_x + (subzone.reserved_margin + padding), subzone.high_x-(subzone.reserved_margin + padding))
+			endy = (vlevel.reserved_margin + padding)
+			endx = rand(vlevel.low_x + (vlevel.reserved_margin + padding), vlevel.high_x-(vlevel.reserved_margin + padding))
 		if(EAST)
-			endy = rand(subzone.low_y + (subzone.reserved_margin + padding), subzone.high_y-(subzone.reserved_margin + padding))
-			endx = (subzone.reserved_margin + padding)
+			endy = rand(vlevel.low_y + (vlevel.reserved_margin + padding), vlevel.high_y-(vlevel.reserved_margin + padding))
+			endx = (vlevel.reserved_margin + padding)
 		if(SOUTH)
-			endy = subzone.high_y-(subzone.reserved_margin + padding)
-			endx = rand(subzone.low_x + (subzone.reserved_margin + padding), subzone.high_x-(subzone.reserved_margin + padding))
+			endy = vlevel.high_y-(vlevel.reserved_margin + padding)
+			endx = rand(vlevel.low_x + (vlevel.reserved_margin + padding), vlevel.high_x-(vlevel.reserved_margin + padding))
 		if(WEST)
-			endy = rand(subzone.low_y + (subzone.reserved_margin + padding), subzone.high_y-(subzone.reserved_margin + padding))
-			endx = subzone.high_x-(subzone.reserved_margin + padding)
-	. = locate(endx, endy, subzone.z_value)
+			endy = rand(vlevel.low_y + (vlevel.reserved_margin + padding), vlevel.high_y-(vlevel.reserved_margin + padding))
+			endx = vlevel.high_x-(vlevel.reserved_margin + padding)
+	. = locate(endx, endy, vlevel.z_value)
 
 ///////////////////////
 //The meteor effect

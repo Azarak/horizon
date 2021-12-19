@@ -354,7 +354,7 @@ GLOBAL_VAR_INIT(say_disabled, FALSE)
 	var/list/dat = list()
 	for(var/datum/map_zone/map_zone as anything in SSmapping.map_zones)
 		dat += "[MAP_ZONE_INFO(map_zone)]:"
-		for(var/datum/sub_map_zone/sub_zone as anything in map_zone.sub_map_zones)
+		for(var/datum/virtual_level/sub_zone as anything in map_zone.virtual_levels)
 			dat += "<BR> - [MAP_ZONE_INFO(sub_zone)]:"
 			dat += "<BR> -- Reservation: LowX: [sub_zone.low_x], LowY: [sub_zone.low_y], HighX: [sub_zone.high_x], HighY: [sub_zone.high_y]"
 			dat += "<BR> -- Reserved Margin: [sub_zone.reserved_margin]"
@@ -362,7 +362,7 @@ GLOBAL_VAR_INIT(say_disabled, FALSE)
 			if(length(sub_zone.crosslinked))
 				dat += "<BR> -- Crosslinkage: (map zone ID, zone ID, name)"
 				for(var/dir in sub_zone.crosslinked)
-					var/datum/sub_map_zone/linked_zone = sub_zone.crosslinked[dir]
+					var/datum/virtual_level/linked_zone = sub_zone.crosslinked[dir]
 					var/dir_string
 					if(dir == "[NORTH]")
 						dir_string = "North"
@@ -388,9 +388,9 @@ GLOBAL_VAR_INIT(say_disabled, FALSE)
 	for(var/z in 1 to SSmapping.z_list.len)
 		var/datum/space_level/space_level = SSmapping.z_list[z]
 		dat += "<BR> - [z]. [space_level.name]"
-		if(length(space_level.sub_map_zones))
-			dat += "<BR> -- Contained sub map zone reservations:"
-			for(var/datum/sub_map_zone/sub_zone as anything in space_level.sub_map_zones)
+		if(length(space_level.virtual_levels))
+			dat += "<BR> -- Contained virtual level reservations:"
+			for(var/datum/virtual_level/sub_zone as anything in space_level.virtual_levels)
 				dat += "<BR> --- [SUB_ZONE_INFO_FULL(sub_zone)]"
 	var/datum/browser/popup = new(usr, "map zone debug", "Map-Zones info", 600, 600)
 	popup.set_content(dat.Join())

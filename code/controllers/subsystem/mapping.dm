@@ -100,13 +100,13 @@ SUBSYSTEM_DEF(mapping)
 	if (ice_ruins.len)
 		// needs to be whitelisted for underground too so place_below ruins work
 		seedRuins(ice_ruins, CONFIG_GET(number/icemoon_budget), list(/area/icemoon/surface/outdoors/unexplored, /area/icemoon/underground/unexplored), ice_ruins_templates)
-		for (var/datum/sub_map_zone/ice_sub in ice_ruins)
+		for (var/datum/virtual_level/ice_sub in ice_ruins)
 			spawn_rivers(ice_sub, 4, /turf/open/openspace/icemoon, /area/icemoon/surface/outdoors/unexplored/rivers)
 
 	var/list/ice_ruins_underground = sub_zones_by_trait(ZTRAIT_ICE_RUINS_UNDERGROUND)
 	if (ice_ruins_underground.len)
 		seedRuins(ice_ruins_underground, CONFIG_GET(number/icemoon_budget), list(/area/icemoon/underground/unexplored), ice_ruins_underground_templates)
-		for (var/datum/sub_map_zone/ice_sub in ice_ruins_underground)
+		for (var/datum/virtual_level/ice_sub in ice_ruins_underground)
 			spawn_rivers(ice_sub, 4, ice_sub.get_trait(ZTRAIT_BASETURF), /area/icemoon/underground/unexplored/rivers)
 
 	// Generate deep space ruins
@@ -120,7 +120,7 @@ SUBSYSTEM_DEF(mapping)
 	// Add the transit level
 	transit = add_new_zlevel("Transit/Reserved")
 	var/datum/map_zone/mapzone = new("Transit/Reserved")
-	new /datum/sub_map_zone("Transit/Reserved", list(ZTRAIT_RESERVED = TRUE), mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
+	new /datum/virtual_level("Transit/Reserved", list(ZTRAIT_RESERVED = TRUE), mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
 	repopulate_sorted_areas()
 	generate_station_area_list()
 	initialize_reserved_level(transit.z_value)
@@ -255,24 +255,24 @@ Used by the AI doomsday and the self-destruct nuke.
 	var/start_z = world.maxz + 1
 	var/i = 0
 	var/list/space_levels = list()
-	var/list/ordered_subzones = list()
+	var/list/ordered_vlevels = list()
 	for (var/list/level as anything in traits)
 		var/level_name = "[name][i ? " [i + 1]" : ""]"
 		var/datum/space_level/space_lev = add_new_zlevel(level_name)
 		space_levels += space_lev
-		var/datum/sub_map_zone/subzone = new(level_name, level.Copy(), mapzone, 1, 1, world.maxx, world.maxy, space_lev.z_value)
-		ordered_subzones += subzone
+		var/datum/virtual_level/vlevel = new(level_name, level.Copy(), mapzone, 1, 1, world.maxx, world.maxy, space_lev.z_value)
+		ordered_vlevels += vlevel
 		++i
 	var/subi = 0
-	for(var/datum/sub_map_zone/subzone as anything in ordered_subzones)
+	for(var/datum/virtual_level/vlevel as anything in ordered_vlevels)
 		subi++
-		var/list/subzone_traits = subzone.traits
-		var/up_value = subzone_traits["Up"]
-		var/down_value = subzone_traits["Down"]
+		var/list/vlevel_traits = vlevel.traits
+		var/up_value = vlevel_traits["Up"]
+		var/down_value = vlevel_traits["Down"]
 		if(!isnull(up_value))
-			subzone.up_linkage = ordered_subzones[subi+up_value]
+			vlevel.up_linkage = ordered_vlevels[subi+up_value]
 		if(!isnull(down_value))
-			subzone.down_linkage = ordered_subzones[subi+down_value]
+			vlevel.down_linkage = ordered_vlevels[subi+down_value]
 	if(atmosphere_type)
 		var/datum/atmosphere/atmos = new atmosphere_type()
 		mapzone.set_planetary_atmos(atmos)
@@ -280,9 +280,9 @@ Used by the AI doomsday and the self-destruct nuke.
 	var/datum/ore_node_seeder/ore_node_seeder
 	if(ore_node_seeder_type)
 		ore_node_seeder = new ore_node_seeder_type
-	for(var/datum/sub_map_zone/iterated_subzone in mapzone.sub_map_zones)
+	for(var/datum/virtual_level/iterated_vlevel in mapzone.virtual_levels)
 		if(ore_node_seeder)
-			ore_node_seeder.SeedToLevel(iterated_subzone.z_value)
+			ore_node_seeder.SeedToLevel(iterated_vlevel.z_value)
 	if(rock_color)
 		mapzone.rock_color = rock_color
 	if(plant_color)
@@ -305,11 +305,11 @@ Used by the AI doomsday and the self-destruct nuke.
 		var/datum/parsed_map/pm = P
 		if (!pm.load(1, 1, start_z + parsed_maps[P], no_changeturf = TRUE))
 			errorList |= pm.original_path
-	for(var/datum/sub_map_zone/subzone as anything in ordered_subzones)
+	for(var/datum/virtual_level/vlevel as anything in ordered_vlevels)
 		if(map_margin)
-			subzone.reserve_margin(map_margin)
+			vlevel.reserve_margin(map_margin)
 		if(self_looping)
-			subzone.selfloop()
+			vlevel.selfloop()
 	if(!silent)
 		INIT_ANNOUNCE("Loaded [name] in [(REALTIMEOFDAY - start_time)/10]s!")
 	return parsed_maps
@@ -367,7 +367,7 @@ Used by the AI doomsday and the self-destruct nuke.
 			add_new_zlevel(ruins_name)
 			var/overmap_obj = new /datum/overmap_object/ruins(SSovermap.main_system, rand(5,25), rand(5,25))
 			var/datum/map_zone/mapzone = new(ruins_name, overmap_obj)
-			new /datum/sub_map_zone(ruins_name, ZTRAITS_SPACE, mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
+			new /datum/virtual_level(ruins_name, ZTRAITS_SPACE, mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
 	//Load planets
 	if(config.minetype == "lavaland")
 		var/datum/planet_template/lavaland_template = planet_templates[/datum/planet_template/lavaland]
@@ -622,15 +622,15 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 	if(turf_type_override)
 		reserve.turf_type = turf_type_override
 	if(!z)
-		for(var/datum/sub_map_zone/iterated_subzonesubzone in sub_zones_by_trait(ZTRAIT_RESERVED))
-			if(reserve.Reserve(width, height, iterated_subzonesubzone.z_value))
+		for(var/datum/virtual_level/iterated_vlevelvlevel in sub_zones_by_trait(ZTRAIT_RESERVED))
+			if(reserve.Reserve(width, height, iterated_vlevelvlevel.z_value))
 				return reserve
 		//If we didn't return at this point, theres a good chance we ran out of room on the exisiting reserved z levels, so lets try a new one
 		num_of_res_levels += 1
 		var/transit_name = "Transit/Reserved [num_of_res_levels]"
 		var/datum/space_level/newReserved = add_new_zlevel(transit_name)
 		var/datum/map_zone/mapzone = new(transit_name)
-		new /datum/sub_map_zone(transit_name, list(ZTRAIT_RESERVED = TRUE), mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
+		new /datum/virtual_level(transit_name, list(ZTRAIT_RESERVED = TRUE), mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
 		initialize_reserved_level(newReserved.z_value)
 		if(reserve.Reserve(width, height, newReserved.z_value))
 			return reserve
@@ -705,7 +705,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 	if(!isolated_ruins_z)
 		isolated_ruins_z = add_new_zlevel("Isolated Ruins/Reserved")
 		var/datum/map_zone/mapzone = new("Isolated Ruins/Reserved")
-		new /datum/sub_map_zone("Isolated Ruins/Reserved", list(ZTRAIT_RESERVED = TRUE), mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
+		new /datum/virtual_level("Isolated Ruins/Reserved", list(ZTRAIT_RESERVED = TRUE), mapzone, 1, 1, world.maxx, world.maxy, world.maxz)
 		initialize_reserved_level(isolated_ruins_z.z_value)
 	return isolated_ruins_z.z_value
 

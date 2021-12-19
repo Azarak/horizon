@@ -104,7 +104,7 @@
 				var/turf/pickedgoal = shuttle.transit_instance.GetActionSideTurf(REVERSE_DIR(dir))
 				new picked_meteor_type(pickedstart, pickedgoal)
 			else if(shuttle.related_map_zone)
-				var/datum/sub_map_zone/picked_sub = pick(shuttle.related_map_zone.sub_map_zones)
+				var/datum/virtual_level/picked_sub = pick(shuttle.related_map_zone.virtual_levels)
 				spawn_meteor(picked_meteor_type, dir, picked_sub)
 
 /datum/overmap_object/hazard/asteroid/get_random_icon_state()
@@ -152,7 +152,7 @@
 				var/turf/pickedgoal = shuttle.transit_instance.GetActionSideTurf(REVERSE_DIR(dir))
 				new picked_meteor_type(pickedstart, pickedgoal)
 			else if(shuttle.related_map_zone)
-				var/datum/sub_map_zone/picked_sub = pick(shuttle.related_map_zone.sub_map_zones)
+				var/datum/virtual_level/picked_sub = pick(shuttle.related_map_zone.virtual_levels)
 				spawn_meteor(picked_meteor_type, dir, picked_sub)
 
 /datum/overmap_object/hazard/dust/get_random_icon_state()
@@ -189,7 +189,7 @@
 					//EMP
 					empulse(pickedturf, 2, 6)
 			else if(shuttle.related_map_zone)
-				var/datum/sub_map_zone/picked_sub = pick(shuttle.related_map_zone.sub_map_zones)
+				var/datum/virtual_level/picked_sub = pick(shuttle.related_map_zone.virtual_levels)
 				var/turf/epicentre_turf = picked_sub.get_random_position()
 				if(prob(50))
 					//Light discharge
@@ -248,7 +248,7 @@
 					set_dir = shuttle.current_parallax_dir
 				new carp_type(shuttle.transit_instance.GetActionSideTurf(set_dir))
 			else if(shuttle.related_map_zone)
-				var/datum/sub_map_zone/picked_sub = pick(shuttle.related_map_zone.sub_map_zones)
+				var/datum/virtual_level/picked_sub = pick(shuttle.related_map_zone.virtual_levels)
 				var/datum/space_level/spawn_level = SSmapping.z_list[picked_sub.z_value]
 				var/carp_spawn_list = GetLandmarksInZLevel(/obj/effect/landmark/carpspawn, spawn_level)
 				if(!length(carp_spawn_list))

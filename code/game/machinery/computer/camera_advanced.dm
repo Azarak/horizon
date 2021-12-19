@@ -129,17 +129,17 @@
 	if(!eyeobj.eye_initialized)
 		var/camera_location
 		var/turf/myturf = get_turf(src)
-		var/datum/sub_map_zone/my_subzone = SSmapping.get_sub_zone(myturf)
+		var/datum/virtual_level/my_vlevel = SSmapping.get_sub_zone(myturf)
 		if(eyeobj.use_static != FALSE)
-			if((!trait_lock || (trait_lock in my_subzone.traits)) && GLOB.cameranet.checkTurfVis(myturf))
+			if((!trait_lock || (trait_lock in my_vlevel.traits)) && GLOB.cameranet.checkTurfVis(myturf))
 				camera_location = myturf
 			else
 				for(var/obj/machinery/camera/C in GLOB.cameranet.cameras)
 					if(!C.can_use())
 						continue
 					if(trait_lock)
-						var/datum/sub_map_zone/cam_subzone = SSmapping.get_sub_zone(C)
-						if(!(trait_lock in cam_subzone.traits))
+						var/datum/virtual_level/cam_vlevel = SSmapping.get_sub_zone(C)
+						if(!(trait_lock in cam_vlevel.traits))
 							continue
 					var/list/network_overlap = networks & C.network
 					if(network_overlap.len)
@@ -147,9 +147,9 @@
 						break
 		else
 			camera_location = myturf
-			if(trait_lock && !(trait_lock in my_subzone.traits))
-				var/datum/sub_map_zone/defaulted_subzone = SSmapping.sub_zones_by_trait(trait_lock)[1]
-				camera_location = defaulted_subzone.get_center()
+			if(trait_lock && !(trait_lock in my_vlevel.traits))
+				var/datum/virtual_level/defaulted_vlevel = SSmapping.sub_zones_by_trait(trait_lock)[1]
+				camera_location = defaulted_vlevel.get_center()
 
 		if(camera_location)
 			eyeobj.eye_initialized = TRUE
@@ -284,8 +284,8 @@
 
 	for (var/obj/machinery/camera/cam in GLOB.cameranet.cameras)
 		if(origin.trait_lock)
-			var/datum/sub_map_zone/cam_subzone = SSmapping.get_sub_zone(cam)
-			if(!(origin.trait_lock in cam_subzone.traits))
+			var/datum/virtual_level/cam_vlevel = SSmapping.get_sub_zone(cam)
+			if(!(origin.trait_lock in cam_vlevel.traits))
 				continue
 		L.Add(cam)
 
