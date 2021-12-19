@@ -622,8 +622,8 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 	if(turf_type_override)
 		reserve.turf_type = turf_type_override
 	if(!z)
-		for(var/datum/virtual_level/iterated_vlevelvlevel in sub_zones_by_trait(ZTRAIT_RESERVED))
-			if(reserve.Reserve(width, height, iterated_vlevelvlevel.z_value))
+		for(var/datum/virtual_level/iterated_vlevel in sub_zones_by_trait(ZTRAIT_RESERVED))
+			if(reserve.Reserve(width, height, iterated_vlevel.z_value))
 				return reserve
 		//If we didn't return at this point, theres a good chance we ran out of room on the exisiting reserved z levels, so lets try a new one
 		num_of_res_levels += 1
