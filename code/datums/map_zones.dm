@@ -593,9 +593,6 @@
 
 /// Gets the sub zone that contains the passed atom
 /datum/controller/subsystem/mapping/proc/get_virtual_level(atom/Atom)
-	if(!Atom.loc)
-		stack_trace("Tried to get a virtual level of an atom in nullspace")
-		return
 	var/datum/space_level/level = z_list[Atom.z]
 	if(!level) //This can happen with areas trying to get their sub zone, Hyperspace for example, unsure why, areas weird
 		return
@@ -608,9 +605,6 @@
 
 /// A helper pretty much
 /datum/controller/subsystem/mapping/proc/get_map_zone(atom/Atom)
-	if(!Atom.loc)
-		stack_trace("Tried to get a map zone of an atom in nullspace")
-		return
 	var/datum/virtual_level/vlevel = get_virtual_level(Atom)
 	if(vlevel)
 		return vlevel.parent_map_zone

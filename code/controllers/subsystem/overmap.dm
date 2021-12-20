@@ -48,7 +48,7 @@ SUBSYSTEM_DEF(overmap)
 /datum/controller/subsystem/overmap/proc/MappingInit()
 	//Initialize our reserved level
 	overmap_mapzone = SSmapping.create_map_zone("Overmap Map Zone")
-	overmap_reserved_level = SSmapping.create_virtual_level("Overmap Virtual Level", list(), QUADRANT_MAP_SIZE, QUADRANT_MAP_SIZE, ALLOCATION_QUADRANT)
+	overmap_reserved_level = SSmapping.create_virtual_level("Overmap Virtual Level", list(), overmap_mapzone, QUADRANT_MAP_SIZE, QUADRANT_MAP_SIZE, ALLOCATION_QUADRANT)
 	//Initialize sun systems
 	main_system = CreateNewSunSystem(new /datum/overmap_sun_system(overmap_reserved_level))
 	//Seed some random objects in the main system

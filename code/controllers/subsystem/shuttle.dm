@@ -740,6 +740,7 @@ SUBSYSTEM_DEF(shuttle)
 	// get the existing shuttle information, if any
 	var/timer = 0
 	var/mode = SHUTTLE_IDLE
+	var/generated_transit
 	var/obj/docking_port/stationary/D
 
 	if(istype(destination_port))
@@ -751,6 +752,7 @@ SUBSYSTEM_DEF(shuttle)
 
 	if(!D)
 		D = generate_transit_dock(preview_shuttle)
+		generated_transit = TRUE
 
 	if(!D)
 		CRASH("No dock found for preview shuttle ([preview_template.name]), aborting.")
@@ -769,7 +771,11 @@ SUBSYSTEM_DEF(shuttle)
 	var/list/force_memory = preview_shuttle.movement_force
 	preview_shuttle.movement_force = list("KNOCKDOWN" = 0, "THROW" = 0)
 	preview_shuttle.mode = SHUTTLE_PREARRIVAL//No idle shuttle moving. Transit dock get removed if shuttle moves too long.
-	preview_shuttle.initiate_docking(D)
+	if(generated_transit)
+		preview_shuttle.destination = "overmap"
+		preview_shuttle.enterTransit()
+	else
+		preview_shuttle.initiate_docking(D)
 	preview_shuttle.movement_force = force_memory
 
 	. = preview_shuttle

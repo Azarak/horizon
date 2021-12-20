@@ -6,6 +6,8 @@
 			stack_trace("Unmanaged z-level [z]! maxz = [world.maxz], z_list.len = [z_list.len]")
 			return list()
 		var/datum/virtual_level/zone = get_virtual_level(Atom)
+		if(!zone)
+			return
 		return zone.traits[trait]
 	else
 		var/list/default = DEFAULT_MAP_TRAITS
