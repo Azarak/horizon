@@ -204,8 +204,8 @@
 	var/list/spawners_weight = list(/obj/effect/ore_node_spawner = 100)
 	var/spawners_amount = 6
 
-/datum/ore_node_seeder/proc/SeedToLevel(z)
+/datum/ore_node_seeder/proc/SeedToLevel(datum/virtual_level/vlevel)
 	for(var/i in 1 to spawners_amount)
 		var/picked_type = pickweight(spawners_weight)
-		var/turf/loc_to_spawn = locate(rand(1,world.maxx), rand(1,world.maxy), z)
+		var/turf/loc_to_spawn = locate(rand(vlevel.low_x,vlevel.high_x), rand(vlevel.low_y,vlevel.high_y), vlevel.z_value)
 		new picked_type(loc_to_spawn)

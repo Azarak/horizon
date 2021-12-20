@@ -2057,3 +2057,9 @@
 		usr.hud_used.screentip_text.maptext = ""
 	else
 		usr.hud_used.screentip_text.maptext = MAPTEXT("<span style='text-align: center'><span style='font-size: 32px'><span style='color:[usr.client.prefs.screentip_color]: 32px'>[name]</span>")
+
+/// Gets the Z value of a virtual level the mob is inside
+/atom/proc/virtual_z()
+	var/datum/virtual_level/vlevel = SSmapping.get_virtual_level(src)
+	if(vlevel)
+		return vlevel.id

@@ -39,7 +39,7 @@ In my current plan for it, 'solid' will be defined as anything with density == 1
 	var/startside = pick(GLOB.cardinals)
 	var/turf/endT = get_edge_target_turf(get_random_station_turf(), turn(startside, 180))
 	var/datum/virtual_level/vlevel = SSmapping.get_virtual_level(endT)
-	var/turf/startT = spaceDebrisStartLoc(startside, vlevel)
+	var/turf/startT = vlevel.get_side_turf(startside)
 	var/atom/rod = new /obj/effect/immovablerod(startT, endT, C.special_target, C.force_looping)
 	C.special_target = null //Cleanup for future event rolls.
 	announce_to_ghosts(rod)

@@ -1,5 +1,4 @@
 #define DEFAULT_METEOR_LIFETIME 1800
-#define MAP_EDGE_PAD 5
 
 GLOBAL_VAR_INIT(meteor_wave_delay, 625) //minimum wait between waves in tenths of seconds
 //set to at least 100 unless you want evarr ruining every round
@@ -34,48 +33,12 @@ GLOBAL_LIST_INIT(meteorsC, list(/obj/effect/meteor/dust)) //for space dust event
 	while(!isspaceturf(pickedstart) && !isopenspaceturf(pickedstart))
 		var/startSide = dir || pick(GLOB.cardinals)
 		var/datum/virtual_level/startsub = vlevel || pick(SSmapping.virtual_levels_by_trait(ZTRAIT_STATION))
-		pickedstart = spaceDebrisStartLoc(startSide, startsub, padding)
-		pickedgoal = spaceDebrisFinishLoc(startSide, startsub, padding)
+		pickedstart = startsub.get_side_turf(startSide, padding)
+		pickedgoal = startsub.get_side_turf(REVERSE_DIR(startSide), padding)
 		max_i--
 		if(max_i<=0)
 			return
 	new meteor_type(pickedstart, pickedgoal)
-
-/proc/spaceDebrisStartLoc(startSide, datum/virtual_level/vlevel, padding = MAP_EDGE_PAD)
-	var/starty
-	var/startx
-	switch(startSide)
-		if(NORTH)
-			starty = vlevel.high_y-(vlevel.reserved_margin + padding)
-			startx = rand(vlevel.low_x + (vlevel.reserved_margin + padding), vlevel.high_x-(vlevel.reserved_margin + padding))
-		if(EAST)
-			starty = rand(vlevel.low_y + (vlevel.reserved_margin + padding),vlevel.high_y-(vlevel.reserved_margin + padding))
-			startx = vlevel.high_x-(vlevel.reserved_margin + padding)
-		if(SOUTH)
-			starty = (vlevel.reserved_margin + padding)
-			startx = rand(vlevel.low_x + (vlevel.reserved_margin + padding),vlevel.high_x-(vlevel.reserved_margin + padding))
-		if(WEST)
-			starty = rand(vlevel.low_y + (vlevel.reserved_margin + padding), vlevel.high_y-(vlevel.reserved_margin + padding))
-			startx = (vlevel.reserved_margin + padding)
-	. = locate(startx, starty, vlevel.z_value)
-
-/proc/spaceDebrisFinishLoc(startSide, datum/virtual_level/vlevel, padding = MAP_EDGE_PAD)
-	var/endy
-	var/endx
-	switch(startSide)
-		if(NORTH)
-			endy = (vlevel.reserved_margin + padding)
-			endx = rand(vlevel.low_x + (vlevel.reserved_margin + padding), vlevel.high_x-(vlevel.reserved_margin + padding))
-		if(EAST)
-			endy = rand(vlevel.low_y + (vlevel.reserved_margin + padding), vlevel.high_y-(vlevel.reserved_margin + padding))
-			endx = (vlevel.reserved_margin + padding)
-		if(SOUTH)
-			endy = vlevel.high_y-(vlevel.reserved_margin + padding)
-			endx = rand(vlevel.low_x + (vlevel.reserved_margin + padding), vlevel.high_x-(vlevel.reserved_margin + padding))
-		if(WEST)
-			endy = rand(vlevel.low_y + (vlevel.reserved_margin + padding), vlevel.high_y-(vlevel.reserved_margin + padding))
-			endx = vlevel.high_x-(vlevel.reserved_margin + padding)
-	. = locate(endx, endy, vlevel.z_value)
 
 ///////////////////////
 //The meteor effect
@@ -385,4 +348,3 @@ GLOBAL_LIST_INIT(meteorsSPOOKY, list(/obj/effect/meteor/pumpkin))
 	meteorsound = pick('sound/hallucinations/im_here1.ogg','sound/hallucinations/im_here2.ogg')
 //////////////////////////
 #undef DEFAULT_METEOR_LIFETIME
-#undef MAP_EDGE_PAD

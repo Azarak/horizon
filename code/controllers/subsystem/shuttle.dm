@@ -81,7 +81,8 @@ SUBSYSTEM_DEF(shuttle)
 	var/obj/docking_port/mobile/preview_shuttle
 	var/datum/map_template/shuttle/preview_template
 
-	var/datum/turf_reservation/preview_reservation
+	/// The mapzone that the preview shuttle is loaded into
+	var/datum/map_zone/preview_mapzone
 
 	var/shuttle_loading
 
@@ -89,8 +90,6 @@ SUBSYSTEM_DEF(shuttle)
 	var/list/sold_shuttles = list()
 	/// Assoc list of "[dock_id]-[shuttle_types]" to a list of possible sold shuttles for those
 	var/list/sold_shuttles_cache = list()
-	/// List of all transit instances
-	var/list/transit_instances = list()
 
 /datum/controller/subsystem/shuttle/Initialize(timeofday)
 	ordernum = rand(1, 9000)
@@ -175,19 +174,18 @@ SUBSYSTEM_DEF(shuttle)
 				qdel(T, force=TRUE)
 	CheckAutoEvac()
 
-	if(!SSmapping.clearing_reserved_turfs)
-		while(transit_requesters.len)
-			var/requester = popleft(transit_requesters)
-			var/success = generate_transit_dock(requester)
-			if(!success) // BACK OF THE QUEUE
-				transit_request_failures[requester]++
-				if(transit_request_failures[requester] < MAX_TRANSIT_REQUEST_RETRIES)
-					transit_requesters += requester
-				else
-					var/obj/docking_port/mobile/M = requester
-					M.transit_failure()
-			if(MC_TICK_CHECK)
-				break
+	while(transit_requesters.len)
+		var/requester = popleft(transit_requesters)
+		var/success = generate_transit_dock(requester)
+		if(!success) // BACK OF THE QUEUE
+			transit_request_failures[requester]++
+			if(transit_request_failures[requester] < MAX_TRANSIT_REQUEST_RETRIES)
+				transit_requesters += requester
+			else
+				var/obj/docking_port/mobile/M = requester
+				M.transit_failure()
+		if(MC_TICK_CHECK)
+			break
 
 /datum/controller/subsystem/shuttle/proc/CheckAutoEvac()
 	if(emergencyNoEscape || adminEmergencyNoRecall || emergencyNoRecall || !emergency || !SSticker.HasRoundStarted())
@@ -491,6 +489,8 @@ SUBSYSTEM_DEF(shuttle)
 		if(!(M in transit_requesters))
 			transit_requesters += M
 
+#define TRANSIT_BORDER_RESERVE 3
+
 /datum/controller/subsystem/shuttle/proc/generate_transit_dock(obj/docking_port/mobile/M)
 	// First, determine the size of the needed zone
 	// Because of shuttle rotation, the "width" of the shuttle is not
@@ -530,12 +530,25 @@ SUBSYSTEM_DEF(shuttle)
 		if(WEST)
 			transit_path = /turf/open/space/transit/west
 
-	var/datum/turf_reservation/proposal = SSmapping.RequestBlockReservation(transit_width, transit_height, null, /datum/turf_reservation/transit, transit_path)
+	var/transit_name = "Transit Map Zone"
+	var/datum/map_zone/mapzone = SSmapping.create_map_zone(transit_name)
+	var/datum/virtual_level/vlevel = SSmapping.create_virtual_level(transit_name, list(ZTRAIT_RESERVED = TRUE), mapzone, transit_width, transit_height, ALLOCATION_FREE)
 
-	if(!istype(proposal))
-		return FALSE
+	vlevel.reserve_margin(TRANSIT_BORDER_RESERVE)
 
-	var/turf/bottomleft = locate(proposal.bottom_left_coords[1], proposal.bottom_left_coords[2], proposal.bottom_left_coords[3])
+	mapzone.parallax_movedir = travel_dir
+
+	var/area/shuttle/transit/transit_area = new()
+	transit_area.parallax_movedir = travel_dir
+
+	vlevel.fill_in(transit_path, transit_area)
+
+	var/turf/bottomleft = locate(
+		vlevel.low_x,
+		vlevel.low_y,
+		vlevel.z_value
+		)
+
 	// Then create a transit docking port in the middle
 	var/coords = M.return_coords(0, 0, dock_dir)
 	/*  0------2
@@ -560,21 +573,21 @@ SUBSYSTEM_DEF(shuttle)
 	var/turf/midpoint = locate(transit_x, transit_y, bottomleft.z)
 	if(!midpoint)
 		return FALSE
-	var/area/shuttle/transit/A = new()
-	A.parallax_movedir = travel_dir
-	A.contents = proposal.reserved_turfs
+
 	var/obj/docking_port/stationary/transit/new_transit_dock = new(midpoint)
-	new_transit_dock.reserved_area = proposal
+	new_transit_dock.reserved_mapzone = mapzone
 	new_transit_dock.name = "Transit for [M.id]/[M.name]"
 	new_transit_dock.owner = M
-	new_transit_dock.assigned_area = A
+	new_transit_dock.assigned_area = transit_area
 
 	// Add 180, because ports point inwards, rather than outwards
 	new_transit_dock.setDir(angle2dir(dock_angle))
 
 	M.assigned_transit = new_transit_dock
-	new /datum/transit_instance(proposal, new_transit_dock)
+	vlevel.add_transit_instance(new_transit_dock)
 	return new_transit_dock
+
+#undef TRANSIT_BORDER_RESERVE
 
 /datum/controller/subsystem/shuttle/Recover()
 	if (istype(SSshuttle.mobile))
@@ -636,7 +649,7 @@ SUBSYSTEM_DEF(shuttle)
 	preview_shuttle = SSshuttle.preview_shuttle
 	preview_template = SSshuttle.preview_template
 
-	preview_reservation = SSshuttle.preview_reservation
+	preview_mapzone = SSshuttle.preview_mapzone
 
 /datum/controller/subsystem/shuttle/proc/is_in_shuttle_bounds(atom/A)
 	var/area/current = get_area(A)
@@ -718,7 +731,7 @@ SUBSYSTEM_DEF(shuttle)
 		preview_shuttle.jumpToNullSpace()
 		preview_shuttle = null
 		preview_template = null
-		QDEL_NULL(preview_reservation)
+		QDEL_NULL(preview_mapzone)
 
 	if(!preview_shuttle)
 		load_template(loading_template)
@@ -774,15 +787,26 @@ SUBSYSTEM_DEF(shuttle)
 	preview_template = null
 	existing_shuttle = null
 	selected = null
-	QDEL_NULL(preview_reservation)
+
+	preview_mapzone.clear_reservation() //Is this safe? Docking CHECK_TICK's and this should happen on the same thread, so theoritically this wouldn't happen until docking has been finished? Maybe?
+	QDEL_NULL(preview_mapzone)
 
 /datum/controller/subsystem/shuttle/proc/load_template(datum/map_template/shuttle/S)
 	. = FALSE
 	// Load shuttle template to a fresh block reservation.
-	preview_reservation = SSmapping.RequestBlockReservation(S.width, S.height, SSmapping.transit.z_value, /datum/turf_reservation/transit)
-	if(!preview_reservation)
+	var/width = S.width
+	var/height = S.height
+
+	var/mapzone_name = "Preview Shuttle Zone"
+	preview_mapzone = SSmapping.create_map_zone(mapzone_name)
+	var/datum/virtual_level/vlevel = SSmapping.create_virtual_level(mapzone_name, list(ZTRAIT_RESERVED = TRUE), preview_mapzone, width, height, ALLOCATION_FREE)
+
+	if(!preview_mapzone) ///Shouldn't ever happen
 		CRASH("failed to reserve an area for shuttle template loading")
-	var/turf/BL = TURF_FROM_COORDS_LIST(preview_reservation.bottom_left_coords)
+
+	vlevel.fill_in(/turf/open/space/transit/south)
+
+	var/turf/BL = locate(vlevel.low_x, vlevel.low_y, vlevel.z_value)
 	S.load(BL, centered = FALSE, register = FALSE)
 
 	var/affected = S.get_affected_turfs(BL, centered=FALSE)
@@ -995,9 +1019,3 @@ SUBSYSTEM_DEF(shuttle)
 			has_purchase_shuttle_access |= shuttle_template.who_can_purchase
 
 	return has_purchase_shuttle_access
-
-/datum/controller/subsystem/shuttle/proc/get_transit_instance(atom/movable/movable_atom)
-	for(var/i in transit_instances)
-		var/datum/transit_instance/iterated_transit = i
-		if(iterated_transit.reservation.IsInBounds(movable_atom))
-			return iterated_transit

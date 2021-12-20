@@ -1,8 +1,9 @@
-/proc/GetLandmarksInZLevel(landmark_type, datum/space_level/z_level)
+/proc/get_landmarks_in_virtual_level(landmark_type, datum/virtual_level/vlevel)
 	var/list/compiled_list = list()
+	var/z_value = vlevel.z_value
 	for(var/i in GLOB.landmarks_list)
 		var/obj/effect/landmark/landmark = i
-		if(z_level.z_value == landmark.z && istype(landmark, landmark_type))
+		if(z_valuee == landmark.z && istype(landmark, landmark_type))
 			compiled_list += landmark
 	return compiled_list
 

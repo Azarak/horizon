@@ -1,8 +1,6 @@
 /datum/map_template/ruin/proc/try_to_place(datum/virtual_level/vlevel ,allowed_areas,turf/forced_turf)
 	var/z = vlevel.z_value
 	var/sanity = forced_turf ? 1 : PLACEMENT_TRIES
-	if(vlevel.get_trait(ZTRAIT_ISOLATED_RUINS))
-		return place_on_isolated_level(z)
 	while(sanity > 0)
 		sanity--
 		var/width_border = vlevel.mapping_margin + SPACERUIN_MAP_EDGE_PAD + round(width / 2)
@@ -44,20 +42,6 @@
 
 		new /obj/effect/landmark/ruin(central_turf, src)
 		return central_turf
-
-/datum/map_template/ruin/proc/place_on_isolated_level(z)
-	var/datum/turf_reservation/reservation = SSmapping.RequestBlockReservation(width, height, z) //Make the new level creation work with different traits.
-	if(!reservation)
-		return
-	var/turf/placement = locate(reservation.bottom_left_coords[1],reservation.bottom_left_coords[2],reservation.bottom_left_coords[3])
-	load(placement)
-	loaded++
-	for(var/turf/T in get_affected_turfs(placement))
-		T.turf_flags |= NO_RUINS
-	var/turf/center = locate(placement.x + round(width/2),placement.y + round(height/2),placement.z)
-	new /obj/effect/landmark/ruin(center, src)
-	return center
-
 
 /proc/seedRuins(list/virtual_levels = null, budget = 0, whitelist = list(/area/space), list/potentialRuins)
 	if(!virtual_levels || !virtual_levels.len)
@@ -174,8 +158,6 @@
 									forced_ruins[linked] = -1
 								if(PLACE_BELOW)
 									forced_ruins[linked] = SSmapping.get_turf_below(placed_turf)
-								if(PLACE_ISOLATED)
-									forced_ruins[linked] = SSmapping.get_isolated_ruin_z()
 
 		//Update the available list
 		for(var/datum/map_template/ruin/R in ruins_available)

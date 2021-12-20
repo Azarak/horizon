@@ -638,7 +638,7 @@ GENE SCANNER
 		if(!T)
 			return
 
-		var/datum/weather_controller/weather_controller = SSmapping.GetMapZoneWeatherController(T)
+		var/datum/weather_controller/weather_controller = SSmapping.get_map_zone_weather_controller(T)
 		playsound(src, 'sound/effects/pop.ogg', 100)
 		var/area/user_area = T.loc
 		var/datum/weather/ongoing_weather = null

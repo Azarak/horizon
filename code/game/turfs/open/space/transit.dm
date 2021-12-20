@@ -29,7 +29,8 @@
 		return
 	if(arrived.loc != src || src.loc.type != /area/shuttle/transit)
 		return
-	var/datum/transit_instance/this_transit = SSshuttle.get_transit_instance(src)
+	var/datum/virtual_level/vlevel = SSmapping.get_virtual_level(src)
+	var/datum/transit_instance/this_transit = vlevel.transit_instance
 	if(!this_transit)
 		return
 	arrived.AddComponent(/datum/component/transit_handler, this_transit)

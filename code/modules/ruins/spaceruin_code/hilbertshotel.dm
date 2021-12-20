@@ -16,6 +16,8 @@ GLOBAL_VAR_INIT(hhMysteryRoomNumber, rand(1, 999999))
 	//Lore Stuff
 	var/ruinSpawned = FALSE
 
+/*
+
 /obj/item/hilbertshotel/Initialize()
 	. = ..()
 	//Load templates
@@ -195,6 +197,8 @@ GLOBAL_VAR_INIT(hhMysteryRoomNumber, rand(1, 999999))
 				var/turf/T = locate(_x, _y, _z)
 				A.forceMove(T)
 
+*/
+
 //Template Stuff
 /datum/map_template/hilbertshotel
 	name = "Hilbert's Hotel Room"
@@ -347,8 +351,10 @@ GLOBAL_VAR_INIT(hhMysteryRoomNumber, rand(1, 999999))
 	ambientsounds = list('sound/ambience/servicebell.ogg')
 	var/roomnumber = 0
 	var/obj/item/hilbertshotel/parentSphere
-	var/datum/turf_reservation/reservation
+	//var/datum/turf_reservation/reservation
 	var/turf/storageTurf
+
+/*
 
 /area/hilbertshotel/Entered(atom/movable/arrived, direction)
 	. = ..()
@@ -422,6 +428,8 @@ GLOBAL_VAR_INIT(hhMysteryRoomNumber, rand(1, 999999))
 	parentSphere.storedRooms["[roomnumber]"] = storage
 	parentSphere.activeRooms -= "[roomnumber]"
 	qdel(reservation)
+
+*/
 
 /area/hilbertshotelstorage
 	name = "Hilbert's Hotel Storage Room"

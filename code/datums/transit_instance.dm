@@ -1,48 +1,22 @@
 /datum/transit_instance
-	var/datum/turf_reservation/reservation
+	var/datum/virtual_level/vlevel
 	var/obj/docking_port/stationary/transit/dock
 	var/datum/overmap_object/shuttle/overmap_shuttle
 	//Associative for easy lookup
 	var/list/affected_movables = list()
 
-//Getter for hazards to easily find random and appropriate turfs to spawn/do stuff on
-/datum/transit_instance/proc/GetActionSideTurf(dir, middle = FALSE)
-	var/turf/found_turf
-	var/list/bottom_left_coords = reservation.bottom_left_coords
-	var/list/top_right_coords = reservation.top_right_coords
-	var/z = bottom_left_coords[3]
-	//The margin is 2 because diagonal movement will cause things to evaporate due to entering a transit border turf
-	var/low_x = bottom_left_coords[1] + 2
-	var/high_x = top_right_coords[1] - 2
-	var/low_y = bottom_left_coords[2] + 2
-	var/high_y = top_right_coords[2] - 2
-	if(middle)
-		found_turf = locate(rand(low_x, high_x), rand(low_y, high_y), z)
-	else
-		if(!dir)
-			dir = pick(GLOB.cardinals)
-		switch(dir)
-			if(NORTH)
-				found_turf = locate(rand(low_x, high_x), high_y, z)
-			if(SOUTH)
-				found_turf = locate(rand(low_x, high_x), low_y, z)
-			if(EAST)
-				found_turf = locate(high_x, rand(low_y, high_y), z)
-			if(WEST)
-				found_turf = locate(low_x, rand(low_y, high_y), z)
-	return found_turf
-
-/datum/transit_instance/New(datum/turf_reservation/arg_reservation, obj/docking_port/stationary/transit/arg_dock)
+/datum/transit_instance/New(datum/virtual_level/arg_vlevel, obj/docking_port/stationary/transit/arg_dock)
 	. = ..()
-	reservation = arg_reservation
+	vlevel = arg_vlevel
+	vlevel.transit_instance = src
 	dock = arg_dock
 	dock.transit_instance = src
-	SSshuttle.transit_instances += src
 
 /datum/transit_instance/Destroy()
 	StrandAll()
-	SSshuttle.transit_instances -= src
-	reservation = null
+	vlevel.transit_instance = null
+	vlevel = null
+	dock.transit_instance = null
 	dock = null
 	overmap_shuttle = null
 	return ..()
@@ -55,7 +29,7 @@
 	if(!moved.loc || !isturf(moved.loc))
 		return
 	var/turf/my_turf = moved.loc
-	if(!reservation.IsAdjacentToEdgeOrOutOfBounds(my_turf))
+	if(!vlevel.on_edge(my_turf))
 		return
 	//We've moved to be adjacent to edge or out of bounds
 	//Check for things that should just disappear as they bump into the edges of the map
@@ -91,7 +65,7 @@
 			continue
 		var/turf/step_turf = get_step(my_turf, dir)
 		//Medium velocity, and someone gets bumped against an edge turf
-		if(velocity_stage >= TRANSIT_VELOCITY_MEDIUM && reservation.IsAtEdge(step_turf))
+		if(velocity_stage >= TRANSIT_VELOCITY_MEDIUM && vlevel.on_edge_reservation(step_turf))
 			StrandAct(movable)
 			continue
 		//Huge velocity, check if we get squashed against something that blocks us

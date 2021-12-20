@@ -87,7 +87,7 @@ SUBSYSTEM_DEF(blackmarket)
 				var/startSide = pick(GLOB.cardinals)
 				var/turf/T = get_turf(purchase.uplink)
 				var/datum/virtual_level/vlevel = SSmapping.get_virtual_level(T)
-				var/pickedloc = spaceDebrisStartLoc(startSide, vlevel)
+				var/pickedloc = vlevel.get_side_turf(startSide)
 
 				var/atom/movable/item = purchase.entry.spawn_item(pickedloc)
 				item.throw_at(purchase.uplink, 3, 3, spin = FALSE)

@@ -16,6 +16,8 @@
 	spawnableTurfs = list(/turf/closed/wall = 100)
 	allowAtomsOnSpace = TRUE
 
+/datum/map_generator_module/reload_station_map
+/* Need to rewrite this
 /datum/map_generator_module/reload_station_map/generate()
 	if(!istype(mother, /datum/map_generator/repair/reload_station_map))
 		return
@@ -53,6 +55,7 @@
 	SSmachines.setup_template_powernets(cables)
 	SSair.setup_template_machinery(atmos_machines)
 	GLOB.reloading_map = FALSE
+*/
 
 /datum/map_generator/repair
 	modules = list(/datum/map_generator_module/bottom_layer/repair_floor_plasteel,
@@ -97,7 +100,7 @@
 	y_low = min(start.y, end.y)
 	x_high = max(start.x, end.x)
 	y_high = max(start.y, end.y)
-	z = SSmapping.station_start
+	//z = SSmapping.station_start
 
 GLOBAL_VAR_INIT(reloading_map, FALSE)
 

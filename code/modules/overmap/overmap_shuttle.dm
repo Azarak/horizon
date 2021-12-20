@@ -63,32 +63,6 @@
 
 	var/current_parallax_dir = 0
 
-/datum/overmap_object/shuttle/GetAllAliveClientMobs()
-	if(my_shuttle)
-		. = list()
-		//About the most efficient way I could think of doing it
-		var/datum/space_level/transit_level = SSmapping.transit
-		for(var/i in SSmobs.clients_by_zlevel[transit_level.z_value])
-			var/mob/iterated_mob = i
-			var/turf/mob_turf = get_turf(iterated_mob)
-			if(my_shuttle.shuttle_areas[mob_turf.loc])
-				. += iterated_mob
-	else
-		. = ..()
-
-/datum/overmap_object/shuttle/GetAllClientMobs()
-	if(my_shuttle)
-		. = list()
-		//About the most efficient way I could think of doing it
-		var/datum/space_level/transit_level = SSmapping.transit
-		for(var/i in SSmobs.dead_players_by_zlevel[transit_level.z_value])
-			var/mob/iterated_mob = i
-			var/turf/mob_turf = get_turf(iterated_mob)
-			if(my_shuttle.shuttle_areas[mob_turf.loc])
-				. += iterated_mob
-	else
-		. = ..()
-
 /datum/overmap_object/shuttle/proc/GetSensorTargets()
 	var/list/targets = list()
 	for(var/ov_obj in current_system.GetObjectsInRadius(x,y,SENSOR_RADIUS))
@@ -629,8 +603,8 @@
 			hyperspace_area.parallax_movedir = current_parallax_dir
 	else if (is_seperate_z_level && related_map_zone)
 		current_parallax_dir = (established_direction && fixed_parallax_dir) ? fixed_parallax_dir : established_direction
-		if(current_parallax_dir != related_map_zone.parallax_direction_override)
-			related_map_zone.parallax_direction_override = current_parallax_dir
+		if(current_parallax_dir != related_map_zone.parallax_movedir)
+			related_map_zone.parallax_movedir = current_parallax_dir
 			changed = TRUE
 
 	if(changed)
