@@ -102,6 +102,10 @@ require only minor tweaks.
 #define ALLOCATION_QUADRANT 2
 #define ALLOCATION_FULL 3
 
-#define QUADRANT_MAP_SIZE 125
+#define QUADRANT_MAP_SIZE 127
+
+#define DEFAULT_ALLOC_JUMP 5
+
+#define TRANSIT_SIZE_BORDER 3
 
 #define MAP_EDGE_PAD 5

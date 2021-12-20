@@ -597,7 +597,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 	return returned_mapzone
 
 /// Searches for a free allocation for the passed type and size, creates new physical levels if nessecary.
-/datum/controller/subsystem/mapping/proc/get_free_allocation(allocation_type, size_x, size_y)
+/datum/controller/subsystem/mapping/proc/get_free_allocation(allocation_type, size_x, size_y, allocation_jump)
 	var/list/allocation_list
 	var/list/levels_to_check = z_list.Copy()
 	var/created_new_level = FALSE
@@ -605,7 +605,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 		for(var/datum/space_level/iterated_level as anything in levels_to_check)
 			if(iterated_level.allocation_type != allocation_type)
 				continue
-			allocation_list = find_allocation_in_level(iterated_level, size_x, size_y)
+			allocation_list = find_allocation_in_level(iterated_level, size_x, size_y, allocation_jump)
 			if(allocation_list)
 				return allocation_list
 
@@ -629,10 +629,8 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 
 		levels_to_check += add_new_zlevel("Generated [allocation_name] Level", allocation_type = allocation_type)
 
-#define ALLOCATION_FIND_JUMP_DIST 5
-
 /// Finds a box allocation inside a Z level. Uses a methodical box boundary check method
-/datum/controller/subsystem/mapping/proc/find_allocation_in_level(datum/space_level/level, size_x, size_y)
+/datum/controller/subsystem/mapping/proc/find_allocation_in_level(datum/space_level/level, size_x, size_y, allocation_jump)
 	var/target_x = 1
 	var/target_y = 1
 
@@ -661,21 +659,18 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 			target_y = 1
 			increments_y = FALSE
 		if(increments_y)
-			target_y += ALLOCATION_FIND_JUMP_DIST
+			target_y += allocation_jump
 		else
-			target_x += ALLOCATION_FIND_JUMP_DIST
-
-
-#undef ALLOCATION_FIND_JUMP_DIST
+			target_x += allocation_jump
 
 /// Creates and passes a new map zone
 /datum/controller/subsystem/mapping/proc/create_map_zone(new_name, datum/overmap_object/passed_ov_obj)
 	return new /datum/map_zone(new_name)
 
 /// Allocates, creates and passes a new virtual level
-/datum/controller/subsystem/mapping/proc/create_virtual_level(new_name, list/traits, datum/map_zone/mapzone, width, height, allocation_type = ALLOCATION_FREE)
+/datum/controller/subsystem/mapping/proc/create_virtual_level(new_name, list/traits, datum/map_zone/mapzone, width, height, allocation_type = ALLOCATION_FREE, allocation_jump = DEFAULT_ALLOC_JUMP)
 	/// Because we add an implicit extra 1 in the way we do reservation
 	width--
 	height--
-	var/list/allocation_coords = SSmapping.get_free_allocation(allocation_type, width, height)
+	var/list/allocation_coords = SSmapping.get_free_allocation(allocation_type, width, height, allocation_jump)
 	return new /datum/virtual_level(new_name, traits, mapzone, allocation_coords[1], allocation_coords[2], allocation_coords[1] + width, allocation_coords[2] + height, allocation_coords[3])
