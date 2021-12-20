@@ -776,14 +776,15 @@ SUBSYSTEM_DEF(shuttle)
 		preview_shuttle.enterTransit()
 	else
 		preview_shuttle.initiate_docking(D)
+		// Shuttle state involves a mode and a timer based on world.time, so
+		// plugging the existing shuttles old values in works fine.
+		preview_shuttle.timer = timer
+		preview_shuttle.mode = mode
+
 	preview_shuttle.movement_force = force_memory
 
 	. = preview_shuttle
 
-	// Shuttle state involves a mode and a timer based on world.time, so
-	// plugging the existing shuttles old values in works fine.
-	preview_shuttle.timer = timer
-	preview_shuttle.mode = mode
 
 	preview_shuttle.register(replace)
 
