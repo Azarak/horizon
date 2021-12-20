@@ -47,8 +47,8 @@ GLOBAL_VAR(test_log)
 
 		var/datum/map_template/unit_tests/template = new
 		template.load(locate(
-			vlevel.low_x + vlevel.reserve_margin, 
-			vlevel.low_y + vlevel.reserve_margin, 
+			vlevel.low_x + vlevel.reserved_margin, 
+			vlevel.low_y + vlevel.reserved_margin, 
 			vlevel.z_value)
 		)
 
