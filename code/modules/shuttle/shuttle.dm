@@ -587,6 +587,7 @@
 		qdel(freeform_port, TRUE)
 		freeform_port = null
 	if(destination == "overmap")
+		mode == SHUTTLE_CALL
 		destination = null
 		timer = INFINITY
 		var/datum/map_zone/mapzone = SSmapping.get_map_zone(src)
