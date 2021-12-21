@@ -237,7 +237,7 @@ Used by the AI doomsday and the self-destruct nuke.
 		ore_node_seeder = new ore_node_seeder_type
 	for(var/datum/virtual_level/iterated_vlevel in mapzone.virtual_levels)
 		if(ore_node_seeder)
-			ore_node_seeder.SeedToLevel(iterated_vlevel.z_value)
+			ore_node_seeder.SeedToLevel(iterated_vlevel)
 	if(rock_color)
 		mapzone.rock_color = rock_color
 	if(plant_color)
