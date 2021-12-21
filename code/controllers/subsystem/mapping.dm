@@ -665,7 +665,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 
 /// Creates and passes a new map zone
 /datum/controller/subsystem/mapping/proc/create_map_zone(new_name, datum/overmap_object/passed_ov_obj)
-	return new /datum/map_zone(new_name)
+	return new /datum/map_zone(new_name, passed_ov_obj)
 
 /// Allocates, creates and passes a new virtual level
 /datum/controller/subsystem/mapping/proc/create_virtual_level(new_name, list/traits, datum/map_zone/mapzone, width, height, allocation_type = ALLOCATION_FREE, allocation_jump = DEFAULT_ALLOC_JUMP)

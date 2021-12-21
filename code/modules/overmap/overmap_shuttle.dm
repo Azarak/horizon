@@ -548,6 +548,7 @@
 		extension.AddToOvermapObject(src)
 
 	var/obj/docking_port/stationary/transit/my_transit = my_shuttle.assigned_transit
+	related_map_zone = my_transit.reserved_mapzone
 	transit_instance = my_transit.transit_instance
 	transit_instance.overmap_shuttle = src
 
