@@ -447,7 +447,7 @@
 	mark_turfs()
 
 /datum/virtual_level/proc/is_in_bounds(atom/Atom)
-	if(Atom.virtual_z() == z_value)
+	if(Atom.virtual_z() == id)
 		return TRUE
 	return FALSE
 
