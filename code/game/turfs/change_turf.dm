@@ -57,11 +57,11 @@ GLOBAL_LIST_INIT(blacklisted_automated_baseturfs, typecacheof(list(
 		if(null)
 			return
 		if(/turf/baseturf_bottom)
-			path = SSmapping.virtual_level_trait(src, ZTRAIT_BASETURF) || /turf/open/space
+			path = virtual_level_trait(ZTRAIT_BASETURF) || /turf/open/space
 			if (!ispath(path))
 				path = text2path(path)
 				if (!ispath(path))
-					warning("Z-level [z] has invalid baseturf '[SSmapping.virtual_level_trait(src, ZTRAIT_BASETURF)]'")
+					warning("Z-level [z] has invalid baseturf '[virtual_level_trait(ZTRAIT_BASETURF)]'")
 					path = /turf/open/space
 		if(/turf/open/space/basic)
 			// basic doesn't initialize and this will cause issues
@@ -87,6 +87,8 @@ GLOBAL_LIST_INIT(blacklisted_automated_baseturfs, typecacheof(list(
 
 	var/old_bp = blueprint_data
 	blueprint_data = null
+
+	var/old_virtual_z = virtual_z
 
 	var/list/old_baseturfs = baseturfs
 	var/old_type = type
@@ -114,6 +116,8 @@ GLOBAL_LIST_INIT(blacklisted_automated_baseturfs, typecacheof(list(
 
 	W.blueprint_data = old_bp
 	W.rcd_memory = old_rcd_memory
+
+	W.virtual_z = old_virtual_z
 
 	lighting_corner_NE = old_lighting_corner_NE
 	lighting_corner_SE = old_lighting_corner_SE

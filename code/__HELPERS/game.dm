@@ -578,7 +578,7 @@
 /proc/power_fail(duration_min, duration_max)
 	for(var/P in GLOB.apcs_list)
 		var/obj/machinery/power/apc/C = P
-		if(C.cell && SSmapping.virtual_level_trait(C, ZTRAIT_STATION))
+		if(C.cell && C.virtual_level_trait(ZTRAIT_STATION))
 			var/area/A = C.area
 			if(GLOB.typecache_powerfailure_safe_areas[A.type])
 				continue

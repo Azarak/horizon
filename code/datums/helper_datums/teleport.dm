@@ -166,7 +166,7 @@
 /proc/get_teleport_turfs(turf/center, precision = 0)
 	if(!precision)
 		return list(center)
-	var/datum/virtual_level/center_vlevel = SSmapping.get_virtual_level(center)
+	var/datum/virtual_level/center_vlevel = center.get_virtual_level()
 	var/list/posturfs = list()
 	for(var/turf/T as anything in RANGE_TURFS(precision,center))
 		if(T.is_transition_turf())

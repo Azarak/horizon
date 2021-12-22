@@ -23,7 +23,7 @@
 	//Set the key to the z level if it is a planetary atmos
 	. = TRUE
 	if(initial_gas_mix == PLANETARY_ATMOS)
-		var/datum/map_zone/mapzone = SSmapping.get_map_zone(src)
+		var/datum/map_zone/mapzone = get_map_zone()
 		//If our map zone does not have a mix set, default to normal atmos
 		if(!mapzone || !mapzone.planetary_gas_string)
 			initial_gas_mix = OPENTURF_DEFAULT_ATMOS

@@ -29,14 +29,6 @@
 	/// List of all gravity generators inside of the sub levels of this map zone
 	var/list/gravity_generators = list()
 
-/datum/map_zone/proc/get_virtual_level_id(vlevel_id)
-	var/datum/virtual_level/found_vlevel
-	for(var/datum/virtual_level/iterated_vlevel as anything in virtual_levels)
-		if(iterated_vlevel.id == vlevel_id)
-			found_vlevel = iterated_vlevel
-			break
-	return found_vlevel
-
 /datum/map_zone/New(passed_name, datum/overmap_object/passed_ov_obj)
 	name = passed_name
 	related_overmap_object = passed_ov_obj
@@ -419,6 +411,7 @@
 	name = passed_name
 	traits = passed_traits.Copy()
 	passed_map.add_virtual_level(src)
+	SSmapping.virtual_z_translation["[id]"] = src
 	reserve(lx, ly, hx, hy, passed_z)
 	return ..()
 
@@ -430,8 +423,13 @@
 			unlink(dir)
 	var/datum/space_level/level = SSmapping.z_list[z_value]
 	level.virtual_levels -= src
+	SSmapping.virtual_z_translation -= "[id]"
 	parent_map_zone.remove_virtual_level(src)
 	return ..()
+
+/datum/virtual_level/proc/mark_turfs()
+	for(var/turf/turf as anything in get_block())
+		turf.virtual_z = id
 
 /datum/virtual_level/proc/get_trait(trait)
 	return traits[trait]
@@ -446,9 +444,10 @@
 	parent_level.virtual_levels += src
 	x_distance = high_x - low_x + 1
 	y_distance = high_y - low_y + 1
+	mark_turfs()
 
 /datum/virtual_level/proc/is_in_bounds(atom/Atom)
-	if(Atom.x >= low_x && Atom.x <= high_x && Atom.y >= low_y && Atom.y <= high_y && Atom.z == z_value)
+	if(Atom.virtual_z() == z_value)
 		return TRUE
 	return FALSE
 
@@ -600,24 +599,6 @@
 
 /datum/virtual_level/proc/get_unreserved_top_right_turf()
 	return locate(high_x - reserved_margin, high_y - reserved_margin, z_value)
-
-/// Gets the sub zone that contains the passed atom
-/datum/controller/subsystem/mapping/proc/get_virtual_level(atom/Atom)
-	var/datum/space_level/level = z_list[Atom.z]
-	if(!level) //This can happen with areas trying to get their sub zone, Hyperspace for example, unsure why, areas weird
-		return
-	var/datum/virtual_level/vlevel
-	for(var/datum/virtual_level/iterated_zone as anything in level.virtual_levels)
-		if(iterated_zone.is_in_bounds(Atom))
-			vlevel = iterated_zone
-			break
-	return vlevel
-
-/// A helper pretty much
-/datum/controller/subsystem/mapping/proc/get_map_zone(atom/Atom)
-	var/datum/virtual_level/vlevel = get_virtual_level(Atom)
-	if(vlevel)
-		return vlevel.parent_map_zone
 
 /turf/closed/indestructible/edge
 	name = "edge"

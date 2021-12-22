@@ -590,7 +590,7 @@
 		mode = SHUTTLE_CALL
 		destination = null
 		timer = INFINITY
-		var/datum/map_zone/mapzone = SSmapping.get_map_zone(src)
+		var/datum/map_zone/mapzone = get_map_zone()
 		var/datum/overmap_object/current_overmap_object = mapzone.related_overmap_object
 		var/spawn_x_coord
 		var/spawn_y_coord

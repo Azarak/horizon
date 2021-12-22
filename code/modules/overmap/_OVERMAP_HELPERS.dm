@@ -18,7 +18,7 @@
 //Gets the overmap object that is having the atom inside
 /proc/GetHousingOvermapObject(atom/atom_insider)
 	var/datum/overmap_object/overmap_object
-	var/datum/map_zone/mapzone = SSmapping.get_map_zone(atom_insider)
+	var/datum/map_zone/mapzone = atom_insider.get_map_zone()
 	if(mapzone.related_overmap_object)
 		overmap_object = mapzone.related_overmap_object 
 	else if(SSshuttle.is_in_shuttle_bounds(atom_insider))

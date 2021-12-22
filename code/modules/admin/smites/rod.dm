@@ -12,7 +12,7 @@
 	. = ..()
 	var/turf/target_turf = get_turf(target)
 	var/startside = pick(GLOB.cardinals)
-	var/datum/virtual_level/vlevel = SSmapping.get_virtual_level(target_turf)
+	var/datum/virtual_level/vlevel = target_turf.get_virtual_level()
 	var/turf/start_turf = vlevel.get_side_turf(startside)
 	var/turf/end_turf = vlevel.get_side_turf(REVERSE_DIR(startside))
 	new /obj/effect/immovablerod(start_turf, end_turf, target, force_looping)

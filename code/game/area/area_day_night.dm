@@ -99,7 +99,7 @@
 		return
 	if(find_controller)
 		if(SSmapping && SSmapping.z_list) //Goddamn areas that initialize out of order?!
-			var/datum/map_zone/mapzone = SSmapping.get_map_zone(src)
+			var/datum/map_zone/mapzone = get_map_zone()
 			if(mapzone && mapzone.day_night_controller)
 				newsub = mapzone.day_night_controller
 				rebuild = TRUE

@@ -260,7 +260,7 @@
 				var/iter = 0
 				for(var/i in SSshuttle.stationary)
 					var/obj/docking_port/stationary/iterated_dock = i
-					var/datum/virtual_level/vlevel = SSmapping.get_virtual_level(iterated_dock)
+					var/datum/virtual_level/vlevel = iterated_dock.get_virtual_level()
 					if(!(vlevel in virtual_levels))
 						continue
 					if(!options.Find(iterated_dock.port_destinations))
@@ -416,7 +416,7 @@
 					var/obj/docking_port/stationary/target_dock = SSshuttle.getDock(dock_id)
 					if(!target_dock)
 						return
-					var/datum/map_zone/mapzone = SSmapping.get_map_zone(target_dock)
+					var/datum/map_zone/mapzone = target_dock.get_map_zone()
 					var/datum/overmap_object/dock_overmap_object = mapzone.related_overmap_object
 					if(!dock_overmap_object)
 						return
@@ -438,7 +438,7 @@
 					var/datum/map_zone/mapzone = SSmapping.get_map_zone_id(map_id)
 					if(!mapzone)
 						return
-					var/datum/virtual_level/vlevel = mapzone.get_virtual_level_id(sub_id)
+					var/datum/virtual_level/vlevel = SSmapping.get_virtual_level_id(sub_id)
 					if(!vlevel)
 						return
 					var/datum/overmap_object/mapzone_overmap_object = mapzone.related_overmap_object

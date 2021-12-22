@@ -129,7 +129,7 @@
 	if(!eyeobj.eye_initialized)
 		var/camera_location
 		var/turf/myturf = get_turf(src)
-		var/datum/virtual_level/my_vlevel = SSmapping.get_virtual_level(myturf)
+		var/datum/virtual_level/my_vlevel = myturf.get_virtual_level()
 		if(eyeobj.use_static != FALSE)
 			if((!trait_lock || (trait_lock in my_vlevel.traits)) && GLOB.cameranet.checkTurfVis(myturf))
 				camera_location = myturf
@@ -138,7 +138,7 @@
 					if(!C.can_use())
 						continue
 					if(trait_lock)
-						var/datum/virtual_level/cam_vlevel = SSmapping.get_virtual_level(C)
+						var/datum/virtual_level/cam_vlevel = C.get_virtual_level()
 						if(!(trait_lock in cam_vlevel.traits))
 							continue
 					var/list/network_overlap = networks & C.network
@@ -219,7 +219,7 @@
 		destination = get_turf(destination)
 		if (destination)
 			if(!force_update)
-				var/datum/map_zone/mapzone = SSmapping.get_map_zone(loc)
+				var/datum/map_zone/mapzone = loc.get_map_zone()
 				if(!mapzone.is_in_bounds(destination))
 					return
 			abstract_move(destination)
@@ -284,7 +284,7 @@
 
 	for (var/obj/machinery/camera/cam in GLOB.cameranet.cameras)
 		if(origin.trait_lock)
-			var/datum/virtual_level/cam_vlevel = SSmapping.get_virtual_level(cam)
+			var/datum/virtual_level/cam_vlevel = cam.get_virtual_level()
 			if(!(origin.trait_lock in cam_vlevel.traits))
 				continue
 		L.Add(cam)

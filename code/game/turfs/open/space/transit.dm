@@ -29,7 +29,7 @@
 		return
 	if(arrived.loc != src || src.loc.type != /area/shuttle/transit)
 		return
-	var/datum/virtual_level/vlevel = SSmapping.get_virtual_level(src)
+	var/datum/virtual_level/vlevel = get_virtual_level()
 	var/datum/transit_instance/this_transit = vlevel.transit_instance
 	if(!this_transit)
 		return

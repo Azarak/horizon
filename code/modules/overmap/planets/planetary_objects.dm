@@ -85,7 +85,7 @@
 /turf/open/floor/planetary/water/Initialize()
 	. = ..()
 	if(!color)
-		var/datum/map_zone/mapzone = SSmapping.get_map_zone(src)
+		var/datum/map_zone/mapzone = get_map_zone()
 		color = mapzone.water_color
 
 /turf/open/floor/planetary/grass
@@ -113,7 +113,7 @@
 	var/matrix/translation = new
 	translation.Translate(-9, -9)
 	transform = translation
-	var/datum/map_zone/mapzone = SSmapping.get_map_zone(src)
+	var/datum/map_zone/mapzone = get_map_zone()
 	color = mapzone.grass_color
 
 /turf/open/floor/planetary/dirt
@@ -140,7 +140,7 @@
 
 /turf/open/floor/planetary/rock/Initialize()
 	. = ..()
-	var/datum/map_zone/mapzone = SSmapping.get_map_zone(src)
+	var/datum/map_zone/mapzone = get_map_zone()
 	color = mapzone.rock_color
 
 /turf/open/floor/planetary/mud
@@ -245,7 +245,7 @@
 /obj/structure/flora/planetary/Initialize()
 	. = ..()
 	if(!color)
-		var/datum/map_zone/mapzone = SSmapping.get_map_zone(src)
+		var/datum/map_zone/mapzone = get_map_zone()
 		color = mapzone.plant_color
 	icon_state = "[icon_state]_[rand(1,variants)]"
 
@@ -295,7 +295,7 @@
 /obj/structure/flora/planetary_grass/Initialize()
 	. = ..()
 	if(!color)
-		var/datum/map_zone/mapzone = SSmapping.get_map_zone(src)
+		var/datum/map_zone/mapzone = get_map_zone()
 		color = mapzone.grass_color
 	icon_state = "[icon_state]_[rand(1,variants)]"
 

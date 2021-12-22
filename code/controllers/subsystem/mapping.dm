@@ -45,6 +45,8 @@ SUBSYSTEM_DEF(mapping)
 	var/datum/map_zone/station_map_zone
 	/// List of all map zones
 	var/list/map_zones = list()
+	/// Translation of virtual level ID to a virtual level reference
+	var/list/virtual_z_translation = list()
 
 /datum/controller/subsystem/mapping/New()
 	..()
@@ -364,8 +366,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 			continue
 		if (!A.contents.len || !(A.area_flags & UNIQUE_AREA))
 			continue
-		var/turf/picked = A.contents[1]
-		if (is_station_level(picked))
+		if (is_station_level(A))
 			GLOB.the_station_areas += A.type
 
 	if(!GLOB.the_station_areas.len)
@@ -582,7 +583,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 		A.reg_in_areas_in_z()
 
 /datum/controller/subsystem/mapping/proc/get_map_zone_weather_controller(atom/Atom)
-	var/datum/map_zone/mapzone = get_map_zone(Atom)
+	var/datum/map_zone/mapzone = Atom.get_map_zone()
 	if(!mapzone)
 		return
 	mapzone.assert_weather_controller()
@@ -595,6 +596,9 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 			returned_mapzone = iterated_mapzone
 			break
 	return returned_mapzone
+
+/datum/controller/subsystem/mapping/proc/get_virtual_level_id(vlevel_id)
+	return virtual_z_translation["[vlevel_id]"]
 
 /// Searches for a free allocation for the passed type and size, creates new physical levels if nessecary.
 /datum/controller/subsystem/mapping/proc/get_free_allocation(allocation_type, size_x, size_y, allocation_jump = DEFAULT_ALLOC_JUMP)

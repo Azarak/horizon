@@ -1922,13 +1922,13 @@
 		return A.has_gravity
 	else
 		// See if there's a gravity generator on our map zone
-		var/datum/map_zone/mapzone = SSmapping.get_map_zone(T)
+		var/datum/map_zone/mapzone = T.get_map_zone()
 		if(mapzone.gravity_generators.len)
 			var/max_grav = 0
 			for(var/obj/machinery/gravity_generator/main/G as anything in mapzone.gravity_generators)
 				max_grav = max(G.setting,max_grav)
 			return max_grav
-	return SSmapping.virtual_level_trait(T, ZTRAIT_GRAVITY)
+	return T.virtual_level_trait(ZTRAIT_GRAVITY)
 
 /**
  * Causes effects when the atom gets hit by a rust effect from heretics
@@ -2057,9 +2057,3 @@
 		usr.hud_used.screentip_text.maptext = ""
 	else
 		usr.hud_used.screentip_text.maptext = MAPTEXT("<span style='text-align: center'><span style='font-size: 32px'><span style='color:[usr.client.prefs.screentip_color]: 32px'>[name]</span>")
-
-/// Gets the Z value of a virtual level the mob is inside
-/atom/proc/virtual_z()
-	var/datum/virtual_level/vlevel = SSmapping.get_virtual_level(src)
-	if(vlevel)
-		return vlevel.id

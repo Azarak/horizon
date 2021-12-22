@@ -103,7 +103,7 @@
 
 /datum/shuttle_freeform_docker/proc/checkLandingTurf(turf/T, list/overlappers)
 	// Too close to the map edge is never allowed
-	var/datum/virtual_level/eyevlevel = SSmapping.get_virtual_level(eyeobj)
+	var/datum/virtual_level/eyevlevel = eyeobj.get_virtual_level()
 	if(!T || !eyevlevel.is_in_mapping_bounds(T))
 		return SHUTTLE_DOCKER_BLOCKED
 	// If it's one of our shuttle areas assume it's ok to be there
