@@ -71,7 +71,7 @@ GLOBAL_LIST_INIT(blacklisted_automated_baseturfs, typecacheof(list(
 	if(!GLOB.use_preloader && path == type && !(flags & CHANGETURF_FORCEOP) && (baseturfs == new_baseturfs)) // Don't no-op if the map loader requires it to be reconstructed, or if this is a new set of baseturfs
 		return src
 	if(flags & CHANGETURF_SKIP)
-		return new path(src)
+		return new path(src, virtual_z)
 
 	var/old_dynamic_lighting = dynamic_lighting
 	var/old_lighting_object = lighting_object
@@ -98,7 +98,7 @@ GLOBAL_LIST_INIT(blacklisted_automated_baseturfs, typecacheof(list(
 
 	changing_turf = TRUE
 	qdel(src) //Just get the side effects and call Destroy
-	var/turf/W = new path(src)
+	var/turf/W = new path(src, virtual_z)
 
 	for(var/datum/callback/callback as anything in post_change_callbacks)
 		callback.InvokeAsync(W)

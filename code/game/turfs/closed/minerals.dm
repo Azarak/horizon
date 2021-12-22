@@ -30,7 +30,7 @@
 	/// Some subtypes will want to shift their transform by -4,-4. This makes them do that
 	var/transform_shift = FALSE
 
-/turf/closed/mineral/Initialize()
+/turf/closed/mineral/Initialize(mapload, inherited_virtual_z)
 	. = ..()
 	if(transform_shift)
 		var/matrix/M = new
