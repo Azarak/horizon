@@ -194,7 +194,7 @@
 		//Currently, Adamantine won't spawn as it has no uses. -Durandan
 	var/mineralChance = 13
 
-/turf/closed/mineral/random/Initialize()
+/turf/closed/mineral/random/Initialize(mapload, inherited_virtual_z)
 	if(SSevents.holidays && SSevents.holidays[APRIL_FOOLS])
 		mineralSpawnChanceList[/obj/item/stack/ore/bananium] = 3
 
@@ -536,9 +536,9 @@
 	var/activated_name = null
 	var/mutable_appearance/activated_overlay
 
-/turf/closed/mineral/gibtonite/Initialize()
-	det_time = rand(8,10) //So you don't know exactly when the hot potato will explode
+/turf/closed/mineral/gibtonite/Initialize(mapload, inherited_virtual_z)
 	. = ..()
+	det_time = rand(8,10) //So you don't know exactly when the hot potato will explode
 
 /turf/closed/mineral/gibtonite/attackby(obj/item/I, mob/user, params)
 	if(istype(I, /obj/item/mining_scanner) || istype(I, /obj/item/t_scanner/adv_mining_scanner) && stage == 1)

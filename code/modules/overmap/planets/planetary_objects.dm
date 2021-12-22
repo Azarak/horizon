@@ -82,7 +82,7 @@
 	desc = "A pool of viscous and sticky tar."
 	slowdown = 10
 
-/turf/open/floor/planetary/water/Initialize()
+/turf/open/floor/planetary/water/Initialize(mapload, inherited_virtual_z)
 	. = ..()
 	if(!color)
 		var/datum/map_zone/mapzone = get_map_zone()
@@ -108,7 +108,7 @@
 /turf/open/floor/planetary/grass/setup_broken_states()
 	return list("damaged")
 
-/turf/open/floor/planetary/grass/Initialize()
+/turf/open/floor/planetary/grass/Initialize(mapload, inherited_virtual_z)
 	. = ..()
 	var/matrix/translation = new
 	translation.Translate(-9, -9)
@@ -138,7 +138,7 @@
 	clawfootstep = FOOTSTEP_HARD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 
-/turf/open/floor/planetary/rock/Initialize()
+/turf/open/floor/planetary/rock/Initialize(mapload, inherited_virtual_z)
 	. = ..()
 	var/datum/map_zone/mapzone = get_map_zone()
 	color = mapzone.rock_color
@@ -167,7 +167,7 @@
 	clawfootstep = FOOTSTEP_SAND
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 
-/turf/open/floor/planetary/sand/Initialize()
+/turf/open/floor/planetary/sand/Initialize(mapload, inherited_virtual_z)
 	. = ..()
 	if(prob(10))
 		icon_state = "[base_icon_state][rand(1,5)]"
@@ -184,7 +184,7 @@
 	clawfootstep = FOOTSTEP_HARD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 
-/turf/open/floor/planetary/dry_seafloor/Initialize()
+/turf/open/floor/planetary/dry_seafloor/Initialize(mapload, inherited_virtual_z)
 	. = ..()
 	if(prob(3))
 		AddComponent(/datum/component/digsite)
@@ -200,7 +200,7 @@
 /turf/open/floor/planetary/wasteland/setup_broken_states()
 	return list("[initial(icon_state)]0")
 
-/turf/open/floor/planetary/wasteland/Initialize()
+/turf/open/floor/planetary/wasteland/Initialize(mapload, inherited_virtual_z)
 	.=..()
 	if(prob(15))
 		icon_state = "[initial(icon_state)][rand(0,12)]"
@@ -242,7 +242,7 @@
 	icon = 'icons/planet/grayscale_flora.dmi'
 	var/variants = 0
 
-/obj/structure/flora/planetary/Initialize()
+/obj/structure/flora/planetary/Initialize(mapload, inherited_virtual_z)
 	. = ..()
 	if(!color)
 		var/datum/map_zone/mapzone = get_map_zone()
@@ -292,7 +292,7 @@
 	icon = 'icons/planet/grayscale_flora.dmi'
 	var/variants = 0
 
-/obj/structure/flora/planetary_grass/Initialize()
+/obj/structure/flora/planetary_grass/Initialize(mapload, inherited_virtual_z)
 	. = ..()
 	if(!color)
 		var/datum/map_zone/mapzone = get_map_zone()
