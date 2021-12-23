@@ -223,7 +223,7 @@
 		if(!has_shields && shuttle.transit_instance)
 			probability += shuttle_velocity * 5
 		if(prob(probability))
-			if(related_map_zone)
+			if(shuttle.related_map_zone)
 				var/datum/virtual_level/picked_sub = pick(shuttle.related_map_zone.virtual_levels)
 				var/turf/spot_to_spawn
 				var/carp_type = prob(95) ? /mob/living/simple_animal/hostile/carp : /mob/living/simple_animal/hostile/carp/megacarp

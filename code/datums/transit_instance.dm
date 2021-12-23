@@ -13,7 +13,7 @@
 	dock.transit_instance = src
 
 /datum/transit_instance/Destroy()
-	StrandAll()
+	strand_all()
 	vlevel.transit_instance = null
 	vlevel = null
 	dock.transit_instance = null
@@ -22,11 +22,13 @@
 	return ..()
 
 //Movable moved in transit
-/datum/transit_instance/proc/MovableMoved(atom/movable/moved)
+/datum/transit_instance/proc/movable_moved(atom/movable/moved, time_until_strand)
 	if(!moved)
 		stack_trace("null movable on Movable Moved in Transit Instance")
 		return
 	if(!moved.loc || !isturf(moved.loc))
+		return
+	if(time_until_strand > world.time)
 		return
 	var/turf/my_turf = moved.loc
 	if(!vlevel.on_edge(my_turf))
@@ -40,7 +42,7 @@
 		var/mob/moved_mob = moved
 		if(moved_mob.client) //Client things never voluntairly get stranded
 			return
-	StrandAct(moved)
+	strand_act(moved)
 
 //Apply velocity to the movables we're handling
 /datum/transit_instance/proc/ApplyVelocity(dir, velocity)
@@ -66,7 +68,7 @@
 		var/turf/step_turf = get_step(my_turf, dir)
 		//Medium velocity, and someone gets bumped against an edge turf
 		if(velocity_stage >= TRANSIT_VELOCITY_MEDIUM && vlevel.on_edge_reservation(step_turf))
-			StrandAct(movable)
+			strand_act(movable)
 			continue
 		//Huge velocity, check if we get squashed against something that blocks us
 		if(velocity_stage >= TRANSIT_VELOCITY_HIGH && isliving(movable))
@@ -86,11 +88,11 @@
 			movable.throw_at(get_edge_target_turf(my_turf, dir), 4, 2)
 
 ///Strand all movables that we're managing
-/datum/transit_instance/proc/StrandAll()
+/datum/transit_instance/proc/strand_all()
 	for(var/movable in affected_movables)
-		StrandAct(movable)
+		strand_act(movable)
 
-/datum/transit_instance/proc/StrandAct(atom/movable/strander)
+/datum/transit_instance/proc/strand_act(atom/movable/strander)
 	var/commit_strand = FALSE
 	var/name_to_apply
 	if(ishuman(strander))

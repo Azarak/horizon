@@ -246,8 +246,9 @@
 				var/list/virtual_levels = list()
 				var/list/nearby_objects = current_system.GetObjectsOnCoords(x,y)
 				var/list/freeform_virtual_levels = list()
-				for(var/i in nearby_objects)
-					var/datum/overmap_object/IO = i
+				for(var/datum/overmap_object/IO as anything in nearby_objects)
+					if(!IO.can_be_docked)
+						continue
 					var/iter = 0
 					if(IO.related_map_zone)
 						for(var/datum/virtual_level/vlevel in IO.related_map_zone.virtual_levels)
@@ -541,6 +542,7 @@
 	shuttle_controller = new(src)
 
 /datum/overmap_object/shuttle/proc/RegisterToShuttle(obj/docking_port/mobile/register_shuttle)
+	can_be_docked = FALSE
 	my_shuttle = register_shuttle
 	my_shuttle.my_overmap_object = src
 	for(var/i in my_shuttle.all_extensions)
