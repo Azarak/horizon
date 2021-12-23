@@ -76,6 +76,8 @@
 	heavyfootstep = FOOTSTEP_WATER
 	slowdown = 2
 
+	ambience = AMBIENT_SOUND_WATER
+
 /turf/open/floor/planetary/water/tar
 	gender = PLURAL
 	name = "tar"

@@ -544,6 +544,11 @@
 /atom/movable/proc/Moved(atom/OldLoc, Dir, Forced = FALSE)
 	SHOULD_CALL_PARENT(TRUE)
 
+	//Move ambience we may be casting on turfs
+	if(ambience)
+		OldLoc.remove_ambience(ambience)
+		loc.add_ambience(ambience)
+
 	if (!inertia_moving)
 		inertia_next_move = world.time + inertia_move_delay
 		newtonian_move(Dir)
