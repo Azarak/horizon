@@ -13,12 +13,13 @@
 	var/pref_area_ambience = TRUE
 	var/pref_object_ambience = TRUE
 
+	/// Time until the next object sweep for scheduling played object ambience
 	var/next_object_sweep = 0
-
+	/// Fast ref to the list with ambient datums
 	var/static/list/ambient_sounds
 	/// A list of lists of cooldowns per emitters to our ambient sounds
 	var/list/ambience_cooldowns[TOTAL_AMBIENT_SOUNDS]
-
+	/// Queued object ambiences that we process
 	var/list/queued_object_ambience = list()
 
 /datum/ambience_controller/New(client/applied_client)
@@ -62,11 +63,13 @@
 	next_area_ambience = world.time + rand(current_area.min_ambience_cooldown, current_area.max_ambience_cooldown)
 
 /datum/ambience_controller/proc/handle_ship_ambience(mob/client_mob)
-	if(playing_ship_ambience == pref_ship_ambience)
+	var/area/current_area = get_area(client_mob)
+	var/should_play_ship_ambience = (pref_ship_ambience && !current_area.outdoors)
+	if(playing_ship_ambience == should_play_ship_ambience)
 		return
-	playing_ship_ambience = pref_ship_ambience
+	playing_ship_ambience = should_play_ship_ambience
 	if(playing_ship_ambience)
-		SEND_SOUND(client, sound('sound/ambience/shipambience.ogg', repeat = TRUE, wait = 0, volume = 18, channel = CHANNEL_BUZZ))
+		SEND_SOUND(client, sound('sound/ambience/shipambience.ogg', repeat = TRUE, wait = 0, volume = 15, channel = CHANNEL_BUZZ))
 	else
 		client_mob.stop_sound_channel(CHANNEL_BUZZ)
 
@@ -79,6 +82,9 @@
 	pref_area_ambience = (prefs.toggles & SOUND_AMBIENCE)
 	pref_object_ambience = TRUE
 
+	if(isnewplayer(client_mob))
+		return
+
 	handle_area_ambience(client_mob)
 	handle_ship_ambience(client_mob)
 
@@ -90,6 +96,8 @@
 /datum/ambience_controller/proc/handle_object_sweep(mob/client_mob)
 	var/world_time = world.time //faster access I think????
 	next_object_sweep = world_time + AMBIENCE_SWEEP_TIME
+	if(!pref_object_ambience)
+		return
 
 	///Clear existing cooldowns
 	var/i = 0
@@ -130,6 +138,10 @@
 			continue
 		var/turf/ambience_turf = found_turfs[i]
 		var/datum/ambient_sound/sound_datum = cached_ambience_sounds[ambience]
+		/// If it has an emission chance, roll it
+		if(sound_datum.emission_chance && !prob(sound_datum.emission_chance))
+			continue
+		/// Consider if it's out of the range.
 		if(get_dist(ambience_turf, mob_turf) > sound_datum.range)
 			continue
 		var/list/cooldown_list = ambience_cooldowns[ambience]
@@ -161,21 +173,31 @@
 			ambience_cooldowns[ambience] = cooldown_list = list()
 			cooldown_list += world_time + sound_datum.frequency_time
 		queued_object_ambience += new /datum/ambience_queued(ambience, ambience_turf, wait_time)
+		/// If there is a cooldown between emitters, populate the cooldown list and fill them all with the cooldown
+		if(sound_datum.cooldown_between_emitters)
+			var/beetween_cooldown = world_time + sound_datum.cooldown_between_emitters
+			var/b = 0
+			for(var/cooldown in cooldown_list)
+				b++
+				if(cooldown < beetween_cooldown)
+					cooldown_list[b] = beetween_cooldown
+			while(cooldown_list.len < sound_datum.maximum_emitters)
+				cooldown_list += beetween_cooldown
 
 #define AMBIENCE_RANGE_LEISURE 1
 
 /datum/ambience_controller/proc/handle_object_ambience(mob/client_mob)
-	for(var/datum/ambience_queued/ambience_queued as anything in queued_object_ambience)
-		if(ambience_queued.play_when < world.time)
+	for(var/datum/ambience_queued/qued_ambience as anything in queued_object_ambience)
+		if(qued_ambience.play_when >= world.time)
 			continue
-		queued_object_ambience -= ambience_queued
+		queued_object_ambience -= qued_ambience
 		var/turf/mob_turf = get_turf(client_mob)
-		var/datum/ambient_sound/sound_datum = ambient_sounds[ambience_queued.ambience_id]
+		var/datum/ambient_sound/sound_datum = ambient_sounds[qued_ambience.ambience_id]
 		/// Once again, checking the distance, but adding 1 for extra leisure to not cancel too many queued ambiences
-		if(get_dist(ambience_queued.play_turf, mob_turf) > sound_datum.range + AMBIENCE_RANGE_LEISURE)
+		if(get_dist(qued_ambience.play_turf, mob_turf) > sound_datum.range + AMBIENCE_RANGE_LEISURE)
 			continue
-		var/soundtouse = pick(sound_datum.sounds)
-		client_mob.playsound_local(ambience_queued.play_turf, soundtouse, sound_datum.volume, sound_datum.vary, falloff_exponent = AMBIENCE_FALLOFF_EXPONENT)
+		var/sound_to_use = pick(sound_datum.sounds)
+		client_mob.playsound_local(qued_ambience.play_turf, sound_to_use, sound_datum.volume, sound_datum.vary, falloff_exponent = AMBIENCE_FALLOFF_EXPONENT, falloff_distance = AMBIENCE_FALLOFF_DISTANCE)
 
 #undef AMBIENCE_RANGE_LEISURE
 
