@@ -178,6 +178,9 @@
 
 		/// While the next played ambience would have to happen before the next sweep, add another queued sound and increment cooldown approprietly
 		while(cooldown_time_to_set < world_time + AMBIENCE_SWEEP_TIME)
+			/// Once again, if it has an emission chance, roll it. This isn't perfect, but it's the best I can do in a predictive queue system.
+			if(sound_datum.emission_chance && !prob(sound_datum.emission_chance))
+				break
 			queued_object_ambience += new /datum/ambience_queued(ambience, ambience_turf, cooldown_time_to_set)
 			cooldown_time_to_set = cooldown_time_to_set + sound_datum.frequency_time
 		/// Set the cooldown and add a queued sound.
