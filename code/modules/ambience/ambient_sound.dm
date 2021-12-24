@@ -10,7 +10,7 @@
 	/// How many ambience emitters can be playing this at once.
 	var/maximum_emitters = 1
 	/// How often does the sound play. In seconds.
-	var/frequency_time = 5 SECONDS
+	var/frequency_time = 5 SECONDS //1 to 10 seconds loops are ideal for the system
 	/// Whether we let byond change the pitch of the played sounds
 	var/vary = FALSE
 	/// If defined, cooldown between different emitters for emitting this sound

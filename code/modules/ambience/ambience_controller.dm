@@ -145,23 +145,26 @@
 		if(get_dist(ambience_turf, mob_turf) > sound_datum.range)
 			continue
 		var/list/cooldown_list = ambience_cooldowns[ambience]
+		var/cooldown_list_index = 1
+		var/cooldown_time_to_set = world_time + sound_datum.frequency_time
 		/// Check the cooldown in the cooldown lists
 		var/wait_time = world_time
 		if(cooldown_list)
 			// We have a free spot in the emitter list, add a new entry
 			if(cooldown_list.len < sound_datum.maximum_emitters)
-				cooldown_list += world_time + sound_datum.frequency_time
+				cooldown_list += 0
+				cooldown_list_index = cooldown_list.len
 			// If we don't, we try and queue
 			else
-				var/b = 0
+				cooldown_list_index = 0
 				var/found_any = FALSE
 				/// Iterate over all cooldowns and see if we can play a sound in the next 5s (AMBIENCE_SWEEP_TIME)
 				for(var/current_cooldown in cooldown_list)
-					b++
+					cooldown_list_index++
 					if(current_cooldown < world_time + AMBIENCE_SWEEP_TIME)
 						found_any = TRUE
 						wait_time = current_cooldown
-						cooldown_list[b] = current_cooldown + sound_datum.frequency_time
+						cooldown_time_to_set = current_cooldown + sound_datum.frequency_time
 						break
 				if(!found_any)
 					// We cant find any ambience that can be played within 5s, skip and bar this ambience id from trying
@@ -171,16 +174,23 @@
 		/// If there isn't a cooldown list, free to assume we can create one and add a cd.
 		else
 			ambience_cooldowns[ambience] = cooldown_list = list()
-			cooldown_list += world_time + sound_datum.frequency_time
+			cooldown_list += 0
+
+		/// While the next played ambience would have to happen before the next sweep, add another queued sound and increment cooldown approprietly
+		while(cooldown_time_to_set < world_time + AMBIENCE_SWEEP_TIME)
+			queued_object_ambience += new /datum/ambience_queued(ambience, ambience_turf, cooldown_time_to_set)
+			cooldown_time_to_set = cooldown_time_to_set + sound_datum.frequency_time
+		/// Set the cooldown and add a queued sound.
+		cooldown_list[cooldown_list_index] = cooldown_time_to_set
 		queued_object_ambience += new /datum/ambience_queued(ambience, ambience_turf, wait_time)
 		/// If there is a cooldown between emitters, populate the cooldown list and fill them all with the cooldown
 		if(sound_datum.cooldown_between_emitters)
 			var/beetween_cooldown = world_time + sound_datum.cooldown_between_emitters
-			var/b = 0
+			cooldown_list_index = 0
 			for(var/cooldown in cooldown_list)
-				b++
+				cooldown_list_index++
 				if(cooldown < beetween_cooldown)
-					cooldown_list[b] = beetween_cooldown
+					cooldown_list[cooldown_list_index] = beetween_cooldown
 			while(cooldown_list.len < sound_datum.maximum_emitters)
 				cooldown_list += beetween_cooldown
 
