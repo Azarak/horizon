@@ -13,10 +13,8 @@
 	var/frequency_time = 5 SECONDS //1 to 10 seconds loops are ideal for the system
 	/// Whether we let byond change the pitch of the played sounds
 	var/vary = FALSE
-	/// If defined, cooldown between different emitters for emitting this sound
+	/// If defined, cooldown between playing a sound between ALL emitters. Dont set this higher than `frequency_time`
 	var/cooldown_between_emitters
-	/// If defined, it'll be a chance to play the sound, to add variance and scarcity to more one-off and random ambiences
-	var/emission_chance
 	/// Whether the ambient sound tries to behave like a loop. Area based ambient emitters can have their frequency multiplied if FALSE.
 	var/loop_like = TRUE
 

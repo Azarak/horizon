@@ -138,9 +138,6 @@
 			continue
 		var/turf/ambience_turf = found_turfs[i]
 		var/datum/ambient_sound/sound_datum = cached_ambience_sounds[ambience]
-		/// If it has an emission chance, roll it
-		if(sound_datum.emission_chance && !prob(sound_datum.emission_chance))
-			continue
 		/// Consider if it's out of the range.
 		if(get_dist(ambience_turf, mob_turf) > sound_datum.range)
 			continue
@@ -150,7 +147,7 @@
 		/// Check the cooldown in the cooldown lists
 		var/wait_time = world_time
 		if(cooldown_list)
-			// We have a free spot in the emitter list, add a new entry
+			// We have a free spot in the emitter list, add a new cooldown.
 			if(cooldown_list.len < sound_datum.maximum_emitters)
 				cooldown_list += 0
 				cooldown_list_index = cooldown_list.len
@@ -171,16 +168,14 @@
 					LAZYINITLIST(barred_ambience)
 					barred_ambience += ambience
 					continue
-		/// If there isn't a cooldown list, free to assume we can create one and add a cd.
+		/// If there isn't a cooldown list, free to assume we can create a new cooldown.
 		else
 			ambience_cooldowns[ambience] = cooldown_list = list()
 			cooldown_list += 0
 
 		/// While the next played ambience would have to happen before the next sweep, add another queued sound and increment cooldown approprietly
 		while(cooldown_time_to_set < world_time + AMBIENCE_SWEEP_TIME)
-			/// Once again, if it has an emission chance, roll it. This isn't perfect, but it's the best I can do in a predictive queue system.
-			if(!sound_datum.emission_chance || !prob(sound_datum.emission_chance))
-				queued_object_ambience += new /datum/ambience_queued(ambience, ambience_turf, cooldown_time_to_set)
+			queued_object_ambience += new /datum/ambience_queued(ambience, ambience_turf, cooldown_time_to_set)
 			cooldown_time_to_set = cooldown_time_to_set + sound_datum.frequency_time
 		/// Set the cooldown and add a queued sound.
 		cooldown_list[cooldown_list_index] = cooldown_time_to_set
