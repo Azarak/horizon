@@ -4,7 +4,7 @@ SUBSYSTEM_DEF(ambience)
 	flags = SS_BACKGROUND
 	priority = FIRE_PRIORITY_AMBIENCE
 	runlevels = RUNLEVEL_GAME | RUNLEVEL_POSTGAME
-	wait = 1 SECONDS
+	wait = 0.5 SECONDS
 	/// List of ambient sound datums we populate
 	var/list/ambient_sounds[TOTAL_AMBIENT_SOUNDS]
 	/// List of all ambience controllers
