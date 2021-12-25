@@ -74,6 +74,8 @@
 
 /atom/movable/Initialize(mapload)
 	. = ..()
+	if(ambience && loc)
+		loc.add_ambience(ambience)
 	switch(blocks_emissive)
 		if(EMISSIVE_BLOCK_GENERIC)
 			var/mutable_appearance/gen_emissive_blocker = mutable_appearance(icon, icon_state, plane = EMISSIVE_PLANE, alpha = src.alpha)
@@ -546,8 +548,10 @@
 
 	//Move ambience we may be casting on turfs
 	if(ambience)
-		OldLoc.remove_ambience(ambience)
-		loc.add_ambience(ambience)
+		if(OldLoc)
+			OldLoc.remove_ambience(ambience)
+		if(loc)
+			loc.add_ambience(ambience)
 
 	if (!inertia_moving)
 		inertia_next_move = world.time + inertia_move_delay

@@ -17,6 +17,10 @@
 	var/cooldown_between_emitters
 	/// Whether the ambient sound tries to behave like a loop. Area based ambient emitters can have their frequency multiplied if FALSE.
 	var/loop_like = TRUE
+	/// Falloff distance to pass to the played sound
+	var/falloff_distance = AMBIENCE_FALLOFF_DISTANCE
+	/// Falloff exponent to pass to the played sound
+	var/falloff_exponent = AMBIENCE_FALLOFF_EXPONENT
 
 /datum/ambient_sound/lava
 	id = AMBIENT_SOUND_LAVA
@@ -34,3 +38,95 @@
 	id = AMBIENT_SOUND_WATER
 	sounds = list('sound/ambience/emitters/water/water1.ogg')
 	frequency_time = 6 SECONDS
+
+/datum/ambient_sound/heartbeat
+	id = AMBIENT_SOUND_HEARTBEAT
+	sounds = list('sound/effects/singlebeat.ogg')
+	frequency_time = 1 SECONDS
+	loop_like = FALSE //Great looping sound, but can happen at any frequency just fine.
+
+/datum/ambient_sound/sparks //Resembling of an inducer charging
+	id = AMBIENT_SOUND_SPARKS
+	sounds = list(
+		'sound/effects/sparks1.ogg',
+		'sound/effects/sparks2.ogg',
+		'sound/effects/sparks3.ogg',
+		'sound/effects/sparks4.ogg'
+		)
+	frequency_time = 1 SECONDS
+
+/datum/ambient_sound/thunder
+	id = AMBIENT_SOUND_THUNDER
+	sounds = list(
+		'sound/effects/thunder/thunder1.ogg',
+		'sound/effects/thunder/thunder2.ogg',
+		'sound/effects/thunder/thunder3.ogg',
+		'sound/effects/thunder/thunder4.ogg',
+		'sound/effects/thunder/thunder5.ogg',
+		'sound/effects/thunder/thunder6.ogg',
+		'sound/effects/thunder/thunder7.ogg',
+		'sound/effects/thunder/thunder8.ogg',
+		'sound/effects/thunder/thunder9.ogg',
+		'sound/effects/thunder/thunder10.ogg'
+		)
+	frequency_time = 40 SECONDS
+	loop_like = FALSE
+
+/datum/ambient_sound/station_creak
+	id = AMBIENT_SOUND_STATION_CREAK
+	sounds = list(
+		'sound/effects/creak1.ogg',
+		'sound/effects/creak2.ogg',
+		'sound/effects/creak3.ogg'
+		)
+	frequency_time = 30 SECONDS
+	loop_like = FALSE
+
+/datum/ambient_sound/fire
+	id = AMBIENT_SOUND_FIRE
+	sounds = list('sound/effects/comfyfire.ogg') //Truly the fiercest fire sound
+	frequency_time = 4 SECONDS
+	maximum_emitters = 2
+	cooldown_between_emitters = 2 SECONDS
+
+/// Obnoxious tcomms ambience, but slightly more bearable now
+/datum/ambient_sound/crunchy_server
+	id = AMBIENT_SOUND_CRUNCHY_SERVER
+	sounds = list(
+		'sound/machines/tcomms/tcomms_mid1.ogg',
+		'sound/machines/tcomms/tcomms_mid2.ogg',
+		'sound/machines/tcomms/tcomms_mid3.ogg',
+		'sound/machines/tcomms/tcomms_mid4.ogg',
+		'sound/machines/tcomms/tcomms_mid5.ogg',
+		'sound/machines/tcomms/tcomms_mid6.ogg',
+		'sound/machines/tcomms/tcomms_mid7.ogg'
+		)
+	frequency_time = 2 SECONDS
+	maximum_emitters = 2
+	volume = 4
+	range = 3
+
+/datum/ambient_sound/server //Nice, subtle hdd crunching
+	id = AMBIENT_SOUND_SERVER
+	sounds = list(
+		'sound/ambience/emitters/server/server1.ogg',
+		'sound/ambience/emitters/server/server2.ogg',
+		'sound/ambience/emitters/server/server3.ogg'
+		)
+	frequency_time = 2.8 SECONDS
+	maximum_emitters = 2
+	range = 3
+	volume = 40
+
+/datum/ambient_sound/vending
+	id = AMBIENT_SOUND_VENDING
+	sounds = list(
+		'sound/ambience/emitters/vending/vending1.ogg',
+		'sound/ambience/emitters/vending/vending2.ogg',
+		'sound/ambience/emitters/vending/vending3.ogg',
+		'sound/ambience/emitters/vending/vending4.ogg',
+		'sound/ambience/emitters/vending/vending5.ogg'
+		)
+	frequency_time = 2.8 SECONDS
+	range = 3
+	volume = 15

@@ -4,6 +4,7 @@
 	icon = 'icons/obj/machines/research.dmi'
 	icon_state = "RD-server-on"
 	base_icon_state = "RD-server"
+	powered_ambience = AMBIENT_SOUND_SERVER
 	var/heat_health = 100
 	//Code for point mining here.
 	var/working = TRUE //temperature should break it.

@@ -40,7 +40,7 @@
 	// Dont try and play ambience for new players
 	if(isnewplayer(client_mob))
 		return
-	if(next_object_sweep < world.time)
+	if(next_object_sweep <= world.time)
 		handle_object_sweep(client_mob)
 	handle_area_ambience(client_mob)
 	handle_ship_ambience(client_mob)
@@ -195,7 +195,7 @@
 
 /datum/ambience_controller/proc/handle_object_ambience(mob/client_mob)
 	for(var/datum/ambience_queued/qued_ambience as anything in queued_object_ambience)
-		if(qued_ambience.play_when >= world.time)
+		if(qued_ambience.play_when > world.time)
 			continue
 		queued_object_ambience -= qued_ambience
 		var/turf/mob_turf = get_turf(client_mob)
@@ -204,7 +204,7 @@
 		if(get_dist(qued_ambience.play_turf, mob_turf) > sound_datum.range + AMBIENCE_RANGE_LEISURE)
 			continue
 		var/sound_to_use = pick(sound_datum.sounds)
-		client_mob.playsound_local(qued_ambience.play_turf, sound_to_use, sound_datum.volume, sound_datum.vary, falloff_exponent = AMBIENCE_FALLOFF_EXPONENT, falloff_distance = AMBIENCE_FALLOFF_DISTANCE)
+		client_mob.playsound_local(qued_ambience.play_turf, sound_to_use, sound_datum.volume, sound_datum.vary, falloff_exponent = sound_datum.falloff_exponent, falloff_distance = sound_datum.falloff_distance)
 
 #undef AMBIENCE_RANGE_LEISURE
 
