@@ -1,3 +1,5 @@
+/// Procs to manage ambience on atoms. To set an ambience onto something just call `set_ambience()`.
+
 /atom/proc/add_ambience(passed_ambience)
 	return
 
