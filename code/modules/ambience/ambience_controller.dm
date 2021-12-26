@@ -5,8 +5,6 @@
 	var/next_area_ambience = 0
 	/// When do we call the updates for area and ship ambience handling
 	var/next_area_handling = 0
-	/// Whether we wzhzhzhzhhzhzh
-	var/playing_ship_ambience = FALSE
 	/// Whether we are playing area ambience
 	var/playing_area_ambience = FALSE
 
@@ -14,6 +12,9 @@
 	var/pref_ship_ambience = TRUE
 	var/pref_area_ambience = TRUE
 	var/pref_object_ambience = TRUE
+
+	var/sound/ship_ambience_sound
+	var/ship_ambience_volume = 0
 
 	var/mob_x
 	var/mob_y
@@ -43,7 +44,9 @@
 		free_channels+= i
 	if(!ambient_sounds)
 		ambient_sounds = SSambience.ambient_sounds
+	ship_ambience_sound = new('sound/ambience/shipambience.ogg', repeat = TRUE, wait = 0, volume = 0, channel = CHANNEL_BUZZ)
 	client = applied_client
+	SEND_SOUND(client, ship_ambience_sound)
 	SSambience.ambience_controller_list += src
 	client_pref_update()
 
@@ -85,13 +88,18 @@
 /datum/ambience_controller/proc/handle_ship_ambience(mob/client_mob)
 	var/area/current_area = get_area(client_mob)
 	var/should_play_ship_ambience = (pref_ship_ambience && !current_area.outdoors)
-	if(playing_ship_ambience == should_play_ship_ambience)
+	if(ship_ambience_volume == should_play_ship_ambience)
 		return
-	playing_ship_ambience = should_play_ship_ambience
-	if(playing_ship_ambience)
-		SEND_SOUND(client, sound('sound/ambience/shipambience.ogg', repeat = TRUE, wait = 0, volume = 15, channel = CHANNEL_BUZZ))
+	if(should_play_ship_ambience)
+		ship_ambience_volume = min(ship_ambience_volume + 0.2, 1)
 	else
-		client_mob.stop_sound_channel(CHANNEL_BUZZ)
+		ship_ambience_volume = max(ship_ambience_volume - 0.2, 0)
+	if(ship_ambience_volume <= 0)
+		ship_ambience_sound.status = SOUND_UPDATE | SOUND_MUTE
+	else
+		ship_ambience_sound.status = SOUND_UPDATE
+	ship_ambience_sound.volume = ship_ambience_volume * SHIP_AMBIENCE_VOLUME
+	SEND_SOUND(client, ship_ambience_sound)
 
 /// When our client pref gets updated.
 /datum/ambience_controller/proc/client_pref_update()
@@ -389,7 +397,7 @@
 
 	var/local_pressure_factor = min(pressure_factor, mob_pressure_factor)
 	if(distance <= 1.5)
-		local_pressure_factor = max(pressure_factor, 0.25)
+		local_pressure_factor = max(pressure_factor, 0.2)
 
 	local_sound.volume *= local_pressure_factor
 
