@@ -131,31 +131,30 @@
 	if(!mob_turf)
 		return
 	var/list/found_ambience = list()
-	var/list/found_turfs = list()
 	for(var/turf/nearby_turf as anything in RANGE_TURFS(MAX_AMBIENCE_RANGE, mob_turf))
 		if(nearby_turf.ambience)
-			found_ambience += nearby_turf.ambience
-			found_turfs += nearby_turf
+			found_ambience += new /datum/ambience_sort(nearby_turf.ambience, nearby_turf, TWO_POINT_DISTANCE(nearby_turf.x, nearby_turf.y, mob_turf.x, mob_turf.y))
 		if(nearby_turf.ambience_list)
 			for(var/ambience in nearby_turf.ambience_list)
-				found_ambience += ambience
-				found_turfs += nearby_turf
-	if(!found_ambience)
+				found_ambience += new /datum/ambience_sort(ambience, nearby_turf, TWO_POINT_DISTANCE(nearby_turf.x, nearby_turf.y, mob_turf.x, mob_turf.y))
+	if(!found_ambience.len)
 		return
-	/// Sort by distance here???
+	/// Sort by distance
+	sortTim(found_ambience, cmp=/proc/cmp_ambience_dist_asc)
 
 	/// Try and queue the ambiences we have found
 	i = 0
 	var/list/cached_ambience_sounds = ambient_sounds
 	var/list/barred_ambience
-	for(var/ambience in found_ambience)
+	for(var/datum/ambience_sort/ambience_sort in found_ambience)
+		var/ambience = ambience_sort.ambience_id
 		i++
 		if(barred_ambience && (ambience in barred_ambience))
 			continue
-		var/turf/ambience_turf = found_turfs[i]
+		var/turf/ambience_turf = ambience_sort.source_turf
 		var/datum/ambient_sound/sound_datum = cached_ambience_sounds[ambience]
 		/// Consider if it's out of the range.
-		if(get_dist(ambience_turf, mob_turf) > sound_datum.range)
+		if(ambience_sort.dist > sound_datum.range)
 			continue
 		var/list/cooldown_list = ambience_cooldowns[ambience]
 		var/cooldown_list_index = 1
@@ -283,9 +282,6 @@
 		var/falloff_distance = sound_datum.falloff_distance
 
 		var/distance = TWO_POINT_DISTANCE(play_turf.x,play_turf.y,mob_x,mob_y)
-		/// if the emitter has gotten too far us, free it.
-		//if(distance > 6) ///Check looping here too? Why free non-looping emitters?
-
 
 		var/max_distance = 6
 		///DUPLICATES CODE FROM sound.dm AND ALSO DOESN'T CARE ABOUT THE PRESSURE
@@ -361,3 +357,14 @@
 	src.channel = channel
 	src.source_turf = source_turf
 	src.play_until = world.time + sound_length
+
+/// Structlike datum for sorting ambience
+/datum/ambience_sort
+	var/ambience_id
+	var/turf/source_turf
+	var/dist
+
+/datum/ambience_sort/New(ambience_id, source_turf, dist)
+	src.ambience_id = ambience_id
+	src.source_turf = source_turf
+	src.dist = dist
