@@ -60,7 +60,7 @@
 	if(next_object_sweep <= world.time)
 		handle_object_sweep(client_mob)
 	if(next_area_handling <= world.time)
-		next_area_handling = world.time + 2 SECONDS
+		next_area_handling = world.time + 1 SECONDS
 		handle_area_ambience(client_mob)
 		handle_ship_ambience(client_mob)
 	handle_managed_ambience(client_mob)
@@ -389,7 +389,7 @@
 
 	var/local_pressure_factor = min(pressure_factor, mob_pressure_factor)
 	if(distance <= 1.5)
-		local_pressure_factor = max(pressure_factor, 0.15)
+		local_pressure_factor = max(pressure_factor, 0.25)
 
 	local_sound.volume *= local_pressure_factor
 
