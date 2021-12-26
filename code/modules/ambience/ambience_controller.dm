@@ -288,6 +288,7 @@
 
 
 		var/max_distance = 6
+		///DUPLICATES CODE FROM sound.dm AND ALSO DOESN'T CARE ABOUT THE PRESSURE
 		sound.volume = volume - ((max(distance - falloff_distance, 0) ** (1 / sound_datum.falloff_exponent)) / ((max(max_distance, distance) - falloff_distance) ** (1 / falloff_exponent)) * volume)
 		sound.x = play_turf.x - mob_x // Hearing from the right/left
 		sound.z = play_turf.y - mob_y // Hearing from infront/behind

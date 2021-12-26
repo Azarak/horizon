@@ -9,9 +9,9 @@
 	var/range = 5
 	/// How many ambience emitters can be playing this at once.
 	var/maximum_emitters = 1
-	/// How often does the sound play. In seconds.
+	/// How often does the sound play. In seconds.For looping sounds it will update their emitter state faster if lower than length
 	var/frequency_time = 5 SECONDS
-	/// How long does the sound play for. MAKE SURE THIS MATCHES FREQUENCY IF LOOPING, if not, make sure it's not bigger than frequency
+	/// How long does the sound play for.
 	var/sound_length = 5 SECONDS
 	/// Whether we let byond change the pitch of the played sounds
 	var/vary = FALSE
@@ -36,13 +36,13 @@
 		'sound/ambience/emitters/lava/lava4.ogg',
 		'sound/ambience/emitters/lava/lava5.ogg'
 		)
-	frequency_time = 6 SECONDS
+	frequency_time = 3 SECONDS
 	sound_length = 6 SECONDS
 
 /datum/ambient_sound/water
 	id = AMBIENT_SOUND_WATER
 	sounds = list('sound/ambience/emitters/water/water1.ogg')
-	frequency_time = 6 SECONDS
+	frequency_time = 3 SECONDS
 	sound_length = 6 SECONDS
 
 /datum/ambient_sound/heartbeat
@@ -123,7 +123,7 @@
 		'sound/ambience/emitters/server/server2.ogg',
 		'sound/ambience/emitters/server/server3.ogg'
 		)
-	frequency_time = 2.8 SECONDS
+	frequency_time = 2 SECONDS
 	sound_length = 2.8 SECONDS
 	range = 3
 	volume = 15
@@ -137,7 +137,7 @@
 		'sound/ambience/emitters/vending/vending4.ogg',
 		'sound/ambience/emitters/vending/vending5.ogg'
 		)
-	frequency_time = 2.8 SECONDS
+	frequency_time = 2 SECONDS
 	sound_length = 2.8 SECONDS
 	range = 3
 	volume = 10
