@@ -21,6 +21,9 @@
 
 	var/mob_pressure_factor = 1
 
+	var/last_mob_positions_update = 0
+	var/needs_position_updates = FALSE
+
 	/// Time until the next object sweep for scheduling played object ambience
 	var/next_object_sweep = 0
 	/// Fast ref to the list with ambient datums
@@ -221,6 +224,7 @@
 #define AMBIENCE_RANGE_LEISURE 1
 
 /datum/ambience_controller/proc/handle_object_ambience(mob/client_mob)
+	update_mob_positions(client_mob)
 	for(var/datum/ambience_queued/qued_ambience as anything in queued_object_ambience)
 		if(qued_ambience.play_when > world.time)
 			continue
@@ -254,8 +258,7 @@
 	sound.status = SOUND_UPDATE
 
 /datum/ambience_controller/proc/handle_managed_ambience(mob/client_mob)
-	var/update_sound_positions = update_mob_positions(client_mob) ? TRUE : FALSE
-
+	update_mob_positions(client_mob)
 	for(var/datum/managed_ambience/managed as anything in managed_sounds)
 		/// If a sound is expired, free it's channel and remove it.
 		if(managed.play_until <= world.time)
@@ -266,16 +269,20 @@
 			continue
 		var/turf/play_turf = managed.source_turf
 		/// Sound doesn't have a turf it's coming from, we cant update it's xyz and volume
-		if(!update_sound_positions || !play_turf)
+		if(!needs_position_updates || !play_turf)
 			continue
 		/// Sound is not expired and has a turf. Update it's xyz position and volume
 		var/datum/ambient_sound/sound_datum = ambient_sounds[managed.ambience_id]
 		managed.update_position_and_volume(mob_pressure_factor, mob_x, mob_y, sound_datum)
 
 		SEND_SOUND(client_mob, managed.sound)
+	needs_position_updates = FALSE
 
 /// Returns TRUE if updated anything, FALSE if not
 /datum/ambience_controller/proc/update_mob_positions(mob/client_mob)
+	if(last_mob_positions_update == world.time)
+		return FALSE
+	last_mob_positions_update = world.time
 	var/turf/mob_turf = get_turf(client_mob)
 	if(!mob_turf)
 		return FALSE
@@ -292,7 +299,7 @@
 		var/pressure = source_env.return_pressure()
 		if(pressure < ONE_ATMOSPHERE)
 			mob_pressure_factor = max((pressure - SOUND_MINIMUM_PRESSURE)/(ONE_ATMOSPHERE - SOUND_MINIMUM_PRESSURE), 0)
-
+	needs_position_updates = TRUE
 	return TRUE
 
 /// Takes a free channel from the pool of remaining channels. Null if none left
