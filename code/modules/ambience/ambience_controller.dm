@@ -60,12 +60,12 @@
 	// Dont try and play ambience for new players
 	if(isnewplayer(client_mob))
 		return
-	if(next_object_sweep <= world.time)
-		handle_object_sweep(client_mob)
 	if(next_area_handling <= world.time)
 		next_area_handling = world.time + 1 SECONDS
 		handle_area_ambience(client_mob)
 		handle_ship_ambience(client_mob)
+	if(next_object_sweep <= world.time)
+		handle_object_sweep(client_mob)
 	handle_managed_ambience(client_mob)
 	handle_object_ambience(client_mob)
 
@@ -259,7 +259,8 @@
 	sound.falloff = 6
 
 	var/datum/managed_ambience/managed_sound = new /datum/managed_ambience(emitter_index, sound_datum.id, sound, channel, play_turf, sound_datum.sound_length)
-	managed_sound.update_position_and_volume(mob_pressure_factor, mob_x, mob_y, sound_datum)
+	managed_sound.update_position_and_pressure_factor(mob_pressure_factor, mob_x, mob_y, sound_datum)
+	managed_sound.update_volume(sound_datum)
 	managed_sounds += managed_sound
 
 	SEND_SOUND(client_mob, sound)
@@ -276,12 +277,14 @@
 			managed_sounds -= managed
 			continue
 		var/turf/play_turf = managed.source_turf
-		/// Sound doesn't have a turf it's coming from, we cant update it's xyz and volume
-		if(!needs_position_updates || !play_turf)
-			continue
 		/// Sound is not expired and has a turf. Update it's xyz position and volume
 		var/datum/ambient_sound/sound_datum = ambient_sounds[managed.ambience_id]
-		managed.update_position_and_volume(mob_pressure_factor, mob_x, mob_y, sound_datum)
+		var/position_update = (needs_position_updates && play_turf)
+		if(position_update)
+			managed.update_position_and_pressure_factor(mob_pressure_factor, mob_x, mob_y, sound_datum)
+
+		if(!managed.update_volume(sound_datum) && !position_update)
+			return
 
 		SEND_SOUND(client_mob, managed.sound)
 	needs_position_updates = FALSE
@@ -358,6 +361,14 @@
 	/// Pressure factor for calculating volume
 	var/pressure_factor = 1
 
+	var/calculated_pressure_factor = 1
+
+	var/position_volume_penalty = 0
+	var/old_volume
+
+	var/volume_multiplier = 1
+	var/target_volume_multiplier = 1
+
 /datum/managed_ambience/New(emitter_index, ambience_id, sound/sound, channel, source_turf, sound_length)
 	src.emitter_index = emitter_index
 	src.ambience_id = ambience_id
@@ -378,7 +389,7 @@
 		if(pressure < ONE_ATMOSPHERE)
 			pressure_factor = max((pressure - SOUND_MINIMUM_PRESSURE)/(ONE_ATMOSPHERE - SOUND_MINIMUM_PRESSURE), 0)
 
-/datum/managed_ambience/proc/update_position_and_volume(mob_pressure_factor, mob_x, mob_y, datum/ambient_sound/sound_datum)
+/datum/managed_ambience/proc/update_position_and_pressure_factor(mob_pressure_factor, mob_x, mob_y, datum/ambient_sound/sound_datum)
 	if(!mob_x || !source_turf)
 		return
 	var/sound/local_sound = sound
@@ -391,7 +402,7 @@
 
 	var/max_distance = 6
 
-	local_sound.volume = volume - ((max(distance - falloff_distance, 0) ** (1 / sound_datum.falloff_exponent)) / ((max(max_distance, distance) - falloff_distance) ** (1 / falloff_exponent)) * volume)
+	position_volume_penalty = (max(distance - falloff_distance, 0) ** (1 / sound_datum.falloff_exponent)) / ((max(max_distance, distance) - falloff_distance) ** (1 / falloff_exponent)) * volume
 	local_sound.x = source_turf.x - mob_x // Hearing from the right/left
 	local_sound.z = source_turf.y - mob_y // Hearing from infront/behind
 
@@ -399,7 +410,21 @@
 	if(distance <= 1.5)
 		local_pressure_factor = max(pressure_factor, 0.2)
 
-	local_sound.volume *= local_pressure_factor
+	calculated_pressure_factor = local_pressure_factor
+
+/datum/managed_ambience/proc/update_volume(datum/ambient_sound/sound_datum)
+	var/target_volume = (sound_datum.volume - position_volume_penalty) * calculated_pressure_factor
+	if(volume_multiplier != target_volume_multiplier)
+		if(volume_multiplier < target_volume_multiplier)
+			volume_multiplier = min(target_volume_multiplier, volume_multiplier + 0.1)
+		else
+			volume_multiplier = max(target_volume_multiplier, volume_multiplier - 0.1)
+	target_volume *= volume_multiplier
+	if(target_volume == old_volume)
+		return FALSE
+	old_volume = target_volume
+	sound.volume = target_volume
+	return TRUE
 
 /// Structlike datum for sorting ambience
 /datum/ambience_sort
