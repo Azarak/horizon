@@ -19,6 +19,8 @@
 	var/mob_y
 	var/mob_z
 
+	var/mob_pressure_factor = 1
+
 	/// Time until the next object sweep for scheduling played object ambience
 	var/next_object_sweep = 0
 	/// Fast ref to the list with ambient datums
@@ -212,7 +214,7 @@
 		for(var/datum/managed_ambience/managed as anything in managed_sounds)
 			if(managed.ambience_id == ambience_id && managed.emitter_index == emitter_index)
 				managed.play_until = wait_time + sound_datum.sound_length
-				managed.source_turf = ambience_turf
+				managed.set_turf(ambience_turf)
 				return
 	queued_object_ambience += new /datum/ambience_queued(ambience_id, ambience_turf, wait_time, emitter_index)
 
@@ -228,35 +230,28 @@
 		/// Once again, checking the distance, but adding 1 for extra leisure to not cancel too many queued ambiences
 		if(get_dist(qued_ambience.play_turf, mob_turf) > sound_datum.range + AMBIENCE_RANGE_LEISURE)
 			continue
-		var/sound_to_use = pick(sound_datum.sounds)
-		var/channel = get_free_channel()
-		var/sound/played_sound = play_ambience_sound(client_mob, qued_ambience.play_turf, sound_to_use, sound_datum.volume, sound_datum.vary, sound_datum.falloff_exponent, sound_datum.falloff_distance, channel, sound_datum.loops)
-		played_sound.status = SOUND_UPDATE
-		managed_sounds += new /datum/managed_ambience(qued_ambience.emitter_index, qued_ambience.ambience_id, played_sound, channel, qued_ambience.play_turf, sound_datum.sound_length)
+		play_ambience_sound(client_mob, qued_ambience.play_turf, sound_datum, qued_ambience.emitter_index)
 
 #undef AMBIENCE_RANGE_LEISURE
 
-/datum/ambience_controller/proc/play_ambience_sound(mob/client_mob, turf/play_turf, sound_to_use, volume, vary, falloff_exponent, falloff_distance, channel, loops)
+/datum/ambience_controller/proc/play_ambience_sound(mob/client_mob, turf/play_turf, datum/ambient_sound/sound_datum, emitter_index)
+	var/sound_to_use = pick(sound_datum.sounds)
+	var/channel = get_free_channel()
+
 	var/sound/sound = sound(sound_to_use)
 	sound.wait = FALSE
 	sound.channel = channel
-	sound.volume = volume
-	sound.repeat = loops
-
-	if(vary)
+	sound.repeat = sound_datum.loops
+	if(sound_datum.vary)
 		sound.frequency = get_rand_frequency()
+	sound.falloff = 6
 
-	var/max_distance = 6
+	var/datum/managed_ambience/managed_sound = new /datum/managed_ambience(emitter_index, sound_datum.id, sound, channel, play_turf, sound_datum.sound_length)
+	managed_sound.update_position_and_volume(mob_pressure_factor, mob_x, mob_y, sound_datum)
+	managed_sounds += managed_sound
 
-	if(play_turf && mob_z)
-		var/distance = TWO_POINT_DISTANCE(play_turf.x,play_turf.y,mob_x,mob_y)
-		sound.volume -= (max(distance - falloff_distance, 0) ** (1 / falloff_exponent)) / ((max(max_distance, distance) - falloff_distance) ** (1 / falloff_exponent)) * volume
-		sound.x = play_turf.x - mob_x // Hearing from the right/left
-		sound.z = play_turf.y - mob_y // Hearing from infront/behind
-
-	sound.falloff = max_distance
 	SEND_SOUND(client_mob, sound)
-	return sound
+	sound.status = SOUND_UPDATE
 
 /datum/ambience_controller/proc/handle_managed_ambience(mob/client_mob)
 	var/update_sound_positions = update_mob_positions(client_mob) ? TRUE : FALSE
@@ -274,22 +269,10 @@
 		if(!update_sound_positions || !play_turf)
 			continue
 		/// Sound is not expired and has a turf. Update it's xyz position and volume
-		var/sound/sound = managed.sound
 		var/datum/ambient_sound/sound_datum = ambient_sounds[managed.ambience_id]
+		managed.update_position_and_volume(mob_pressure_factor, mob_x, mob_y, sound_datum)
 
-		var/volume = sound_datum.volume
-		var/falloff_exponent = sound_datum.falloff_exponent
-		var/falloff_distance = sound_datum.falloff_distance
-
-		var/distance = TWO_POINT_DISTANCE(play_turf.x,play_turf.y,mob_x,mob_y)
-
-		var/max_distance = 6
-		///DUPLICATES CODE FROM sound.dm AND ALSO DOESN'T CARE ABOUT THE PRESSURE
-		sound.volume = volume - ((max(distance - falloff_distance, 0) ** (1 / sound_datum.falloff_exponent)) / ((max(max_distance, distance) - falloff_distance) ** (1 / falloff_exponent)) * volume)
-		sound.x = play_turf.x - mob_x // Hearing from the right/left
-		sound.z = play_turf.y - mob_y // Hearing from infront/behind
-
-		SEND_SOUND(client_mob, sound)
+		SEND_SOUND(client_mob, managed.sound)
 
 /// Returns TRUE if updated anything, FALSE if not
 /datum/ambience_controller/proc/update_mob_positions(mob/client_mob)
@@ -301,6 +284,15 @@
 	mob_x = mob_turf.x
 	mob_y = mob_turf.y
 	mob_z = mob_turf.z
+
+	/// This will not be updated if the user position does not change, but that's fine.
+	mob_pressure_factor = 1
+	var/datum/gas_mixture/source_env = mob_turf.return_air()
+	if(source_env)
+		var/pressure = source_env.return_pressure()
+		if(pressure < ONE_ATMOSPHERE)
+			mob_pressure_factor = max((pressure - SOUND_MINIMUM_PRESSURE)/(ONE_ATMOSPHERE - SOUND_MINIMUM_PRESSURE), 0)
+
 	return TRUE
 
 /// Takes a free channel from the pool of remaining channels. Null if none left
@@ -348,6 +340,8 @@
 	var/play_until
 	/// Whether the managed sound loops
 	var/loops = FALSE
+	/// Pressure factor for calculating volume
+	var/pressure_factor = 1
 
 /datum/managed_ambience/New(emitter_index, ambience_id, sound/sound, channel, source_turf, sound_length)
 	src.emitter_index = emitter_index
@@ -355,8 +349,42 @@
 	src.sound = sound
 	src.loops = sound.repeat
 	src.channel = channel
-	src.source_turf = source_turf
 	src.play_until = world.time + sound_length
+	set_turf(source_turf)
+
+/datum/managed_ambience/proc/set_turf(turf/turf_to_set)
+	if(!turf_to_set)
+		return
+	source_turf = turf_to_set
+	pressure_factor = 1
+	var/datum/gas_mixture/source_env = source_turf.return_air()
+	if(source_env)
+		var/pressure = source_env.return_pressure()
+		if(pressure < ONE_ATMOSPHERE)
+			pressure_factor = max((pressure - SOUND_MINIMUM_PRESSURE)/(ONE_ATMOSPHERE - SOUND_MINIMUM_PRESSURE), 0)
+
+/datum/managed_ambience/proc/update_position_and_volume(mob_pressure_factor, mob_x, mob_y, datum/ambient_sound/sound_datum)
+	if(!mob_x || !source_turf)
+		return
+	var/sound/local_sound = sound
+
+	var/volume = sound_datum.volume
+	var/falloff_exponent = sound_datum.falloff_exponent
+	var/falloff_distance = sound_datum.falloff_distance
+
+	var/distance = TWO_POINT_DISTANCE(source_turf.x,source_turf.y,mob_x,mob_y)
+
+	var/max_distance = 6
+
+	local_sound.volume = volume - ((max(distance - falloff_distance, 0) ** (1 / sound_datum.falloff_exponent)) / ((max(max_distance, distance) - falloff_distance) ** (1 / falloff_exponent)) * volume)
+	local_sound.x = source_turf.x - mob_x // Hearing from the right/left
+	local_sound.z = source_turf.y - mob_y // Hearing from infront/behind
+
+	var/local_pressure_factor = min(pressure_factor, mob_pressure_factor)
+	if(distance <= 1.5)
+		local_pressure_factor = max(pressure_factor, 0.15)
+
+	local_sound.volume *= local_pressure_factor
 
 /// Structlike datum for sorting ambience
 /datum/ambience_sort
