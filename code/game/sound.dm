@@ -113,8 +113,6 @@ distance_multiplier - Can be used to multiply the distance at which the sound is
 	if(!S)
 		S = sound(get_sfx(soundin))
 
-	. = S
-
 	S.wait = 0 //No queue
 	S.channel = channel || SSsounds.random_available_channel()
 	S.volume = vol
