@@ -40,6 +40,11 @@
 	. = ..()
 
 /datum/map_zone/Destroy()
+	/// Excepts overmap extensions (like engines and such), gravity generators etc. to have been deleted before this.
+	if(weather_controller)
+		QDEL_NULL(weather_controller)
+	if(day_night_controller)
+		QDEL_NULL(day_night_controller)
 	SSmapping.map_zones -= src
 	for(var/datum/virtual_level/vlevel as anything in virtual_levels)
 		qdel(vlevel)
