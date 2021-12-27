@@ -335,7 +335,7 @@
 			managed.update_position_and_pressure_factor(mob_pressure_factor, mob_x, mob_y, sound_datum)
 
 		if(!managed.update_volume(sound_datum) && !position_update)
-			return
+			continue
 
 		SEND_SOUND(client_mob, managed.sound)
 	needs_position_updates = FALSE

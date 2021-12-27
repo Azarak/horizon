@@ -481,3 +481,15 @@
 	frequency_time = 14 SECONDS
 	frequency_time_high = 16 SECONDS
 	loops = FALSE
+
+/datum/ambient_sound/gravgen
+	id = AMBIENCE_GRAVGEN
+	volume = 35
+	sounds = list(
+		'sound/machines/gravgen/gravgen_mid1.ogg',
+		'sound/machines/gravgen/gravgen_mid2.ogg',
+		'sound/machines/gravgen/gravgen_mid3.ogg',
+		'sound/machines/gravgen/gravgen_mid4.ogg'
+		)
+	frequency_time = 1.8 SECONDS
+	sound_length = 1.8 SECONDS
