@@ -24,7 +24,7 @@
 	light_power = 1.5
 	light_color = LIGHT_COLOR_FIRE
 	mouse_opacity = FALSE
-	ambience = AMBIENT_SOUND_FIRE
+	ambience = AMBIENCE_FIRE
 	/// How much power have we got. This is treated like fuel, be it flamethrower liquid or any random thing you could come up with
 	var/fire_power = 20
 	/// Is it magical, if it is then it wont interact with atmos, and it will not loose power by itself. Mainly for adminbus events or mapping

@@ -5,8 +5,8 @@
 	var/next_area_ambience = 0
 	/// When do we call the updates for area and ship ambience handling
 	var/next_area_handling = 0
-	/// Whether we are playing area ambience
-	var/playing_area_ambience = FALSE
+
+	var/current_main_area_ambience
 
 	/// Preference variables
 	var/pref_ship_ambience = TRUE
@@ -24,6 +24,8 @@
 
 	var/last_mob_positions_update = 0
 	var/needs_position_updates = FALSE
+
+	var/list/current_area_ambient_noises
 
 	/// Time until the next object sweep for scheduling played object ambience
 	var/next_object_sweep = 0
@@ -71,19 +73,59 @@
 
 /datum/ambience_controller/proc/handle_area_ambience(mob/client_mob)
 	if(!pref_area_ambience)
-		if(playing_area_ambience)
-			client_mob.stop_sound_channel(CHANNEL_AMBIENCE)
-			playing_area_ambience = FALSE
 		return
-	if(world.time < next_area_ambience)
-		return
-	playing_area_ambience = TRUE
 	var/area/current_area = get_area(client_mob)
-	var/sound = pick(current_area.ambientsounds)
+	var/new_main_ambience = current_area.main_ambience
+	var/list/new_area_ambient_noises = current_area.ambient_noises
+	if(new_main_ambience != current_main_area_ambience)
+		if(current_main_area_ambience)
+			set_target_volume_for_ambience_id(current_main_area_ambience, 0)
+		if(current_area_ambient_noises)
+			for(var/noise in current_area_ambient_noises)
+				set_target_volume_for_ambience_id(noise, 0)
+		current_main_area_ambience = new_main_ambience
+		if(current_main_area_ambience)
+			set_target_volume_for_ambience_id(current_main_area_ambience, 1)
 
-	SEND_SOUND(client, sound(sound, repeat = 0, wait = 0, volume = 25, channel = CHANNEL_AMBIENCE))
+		if(new_area_ambient_noises)
+			for(var/noise in new_area_ambient_noises)
+				set_target_volume_for_ambience_id(noise, 1)
 
-	next_area_ambience = world.time + rand(current_area.min_ambience_cooldown, current_area.max_ambience_cooldown)
+		if(new_area_ambient_noises)
+			add_area_noises_cooldowns(new_area_ambient_noises)
+	if(current_main_area_ambience)
+		var/datum/ambient_sound/sound_datum = ambient_sounds[current_main_area_ambience]
+		try_invoke_ambient_sound(current_main_area_ambience, null, sound_datum)
+
+	current_area_ambient_noises = new_area_ambient_noises
+
+	if(current_area_ambient_noises)
+		for(var/noise in current_area_ambient_noises)
+			var/datum/ambient_sound/sound_datum = ambient_sounds[noise]
+			try_invoke_ambient_sound(noise, null, sound_datum)
+
+/// Adds cooldowns to non looping ambient noises of the area as we enter it
+/datum/ambience_controller/proc/add_area_noises_cooldowns(list/noises)
+	var/world_time = world.time
+	for(var/noise in noises)
+		var/datum/ambient_sound/sound_datum = ambient_sounds[noise]
+		if(sound_datum.loops)
+			continue
+		var/list/cooldown_list = ambience_cooldowns[noise]
+		if(!cooldown_list)
+			ambience_cooldowns[noise] = cooldown_list = list()
+		for(var/i in 1 to sound_datum.maximum_emitters)
+			var/frequency_time = sound_datum.frequency_time_high ? rand(sound_datum.frequency_time, sound_datum.frequency_time_high) : sound_datum.frequency_time
+			if(cooldown_list.len < i)
+				cooldown_list += world_time + frequency_time
+			else
+				cooldown_list[i] = world_time + frequency_time
+
+/// Sets the target volumes for currently playing ambiences of an ID
+/datum/ambience_controller/proc/set_target_volume_for_ambience_id(ambience_id, target_volume)
+	for(var/datum/managed_ambience/managed as anything in managed_sounds)
+		if(managed.ambience_id == ambience_id)
+			managed.target_volume_multiplier = target_volume
 
 /datum/ambience_controller/proc/handle_ship_ambience(mob/client_mob)
 	var/area/current_area = get_area(client_mob)
@@ -116,19 +158,10 @@
 	handle_area_ambience(client_mob)
 	handle_ship_ambience(client_mob)
 
-// This proc goes hard feel free to copy
-// This proc is very complex and does 3 important tasks:
-// 1. Goes over the cooldown list for ambience emitters and clears any ones that have passed, unsetting empty lists too
-// 2. Sweeps a range of nearby turfs to get new ambiences
-// 3. Iterates over all new ambiences and checks if it can be played, setting the appropriate cooldowns (The cooldown setting is rather complex)
-/datum/ambience_controller/proc/handle_object_sweep(mob/client_mob)
-	var/world_time = world.time //faster access I think????
-	next_object_sweep = world_time + AMBIENCE_SWEEP_TIME
-	if(!pref_object_ambience)
-		return
-
+/datum/ambience_controller/proc/clear_cooldowns()
 	///Clear existing cooldowns
 	var/i = 0
+	var/world_time = world.time
 	for(var/list/cooldown_list as anything in ambience_cooldowns)
 		i++
 		if(!cooldown_list)
@@ -138,6 +171,18 @@
 				cooldown_list -= cooldown
 		if(!cooldown_list.len)
 			ambience_cooldowns[i] = null
+
+// This proc goes hard feel free to copy
+// This proc is very complex and does 3 important tasks:
+// 1. Goes over the cooldown list for ambience emitters and clears any ones that have passed, unsetting empty lists too
+// 2. Sweeps a range of nearby turfs to get new ambiences
+// 3. Iterates over all new ambiences and checks if it can be played, setting the appropriate cooldowns (The cooldown setting is rather complex)
+/datum/ambience_controller/proc/handle_object_sweep(mob/client_mob)
+	next_object_sweep = world.time + AMBIENCE_SWEEP_TIME
+	if(!pref_object_ambience)
+		return
+
+	clear_cooldowns()
 
 	///Do a sweep
 	var/turf/mob_turf = get_turf(client_mob)
@@ -156,68 +201,71 @@
 	sortTim(found_ambience, cmp=/proc/cmp_ambience_dist_asc)
 
 	/// Try and queue the ambiences we have found
-	i = 0
 	var/list/cached_ambience_sounds = ambient_sounds
 	var/list/barred_ambience
 	for(var/datum/ambience_sort/ambience_sort in found_ambience)
 		var/ambience = ambience_sort.ambience_id
-		i++
+		var/datum/ambient_sound/sound_datum = cached_ambience_sounds[ambience]
 		if(barred_ambience && (ambience in barred_ambience))
 			continue
-		var/turf/ambience_turf = ambience_sort.source_turf
-		var/datum/ambient_sound/sound_datum = cached_ambience_sounds[ambience]
 		/// Consider if it's out of the range.
 		if(ambience_sort.dist > sound_datum.range)
 			continue
-		var/list/cooldown_list = ambience_cooldowns[ambience]
-		var/cooldown_list_index = 1
-		var/cooldown_time_to_set = world_time + sound_datum.frequency_time
-		/// Check the cooldown in the cooldown lists
-		var/wait_time = world_time
-		if(cooldown_list)
-			// We have a free spot in the emitter list, add a new cooldown.
-			if(cooldown_list.len < sound_datum.maximum_emitters)
-				cooldown_list += 0
-				cooldown_list_index = cooldown_list.len
-			// If we don't, we try and queue
-			else
-				cooldown_list_index = 0
-				var/found_any = FALSE
-				/// Iterate over all cooldowns and see if we can play a sound in the next 5s (AMBIENCE_QUEUE_TIME)
-				for(var/current_cooldown in cooldown_list)
-					cooldown_list_index++
-					if(current_cooldown < world_time + AMBIENCE_QUEUE_TIME)
-						found_any = TRUE
-						wait_time = current_cooldown
-						cooldown_time_to_set = current_cooldown + sound_datum.frequency_time
-						break
-				if(!found_any)
-					// We cant find any ambience that can be played within 5s, skip and bar this ambience id from trying
-					LAZYINITLIST(barred_ambience)
-					barred_ambience += ambience
-					continue
-		/// If there isn't a cooldown list, free to assume we can create a new cooldown.
-		else
-			ambience_cooldowns[ambience] = cooldown_list = list()
-			cooldown_list += 0
+		if(!try_invoke_ambient_sound(ambience, ambience_sort.source_turf, sound_datum))
+			LAZYINITLIST(barred_ambience)
+			barred_ambience += ambience
 
-		/// While the next played ambience would have to happen before the next queue, add another queued sound and increment cooldown approprietly
-		while(cooldown_time_to_set < world_time + AMBIENCE_QUEUE_TIME)
-			invoke_ambient_sound(ambience, ambience_turf, cooldown_time_to_set, cooldown_list_index, sound_datum)
-			cooldown_time_to_set = cooldown_time_to_set + sound_datum.frequency_time
-		/// Set the cooldown and add a queued sound.
-		cooldown_list[cooldown_list_index] = cooldown_time_to_set
-		invoke_ambient_sound(ambience, ambience_turf, wait_time, cooldown_list_index, sound_datum)
-		/// If there is a cooldown between emitters, populate the cooldown list and fill them all with the cooldown
-		if(sound_datum.cooldown_between_emitters)
-			var/beetween_cooldown = world_time + sound_datum.cooldown_between_emitters
+/datum/ambience_controller/proc/try_invoke_ambient_sound(ambience, turf/ambience_turf, datum/ambient_sound/sound_datum)
+	var/world_time = world.time //faster access I think????
+	var/frequency_time = sound_datum.frequency_time_high ? rand(sound_datum.frequency_time, sound_datum.frequency_time_high) : sound_datum.frequency_time
+	var/list/cooldown_list = ambience_cooldowns[ambience]
+	var/cooldown_list_index = 1
+	var/cooldown_time_to_set = world_time + frequency_time
+	/// Check the cooldown in the cooldown lists
+	var/wait_time = world_time
+	if(cooldown_list)
+		// We have a free spot in the emitter list, add a new cooldown.
+		if(cooldown_list.len < sound_datum.maximum_emitters)
+			cooldown_list += 0
+			cooldown_list_index = cooldown_list.len
+		// If we don't, we try and queue
+		else
 			cooldown_list_index = 0
-			for(var/cooldown in cooldown_list)
+			var/found_any = FALSE
+			/// Iterate over all cooldowns and see if we can play a sound in the next 5s (AMBIENCE_QUEUE_TIME)
+			for(var/current_cooldown in cooldown_list)
 				cooldown_list_index++
-				if(cooldown < beetween_cooldown)
-					cooldown_list[cooldown_list_index] = beetween_cooldown
-			while(cooldown_list.len < sound_datum.maximum_emitters)
-				cooldown_list += beetween_cooldown
+				if(current_cooldown < world_time + AMBIENCE_QUEUE_TIME)
+					found_any = TRUE
+					wait_time = current_cooldown
+					cooldown_time_to_set = current_cooldown + frequency_time
+					break
+			if(!found_any)
+				// We cant find any ambience that can be played within 5s
+				return FALSE
+	/// If there isn't a cooldown list, free to assume we can create a new cooldown.
+	else
+		ambience_cooldowns[ambience] = cooldown_list = list()
+		cooldown_list += 0
+
+	/// While the next played ambience would have to happen before the next queue, add another queued sound and increment cooldown approprietly
+	while(cooldown_time_to_set < world_time + AMBIENCE_QUEUE_TIME)
+		invoke_ambient_sound(ambience, ambience_turf, cooldown_time_to_set, cooldown_list_index, sound_datum)
+		cooldown_time_to_set = cooldown_time_to_set + frequency_time
+	/// Set the cooldown and add a queued sound.
+	cooldown_list[cooldown_list_index] = cooldown_time_to_set
+	invoke_ambient_sound(ambience, ambience_turf, wait_time, cooldown_list_index, sound_datum)
+	/// If there is a cooldown between emitters, populate the cooldown list and fill them all with the cooldown
+	if(sound_datum.cooldown_between_emitters)
+		var/beetween_cooldown = world_time + sound_datum.cooldown_between_emitters
+		cooldown_list_index = 0
+		for(var/cooldown in cooldown_list)
+			cooldown_list_index++
+			if(cooldown < beetween_cooldown)
+				cooldown_list[cooldown_list_index] = beetween_cooldown
+		while(cooldown_list.len < sound_datum.maximum_emitters)
+			cooldown_list += beetween_cooldown
+	return TRUE
 
 /datum/ambience_controller/proc/invoke_ambient_sound(ambience_id, ambience_turf, wait_time, emitter_index, datum/ambient_sound/sound_datum)
 	//If it loops, try and find existing playing managed sound and up its duration instead
@@ -226,6 +274,7 @@
 			if(managed.ambience_id == ambience_id && managed.emitter_index == emitter_index)
 				managed.play_until = wait_time + sound_datum.sound_length
 				managed.set_turf(ambience_turf)
+				managed.target_volume_multiplier = 1
 				return
 	queued_object_ambience += new /datum/ambience_queued(ambience_id, ambience_turf, wait_time, emitter_index)
 
@@ -237,11 +286,12 @@
 		if(qued_ambience.play_when > world.time)
 			continue
 		queued_object_ambience -= qued_ambience
-		var/turf/mob_turf = get_turf(client_mob)
 		var/datum/ambient_sound/sound_datum = ambient_sounds[qued_ambience.ambience_id]
 		/// Once again, checking the distance, but adding 1 for extra leisure to not cancel too many queued ambiences
-		if(get_dist(qued_ambience.play_turf, mob_turf) > sound_datum.range + AMBIENCE_RANGE_LEISURE)
-			continue
+		if(qued_ambience.play_turf)
+			var/turf/mob_turf = get_turf(client_mob)
+			if(get_dist(qued_ambience.play_turf, mob_turf) > sound_datum.range + AMBIENCE_RANGE_LEISURE)
+				continue
 		play_ambience_sound(client_mob, qued_ambience.play_turf, sound_datum, qued_ambience.emitter_index)
 
 #undef AMBIENCE_RANGE_LEISURE
@@ -256,7 +306,8 @@
 	sound.repeat = sound_datum.loops
 	if(sound_datum.vary)
 		sound.frequency = get_rand_frequency()
-	sound.falloff = 6
+	if(play_turf)
+		sound.falloff = MAX_DISTANCE_AMBIENCE_SOUND
 
 	var/datum/managed_ambience/managed_sound = new /datum/managed_ambience(emitter_index, sound_datum.id, sound, channel, play_turf, sound_datum.sound_length)
 	managed_sound.update_position_and_pressure_factor(mob_pressure_factor, mob_x, mob_y, sound_datum)
@@ -400,7 +451,7 @@
 
 	var/distance = TWO_POINT_DISTANCE(source_turf.x,source_turf.y,mob_x,mob_y)
 
-	var/max_distance = 6
+	var/max_distance = MAX_DISTANCE_AMBIENCE_SOUND
 
 	position_volume_penalty = (max(distance - falloff_distance, 0) ** (1 / sound_datum.falloff_exponent)) / ((max(max_distance, distance) - falloff_distance) ** (1 / falloff_exponent)) * volume
 	local_sound.x = source_turf.x - mob_x // Hearing from the right/left
@@ -416,9 +467,9 @@
 	var/target_volume = (sound_datum.volume - position_volume_penalty) * calculated_pressure_factor
 	if(volume_multiplier != target_volume_multiplier)
 		if(volume_multiplier < target_volume_multiplier)
-			volume_multiplier = min(target_volume_multiplier, volume_multiplier + 0.1)
+			volume_multiplier = min(target_volume_multiplier, volume_multiplier + 0.15)
 		else
-			volume_multiplier = max(target_volume_multiplier, volume_multiplier - 0.1)
+			volume_multiplier = max(target_volume_multiplier, volume_multiplier - 0.15)
 	target_volume *= volume_multiplier
 	if(target_volume == old_volume)
 		return FALSE

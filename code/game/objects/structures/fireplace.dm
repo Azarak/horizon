@@ -140,7 +140,7 @@
 
 /obj/structure/fireplace/proc/ignite()
 	lit = TRUE
-	set_ambience(AMBIENT_SOUND_FIRE)
+	set_ambience(AMBIENCE_FIRE)
 	desc = "A large stone brick fireplace, warm and cozy."
 	flame_expiry_timer = world.time + fuel_added
 	fuel_added = 0

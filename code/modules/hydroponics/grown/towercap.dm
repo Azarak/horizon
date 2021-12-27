@@ -250,7 +250,7 @@
 		burning = TRUE
 		set_light(6)
 		Burn()
-		set_ambience(AMBIENT_SOUND_FIRE)
+		set_ambience(AMBIENCE_FIRE)
 		START_PROCESSING(SSobj, src)
 
 /obj/structure/bonfire/fire_act(exposed_temperature, exposed_volume)
