@@ -74,6 +74,8 @@
 
 /atom/movable/Initialize(mapload)
 	. = ..()
+	if(ambience && loc)
+		loc.add_ambience(ambience)
 	switch(blocks_emissive)
 		if(EMISSIVE_BLOCK_GENERIC)
 			var/mutable_appearance/gen_emissive_blocker = mutable_appearance(icon, icon_state, plane = EMISSIVE_PLANE, alpha = src.alpha)
@@ -544,6 +546,13 @@
 /atom/movable/proc/Moved(atom/OldLoc, Dir, Forced = FALSE)
 	SHOULD_CALL_PARENT(TRUE)
 
+	//Move ambience we may be casting on turfs
+	if(ambience)
+		if(OldLoc)
+			OldLoc.remove_ambience(ambience)
+		if(loc)
+			loc.add_ambience(ambience)
+
 	if (!inertia_moving)
 		inertia_next_move = world.time + inertia_move_delay
 		newtonian_move(Dir)
@@ -935,7 +944,7 @@
 	return
 
 
-/atom/movable/proc/do_attack_animation(atom/A, visual_effect_icon, obj/item/used_item, no_effect)
+/atom/movable/proc/do_attack_animation(atom/A, visual_effect_icon, obj/item/used_item, no_effect, blind_effect = TRUE)
 	if(!no_effect && (visual_effect_icon || used_item))
 		do_item_attack_animation(A, visual_effect_icon, used_item)
 
@@ -958,6 +967,9 @@
 	else if(direction & WEST)
 		pixel_x_diff = -8
 		turn_dir = -1
+
+	if(blind_effect)
+		play_blind_effect(A, 5, "attack")
 
 	var/matrix/initial_transform = matrix(transform)
 	var/matrix/rotated_transform = transform.Turn(15 * turn_dir)

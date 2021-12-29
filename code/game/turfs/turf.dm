@@ -72,6 +72,8 @@ GLOBAL_LIST_EMPTY(station_turfs)
 	var/virtual_z = 0
 	/// Translation of the virtual z to a virtual level
 	var/static/list/virtual_z_translation
+	/// List of all the ambiences coming from other atoms on the turf
+	var/list/ambience_list
 
 /turf/vv_edit_var(var_name, new_value)
 	var/static/list/banned_edits = list("x", "y", "z")
