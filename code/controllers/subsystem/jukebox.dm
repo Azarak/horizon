@@ -55,13 +55,12 @@ SUBSYSTEM_DEF(jukebox)
 		var/datum/jukebox_track/track = new()
 		track.song_path = file("[global.config.directory]/jukebox_music/sounds/[some_file]")
 		var/list/param_list = splittext(some_file,"+")
-		if(param_list.len != 4)
+		if(param_list.len != 3)
 			WARNING("Not enough parameters specified for a jukebox song to load.")
 			continue
 		track.song_name = param_list[1]
 		track.song_length = text2num(param_list[2])
 		track.song_beat = text2num(param_list[3])
-		track.song_volume = text2num(param_list[4])
 		tracks += track
 
 /datum/controller/subsystem/jukebox/proc/get_free_channel()

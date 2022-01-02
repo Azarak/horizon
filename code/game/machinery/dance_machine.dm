@@ -161,7 +161,7 @@
 	if(!free_channel)
 		return
 	active = TRUE
-	stop = world.time + 10 SECONDS
+	stop = world.time + 5 SECONDS
 	played_track = new(src, selection, free_channel)
 	update_appearance()
 

@@ -42,14 +42,12 @@
 	var/song_path = null
 	var/song_length = 0
 	var/song_beat = 0
-	var/song_volume = 100
 
-/datum/jukebox_track/New(name, path, length, beat, volume)
+/datum/jukebox_track/New(name, path, length, beat)
 	song_name = name
 	song_path = path
 	song_length = length
 	song_beat = beat
-	song_volume = volume
 
 /// Jukebox subscription that gets attached to clients and manages the sounds that are being played to it.
 /datum/jukebox_controller
@@ -69,22 +67,37 @@
 	return ..()
 
 /datum/jukebox_controller/proc/update_sound_data(sound/sound_to_update, datum/jukebox_playing_track/played_track, list/jukebox_hearers)
-	var/datum/jukebox_track/track_info = played_track.track
 	var/obj/machinery/jukebox/jukebox = played_track.jukebox
 	var/mob/client_mob = client.mob
 	var/in_jukebox_viscinity = FALSE
-	var/target_volume = track_info.song_volume
+	var/target_volume = 100
 
 	var/turf/jukebox_turf = get_turf(jukebox)
+	var/turf/relative_jukebox_turf = jukebox_turf
 	var/turf/mob_turf = get_turf(client_mob)
+
+	var/multi_z = FALSE
+	var/multi_z_distance = 0
 
 	if(!jukebox_turf || !mob_turf)
 		sound_to_update.status |= SOUND_MUTE
 		return
-	if(jukebox_turf.virtual_z() != mob_turf.virtual_z())
-		sound_to_update.status |= SOUND_MUTE
-		return
-	var/distance = get_dist(jukebox_turf, mob_turf)
+	var/datum/virtual_level/jukebox_virtual_level = jukebox_turf.get_virtual_level()
+	var/datum/virtual_level/mob_virtual_level = mob_turf.get_virtual_level()
+	if(jukebox_virtual_level != mob_virtual_level)
+		multi_z_distance = mob_virtual_level.get_multi_z_connect_distance(jukebox_virtual_level)
+		if(!multi_z_distance)
+			sound_to_update.status |= SOUND_MUTE
+			return
+		multi_z = TRUE
+
+	var/distance
+	if(multi_z)
+		var/list/jukebox_relative_coords = jukebox_virtual_level.get_relative_coords(jukebox_turf)
+		relative_jukebox_turf = mob_virtual_level.get_relative_point(jukebox_relative_coords[1], jukebox_relative_coords[2])
+		distance = get_dist(relative_jukebox_turf, mob_turf) + (multi_z_distance * JUKEBOX_MULTI_Z_DISTANCE_MULTIPLICATOR)
+	else
+		distance = get_dist(jukebox_turf, mob_turf)
 
 	target_volume *= (jukebox.volume / 100)
 	target_volume -= (max(distance - JUKEBOX_FALLOFF_DISTANCE, 0) ** (1 / JUKEBOX_FALLOFF_EXPONENT)) / ((max(JUKEBOX_MAX_RANGE, distance) - JUKEBOX_FALLOFF_DISTANCE) ** (1 / JUKEBOX_FALLOFF_EXPONENT)) * target_volume
@@ -94,15 +107,14 @@
 		return
 	else
 		sound_to_update.status &= ~SOUND_MUTE
-		sound_to_update.volume = target_volume
 
 	/// At close range we dont set a position of the sound.
 	if(distance <= JUKEBOX_NO_POSITIONAL_RANGE)
-		sound_to_update.x = 0.01
-		sound_to_update.z = 0.01 //Because 0 means no update. Lol
+		sound_to_update.x = 0
+		sound_to_update.z = -1
 	else
-		sound_to_update.x = jukebox_turf.x - mob_turf.x // Hearing from the right/left
-		sound_to_update.z = jukebox_turf.y - mob_turf.y // Hearing from infront/behind
+		sound_to_update.x = relative_jukebox_turf.x - mob_turf.x // Hearing from the right/left
+		sound_to_update.z = relative_jukebox_turf.y - mob_turf.y // Hearing from infront/behind
 
 	if(!jukebox_hearers)
 		jukebox_hearers = get_hearers_in_view(JUKEBOX_VIEW_RANGE, jukebox_turf)
@@ -114,13 +126,16 @@
 		else if(client_mob in jukebox_hearers)
 			in_jukebox_viscinity = TRUE
 
-	/// Apply an echo if we're not in the jukebox viscinity
+	/// Apply an echo and slightly lower volume if we're not in the jukebox "viscinity"
 	if(in_jukebox_viscinity)
 		sound_to_update.echo[1] = 0
 		sound_to_update.echo[3] = -250
 	else
 		sound_to_update.echo[1] = -10000
 		sound_to_update.echo[3] = 0
+		target_volume *= JUKEBOX_ECHO_VOLUME_MODIFIER
+
+	sound_to_update.volume = target_volume
 
 /datum/jukebox_controller/proc/add_played_track(datum/jukebox_playing_track/played_track, list/jukebox_hearers)
 	///Create a sound for us from the track
