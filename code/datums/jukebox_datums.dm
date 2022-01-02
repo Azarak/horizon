@@ -135,6 +135,15 @@
 		sound_to_update.echo[3] = 0
 		target_volume *= JUKEBOX_ECHO_VOLUME_MODIFIER
 
+	/// Pressure handling somewhat duplicate code, because sound handling is not designed to be centralized in any way currently.
+	var/pressure_factor = 1
+	var/datum/gas_mixture/source_env = mob_turf.return_air()
+	if(source_env)
+		var/pressure = source_env.return_pressure()
+		if(pressure < ONE_ATMOSPHERE)
+			pressure_factor = max((pressure - SOUND_MINIMUM_PRESSURE)/(ONE_ATMOSPHERE - SOUND_MINIMUM_PRESSURE), MINIMUM_JUKEBOX_PRESSURE_FACTOR)
+	target_volume *= pressure_factor
+
 	sound_to_update.volume = target_volume
 
 /datum/jukebox_controller/proc/add_played_track(datum/jukebox_playing_track/played_track, list/jukebox_hearers)
