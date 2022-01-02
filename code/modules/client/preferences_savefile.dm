@@ -185,6 +185,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	READ_FILE(S["default_slot"], default_slot)
 	READ_FILE(S["chat_toggles"], chat_toggles)
 	READ_FILE(S["toggles"], toggles)
+	READ_FILE(S["hear_jukebox"], hear_jukebox)
 	READ_FILE(S["ghost_form"], ghost_form)
 	READ_FILE(S["ghost_orbit"], ghost_orbit)
 	READ_FILE(S["ghost_accs"], ghost_accs)
@@ -276,6 +277,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	pda_color = sanitize_hexcolor(pda_color, 6, 1, initial(pda_color))
 	key_bindings = sanitize_keybindings(key_bindings)
 	favorite_outfits = SANITIZE_LIST(favorite_outfits)
+	hear_jukebox = sanitize_integer(hear_jukebox, FALSE, TRUE, initial(hear_jukebox))
 
 	if(needs_update >= 0) //save the updated version
 		var/old_default_slot = default_slot
@@ -327,6 +329,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	WRITE_FILE(S["be_special"], be_special)
 	WRITE_FILE(S["default_slot"], default_slot)
 	WRITE_FILE(S["toggles"], toggles)
+	WRITE_FILE(S["hear_jukebox"], hear_jukebox)
 	WRITE_FILE(S["chat_toggles"], chat_toggles)
 	WRITE_FILE(S["ghost_form"], ghost_form)
 	WRITE_FILE(S["ghost_orbit"], ghost_orbit)
