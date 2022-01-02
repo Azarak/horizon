@@ -480,11 +480,13 @@ generate/load female uniform sprites matching all previously decided variables
 		t_state = !isinhands ? (worn_icon_state ? worn_icon_state : icon_state) : (inhand_icon_state ? inhand_icon_state : icon_state)
 
 	var/translated_slot = slot_translation["[slot]"]
+	var/worn_prefix
 	if(!isinhands)
+		worn_prefix = "[translated_slot]_[bodytype_translation["[perc_bodytype]"]]"
 		if(wear_template)
-			t_state = "[translated_slot]_[bodytype_translation["[perc_bodytype]"]]"
+			t_state = worn_prefix
 		else
-			t_state = "[translated_slot]_[bodytype_translation["[perc_bodytype]"]]_[t_state]"
+			t_state = "[worn_prefix]_[t_state]"
 
 	var/chosen_worn_icon
 	if(wear_template)
@@ -520,7 +522,7 @@ generate/load female uniform sprites matching all previously decided variables
 
 	//Get the overlays for this item when it's being worn
 	//eg: ammo counters, primed grenade flashes, etc.
-	var/list/worn_overlays = worn_overlays(standing, isinhands, file2use, perc_bodytype)
+	var/list/worn_overlays = worn_overlays(standing, isinhands, file2use, perc_bodytype, slot, t_state, worn_prefix)
 	if(worn_overlays?.len)
 		standing.overlays.Add(worn_overlays)
 
