@@ -21,17 +21,17 @@
 	remove_from_controllers(SSjukebox.controller_list)
 	return ..()
 
-/datum/jukebox_playing_track/proc/add_to_controllers(var/list/controller_list)
+/datum/jukebox_playing_track/proc/add_to_controllers(list/controller_list)
 	var/list/hearers = get_hearers_in_view(JUKEBOX_VIEW_RANGE, jukebox)
 	for(var/datum/jukebox_controller/controller in controller_list)
 		controller.add_played_track(src, hearers)
 
-/datum/jukebox_playing_track/proc/remove_from_controllers(var/list/controller_list)
+/datum/jukebox_playing_track/proc/remove_from_controllers(list/controller_list)
 	for(var/datum/jukebox_controller/controller in controller_list)
 		controller.remove_played_track(src)
 
 /// Updates all controllers
-/datum/jukebox_playing_track/proc/update_controllers(var/list/controller_list)
+/datum/jukebox_playing_track/proc/update_controllers(list/controller_list)
 	var/list/hearers = get_hearers_in_view(JUKEBOX_VIEW_RANGE, jukebox)
 	for(var/datum/jukebox_controller/controller in controller_list)
 		controller.update_played_track(src, hearers)
