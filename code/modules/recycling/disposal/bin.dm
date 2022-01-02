@@ -209,7 +209,7 @@
 	sleep(10)
 	if(next_sound < world.time)
 		playsound(src, 'sound/machines/disposalflush.ogg', 50, FALSE, FALSE)
-		next_sound = world.time + 1 SECONDS
+		next_sound = world.time + 2 SECONDS
 	sleep(5)
 	if(QDELETED(src))
 		return
