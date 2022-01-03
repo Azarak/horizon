@@ -434,10 +434,6 @@
 		var/organic_name 
 		if(GLOB.current_anonymous_theme)
 			organic_name = GLOB.current_anonymous_theme.anonymous_name(src)
-		else if(is_banned_from(player_client.ckey, "Appearance"))
-			if(!player_client)
-				return // Disconnected while checking the appearance ban.
-			organic_name = player_client.prefs.pref_species.random_name(player_client.prefs.gender, TRUE)
 		else
 			if(!player_client)
 				return // Disconnected while checking the appearance ban.
