@@ -37,7 +37,7 @@
 		extension.ApplyToPosition(get_turf(src))
 	. = ..()
 
-/obj/machinery/atmospherics/components/unary/engine/examine()
+/obj/machinery/atmospherics/components/unary/engine/examine(mob/user)
 	. = ..()
 	. += SPAN_NOTICE("The engine [anchored ? "is <b>fastened</b> to the floor" : "could be <b>fastened</b> to the floor"].")
 	. += SPAN_NOTICE("The engine [is_welded ? "is <b>welded</b> to the floor" : "could be <b>welded</b> to the floor"].")
