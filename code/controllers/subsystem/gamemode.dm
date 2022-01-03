@@ -828,7 +828,14 @@ SUBSYSTEM_DEF(gamemode)
 
 			dat += "<HR><b>Allow Storyteller Pop Scalling:</b> <a href='?src=[REF(src)];panel=main;action=vars;var=allow_pop_scalling'>[allow_pop_scalling ? "Yes" : "No"]</a>"
 			dat += "<BR><font color='#888888'><i>This makes the events happens less frequency the less population there is, up to a cap.</i></font>"
-			
+			dat += "<BR>Current pop penalties: "
+			for(var/track in event_tracks)
+				var/multiplier
+				if(allow_pop_scalling)
+					multiplier =  (1 - current_pop_scale_multipliers[track]) * 100
+				else
+					multiplier = 0
+				dat += "[track]: -[multiplier]% "
 			dat += "<BR><b>Population Scale Thresholds:</b>"
 			dat += "<BR><font color='#888888'><i>Those are thresholds at which the population scalling penalties for event frequency no longer will apply.</i></font>"
 			for(var/track in event_tracks)
@@ -837,7 +844,7 @@ SUBSYSTEM_DEF(gamemode)
 			dat += "<BR><b>Population Scale Penalties:</b>"
 			dat += "<BR><font color='#888888'><i>Those are maximum penalties for event frequencies from population scalling. Calculates as percentages.</i></font>"
 			for(var/track in event_tracks)
-				dat += "<BR>[track]: <a href='?src=[REF(src)];panel=main;action=vars;var=pop_scale_penalty;track=[track]'>[pop_scale_penalties[track]]</a>"
+				dat += "<BR>[track]: <a href='?src=[REF(src)];panel=main;action=vars;var=pop_scale_penalty;track=[track]'>[pop_scale_penalties[track]]%</a>"
 
 		if(GAMEMODE_PANEL_MAIN)
 			var/even = TRUE
@@ -1033,6 +1040,8 @@ SUBSYSTEM_DEF(gamemode)
 					switch(href_list["var"])
 						if("allow_pop_scalling")
 							allow_pop_scalling = !allow_pop_scalling
+							if(allow_pop_scalling)
+								update_pop_scalling()
 						if("pts_multiplier")
 							var/new_value = input(usr, "New value:", "Set new value") as num|null
 							if(isnull(new_value) || new_value < 0)
@@ -1063,12 +1072,14 @@ SUBSYSTEM_DEF(gamemode)
 								return
 							message_admins("[key_name_admin(usr)] set population scale threshold of [track] track to [new_value].")
 							pop_scale_thresholds[track] = new_value
+							update_pop_scalling()
 						if("pop_scale_penalty")
 							var/new_value = input(usr, "New value:", "Set new value") as num|null
 							if(isnull(new_value) || new_value < 0)
 								return
 							message_admins("[key_name_admin(usr)] set population scale penalty of [track] track to [new_value].")
 							pop_scale_penalties[track] = new_value
+							update_pop_scalling()
 				if("reload_config_vars")
 					message_admins("[key_name_admin(usr)] reloaded gamemode config vars.")
 					load_config_vars()
