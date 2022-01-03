@@ -208,7 +208,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/faction_more_info = FALSE
 	//Associative list, keyed by language typepath, pointing to LANGUAGE_UNDERSTOOD, or LANGUAGE_SPOKEN, for whether we understand or speak the language
 	var/list/languages = list()
-	/// Jukebox pref. It's not in a flag anywhere because the flags need to be split around first and this pref is important enough to implement now
+	/// Whether this client has gotten their interview accepted at any point in time.
+	var/interview_accepted = FALSE
+  /// Jukebox pref. It's not in a flag anywhere because the flags need to be split around first and this pref is important enough to implement now
 	var/hear_jukebox = TRUE
 
 /datum/preferences/New(client/C)
