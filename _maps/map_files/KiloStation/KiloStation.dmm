@@ -50053,7 +50053,6 @@
 /obj/effect/decal/cleanable/cobweb,
 /obj/structure/extinguisher_cabinet/directional/west,
 /obj/item/radio/intercom/directional/north,
-/obj/machinery/restaurant_portal/bar,
 /turf/open/floor/iron/dark,
 /area/service/bar)
 "gPf" = (
