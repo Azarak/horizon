@@ -212,7 +212,7 @@
 	if(!language)
 		language = M.get_selected_language()
 	if(radio_sound)
-		playsound(M, radio_sound, rand(20, 30), FALSE)
+		playsound(M, radio_sound, rand(10, 20), FALSE)
 	INVOKE_ASYNC(src, .proc/talk_into_impl, M, message, channel, spans.Copy(), language, message_mods)
 	return ITALICS | REDUCE_RANGE
 
