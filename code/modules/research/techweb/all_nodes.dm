@@ -831,7 +831,6 @@
 		"holosignsec",
 		"holosignengi",
 		"holosignatmos",
-		"holosignbar",
 		"inducer",
 		"tray_goggles",
 		"holopad",
