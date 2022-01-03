@@ -58,6 +58,8 @@
 	var/base_point = EVENT_POINT_GAINED_PER_SECOND * delta_time * mode.event_frequency_multiplier
 	for(var/track in mode.event_track_points)
 		var/point_gain = base_point * point_gains_multipliers[track] * mode.point_gain_multipliers[track]
+		if(mode.allow_pop_scalling)
+			point_gain *= mode.current_pop_scale_multipliers[track]
 		mode.event_track_points[track] += point_gain
 		mode.last_point_gains[track] = point_gain
 
