@@ -75,6 +75,7 @@
 		. += SPAN_NOTICE("Using an anomaly neutralizer may destabilize the wormhole.")
 
 /obj/effect/portal/wormhole/update_icon_state()
+	. = ..()
 	icon_state = stable ? "anom_stable" : "anom"
 
 /obj/effect/portal/wormhole/teleport(atom/movable/movable_atom)
