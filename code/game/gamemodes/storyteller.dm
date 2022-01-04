@@ -85,7 +85,7 @@
 		mode.update_crew_infos()
 		var/pop_required = mode.min_pop_thresholds[track]
 		if(mode.active_players < pop_required)
-			message_admins("Storyteller failed to pick an event for track of [track] due to insufficient population. (required: [pop_required] active pop for [track]. Current: [mode.active_players])")
+			message_storyteller("Storyteller failed to pick an event for track of [track] due to insufficient population. (required: [pop_required] active pop for [track]. Current: [mode.active_players])")
 			mode.event_track_points[track] *= TRACK_FAIL_POINT_PENALTY_MULTIPLIER
 			return
 		calculate_weights(track)
@@ -96,13 +96,14 @@
 				valid_events[event] = event.calculated_weight
 		///If we didn't get any events, remove the points inform admins and dont do anything
 		if(!length(valid_events))
-			message_admins("Storyteller failed to pick an event for track of [track].")
+			message_storyteller("Storyteller failed to pick an event for track of [track].")
 			mode.event_track_points[track] *= TRACK_FAIL_POINT_PENALTY_MULTIPLIER
 			return
 		picked_event = pickweight(valid_events)
 		if(!picked_event)
-			message_admins("WARNING: Storyteller picked a null from event pool. Aborting event roll.")
-			stack_trace("WARNING: Storyteller picked a null from event pool.")
+			// Not actually impossible with weight 0 events being the only ones in the pool (ie. Lone Operative with other events somehow disabled)
+			message_storyteller("Storyteller failed to pick an event for track of [track].")
+			mode.event_track_points[track] *= TRACK_FAIL_POINT_PENALTY_MULTIPLIER
 			return
 	buy_event(picked_event, track)
 	. = TRUE
@@ -115,7 +116,7 @@
 	if(!bought_event.roundstart)
 		total_cost *= (1 + (rand(-cost_variance, cost_variance)/100)) //Apply cost variance if not roundstart event
 	mode.event_track_points[track] -= total_cost
-	message_admins("Storyteller purchased and triggered [bought_event] event, on [track] track, for [total_cost] cost.")
+	message_storyteller("Storyteller purchased and triggered [bought_event] event, on [track] track, for [total_cost] cost.")
 	if(bought_event.roundstart)
 		mode.TriggerEvent(bought_event)
 	else
@@ -138,3 +139,9 @@
 			weight_total -= event.reoccurence_penalty_multiplier * weight_total * (1 - (event_repetition_multiplier ** occurences))
 		/// Write it
 		event.calculated_weight = weight_total
+
+/// Messages admins who have the storyteller pref on.
+/datum/storyteller/proc/message_storyteller(string)
+	for(var/client/admin_client as anything in GLOB.admins)
+		if(admin_client.prefs.hear_storyteller)
+			to_chat(admin_client, SPAN_ADMINNOTICE(string))
