@@ -66,7 +66,7 @@ SUBSYSTEM_DEF(gamemode)
 		EVENT_TRACK_OBJECTIVES = 1
 		)
 
-	/// Whether we allow pop scalling. This is configured by config, or the storyteller UI
+	/// Whether we allow pop scaling. This is configured by config, or the storyteller UI
 	var/allow_pop_scaling = TRUE
 
 	/// Associative list of pop scale thresholds.
@@ -1072,14 +1072,14 @@ SUBSYSTEM_DEF(gamemode)
 								return
 							message_admins("[key_name_admin(usr)] set population scale threshold of [track] track to [new_value].")
 							pop_scale_thresholds[track] = new_value
-							update_pop_scalling()
+							update_pop_scaling()
 						if("pop_scale_penalty")
 							var/new_value = input(usr, "New value:", "Set new value") as num|null
 							if(isnull(new_value) || new_value < 0)
 								return
 							message_admins("[key_name_admin(usr)] set population scale penalty of [track] track to [new_value].")
 							pop_scale_penalties[track] = new_value
-							update_pop_scalling()
+							update_pop_scaling()
 				if("reload_config_vars")
 					message_admins("[key_name_admin(usr)] reloaded gamemode config vars.")
 					load_config_vars()
