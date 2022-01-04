@@ -375,10 +375,10 @@ SUBSYSTEM_DEF(gamemode)
 				med_crew++
 			if(player_role.departments_bitflags & DEPARTMENT_BITFLAG_SECURITY)
 				sec_crew++
-	if(allow_pop_scalling)
-		update_pop_scalling()
+	if(allow_pop_scaling)
+		update_pop_scaling()
 
-/datum/controller/subsystem/gamemode/proc/update_pop_scalling()
+/datum/controller/subsystem/gamemode/proc/update_pop_scaling()
 	for(var/track in event_tracks)
 		var/low_pop_bound = min_pop_thresholds[track]
 		var/high_pop_bound = pop_scale_thresholds[track]
