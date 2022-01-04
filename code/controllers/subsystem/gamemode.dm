@@ -826,7 +826,7 @@ SUBSYSTEM_DEF(gamemode)
 			for(var/track in event_tracks)
 				dat += "<BR>[track]: <a href='?src=[REF(src)];panel=main;action=vars;var=pts_threshold;track=[track]'>[point_thresholds[track]]</a>"
 
-			dat += "<HR><b>Allow Storyteller Pop Scalling:</b> <a href='?src=[REF(src)];panel=main;action=vars;var=allow_pop_scalling'>[allow_pop_scalling ? "Yes" : "No"]</a>"
+			dat += "<HR><b>Allow Storyteller Pop Scaling:</b> <a href='?src=[REF(src)];panel=main;action=vars;var=allow_pop_scaling'>[allow_pop_scaling ? "Yes" : "No"]</a>"
 			dat += "<BR><font color='#888888'><i>This makes the events happens less frequency the less population there is, up to a cap.</i></font>"
 			dat += "<BR>Current pop penalties: "
 			for(var/track in event_tracks)
