@@ -15,7 +15,7 @@
 	user.visible_message(SPAN_SUICIDE("[user] is smothering [user.p_them()]self with [src]! It looks like [user.p_theyre()] trying to commit suicide!"))
 	return (OXYLOSS)
 
-/obj/item/reagent_containers/glass/rag/afterattack(atom/A as obj|turf|area, mob/living/user,proximity)
+/obj/item/reagent_containers/glass/rag/afterattack(atom/A, mob/living/user, proximity)
 	. = ..()
 	if(!proximity)
 		return
@@ -38,3 +38,18 @@
 		if(do_after(user,30, target = A))
 			user.visible_message(SPAN_NOTICE("[user] finishes wiping off [A]!"), SPAN_NOTICE("You finish wiping off [A]."))
 			A.wash(CLEAN_SCRUB)
+
+/obj/item/reagent_containers/rag/towel
+	name = "towel"
+	desc = "A soft cotton towel."
+	slot_flags = ITEM_SLOT_BELT|ITEM_SLOT_HEAD|ITEM_SLOT_OCLOTHING
+	icon_state = "towel"
+	icon = 'icons/obj/items/towel/towel.dmi'
+	w_class = WEIGHT_CLASS_NORMAL
+	item_flags = NOBLUDGEON | NO_STRAPS_NEEDED
+	worn_icon_state = "towel"
+	worn_icon = 'icons/obj/items/towel/towel_worn.dmi'
+	inhand_icon_state = "towel"
+	lefthand_file = 'icons/obj/items/towel/towel_lefthand.dmi'
+	righthand_file = 'icons/obj/items/towel/towel_righthand.dmi'
+	fitted_bodytypes = BODYTYPE_HUMANOID|BODYTYPE_DIGITIGRADE
