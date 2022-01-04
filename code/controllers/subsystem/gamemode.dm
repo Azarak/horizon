@@ -15,7 +15,7 @@ SUBSYSTEM_DEF(gamemode)
 	var/list/storytellers = list()
 	/// Next process for our storyteller. The wait time is STORYTELLER_WAIT_TIME
 	var/next_storyteller_process = 0
-	/// Associative list of even5 track points.
+	/// Associative list of event track points.
 	var/list/event_track_points = list(
 		EVENT_TRACK_MUNDANE = 0, 
 		EVENT_TRACK_MODERATE = 0, 
