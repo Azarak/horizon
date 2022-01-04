@@ -67,7 +67,7 @@ SUBSYSTEM_DEF(gamemode)
 		)
 
 	/// Whether we allow pop scalling. This is configured by config, or the storyteller UI
-	var/allow_pop_scalling = TRUE
+	var/allow_pop_scaling = TRUE
 
 	/// Associative list of pop scale thresholds.
 	var/list/pop_scale_thresholds = list(
