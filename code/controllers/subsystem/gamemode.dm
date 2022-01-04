@@ -842,7 +842,7 @@ SUBSYSTEM_DEF(gamemode)
 				dat += "<BR>[track]: <a href='?src=[REF(src)];panel=main;action=vars;var=pop_scale_threshold;track=[track]'>[pop_scale_thresholds[track]]</a>"
 
 			dat += "<BR><b>Population Scale Penalties:</b>"
-			dat += "<BR><font color='#888888'><i>Those are maximum penalties for event frequencies from population scalling. Calculates as percentages.</i></font>"
+			dat += "<BR><font color='#888888'><i>Those are maximum penalties for event frequencies from population scaling. Calculates as percentages.</i></font>"
 			for(var/track in event_tracks)
 				dat += "<BR>[track]: <a href='?src=[REF(src)];panel=main;action=vars;var=pop_scale_penalty;track=[track]'>[pop_scale_penalties[track]]%</a>"
 
