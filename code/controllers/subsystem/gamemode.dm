@@ -1038,10 +1038,10 @@ SUBSYSTEM_DEF(gamemode)
 				if("vars")
 					var/track = href_list["track"]
 					switch(href_list["var"])
-						if("allow_pop_scalling")
-							allow_pop_scalling = !allow_pop_scalling
-							if(allow_pop_scalling)
-								update_pop_scalling()
+						if("allow_pop_scaling")
+							allow_pop_scaling = !allow_pop_scaling
+							if(allow_pop_scaling)
+								update_pop_scaling()
 						if("pts_multiplier")
 							var/new_value = input(usr, "New value:", "Set new value") as num|null
 							if(isnull(new_value) || new_value < 0)
