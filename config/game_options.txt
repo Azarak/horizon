@@ -541,7 +541,7 @@ ROLESET_POINT_THRESHOLD 120
 OBJECTIVES_POINT_THRESHOLD 130
 
 ## Allows the storyteller to scale event frequencies based on population
-ALLOW_STORYTELLER_POP_SCALLING
+ALLOW_STORYTELLER_POP_SCALING
 
 ## Thresholds that population frequency scalling penalize up to.
 MUNDANE_POP_SCALE_THRESHOLD 10
