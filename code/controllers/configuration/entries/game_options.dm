@@ -301,7 +301,7 @@
 
 /datum/config_entry/flag/halt_storyteller // Stops storyteller from playing random events and spawning antags. This can be freely toggled in game in the storyteller menu
 
-/datum/config_entry/flag/allow_storyteller_pop_scalling // Allows storyteller to scale down the event frequency by population
+/datum/config_entry/flag/allow_storyteller_pop_scaling // Allows storyteller to scale down the event frequency by population
 
 /datum/config_entry/number/events_min_time_mul // Multipliers for random events minimal starting time and minimal players amounts
 	config_entry_value = 1
