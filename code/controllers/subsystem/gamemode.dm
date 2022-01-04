@@ -831,7 +831,7 @@ SUBSYSTEM_DEF(gamemode)
 			dat += "<BR>Current pop penalties: "
 			for(var/track in event_tracks)
 				var/multiplier
-				if(allow_pop_scalling)
+				if(allow_pop_scaling)
 					multiplier =  (1 - current_pop_scale_multipliers[track]) * 100
 				else
 					multiplier = 0
