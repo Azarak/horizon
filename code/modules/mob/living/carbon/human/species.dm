@@ -2443,7 +2443,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	if(!item_slot)
 		return bodytype
 	var/perceived_bodytype = bodytype
-	if((item_slot == ITEM_SLOT_FEET || item_slot == ITEM_SLOT_OCLOTHING || item_slot == ITEM_SLOT_ICLOTHING) && (DIGITIGRADE in species_traits))
+	if((item_slot == ITEM_SLOT_BELT || item_slot == ITEM_SLOT_FEET || item_slot == ITEM_SLOT_OCLOTHING || item_slot == ITEM_SLOT_ICLOTHING) && (DIGITIGRADE in species_traits))
 		perceived_bodytype = BODYTYPE_DIGITIGRADE
 	if((item_slot == ITEM_SLOT_HEAD || item_slot == ITEM_SLOT_MASK) && mutant_bodyparts["snout"])
 		var/datum/sprite_accessory/snouts/snout_accessory = GLOB.sprite_accessories["snout"][mutant_bodyparts["snout"][MUTANT_INDEX_NAME]]
