@@ -94,6 +94,10 @@
 					to_chat(user, SPAN_NOTICE("You cut \the [src] down."))
 					deconstruct(TRUE)
 			return TRUE
+	if(istype(weapon, /obj/item/stack/sheet))
+		var/obj/item/stack/sheet/my_sheet = weapon
+		if(my_sheet.try_install_window(user, src.loc, src))
+			return TRUE
 	if(!user.combat_mode && !(weapon.item_flags & ABSTRACT))
 		if(user.transferItemToLoc(weapon, loc, silent = FALSE, user_click_modifiers = modifiers))
 			return TRUE
