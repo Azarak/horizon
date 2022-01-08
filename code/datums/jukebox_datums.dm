@@ -9,7 +9,7 @@
 	var/max_range
 	var/falloff_distance
 
-/datum/jukebox_playing_track/New(var/atom/movable/song_source, datum/jukebox_track/track, channel, range_multiplier = 1)
+/datum/jukebox_playing_track/New(atom/movable/song_source, datum/jukebox_track/track, channel, range_multiplier = 1)
 	src.song_source = song_source
 	//Currently rather bad hack
 	if(istype(song_source, /obj/machinery/jukebox))
