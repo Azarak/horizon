@@ -7,7 +7,6 @@
 	lefthand_file = 'icons/obj/items/boombox/bb_lefthand.dmi'
 	righthand_file = 'icons/obj/items/boombox/bb_righthand.dmi'
 	icon_state = "boombox"
-	worn_state = "boombox"
 	w_class = WEIGHT_CLASS_NORMAL
 	force = 5
 	custom_price = PAYCHECK_HARD * 20
