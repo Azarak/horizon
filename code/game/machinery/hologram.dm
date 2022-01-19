@@ -258,6 +258,9 @@ Possible to do for anyone motivated enough:
 				to_chat(usr, SPAN_INFO("A request for AI presence was already sent recently."))
 				return
 		if("holocall")
+			/// Admin ghosts trying to holocall through AI powers. Please don't
+			if(isobserver(usr))
+				return
 			if(outgoing_call)
 				return
 			if(usr.loc == loc)
