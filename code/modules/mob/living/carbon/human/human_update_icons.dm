@@ -461,7 +461,7 @@ generate/load female uniform sprites matching all previously decided variables
 /obj/item/proc/build_worn_icon(default_layer = 0, default_icon_file = null, isinhands = FALSE, override_state, femaleuniform = NO_FEMALE_UNIFORM, mob/living/carbon/wearer, slot = NONE)
 	var/static/list/slot_translation = SLOT_TRANSLATION_LIST
 	var/static/list/bodytype_translation = BODYTYPE_TRANSLATION_LIST
-	var/datum/species/species = wearer.dna.species
+	var/datum/species/species = wearer ? wearer.dna.species : null
 
 	var/real_bodytype = wearer ? species.bodytype : BODYTYPE_HUMANOID
 	var/bodytype = wearer ? species.get_bodytype(slot, src) : BODYTYPE_HUMANOID
@@ -522,7 +522,7 @@ generate/load female uniform sprites matching all previously decided variables
 		standing = mutable_appearance(file2use, t_state, -layer2use)
 
 	//Because we don't really know what might or might not, and because the things using it are rather loose (accessories). We want to pass them as an argument to worn overlays (Because doing it in the reverse would be even worse)
-	var/list/accessory_offsets = (species.offset_features && species.offset_features[OFFSET_ACCESSORY]) ? species.offset_features[OFFSET_ACCESSORY] : null
+	var/list/accessory_offsets = (species && species.offset_features && species.offset_features[OFFSET_ACCESSORY]) ? species.offset_features[OFFSET_ACCESSORY] : null
 	//Get the overlays for this item when it's being worn
 	//eg: ammo counters, primed grenade flashes, etc.
 	var/list/worn_overlays = worn_overlays(standing, isinhands, file2use, perc_bodytype, slot, t_state, worn_prefix, accessory_offsets)
