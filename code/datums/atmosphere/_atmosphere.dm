@@ -1,11 +1,16 @@
 /datum/atmosphere
+	/// The gas string that is generated from pools below, mole count will be equal to relative weight scalar to pressure and temperature
 	var/gas_string
-
-	var/list/base_gases = list()// A list of gases to always have
-	var/list/normal_gases = list() // A list of allowed gases:base_amount
+	/// A list of gases to always have, associative to weight
+	var/list/base_gases = list()
+	/// A list of picked extra gases to roll, associative to weight
+	var/list/normal_gases = list()
+	/// How many extra gases will we roll from the normal pool
 	var/normal_gas_picks = 1
-	var/list/restricted_gases = list() // A list of allowed gases like normal_gases but each can only be selected a maximum of one time
-	var/restricted_chance = 0 // Chance per iteration to take from restricted gases
+	/// A list of allowed gases like normal_gases but each can only be selected a maximum of one time. Associative to weight
+	var/list/restricted_gases = list()
+	/// Chance to pick a restricted gas
+	var/restricted_chance = 0
 
 	var/minimum_pressure
 	var/maximum_pressure
