@@ -44,10 +44,11 @@
 		normal_gases_to_pick_from -= picked_gas_type
 	/// Roll and add restricted gas pick
 	if(prob(restricted_chance))
-		var/picked_gas_type = pick(restricted_gases)
-		if(!gas_weights[picked_gas_type])
-			gas_weights[picked_gas_type] = 0
-		gas_weights[picked_gas_type] += restricted_gases[picked_gas_type]
+		if(restricted_gases.len)
+			var/picked_gas_type = pick(restricted_gases)
+			if(!gas_weights[picked_gas_type])
+				gas_weights[picked_gas_type] = 0
+			gas_weights[picked_gas_type] += restricted_gases[picked_gas_type]
 
 	var/total_gas_weight = 0
 	for(var/gas_type in gas_weights)
