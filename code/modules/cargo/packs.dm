@@ -245,8 +245,8 @@
 	desc = "Contains one aging suit from Space-Goodwill and a jetpack. Requires EVA access to open."
 	cost = CARGO_CRATE_VALUE * 3
 	access = ACCESS_EVA
-	contains = list(/obj/item/clothing/suit/space,
-					/obj/item/clothing/head/helmet/space,
+	contains = list(/obj/item/clothing/suit/space/eva,
+					/obj/item/clothing/head/helmet/space/eva,
 					/obj/item/clothing/mask/breath,
 					/obj/item/tank/jetpack/carbondioxide)
 	crate_name = "space suit crate"
