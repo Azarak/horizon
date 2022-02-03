@@ -160,7 +160,7 @@
 /// Handles the actual icon manipulation to create the spritesheet
 /datum/greyscale_config/proc/GenerateBundle(list/colors, list/render_steps)
 	if(!istype(colors))
-		colors = SSgreyscale.ParseColorString(colors)
+		colors = color_string_to_list(colors)
 	if(length(colors) != expected_colors)
 		CRASH("[DebugName()] expected [expected_colors] color arguments but only received [length(colors)]")
 

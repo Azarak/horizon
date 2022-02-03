@@ -442,7 +442,7 @@
 
 /obj/item/clothing/suit/hooded/wintercoat/custom/MakeHood()
 	. = ..()
-	var/list/coat_colors = (SSgreyscale.ParseColorString(greyscale_colors))
+	var/list/coat_colors = color_string_to_list(greyscale_colors)
 	var/list/new_coat_colors = coat_colors.Copy(1,4)
 	hood.set_greyscale(new_coat_colors) //Adopt the suit's grayscale coloring for visual clarity.
 

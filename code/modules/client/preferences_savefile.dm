@@ -498,7 +498,8 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	READ_FILE(S["mutant_bodyparts"], mutant_bodyparts)
 	READ_FILE(S["body_markings"], body_markings)
 
-	READ_FILE(S["loadout"], loadout)
+	READ_FILE(S["loadouts"], loadouts)
+	READ_FILE(S["loadout_slot"], loadout_slot)
 
 	READ_FILE(S["ooc_prefs"], ooc_prefs)
 	READ_FILE(S["erp_pref"], erp_pref)
@@ -542,22 +543,10 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	mutant_bodyparts = SANITIZE_LIST(mutant_bodyparts)
 	body_markings = SANITIZE_LIST(body_markings)
 
-	loadout = SANITIZE_LIST(loadout)
-	//LOADOUT POINT VALIDATION
-	//Here we calculate if we truly can use the loaded loadout
-	loadout_points = initial_loadout_points()
-	var/accumulated_cost = 0
-	for(var/path in loadout)
-		var/datum/loadout_item/LI = GLOB.loadout_items[path]
-		if(!LI)
-			loadout -= path
-			continue
-		loadout[path] = LI.get_valid_information(loadout[path])//Savefile validation
-		accumulated_cost += LI.cost
-	if(accumulated_cost > loadout_points) //Not enough points, reset loadout
-		loadout = list()
-	else
-		loadout_points -= accumulated_cost //We got enough points, subtract the cost
+	loadouts = SANITIZE_LIST(loadouts)
+	var/temp_loadout_slot = sanitize_integer(loadout_slot, 1, MAX_LOADOUT_SLOTS, 1)
+	validate_loadouts()
+	set_loadout_slot(temp_loadout_slot, TRUE)
 
 	ooc_prefs = sanitize_text(ooc_prefs)
 	if(!length(erp_pref))
@@ -660,7 +649,8 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	WRITE_FILE(S["mutant_bodyparts"] , mutant_bodyparts)
 	WRITE_FILE(S["body_markings"] , body_markings)
 
-	WRITE_FILE(S["loadout"] , loadout)
+	WRITE_FILE(S["loadouts"] , loadouts)
+	WRITE_FILE(S["loadout_slot"], loadout_slot)
 
 	WRITE_FILE(S["ooc_prefs"] , ooc_prefs)
 	WRITE_FILE(S["erp_pref"] , erp_pref)

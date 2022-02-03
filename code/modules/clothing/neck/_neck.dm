@@ -362,3 +362,20 @@
 	icon_state = "choker"
 	is_polychromic = FALSE
 	color = "#222222"
+
+/obj/item/clothing/neck/cloak/rscloak
+	name = "black cape"
+	desc = "A black cape with a purple finish at the end."
+	icon_state = "black"
+	icon = 'icons/obj/clothing/neck/rscapes.dmi'
+	worn_icon = 'icons/mob/clothing/neck/rscapes.dmi'
+
+/obj/item/clothing/neck/cloak/rscloak/cross
+	name = "black cape"
+	desc = "A black cape with a grey cross pattern on the back."
+	icon_state = "black_cross"
+
+/obj/item/clothing/neck/cloak/rscloak/champion
+	name = "champion cape"
+	desc = "A regal blue and gold cape!"
+	icon_state = "champion"
