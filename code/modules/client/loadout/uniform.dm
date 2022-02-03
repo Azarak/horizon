@@ -3,9 +3,11 @@
 
 //MISC
 /datum/loadout_item/uniform/jumpsuit
+	name = "jumpsuit"
 	path = /obj/item/clothing/under/color
 
 /datum/loadout_item/uniform/jumpskirt
+	name = "jumpskirt"
 	path = /obj/item/clothing/under/color/jumpskirt
 
 /datum/loadout_item/uniform/assistantformal
