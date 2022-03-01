@@ -379,3 +379,25 @@
 	name = "champion cape"
 	desc = "A regal blue and gold cape!"
 	icon_state = "champion"
+
+/obj/item/clothing/neck/cloak/tailored
+	name = "tailored cloak"
+	icon_state = "cloak"
+	greyscale_config = /datum/greyscale_config/tailored_cloak
+	greyscale_config_worn = /datum/greyscale_config/tailored_cloak_worn
+	greyscale_colors = "#917A57#4e412e#4e412e"
+
+/obj/item/clothing/neck/cloak/tailored/veil
+	name = "tailored veil"
+	greyscale_config = /datum/greyscale_config/tailored_cloak/veil
+	greyscale_config_worn = /datum/greyscale_config/tailored_cloak_worn/veil
+
+/obj/item/clothing/neck/cloak/tailored/boat
+	name = "tailored boatcloak"
+	greyscale_config = /datum/greyscale_config/tailored_cloak/boat
+	greyscale_config_worn = /datum/greyscale_config/tailored_cloak_worn/boat
+
+/obj/item/clothing/neck/cloak/tailored/shroud
+	name = "tailored shroud"
+	greyscale_config = /datum/greyscale_config/tailored_cloak/shroud
+	greyscale_config_worn = /datum/greyscale_config/tailored_cloak_worn/shroud

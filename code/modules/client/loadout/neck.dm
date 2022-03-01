@@ -17,23 +17,21 @@
 	path = /obj/item/clothing/neck/human_petcollar/leather
 	extra_info = LOADOUT_INFO_THREE_COLORS
 
-/*
-/datum/loadout_item/neck/poly_cloak
-	path = /obj/item/clothing/neck/cloak/polychromic
+/datum/loadout_item/neck/tailored_cloak
+	path = /obj/item/clothing/neck/cloak/tailored
 	extra_info = LOADOUT_INFO_THREE_COLORS
 
-/datum/loadout_item/neck/poly_veil
-	path = /obj/item/clothing/neck/cloak/polychromic/veil
+/datum/loadout_item/neck/tailored_veil
+	path = /obj/item/clothing/neck/cloak/tailored/veil
 	extra_info = LOADOUT_INFO_THREE_COLORS
 
-/datum/loadout_item/neck/poly_shroud
-	path = /obj/item/clothing/neck/cloak/polychromic/shroud
+/datum/loadout_item/neck/tailored_shroud
+	path = /obj/item/clothing/neck/cloak/tailored/shroud
 	extra_info = LOADOUT_INFO_THREE_COLORS
 
-/datum/loadout_item/neck/poly_boat
-	path = /obj/item/clothing/neck/cloak/polychromic/boat
+/datum/loadout_item/neck/tailored_boat
+	path = /obj/item/clothing/neck/cloak/tailored/boat
 	extra_info = LOADOUT_INFO_THREE_COLORS
-*/
 
 /datum/loadout_item/neck/rscloak
 	path = /obj/item/clothing/neck/cloak/rscloak
