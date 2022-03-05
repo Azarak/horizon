@@ -48,6 +48,9 @@
 	return calculated_points
 
 /datum/preferences/proc/add_loadout_item(loadout_item_path)
+	var/datum/loadout_item/loadout_item = GLOB.loadout_items[loadout_item_path]
+	if(!loadout_item)
+		return //Will happen with migrations
 	if(get_loadout_entry(loadout_item_path))
 		return
 	if(!can_purchase_loadout_item(loadout_item_path))
