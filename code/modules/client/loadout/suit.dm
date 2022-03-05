@@ -42,12 +42,9 @@
 	path = /obj/item/clothing/suit/hooded/wintercoat/custom
 	cost = 2
 
-/*
-/datum/loadout_item/suit/coat/poly
-	path = /obj/item/clothing/suit/hooded/wintercoat/polychromic
-	extra_info = LOADOUT_INFO_THREE_COLORS
-	cost = 3
-*/
+/datum/loadout_item/suit/coat/tailored_simple
+	path = /obj/item/clothing/suit/hooded/wintercoat/custom/alternative
+	cost = 2
 
 //JACKETS
 /datum/loadout_item/suit/jacket

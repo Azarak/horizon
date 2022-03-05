@@ -1,40 +1,40 @@
 {
-	"neck_human_cloak": [
+	"coatwinter": [
 		{
 			"type": "icon_state",
-			"icon_state": "cloak_mob",
+			"icon_state": "coat1",
 			"blend_mode": "overlay",
 			"color_ids": [ 1 ]
 		},
 		{
 			"type": "icon_state",
-			"icon_state": "cloak_pattern_mob",
+			"icon_state": "coat2",
 			"blend_mode": "overlay",
 			"color_ids": [ 2 ]
 		},
 		{
 			"type": "icon_state",
-			"icon_state": "cloak_trim_mob",
+			"icon_state": "coat3",
 			"blend_mode": "overlay",
 			"color_ids": [ 3 ]
 		}
 	],
-	"neck_teshari_cloak": [
+	"coatwinter_t": [
 		{
 			"type": "icon_state",
-			"icon_state": "teshari_cloak_mob",
+			"icon_state": "coat_t1",
 			"blend_mode": "overlay",
 			"color_ids": [ 1 ]
 		},
 		{
 			"type": "icon_state",
-			"icon_state": "teshari_cloak_pattern_mob",
+			"icon_state": "coat_t2",
 			"blend_mode": "overlay",
 			"color_ids": [ 2 ]
 		},
 		{
 			"type": "icon_state",
-			"icon_state": "teshari_cloak_trim_mob",
+			"icon_state": "coat_t3",
 			"blend_mode": "overlay",
 			"color_ids": [ 3 ]
 		}
