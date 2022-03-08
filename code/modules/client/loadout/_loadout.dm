@@ -14,7 +14,7 @@
 	///Extra information which the user can set. (LOADOUT_INFO_NONE, LOADOUT_INFO_STYLE, LOADOUT_INFO_ONE_COLOR, LOADOUT_INFO_THREE_COLORS)
 	var/extra_info
 	/// Flags for customizing the item
-	var/customization_flags = CUSTOMIZE_NAME_DESC_COLOR
+	var/customization_flags = CUSTOMIZE_ALL
 	/// String of the default gags colors. Can be null even if `gags_colors` is something (for cases where default items randomize for example)
 	var/gags_colors_string
 	/// Amount of gags colors this item expects. If null, it's not a GAGS item
