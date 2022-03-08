@@ -386,6 +386,7 @@
 	greyscale_config = /datum/greyscale_config/tailored_cloak
 	greyscale_config_worn = /datum/greyscale_config/tailored_cloak_worn
 	greyscale_colors = "#917A57#4e412e#4e412e"
+	fitted_bodytypes = BODYTYPE_HUMANOID|BODYTYPE_TESHARI
 
 /obj/item/clothing/neck/cloak/tailored/veil
 	name = "tailored veil"
