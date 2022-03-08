@@ -464,5 +464,6 @@
 
 /obj/item/clothing/head/hooded/winterhood/custom/alternative
 	name = "simple tailored winter coat hood"
+	greyscale_colors = "#666666#CCBBAA#0000FF"
 	greyscale_config = /datum/greyscale_config/tailored_winterhood
 	greyscale_config_worn = /datum/greyscale_config/tailored_winterhood_worn
