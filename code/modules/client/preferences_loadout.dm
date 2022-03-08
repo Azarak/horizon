@@ -111,7 +111,7 @@
 	dat += "<table align='center'; width='100%'; height='100%'; style='background-color:#13171C'>"
 	dat += "<tr style='vertical-align:top'>"
 	dat += "<td width=28%><font size=2><b>Name</b></font></td>"
-	dat += "<td width=20%><font size=2> </font></td>"
+	dat += "<td width=20%><font size=2><b>Customization</b></font></td>"
 	dat += "<td width=47%><font size=2><b>Description</b></font></td>"
 	dat += "<td width=5%><font size=2><center><b>Cost</b></center></font></td>"
 	dat += "</tr>"
@@ -135,7 +135,7 @@
 		var/displayed_desc
 		var/change_name_button
 		var/change_desc_button
-		var/color_button
+		var/color_button = ""
 
 		if(loadout_entry)
 			if(loadout_item.customization_flags & CUSTOMIZE_NAME)
@@ -143,9 +143,7 @@
 			if(loadout_item.customization_flags & CUSTOMIZE_DESC)
 				change_desc_button = " <a href='?_src_=prefs;task=customize_loadout;item=[item_path];customize=[TOPIC_CUSTOMIZE_DESC]'>Change</a>"
 			
-			var/normal_color_customization = FALSE
 			if(loadout_item.customization_flags & CUSTOMIZE_COLOR)
-				color_button = ""
 				if(loadout_item.gags_colors)
 					var/gags_string = loadout_entry.custom_gags_colors || loadout_item.get_gags_string()
 					var/list/gags_list = color_string_to_list(gags_string)
@@ -155,11 +153,10 @@
 							color_button += "<BR>"
 						color_button += "Color #[i]: <span class='color_holder_box' style='background-color:[iterated_color]'></span> <a href='?_src_=prefs;task=customize_loadout;item=[item_path];customize=[TOPIC_CUSTOMIZE_COLOR_GAGS];index=[i]'>Change</a>"
 				else
-					normal_color_customization = TRUE
 					var/shown_color = loadout_entry.custom_color ? loadout_entry.custom_color : "#FFFFFF"
 					color_button += "Color: <span class='color_holder_box' style='background-color:[shown_color]'></span> <a href='?_src_=prefs;task=customize_loadout;item=[item_path];customize=[TOPIC_CUSTOMIZE_COLOR]'>Change</a>"
 			// Color rotation is not compatible with non-gags color modifications
-			if (loadout_item.customization_flags & CUSTOMIZE_COLOR_ROTATION && !normal_color_customization)
+			if (loadout_item.customization_flags & CUSTOMIZE_COLOR_ROTATION)
 				var/shown_rotation = loadout_entry.custom_color_rotation || 0
 				if(color_button)
 					color_button += "<BR>"
@@ -173,6 +170,23 @@
 			displayed_desc = "*[loadout_entry.custom_desc]"
 		else
 			displayed_desc = loadout_item.description
+
+		/// If we don't have an item in our loadout, show the user if it could be colorable
+		if(!loadout_entry)
+			color_button = "<i><font color='#6b6b6b'>"
+			var/first_line = FALSE
+			if(loadout_item.customization_flags & CUSTOMIZE_COLOR)
+				first_line = TRUE
+				if(loadout_item.gags_colors)
+					color_button += "Adv. colors"
+				else
+					color_button += "Color"
+			if (loadout_item.customization_flags & CUSTOMIZE_COLOR_ROTATION)
+				if(first_line)
+					color_button += " | "
+				color_button += "Color rotation "
+			color_button += "</font></i>"
+
 
 		dat += "<tr style='vertical-align:top; background-color: [background_cl];'>"
 		dat += "<td><a [loadout_button_class]>[displayed_name]</a>[change_name_button]</td>"
@@ -253,8 +267,8 @@
 			entry.custom_gags_colors = color_list_to_string(gags_list)
 		if(TOPIC_CUSTOMIZE_COLOR_ROTATION)
 			var/current_rotation = entry.custom_color_rotation || 0
-			var/new_rotation = input(user, "Choose loadout item color rotation (0-360):", "Loadout Customization", current_rotation) as num|null
-			if(!new_rotation || QDELETED(entry))
+			var/new_rotation = input(user, "Choose loadout item color rotation (0-360) (This is incompatible with non advanced color customization):", "Loadout Customization", current_rotation) as num|null
+			if(isnull(new_rotation) || QDELETED(entry))
 				return
 			new_rotation = sanitize_integer(new_rotation, 0, 360, 0)
 			if(new_rotation == 0)
