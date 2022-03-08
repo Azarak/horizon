@@ -7,7 +7,6 @@
 
 /datum/loadout_item/gloves/evening
 	path = /obj/item/clothing/gloves/evening
-	extra_info = LOADOUT_INFO_ONE_COLOR
 
 /datum/loadout_item/gloves/goldring
 	path = /obj/item/clothing/gloves/ring

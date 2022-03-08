@@ -4,15 +4,12 @@
 //MISC
 /datum/loadout_item/head/baseball
 	path = /obj/item/clothing/head/soft/mime
-	extra_info = LOADOUT_INFO_ONE_COLOR
 
 /datum/loadout_item/head/beanie
 	path = /obj/item/clothing/head/beanie
-	extra_info = LOADOUT_INFO_ONE_COLOR
 
 /datum/loadout_item/head/beret_white
 	path = /obj/item/clothing/head/beret/white
-	extra_info = LOADOUT_INFO_ONE_COLOR
 
 /datum/loadout_item/head/beret
 	path = /obj/item/clothing/head/beret/black
@@ -66,7 +63,6 @@
 
 /datum/loadout_item/head/wig
 	path = /obj/item/clothing/head/wig
-	extra_info = LOADOUT_INFO_ONE_COLOR
 
 /datum/loadout_item/head/wignatural
 	path = /obj/item/clothing/head/wig/natural
