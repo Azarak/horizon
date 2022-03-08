@@ -444,7 +444,7 @@
 	. = ..()
 	hood.set_greyscale(greyscale_colors) //Adopt the suit's grayscale coloring for visual clarity.
 
-/obj/item/clothing/suit/hooded/wintercoat/custom/set_greyscale(colors)
+/obj/item/clothing/suit/hooded/wintercoat/custom/set_greyscale(list/colors, new_config, new_worn_config, new_inhand_left, new_inhand_right)
 	. = ..()
 	if(hood)
 		hood.set_greyscale(colors)
