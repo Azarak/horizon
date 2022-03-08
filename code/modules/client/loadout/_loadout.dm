@@ -11,8 +11,6 @@
 	var/category = LOADOUT_CATEGORY_NONE
 	///Subcategory in which the item belongs to
 	var/subcategory = LOADOUT_SUBCATEGORY_MISC
-	///Extra information which the user can set. (LOADOUT_INFO_NONE, LOADOUT_INFO_STYLE, LOADOUT_INFO_ONE_COLOR, LOADOUT_INFO_THREE_COLORS)
-	var/extra_info
 	/// Flags for customizing the item
 	var/customization_flags = CUSTOMIZE_ALL
 	/// String of the default gags colors. Can be null even if `gags_colors` is something (for cases where default items randomize for example)

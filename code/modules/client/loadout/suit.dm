@@ -20,7 +20,6 @@
 
 /datum/loadout_item/suit/wornshirt
 	path = /obj/item/clothing/suit/wornshirt
-	extra_info = LOADOUT_INFO_ONE_COLOR
 
 //COATS
 /datum/loadout_item/suit/coat

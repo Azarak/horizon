@@ -64,33 +64,6 @@
 	path = /obj/item/clothing/under/misc/trishirt
 	cost = 3
 
-/*
-/datum/loadout_item/uniform/poly_kilt
-	path = /obj/item/clothing/under/misc/poly_kilt
-	extra_info = LOADOUT_INFO_THREE_COLORS
-	cost = 3
-
-/datum/loadout_item/uniform/poly_button_up
-	path = /obj/item/clothing/under/misc/poly_shirt
-	extra_info = LOADOUT_INFO_THREE_COLORS
-	cost = 3
-
-/datum/loadout_item/uniform/poly_tri_jumpsuit
-	path = /obj/item/clothing/under/misc/polyjumpsuit
-	extra_info = LOADOUT_INFO_THREE_COLORS
-	cost = 3
-
-/datum/loadout_item/uniform/poly_tanktop
-	path = /obj/item/clothing/under/misc/poly_tanktop
-	extra_info = LOADOUT_INFO_THREE_COLORS
-	cost = 3
-
-/datum/loadout_item/uniform/poly_tanktop_fem
-	path = /obj/item/clothing/under/misc/poly_tanktop/female
-	extra_info = LOADOUT_INFO_THREE_COLORS
-	cost = 3
-*/
-
 //SUITS
 /datum/loadout_item/uniform/suit
 	subcategory = LOADOUT_SUBCATEGORY_UNIFORM_SUITS
@@ -156,18 +129,6 @@
 /datum/loadout_item/uniform/skirt/denimskirt
 	path = /obj/item/clothing/under/pants/denimskirt
 
-/*
-/datum/loadout_item/uniform/skirt/poly_skirt
-	path = /obj/item/clothing/under/dress/skirt/polychromic
-	extra_info = LOADOUT_INFO_THREE_COLORS
-	cost = 3
-
-/datum/loadout_item/uniform/skirt/poly_skirt_pleated
-	path = /obj/item/clothing/under/dress/skirt/polychromic/pleated
-	extra_info = LOADOUT_INFO_THREE_COLORS
-	cost = 3
-*/
-
 //DRESSES
 /datum/loadout_item/uniform/dress
 	subcategory = LOADOUT_SUBCATEGORY_UNIFORM_DRESSES
@@ -225,13 +186,6 @@
 //SHORTS
 /datum/loadout_item/uniform/shorts
 	subcategory = LOADOUT_SUBCATEGORY_UNIFORM_SHORTS
-
-/*
-/datum/loadout_item/uniform/shorts/polyshorts
-	path = /obj/item/clothing/under/misc/polyshorts
-	extra_info = LOADOUT_INFO_THREE_COLORS
-	cost = 2
-*/
 
 /datum/loadout_item/uniform/shorts/jeanshort
 	path = /obj/item/clothing/under/pants/jeanshort
