@@ -25,7 +25,6 @@
 
 /datum/loadout_item/shoes/whiteshoes
 	path = /obj/item/clothing/shoes/sneakers/white
-	extra_info = LOADOUT_INFO_ONE_COLOR
 
 /datum/loadout_item/shoes/gildedcuffs
 	path= /obj/item/clothing/shoes/wraps
@@ -41,7 +40,6 @@
 
 /datum/loadout_item/shoes/high_heels
 	path = /obj/item/clothing/shoes/high_heels
-	extra_info = LOADOUT_INFO_ONE_COLOR
 
 /datum/loadout_item/shoes/cowboyboots
 	path = /obj/item/clothing/shoes/cowboy
