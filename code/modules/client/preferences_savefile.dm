@@ -681,8 +681,11 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	return TRUE
 
 /datum/preferences/proc/migrate_loadout(savefile/S)
-	to_chat(parent, SPAN_USERDANGER("Your loadout items have been migrated to the new system, this may be lossy. Check your items and make sure everything is in order."))
 	var/list/old_loadout_list = S["loadout"]
+	if(isnull(old_loadout_list))
+		return
+	to_chat(parent, SPAN_USERDANGER("Your loadout items have been migrated to the new system, this may be lossy. Check your items and make sure everything is in order."))
+	loadouts = list()
 	set_loadout_slot(1)
 	for(var/loadout_item_type in old_loadout_list)
 		add_loadout_item(loadout_item_type)
