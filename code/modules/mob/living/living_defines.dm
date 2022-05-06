@@ -182,3 +182,5 @@
 	var/hold_onto_things = TRUE
 	/// Overlay for the typing indicator
 	var/mutable_appearance/typing_indicator_overlay
+	/// Holder for attributes and skills
+	var/datum/attribute_holder/attributes

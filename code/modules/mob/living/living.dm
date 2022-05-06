@@ -1,5 +1,6 @@
 /mob/living/Initialize(mapload)
 	. = ..()
+	attributes = new(src)
 	register_init_signals()
 	if(unique_name)
 		set_name()
@@ -38,6 +39,7 @@
 	remove_from_all_data_huds()
 	GLOB.mob_living_list -= src
 	QDEL_LAZYLIST(diseases)
+	QDEL_NULL(attributes)
 	return ..()
 
 /mob/living/onZImpact(turf/T, levels)

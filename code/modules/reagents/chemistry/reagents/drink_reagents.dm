@@ -282,6 +282,14 @@
 	glass_desc = "Don't drop it, or you'll send scalding liquid and glass shards everywhere."
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 
+/datum/reagent/consumable/coffee/on_mob_metabolize(mob/living/living)
+	..()
+	living.attributes.add_buff("coffee", /datum/attribute_buff/caffeine)
+
+/datum/reagent/consumable/coffee/on_mob_end_metabolize(mob/living/living)
+	living.attributes.remove_buff("coffee")
+	..()
+
 /datum/reagent/consumable/coffee/overdose_process(mob/living/M, delta_time, times_fired)
 	M.Jitter(5 * REM * delta_time)
 	..()
