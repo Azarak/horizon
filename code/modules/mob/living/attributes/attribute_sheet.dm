@@ -6,7 +6,3 @@
 	var/list/attributes
 	/// Nullable assoc list of skill types to values to add (can be negatives)
 	var/list/skills
-
-/datum/attribute_sheet/stronk
-	attributes = list(/datum/attribute/strength = 2)
-	skills = list(/datum/skill/eva = 2)
