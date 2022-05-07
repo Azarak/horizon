@@ -62,7 +62,7 @@
 
 /obj/machinery/firealarm/Destroy()
 	myarea.firereset(src)
-	update_fire_light(FALSE) // Technically `myarea.firereset(src)` will do this, but if you ever refactor fire alarms to be better and not do above, you'll need to stop the looping sound
+	update_fire_effects(FALSE) // Technically `myarea.firereset(src)` will do this, but if you ever refactor fire alarms to be better and not do above, you'll need to stop the looping sound
 	LAZYREMOVE(myarea.firealarms, src)
 	QDEL_NULL(soundloop)
 	return ..()
@@ -355,11 +355,11 @@
 		new /obj/item/stack/cable_coil(loc, 3)
 	qdel(src)
 
-/obj/machinery/firealarm/proc/update_fire_light(fire)
-	if(fire == playing_effects)
+/obj/machinery/firealarm/proc/update_fire_effects(effect_state)
+	if(effect_state == playing_effects)
 		return  // do nothing if it's the same state
-	playing_effects = fire
-	if(fire)
+	playing_effects = effect_state
+	if(playing_effects)
 		set_light(l_power = 0.8)
 		soundloop.start()
 	else
