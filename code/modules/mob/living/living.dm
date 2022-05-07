@@ -1,6 +1,8 @@
 /mob/living/Initialize(mapload)
 	. = ..()
 	attributes = new(src)
+	if(initial_attribute_sheet)
+		attributes.add_attribute_sheet(initial_attribute_sheet)
 	register_init_signals()
 	if(unique_name)
 		set_name()

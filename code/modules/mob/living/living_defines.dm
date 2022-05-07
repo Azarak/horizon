@@ -184,3 +184,5 @@
 	var/mutable_appearance/typing_indicator_overlay
 	/// Holder for attributes and skills
 	var/datum/attribute_holder/attributes
+	/// Type of the initial attribute sheet to apply. Can be null
+	var/initial_attribute_sheet

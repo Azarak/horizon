@@ -108,7 +108,7 @@
 
 /// Adds values from an attribute sheet to this holder
 /datum/attribute_holder/proc/add_attribute_sheet(sheet_type)
-	var/datum/attribute_sheet/sheet = new sheet_type()
+	var/datum/attribute_sheet/sheet = GLOB.attribute_sheets[sheet_type]
 	if(sheet.attributes)
 		add_attributes(sheet.attributes)
 	if(sheet.skills)
@@ -116,8 +116,93 @@
 
 /// Removes values from an attribute sheet from this holder
 /datum/attribute_holder/proc/remove_attribute_sheet(sheet_type)
-	var/datum/attribute_sheet/sheet = new sheet_type()
+	var/datum/attribute_sheet/sheet = GLOB.attribute_sheets[sheet_type]
 	if(sheet.attributes)
 		add_attributes(sheet.attributes, subtract = TRUE)
 	if(sheet.skills)
 		add_skills(sheet.skills, subtract = TRUE)
+
+/// Below is admin panel code for editing the attributes in a holder
+/datum/attribute_holder/proc/show_admin_edit_panel(mob/user)
+	if(!user || !user.client || !user.client.holder)
+		return
+	var/list/dat = list()
+	dat += "<a href='?src=[REF(src)];edit=sheet_panel'>Modify By Sheet</a>"
+	dat += "<h3>Raw Attributes Editing:</h3>"
+	for(var/attribute_type in GLOB.attributes)
+		var/datum/attribute/attribute = GLOB.attributes[attribute_type]
+		var/raw = attributes_raw[attribute_type]
+		dat += "[attribute.name] - <a href='?src=[REF(src)];edit=attributes;type=[attribute_type]'>[raw]</a> | [attribute.get_common_modifier_string(raw)] | [attribute.desc]<BR>"
+	dat += "<h3>Raw Skills Editing:</h3>"
+	for(var/skill_type in GLOB.skills)
+		var/datum/skill/skill = GLOB.skills[skill_type]
+		var/raw = skills_raw[skill_type]
+		dat += "[skill.name] - <a href='?src=[REF(src)];edit=skills;type=[skill_type]'>[raw]</a>| [skill.get_capability_description(raw)] | [skill.desc]<BR>"
+	winshow(user, "attribute_edit_window", TRUE)
+	var/datum/browser/popup = new(user, "attribute_edit_window", "<div align='center'>Attributes & Skills Edit</div>", 500, 600)
+	popup.set_content(dat.Join())
+	popup.open(FALSE)
+	onclose(user, "attribute_edit_window", user)
+
+/datum/attribute_holder/proc/show_admin_sheet_panel(mob/user)
+	if(!user || !user.client || !user.client.holder)
+		return
+	var/list/dat = list()
+	dat += "<table width='100%'>"
+	dat += "<tr>"
+	dat += "<td width='20%'></td>" //Name
+	dat += "<td width='30%'></td>" //Attributes
+	dat += "<td width='30%'></td>" //Skills
+	dat += "<td width='20%'></td>" //Buttons
+	dat += "</tr>"
+
+	var/even = FALSE
+	var/background_cl
+	for(var/sheet_type in GLOB.attribute_sheets)
+		even = !even
+		background_cl = even ? "#17191C" : "#23273C"
+		var/datum/attribute_sheet/sheet = GLOB.attribute_sheets[sheet_type]
+		dat += "<tr style='background-color: [background_cl]'>"
+		dat += "<td>[sheet.name]</td>" //Name
+		dat += "<td>[attrib_list_to_multiline_text(sheet.attributes)]</td>" //Attributes
+		dat += "<td>[skill_list_to_multiline_text(sheet.skills)]</td>" //Skills
+		dat += "<td><a href='?src=[REF(src)];edit=sheet;type=[sheet_type];action=add'>Add</a> <a href='?src=[REF(src)];edit=sheet;type=[sheet_type];action=subtract'>Subtract</a></td>" //Actions
+		dat += "</tr>"
+	dat += "</table>"
+
+	var/datum/browser/popup = new(user, "attribute_edit_window_sheets", "<div align='center'>Modify By Sheet</div>", 500, 600)
+	popup.set_content(dat.Join())
+	popup.open(FALSE)
+
+/datum/attribute_holder/Topic(href, href_list)
+	if(!usr.client?.holder)
+		return
+	if(href_list["edit"])
+		switch(href_list["edit"])
+			if("attributes")
+				var/desired_type = text2path(href_list["type"])
+				var/new_number = input(usr, "Choose new value", "Attribute Editing") as num|null
+				if(isnull(new_number) || QDELETED(src))
+					return
+				attributes_raw[desired_type] = new_number
+			if("skills")
+				var/desired_type = text2path(href_list["type"])
+				var/new_number = input(usr, "Choose new value", "Skills Editing") as num|null
+				if(isnull(new_number) || QDELETED(src))
+					return
+				skills_raw[desired_type] = new_number
+			if("sheet_panel")
+				show_admin_sheet_panel(usr)
+				return
+			if("sheet")
+				var/action = href_list["action"]
+				var/sheet_type = text2path(href_list["type"])
+				switch(action)
+					if("add")
+						add_attribute_sheet(sheet_type)
+					if("subtract")
+						remove_attribute_sheet(sheet_type)
+				/// Close the sheet choosing window
+				usr << browse(null, "window=attribute_edit_window_sheets")
+		update_attributes()
+		show_admin_edit_panel(usr)

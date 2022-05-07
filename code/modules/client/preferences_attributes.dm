@@ -27,13 +27,15 @@
 		reset_attributes()
 
 /// Resets attributes and skills to no changes.
-/datum/preferences/proc/reset_attributes()
-	attributes = list()
-	skills = list()
-	for(var/attribute_type in GLOB.attributes)
-		attributes[attribute_type] = 0
-	for(var/skill_type in GLOB.skills)
-		skills[skill_type] = 0
+/datum/preferences/proc/reset_attributes(reset_attributes = TRUE, reset_skills = TRUE)
+	if(reset_attributes)
+		attributes = list()
+		for(var/attribute_type in GLOB.attributes)
+			attributes[attribute_type] = 0
+	if(reset_skills)
+		skills = list()
+		for(var/skill_type in GLOB.skills)
+			skills[skill_type] = 0
 
 /datum/preferences/proc/update_perceived_attributes()
 	perceived_attributes = attributes.Copy()
@@ -105,6 +107,25 @@
 		return
 	skills[skill_type] += value
 
+/// Will try to customize the stat and skill allocations to match a passed attribute sheet.
+/datum/preferences/proc/allocate_to_sheet(sheet_type, allocate_attributes = TRUE, allocate_skills = TRUE)
+	var/datum/attribute_sheet/sheet = GLOB.attribute_sheets[sheet_type]
+	if(!sheet)
+		return
+	/// If the sheet doesnt have any attributes, dont even try to change anything there
+	if(!sheet.attributes)
+		allocate_attributes = FALSE
+	/// If the sheet doesnt have any skills, dont even try to change anything there
+	if(!sheet.skills)
+		allocate_skills = FALSE
+	reset_attributes(allocate_attributes, allocate_skills)
+	if(allocate_attributes)
+		for(var/attribute_type in sheet.attributes)
+			modify_attribute(attribute_type, sheet.attributes[attribute_type])
+	if(allocate_skills)
+		for(var/skill_type in sheet.skills)
+			modify_skill(skill_type, sheet.skills[skill_type])
+
 /datum/preferences/proc/print_attributes_page()
 	update_perceived_attributes()
 	var/list/dat = list()
@@ -143,7 +164,7 @@
 
 	dat += "<table width='100%'>"
 	dat += "<center><h2>Skills:</h2></center>"
-	dat += "<center><i>Skills define how proficient or trained you are in doing certain tasks. Attributes affect them, mostly intelligence.</i></center>"
+	dat += "<center><i>Skills define how proficient or trained you are in doing certain tasks. Attributes affect them, mostly intelligence.</i> <a href='?_src_=prefs;task=attributes;attribute_task=choose_template;'>Skill Templates</a></center>"
 	dat += "<b>Points remaining: [remaining_skill_points()]</b>"
 	dat += "<tr>"
 	dat += "<td width='20%'></td>" //Name
@@ -183,3 +204,12 @@
 			var/attribute_type = text2path(href_list["type"])
 			var/amount = text2num(href_list["amount"])
 			modify_attribute(attribute_type, amount)
+		if("choose_template")
+			var/list/compiled_list = list()
+			for(var/sheet_type in SKILL_TEMPLATE_SHEETS)
+				var/datum/attribute_sheet/sheet = GLOB.attribute_sheets[sheet_type]
+				compiled_list[sheet.name] = sheet_type
+			var/chosen_sheet_type = input(user, "Choose a skill set template:", "Skills") as null|anything in compiled_list
+			if(!chosen_sheet_type)
+				return
+			allocate_to_sheet(compiled_list[chosen_sheet_type])

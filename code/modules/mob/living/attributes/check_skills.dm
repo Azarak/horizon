@@ -27,24 +27,10 @@
 			dat += "<td>[buff.name]</td>" //Name
 
 			//Effects:
-			var/effect_string = ""
-			var/first_effect = TRUE
-			if(buff.attributes)
-				for(var/attribute_type in buff.attributes)
-					if(!first_effect)
-						effect_string += "\n"
-					var/datum/attribute/attribute = GLOB.attributes[attribute_type]
-					var/attribute_value = buff.attributes[attribute_type]
-					effect_string += "[attribute.name]: [attribute_value]"
-					first_effect = FALSE
-			if(buff.skills)
-				for(var/skill_type in buff.skills)
-					if(!first_effect)
-						effect_string += "\n"
-					var/datum/skill/skill = GLOB.skills[skill_type]
-					var/skill_value = buff.skills[skill_type]
-					effect_string += "[skill.name]: [skill_value]"
-					first_effect = FALSE
+			var/effect_string = attrib_list_to_multiline_text(buff.attributes)
+			if(effect_string != "")
+				effect_string += "\n"
+			effect_string += skill_list_to_multiline_text(buff.skills)
 
 			dat += "<td>[effect_string]</td>" //Description
 			dat += "<td>[buff.desc]</td>" //Description
@@ -100,7 +86,7 @@
 		var/value = attributes.skills_final[skill_type]
 		dat += "<tr style='background-color: [background_cl]'>"
 		dat += "<td>[skill.name]</td>" //Name
-		dat += "<td><center>[value]</center></td>" //Value
+		dat += "<td><center><b>[value]</b></center></td>" //Value
 		dat += "<td>[skill.get_capability_description(value)]</td>" //Capability description
 		dat += "<td>[skill.desc]</td>" //Name
 		dat += "</tr>"
