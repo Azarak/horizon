@@ -39,12 +39,10 @@
 
 /obj/structure/fireplace/attackby(obj/item/T, mob/user)
 	if(istype(T, /obj/item/stack/sheet/mineral/wood))
-		var/obj/item/stack/sheet/mineral/wood/wood = T
-		var/space_remaining = MAXIMUM_BURN_TIMER - burn_time_remaining()
-		var/space_for_logs = round(space_remaining / LOG_BURN_TIMER)
-		if(space_for_logs < 1)
-			to_chat(user, SPAN_WARNING("You can't fit any more of [T] in [src]!"))
+		var/space_for_logs = space_for_wood(T, user)
+		if(!space_for_logs)
 			return
+		var/obj/item/stack/sheet/mineral/wood/wood = T
 		var/logs_used = min(space_for_logs, wood.amount)
 		wood.use(logs_used)
 		adjust_fuel_timer(LOG_BURN_TIMER * logs_used)
@@ -64,10 +62,26 @@
 			</span>")
 		adjust_fuel_timer(PAPER_BURN_TIMER)
 		qdel(T)
+	else if (istype(T, /obj/item/grown/log))
+		if(!space_for_wood(T, user))
+			return
+		qdel(T)
+		adjust_fuel_timer(LOG_BURN_TIMER)
+		user.visible_message("<span class='notice'>[user] tosses a \
+			log into [src].</span>", "<span class='notice'>You add \
+			a log to [src].</span>")
 	else if(try_light(T,user))
 		return
 	else
 		. = ..()
+
+/obj/structure/fireplace/proc/space_for_wood(obj/item/item, mob/user)
+	var/space_remaining = MAXIMUM_BURN_TIMER - burn_time_remaining()
+	var/space_for_logs = round(space_remaining / LOG_BURN_TIMER)
+	if(!space_for_logs)
+		to_chat(user, SPAN_WARNING("You can't fit any more of [item] in [src]!"))
+		return space_for_logs
+	return space_for_logs
 
 /obj/structure/fireplace/update_overlays()
 	. = ..()
