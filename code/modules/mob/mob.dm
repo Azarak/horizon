@@ -1365,5 +1365,5 @@
 		client.movingmob = null
 
 /// Used for typing indicator, relevant on /living level
-/mob/proc/set_typing_indicator(state)
+/mob/proc/set_typing_indicator(state, emote = FALSE)
 	return
