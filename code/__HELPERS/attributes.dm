@@ -5,7 +5,7 @@
 	for(var/attribute_type in attribute_list)
 		var/datum/attribute/attribute = GLOB.attributes[attribute_type]
 		if(!first)
-			string += "\n"
+			string += "<br>"
 		string += "[attribute.name]: [attribute_list[attribute_type]]"
 		first = FALSE
 	return string
@@ -16,7 +16,7 @@
 	for(var/skill_type in skill_list)
 		var/datum/skill/skill = GLOB.skills[skill_type]
 		if(!first)
-			string += "\n"
+			string += "<br>"
 		string += "[skill.name]: [skill_list[skill_type]]"
 		first = FALSE
 	return string
