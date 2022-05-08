@@ -277,7 +277,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	/// List of descriptors related to this species
 	var/list/species_descriptors = list(
 		/datum/descriptor/age
-		)
+	)
 
 ///////////
 // PROCS //
