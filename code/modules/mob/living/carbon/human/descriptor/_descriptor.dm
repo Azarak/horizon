@@ -5,7 +5,7 @@
 
 /// Internal proc for returning a comparison
 /datum/descriptor/proc/get_comparison(mob/living/carbon/human/comparator, mob/living/carbon/human/examined)
-	var/diff = description_value(comparator) - description_value(examined)
+	var/diff = description_value(examined) - description_value(comparator)
 	return compare(comparator, examined, diff)
 
 /// Internal proc for returning a description

@@ -48,17 +48,17 @@
 	var/compare_text
 	switch(description_difference)
 		if(-INFINITY to -3)
-			compare_text = "much older than you."
+			compare_text = "much younger than you."
 		if(-2)
-			compare_text = "older than you."
+			compare_text = "younger than you."
 		if(-1)
-			compare_text = "slightly older than you."
+			compare_text = "slightly younger than you."
 		if(0)
 			compare_text = "about the same age as you."
 		if(1)
-			compare_text = "slightly younger than you."
+			compare_text = "slightly older than you."
 		if(2)
-			compare_text = "younger than you."
+			compare_text = "older than you."
 		if(3 to INFINITY)
-			compare_text = "much younger than you."
+			compare_text = "much older than you."
 	return SPAN_SMALLNOTICE("[examined.p_they(TRUE)] appear[examined.p_s()] to be [compare_text]")
