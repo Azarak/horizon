@@ -118,7 +118,7 @@
 	else
 		attribute = examined.attributes.attributes_final[attribute_type]
 	// Will return a 1 or -1 per each 2 attributes that move away from the base value. So 12 is 1, 8 is -1 etc.
-	return FLOOR((attribute - ATTRIBUTE_BASE) / 2, 1)
+	return FLOOR((attribute - ATTRIBUTE_BASE) * 0.5, 1)
 
 /datum/descriptor/attribute/strength
 	attribute_type = /datum/attribute/strength
