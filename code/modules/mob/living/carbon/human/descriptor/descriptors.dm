@@ -70,7 +70,7 @@
 	var/age_text
 	switch(description_value)
 		if(1)
-			age_text = "fresh out of factory."
+			age_text = "fresh from the factory."
 		if(2)
 			age_text = "in pristine condition."
 		if(3)
