@@ -20,7 +20,7 @@
 		if(!comparable)
 			return FALSE
 		// The comparator doesn't have any or such a descriptor to compare themselves against.
-		if(!comparator.descriptors || !type in comparator.descriptors)
+		if(!comparator.descriptors || (!type in comparator.descriptors))
 			return FALSE
 	return TRUE
 
