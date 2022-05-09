@@ -66,7 +66,7 @@
 			processed_colors += colors[i]
 		else
 			processed_colors += i
-	return InternalGenerate(processed_colors, render_steps)
+	return InternalGenerate(processed_colors, render_steps, do_bitmask, bitmask_step)
 
 /// Override this to implement layers.
 /// The colors var will only contain colors that this layer is configured to use.
@@ -87,9 +87,14 @@
 	. = ..()
 	src.icon_file = icon_file
 	var/list/icon_states = icon_states(icon_file)
-	if(!(icon_state in icon_states))
-		CRASH("Configured icon state \[[icon_state]\] was not found in [icon_file]. Double check your json configuration.")
-	icon = new(icon_file, icon_state)
+	var/state_to_check
+	if(bitmask)
+		state_to_check = "[icon_state]-0"
+	else
+		state_to_check = icon_state
+	if(!(state_to_check in icon_states))
+		CRASH("Configured icon state \[[state_to_check]\] was not found in [icon_file]. Double check your json configuration.")
+	icon = new(icon_file, state_to_check)
 
 	if(length(color_ids) > 1)
 		CRASH("Icon state layers can not have more than one color id")
