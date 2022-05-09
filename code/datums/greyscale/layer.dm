@@ -2,7 +2,7 @@
 	var/layer_type
 	var/list/color_ids
 	var/blend_mode
-	var/bitmasked = FALSE
+	var/bitmask = FALSE
 
 	var/static/list/json_readers
 
@@ -97,12 +97,12 @@
 /datum/greyscale_layer/icon_state/GetExpectedValues(list/required_values, list/optional_values)
 	. = ..()
 	required_values[NAMEOF(src, icon_state)] = /datum/json_reader/text
-	optional_values[NAMEOF(src, bitmasked)] = /datum/json_reader/number
+	optional_values[NAMEOF(src, bitmask)] = /datum/json_reader/number
 
 /datum/greyscale_layer/icon_state/InternalGenerate(list/colors, list/render_steps, do_bitmask, bitmask_step)
 	. = ..()
 	var/icon/new_icon
-	if(bitmasked && do_bitmask)
+	if(bitmask && do_bitmask)
 		new_icon = icon(icon_file, "[icon_state]-[bitmask_step]")
 	else
 		new_icon = icon(icon)

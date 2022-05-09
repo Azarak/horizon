@@ -39,11 +39,6 @@
 	/// Generated icons keyed by their color arguments
 	var/list/icon_cache
 
-	/// Configuration of bitmasking for the compiled icon. Used for purposes of icons with bitmask smoothing (GAGS_CARDINAL_SMOOTH|GAGS_DIAGONAL_SMOOTH)
-	var/bitmask_config = NONE
-	/// Whether we should generate the default, non bitmasked icon state if we are doing any bitmasking
-	var/generate_default_state_if_bitmasking = FALSE
-
 // There's more sanity checking here than normal because this is designed for spriters to work with
 // Sensible error messages that tell you exactly what's wrong is the best way to make this easy to use
 /datum/greyscale_config/New()
@@ -82,12 +77,14 @@
 	for(var/state in data)
 		var/list/state_information = data[state]
 		var/list/raw_layers = state_information["layers"]
+		var/bitmask_config = state_information["bitmask_config"] ? text2num(state_information["bitmask_config"]) : NONE
+		var/default_state_if_bitmask = state_information["default_state_if_bitmask"] ? TRUE : FALSE
 		if(!length(raw_layers))
 			stack_trace("The json configuration [DebugName()] for icon state '[state]' is missing any layers.")
 			continue
 		if(icon_states[state])
 			stack_trace("The json configuration [DebugName()] has a duplicate icon state '[state]' and is being overriden.")
-		icon_states[state] = ReadLayersFromJson(raw_layers)
+		icon_states[state] = new /datum/greyscale_state(ReadLayersFromJson(raw_layers), bitmask_config, default_state_if_bitmask)
 
 /// Takes the json layers configuration and puts it into a more processed format
 /datum/greyscale_config/proc/ReadLayersFromJson(list/data)
@@ -116,7 +113,8 @@
 	var/list/datum/greyscale_layer/all_layers = list()
 	var/list/to_process = list()
 	for(var/state in icon_states)
-		to_process += icon_states[state]
+		var/datum/greyscale_state/gags_state = icon_states[state]
+		to_process += gags_state.layers
 	while(length(to_process))
 		var/current = to_process[length(to_process)]
 		to_process.len--
@@ -172,9 +170,13 @@
 
 	var/list/generated_icons = list()
 	for(var/icon_state in icon_states)
+		var/datum/greyscale_state/gags_state = icon_states[icon_state]
+		var/list/layers = gags_state.layers
+		var/bitmask_config = gags_state.bitmask_config
+		var/default_state_if_bitmask = gags_state.default_state_if_bitmask
 		// Generate the default icon state if we are not bitmasking, or we want to do so despite bitmasking
-		if(bitmask_config == NONE || generate_default_state_if_bitmasking == TRUE)
-			var/icon/generated_icon = GenerateLayerGroup(colors, icon_states[icon_state], render_steps)
+		if(bitmask_config == NONE || default_state_if_bitmask == TRUE)
+			var/icon/generated_icon = GenerateLayerGroup(colors, layers, render_steps)
 			// We read a pixel to force the icon to be fully generated before we let it loose into the world
 			// I hate this
 			generated_icon.GetPixel(1, 1)
@@ -202,7 +204,7 @@
 
 				steps += potential_step
 			for(var/bit_step in steps)
-				var/icon/generated_icon = GenerateLayerGroup(colors, icon_states[icon_state], render_steps, TRUE, bit_step)
+				var/icon/generated_icon = GenerateLayerGroup(colors, layers, render_steps, TRUE, bit_step)
 				// Same as above.
 				generated_icon.GetPixel(1, 1)
 				generated_icons["[icon_state]-[bit_step]"] = generated_icon
