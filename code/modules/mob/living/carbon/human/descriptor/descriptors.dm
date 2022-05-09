@@ -136,7 +136,7 @@
 		if(-1)
 			describe_text = "look[examined.p_s()] weak."
 		if(0)
-			describe_text = "[examined.p_have()] moderate musculature."
+			describe_text = "look[examined.p_s()] average in strength."
 		if(1)
 			describe_text = "look[examined.p_s()] strong."
 		if(2)
