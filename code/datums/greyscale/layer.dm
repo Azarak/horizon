@@ -2,6 +2,7 @@
 	var/layer_type
 	var/list/color_ids
 	var/blend_mode
+	var/bitmasked = FALSE
 
 	var/static/list/json_readers
 
@@ -58,7 +59,7 @@
 
 /// Used to actualy create the layer using the given colors
 /// Do not override, use InternalGenerate instead
-/datum/greyscale_layer/proc/Generate(list/colors, list/render_steps)
+/datum/greyscale_layer/proc/Generate(list/colors, list/render_steps, do_bitmask, bitmask_step)
 	var/list/processed_colors = list()
 	for(var/i in color_ids)
 		if(isnum(i))
@@ -69,7 +70,7 @@
 
 /// Override this to implement layers.
 /// The colors var will only contain colors that this layer is configured to use.
-/datum/greyscale_layer/proc/InternalGenerate(list/colors, list/render_steps)
+/datum/greyscale_layer/proc/InternalGenerate(list/colors, list/render_steps, do_bitmask, bitmask_step)
 
 ////////////////////////////////////////////////////////
 // Subtypes
@@ -78,11 +79,13 @@
 /datum/greyscale_layer/icon_state
 	layer_type = "icon_state"
 	var/icon_state
+	var/icon_file
 	var/icon/icon
 	var/color_id
 
 /datum/greyscale_layer/icon_state/Initialize(icon_file)
 	. = ..()
+	src.icon_file = icon_file
 	var/list/icon_states = icon_states(icon_file)
 	if(!(icon_state in icon_states))
 		CRASH("Configured icon state \[[icon_state]\] was not found in [icon_file]. Double check your json configuration.")
@@ -94,10 +97,15 @@
 /datum/greyscale_layer/icon_state/GetExpectedValues(list/required_values, list/optional_values)
 	. = ..()
 	required_values[NAMEOF(src, icon_state)] = /datum/json_reader/text
+	optional_values[NAMEOF(src, bitmasked)] = /datum/json_reader/number
 
-/datum/greyscale_layer/icon_state/InternalGenerate(list/colors, list/render_steps)
+/datum/greyscale_layer/icon_state/InternalGenerate(list/colors, list/render_steps, do_bitmask, bitmask_step)
 	. = ..()
-	var/icon/new_icon = icon(icon)
+	var/icon/new_icon
+	if(bitmasked && do_bitmask)
+		new_icon = icon(icon_file, "[icon_state]-[bitmask_step]")
+	else
+		new_icon = icon(icon)
 	if(length(colors))
 		new_icon.Blend(colors[1], ICON_MULTIPLY)
 	return new_icon
@@ -113,8 +121,8 @@
 	optional_values[NAMEOF(src, icon_state)] = /datum/json_reader/text
 	required_values[NAMEOF(src, reference_type)] = /datum/json_reader/greyscale_config
 
-/datum/greyscale_layer/reference/InternalGenerate(list/colors, list/render_steps)
+/datum/greyscale_layer/reference/InternalGenerate(list/colors, list/render_steps, do_bitmask, bitmask_step)
 	if(render_steps)
 		return reference_type.GenerateBundle(colors, render_steps)
 	else
-		return reference_type.Generate(colors.Join())
+		return reference_type.Generate(colors.Join(), null, do_bitmask, bitmask_step)
