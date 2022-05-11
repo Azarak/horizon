@@ -259,15 +259,17 @@
 
 /obj/item/storage/fancy/cigarettes/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state][contents.len ? null : "_empty"]"
-	return
+	if(!contents.len)
+		icon_state = "[base_icon_state]_empty"
+	else if (is_open)
+		icon_state = "[base_icon_state]_open"
+	else
+		icon_state = base_icon_state
 
 /obj/item/storage/fancy/cigarettes/update_overlays()
 	. = ..()
 	if(!is_open || !contents.len)
 		return
-
-	. += "[icon_state]_open"
 
 	if(!display_cigs)
 		return
