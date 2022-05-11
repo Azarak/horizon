@@ -628,9 +628,9 @@
 	icon = 'icons/obj/smooth_structures/window.dmi'
 	icon_state = "window-0"
 	base_icon_state = "window"
-	color = "#AFD3E6"
+	color = "#97caf2"
 	greyscale_config = /datum/greyscale_config/fulltile_window
-	greyscale_colors = "#AFD3E6"
+	greyscale_colors = "#97caf2"
 	alpha = 180
 	max_integrity = 50
 	fulltile = TRUE
@@ -647,9 +647,9 @@
 	icon = 'icons/obj/smooth_structures/window.dmi'
 	icon_state = "window-0"
 	base_icon_state = "window"
-	color = "#c162ec"
+	color = "#B90DF2"
 	greyscale_config = /datum/greyscale_config/fulltile_window
-	greyscale_colors = "#c162ec"
+	greyscale_colors = "#B90DF2"
 	alpha = 180
 	max_integrity = 300
 	fulltile = TRUE
@@ -666,9 +666,9 @@
 	icon = 'icons/obj/smooth_structures/window_reinforced.dmi'
 	icon_state = "window-0"
 	base_icon_state = "window"
-	color = "#c162ec"
+	color = "#B90DF2"
 	greyscale_config = /datum/greyscale_config/fulltile_reinforced_window
-	greyscale_colors = "#c162ec"
+	greyscale_colors = "#B90DF2"
 	alpha = 180
 	state = RWINDOW_SECURE
 	max_integrity = 500
@@ -687,9 +687,9 @@
 	icon = 'icons/obj/smooth_structures/window_reinforced.dmi'
 	icon_state = "window-0"
 	base_icon_state = "window"
-	color = "#AFD3E6"
+	color = "#97caf2"
 	greyscale_config = /datum/greyscale_config/fulltile_reinforced_window
-	greyscale_colors = "#AFD3E6"
+	greyscale_colors = "#97caf2"
 	alpha = 180
 	max_integrity = 150
 	fulltile = TRUE

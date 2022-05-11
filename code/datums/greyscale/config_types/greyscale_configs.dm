@@ -383,48 +383,48 @@
 	icon_file = 'icons/turf/walls/solid_wall.dmi'
 	json_config = 'code/datums/greyscale/json_configs/turfs/solid_wall.json'
 
-/datum/greyscale_config/wall_stripe
-	name = "Wall Stripe"
-	icon_file = 'icons/turf/walls/wall_stripe.dmi'
-	json_config = 'code/datums/greyscale/json_configs/turfs/wall_stripe.json'
-
-/datum/greyscale_config/wall_neighbor_stripe
-	name = "Wall Neighbor Stripe"
-	icon_file = 'icons/turf/walls/neighbor_stripe.dmi'
-	json_config = 'code/datums/greyscale/json_configs/turfs/wall_neighbor_stripe.json'
+/datum/greyscale_config/reinforced_solid_wall
+	name = "Reinforced Solid Wall"
+	icon_file = 'icons/turf/walls/solid_wall_reinforced.dmi'
+	json_config = 'code/datums/greyscale/json_configs/turfs/solid_wall.json'
 
 /datum/greyscale_config/low_wall
 	name = "Low Wall"
 	icon_file = 'icons/obj/smooth_structures/low_wall.dmi'
 	json_config = 'code/datums/greyscale/json_configs/structures/low_wall.json'
 
+/datum/greyscale_config/wall_stripe
+	name = "Wall Stripe"
+	icon_file = 'icons/turf/walls/wall_stripe.dmi'
+	json_config = 'code/datums/greyscale/json_configs/turfs/wall_stripe.json'
+
 /datum/greyscale_config/wood_wall_stripe
 	name = "Wood Wall Stripe"
 	icon_file = 'icons/turf/walls/wood_wall_stripe.dmi'
-	json_config = 'code/datums/greyscale/json_configs/turfs/wall_stripe.json'
+	json_config = 'code/datums/greyscale/json_configs/turfs/shineless_wall_stripe.json'
 
-/datum/greyscale_config/reinforced_solid_wall
-	name = "Solid Wall"
-	icon_file = 'icons/turf/walls/solid_wall_reinforced.dmi'
-	json_config = 'code/datums/greyscale/json_configs/turfs/solid_wall.json'
+/datum/greyscale_config/wall_neighbor_stripe
+	name = "Wall Neighbor Stripe"
+	icon_file = 'icons/turf/walls/neighbor_stripe.dmi'
+	json_config = 'code/datums/greyscale/json_configs/turfs/wall_neighbor_stripe.json'
 
 /datum/greyscale_config/metal_wall
-	name = "Solid Wall"
+	name = "Metal Wall"
 	icon_file = 'icons/turf/walls/metal_wall.dmi'
 	json_config = 'code/datums/greyscale/json_configs/turfs/shineless_wall.json'
 
 /datum/greyscale_config/wood_wall
-	name = "Solid Wall"
+	name = "Wood Wall"
 	icon_file = 'icons/turf/walls/wood_wall.dmi'
 	json_config = 'code/datums/greyscale/json_configs/turfs/shineless_wall.json'
 
 /datum/greyscale_config/stone_wall
-	name = "Solid Wall"
+	name = "Stone Wall"
 	icon_file = 'icons/turf/walls/stone_wall.dmi'
 	json_config = 'code/datums/greyscale/json_configs/turfs/shineless_wall.json'
 
 /datum/greyscale_config/cult_wall
-	name = "Solid Wall"
+	name = "Cult Wall"
 	icon_file = 'icons/turf/walls/cult_wall.dmi'
 	json_config = 'code/datums/greyscale/json_configs/turfs/shineless_wall.json'
 
