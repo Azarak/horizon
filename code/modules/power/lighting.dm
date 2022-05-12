@@ -442,6 +442,8 @@
 	if(!on || status != LIGHT_OK)
 		return
 
+	. += emissive_appearance(overlayicon, "[base_state]_emissive")
+
 	var/area/A = get_area(src)
 	if(emergency_mode || (A?.fire))
 		. += mutable_appearance(overlayicon, "[base_state]_emergency")
