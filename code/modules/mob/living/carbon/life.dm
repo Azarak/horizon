@@ -3,6 +3,8 @@
 	if(notransform)
 		return
 
+	handle_pain(delta_time)
+
 	if(isopenturf(loc))
 		var/turf/open/my_open_turf = loc
 		if(my_open_turf.pollution)
@@ -31,11 +33,6 @@
 
 	if(stat == DEAD)
 		stop_sound_channel(CHANNEL_HEARTBEAT)
-	else
-		var/bprv = handle_bodyparts(delta_time, times_fired)
-		if(bprv & BODYPART_LIFE_UPDATE_HEALTH)
-			update_stamina() //needs to go before updatehealth to remove stamcrit
-			updatehealth()
 
 	check_cremation(delta_time, times_fired)
 
@@ -342,17 +339,6 @@
 
 /mob/living/carbon/proc/handle_blood(delta_time, times_fired)
 	return
-
-/mob/living/carbon/proc/handle_bodyparts(delta_time, times_fired)
-	var/stam_regen = FALSE
-	if(stam_regen_start_time <= world.time)
-		stam_regen = TRUE
-		if(HAS_TRAIT_FROM(src, TRAIT_INCAPACITATED, STAMINA))
-			. |= BODYPART_LIFE_UPDATE_HEALTH //make sure we remove the stamcrit
-	for(var/I in bodyparts)
-		var/obj/item/bodypart/BP = I
-		if(BP.needs_processing)
-			. |= BP.on_life(delta_time, times_fired, stam_regen)
 
 /mob/living/carbon/proc/handle_organs(delta_time, times_fired)
 	if(stat != DEAD)

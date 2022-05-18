@@ -451,12 +451,6 @@ Congratulations! You are now trained for invasive xenobiology research!"}
 	actions_types = list(/datum/action/item_action/toggle_mode)
 	convertible = FALSE
 
-	attack_cooldown = 0 SECONDS
-	confusion_amt = 0
-	stamina_loss_amt = 0
-	apply_stun_delay = 0 SECONDS
-	stun_time = 14 SECONDS
-
 	preload_cell_type = /obj/item/stock_parts/cell/infinite //Any sufficiently advanced technology is indistinguishable from magic
 	activate_sound = null
 	can_remove_cell = FALSE
@@ -525,19 +519,13 @@ Congratulations! You are now trained for invasive xenobiology research!"}
 	if(!isliving(target))
 		return FALSE
 
-	if(clumsy_check(user))
-		return FALSE
-
 	var/mob/living/L = target
 
 	user.do_attack_animation(L)
 
-	if(shields_blocked(L, user))
-		return FALSE
-
 	switch (mode)
 		if(BATON_STUN)
-			..()
+			StunAttack(L)
 		if(BATON_SLEEP)
 			SleepAttack(L,user)
 		if(BATON_CUFF)
@@ -546,11 +534,8 @@ Congratulations! You are now trained for invasive xenobiology research!"}
 			ProbeAttack(L,user)
 	return
 
-/obj/item/melee/baton/abductor/apply_stun_effect_end(mob/living/target)
-	StunAttack(target)
-
 /obj/item/melee/baton/abductor/proc/StunAttack(mob/living/L)
-	L.Paralyze(stun_time)
+	L.Paralyze(3 SECONDS)
 
 /obj/item/melee/baton/abductor/attack_self(mob/living/user)
 	toggle(user)
@@ -560,7 +545,7 @@ Congratulations! You are now trained for invasive xenobiology research!"}
 	..()
 
 /obj/item/melee/baton/abductor/proc/SleepAttack(mob/living/L,mob/living/user)
-	playsound(src, stun_sound, 50, TRUE, -1)
+	playsound(src, 'sound/weapons/egloves.ogg', 50, TRUE, -1)
 	if(L.incapacitated(TRUE, TRUE))
 		if(L.anti_magic_check(FALSE, FALSE, TRUE))
 			to_chat(user, SPAN_WARNING("The specimen's tinfoil protection is interfering with the sleep inducement!"))

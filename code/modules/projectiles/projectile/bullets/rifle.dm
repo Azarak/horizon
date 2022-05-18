@@ -25,7 +25,6 @@
 /obj/projectile/bullet/a762/enchanted
 	name = "enchanted 7.62 bullet"
 	damage = 20
-	stamina = 80
 
 // Harpoons (Harpoon Gun)
 

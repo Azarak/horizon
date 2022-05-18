@@ -433,7 +433,6 @@
 	icon = 'icons/obj/lavaland/artefacts.dmi'
 	pass_flags = PASSTABLE
 	damage = 20
-	stamina = 20
 	armour_penetration = 60
 	damage_type = BRUTE
 	hitsound = 'sound/effects/splat.ogg'
@@ -475,7 +474,6 @@
 
 /obj/projectile/hook/bounty
 	damage = 0
-	stamina = 40
 
 //Immortality Talisman
 /obj/item/immortality_talisman

@@ -33,6 +33,8 @@
 			adjustCloneLoss(damage_amount, forced = forced)
 		if(STAMINA)
 			adjustStaminaLoss(damage_amount, forced = forced)
+		if(PAIN)
+			adjustPainLoss(damage_amount)
 	return TRUE
 
 ///like [apply_damage][/mob/living/proc/apply_damage] except it always uses the damage procs
@@ -300,3 +302,6 @@
 		if(!amount)
 			break
 	. -= amount //if there's leftover healing, remove it from what we return
+
+/mob/living/proc/adjustPainLoss(pain_amt)
+	return

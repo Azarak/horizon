@@ -397,7 +397,7 @@
 			return
 		victim.visible_message(SPAN_NOTICE("[victim] finishes applying [I] to [victim.p_their()] [limb.name], grimacing from the pain!"), SPAN_NOTICE("You finish applying [I] to your [limb.name], and your bones explode in pain!"))
 
-	limb.receive_damage(25, stamina=100, wound_bonus=CANT_WOUND)
+	limb.receive_damage(25, wound_bonus=CANT_WOUND)
 	if(!gelled)
 		gelled = TRUE
 

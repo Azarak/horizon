@@ -504,14 +504,11 @@
 		return
 	var/total_burn = 0
 	var/total_brute = 0
-	var/total_stamina = 0
 	for(var/X in bodyparts) //hardcoded to streamline things a bit
 		var/obj/item/bodypart/BP = X
 		total_brute += (BP.brute_dam * BP.body_damage_coeff)
 		total_burn += (BP.burn_dam * BP.body_damage_coeff)
-		total_stamina += (BP.stamina_dam * BP.stam_damage_coeff)
 	set_health(round(maxHealth - getOxyLoss() - getToxLoss() - getCloneLoss() - total_burn - total_brute, DAMAGE_PRECISION))
-	staminaloss = round(total_stamina, DAMAGE_PRECISION)
 	update_stat()
 	if(((maxHealth - total_burn) < HEALTH_THRESHOLD_DEAD*2) && stat == DEAD )
 		become_husk(BURN)
@@ -524,16 +521,7 @@
 		remove_movespeed_modifier(/datum/movespeed_modifier/carbon_softcrit)
 
 /mob/living/carbon/update_stamina()
-	var/stam = getStaminaLoss()
-	if(stam > DAMAGE_PRECISION && (maxHealth - stam) <= crit_threshold && !stat)
-		enter_stamcrit()
-	else if(HAS_TRAIT_FROM(src, TRAIT_INCAPACITATED, STAMINA))
-		REMOVE_TRAIT(src, TRAIT_INCAPACITATED, STAMINA)
-		REMOVE_TRAIT(src, TRAIT_IMMOBILIZED, STAMINA)
-		REMOVE_TRAIT(src, TRAIT_FLOORED, STAMINA)
-	else
-		return
-	update_health_hud()
+	return
 
 /mob/living/carbon/update_sight()
 	if(!client)
@@ -720,25 +708,25 @@
 	else
 		clear_fullscreen("brute")
 
-/mob/living/carbon/update_health_hud(shown_health_amount)
+/mob/living/carbon/update_health_hud()
 	if(!client || !hud_used)
 		return
 	if(hud_used.healths)
 		if(stat != DEAD)
 			. = 1
-			if(shown_health_amount == null)
-				shown_health_amount = health
-			if(shown_health_amount >= maxHealth)
+			var/comparison_max = 200
+			var/comparison_amt = comparison_max - pain
+			if(comparison_amt >= comparison_max)
 				hud_used.healths.icon_state = "health0"
-			else if(shown_health_amount > maxHealth*0.8)
+			else if(comparison_amt > comparison_max*0.8)
 				hud_used.healths.icon_state = "health1"
-			else if(shown_health_amount > maxHealth*0.6)
+			else if(comparison_amt > comparison_max*0.6)
 				hud_used.healths.icon_state = "health2"
-			else if(shown_health_amount > maxHealth*0.4)
+			else if(comparison_amt > comparison_max*0.4)
 				hud_used.healths.icon_state = "health3"
-			else if(shown_health_amount > maxHealth*0.2)
+			else if(comparison_amt > comparison_max*0.2)
 				hud_used.healths.icon_state = "health4"
-			else if(shown_health_amount > 0)
+			else if(comparison_amt > 0)
 				hud_used.healths.icon_state = "health5"
 			else
 				hud_used.healths.icon_state = "health6"

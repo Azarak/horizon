@@ -769,6 +769,7 @@
 	stuttering = 0
 	slurring = 0
 	jitteriness = 0
+	pain = 0
 	stop_sound_channel(CHANNEL_HEARTBEAT)
 	SEND_SIGNAL(src, COMSIG_LIVING_POST_FULLY_HEAL, admin_revive)
 

@@ -817,6 +817,9 @@
 		bleed_text += "!</span>"
 		combined_msg += bleed_text
 
+	if(pain > PAIN_MESSAGE_THRESHOLD)
+		combined_msg += get_pain_string()
+
 	if(getStaminaLoss())
 		if(getStaminaLoss() > 30)
 			combined_msg += SPAN_INFO("You're completely exhausted.")

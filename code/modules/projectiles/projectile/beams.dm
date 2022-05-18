@@ -91,7 +91,7 @@
 	name = "disabler beam"
 	icon_state = "omnilaser"
 	damage = 30
-	damage_type = STAMINA
+	damage_type = PAIN
 	flag = ENERGY
 	hitsound = 'sound/weapons/tap.ogg'
 	eyeblur = 0
@@ -168,7 +168,7 @@
 	icon_state = "omnilaser"
 	hitsound = null
 	damage = 0
-	damage_type = STAMINA
+	damage_type = PAIN
 	flag = LASER
 	var/suit_types = list(/obj/item/clothing/suit/redtag, /obj/item/clothing/suit/bluetag)
 	impact_effect_type = /obj/effect/temp_visual/impact_effect/blue_laser
@@ -180,7 +180,7 @@
 		var/mob/living/carbon/human/M = target
 		if(istype(M.wear_suit))
 			if(M.wear_suit.type in suit_types)
-				M.adjustStaminaLoss(34)
+				M.adjustPainLoss(34)
 
 /obj/projectile/beam/lasertag/redtag
 	icon_state = "laser"
@@ -245,7 +245,7 @@
 	icon_state = "blue_laser"
 	hitsound = 'sound/weapons/shrink_hit.ogg'
 	damage = 0
-	damage_type = STAMINA
+	damage_type = PAIN
 	flag = ENERGY
 	impact_effect_type = /obj/effect/temp_visual/impact_effect/shrink
 	light_color = LIGHT_COLOR_BLUE

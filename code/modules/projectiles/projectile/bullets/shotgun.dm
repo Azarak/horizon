@@ -17,7 +17,6 @@
 /obj/projectile/bullet/shotgun_beanbag
 	name = "beanbag slug"
 	damage = 10
-	stamina = 55
 	wound_bonus = 20
 	sharpness = NONE
 	embedding = null
@@ -85,14 +84,12 @@
 /obj/projectile/bullet/pellet/shotgun_rubbershot
 	name = "rubbershot pellet"
 	damage = 3
-	stamina = 11
 	sharpness = NONE
 	embedding = null
 
 /obj/projectile/bullet/pellet/shotgun_incapacitate
 	name = "incapacitating pellet"
 	damage = 1
-	stamina = 6
 	embedding = null
 
 /obj/projectile/bullet/pellet/Range()

@@ -37,7 +37,7 @@
 	unsuitable_atmos_damage = 0
 	melee_damage_lower = 30
 	melee_damage_upper = 30
-	melee_damage_type = STAMINA
+	melee_damage_type = PAIN
 	damage_coeff = list(BRUTE = 1, BURN = 1, TOX = 0, CLONE = 0, STAMINA = 0, OXY = 0)
 	hud_possible = list(ANTAG_HUD, DIAG_STAT_HUD, DIAG_HUD)
 	obj_damage = 0

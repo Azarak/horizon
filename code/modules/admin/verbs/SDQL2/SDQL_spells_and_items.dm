@@ -12,7 +12,7 @@
 
 /obj/projectile/sdql
 	name = "\improper SDQL projectile"
-	damage_type = STAMINA
+	damage_type = PAIN
 	nodamage = TRUE
 	damage = 0
 	var/query

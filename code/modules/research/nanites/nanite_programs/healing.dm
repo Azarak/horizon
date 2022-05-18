@@ -11,7 +11,7 @@
 		return FALSE
 	if(iscarbon(host_mob))
 		var/mob/living/carbon/C = host_mob
-		var/list/parts = C.get_damaged_bodyparts(TRUE,TRUE, status = BODYPART_ORGANIC)
+		var/list/parts = C.get_damaged_bodyparts(TRUE,TRUE, BODYPART_ORGANIC)
 		if(!parts.len)
 			return FALSE
 	return ..()
@@ -19,11 +19,11 @@
 /datum/nanite_program/regenerative/active_effect()
 	if(iscarbon(host_mob))
 		var/mob/living/carbon/C = host_mob
-		var/list/parts = C.get_damaged_bodyparts(TRUE,TRUE, status = BODYPART_ORGANIC)
+		var/list/parts = C.get_damaged_bodyparts(TRUE,TRUE, BODYPART_ORGANIC)
 		if(!parts.len)
 			return
 		for(var/obj/item/bodypart/L in parts)
-			if(L.heal_damage(0.5/parts.len, 0.5/parts.len, null, BODYPART_ORGANIC))
+			if(L.heal_damage(0.5/parts.len, 0.5/parts.len, BODYPART_ORGANIC))
 				host_mob.update_damage_overlays()
 	else
 		host_mob.adjustBruteLoss(-0.5, TRUE)
@@ -116,7 +116,7 @@
 
 	if(iscarbon(host_mob))
 		var/mob/living/carbon/C = host_mob
-		var/list/parts = C.get_damaged_bodyparts(TRUE, TRUE, status = BODYPART_ROBOTIC)
+		var/list/parts = C.get_damaged_bodyparts(TRUE, TRUE, BODYPART_ROBOTIC)
 		if(!parts.len)
 			return FALSE
 	else
@@ -127,12 +127,12 @@
 /datum/nanite_program/repairing/active_effect(mob/living/M)
 	if(iscarbon(host_mob))
 		var/mob/living/carbon/C = host_mob
-		var/list/parts = C.get_damaged_bodyparts(TRUE, TRUE, status = BODYPART_ROBOTIC)
+		var/list/parts = C.get_damaged_bodyparts(TRUE, TRUE, BODYPART_ROBOTIC)
 		if(!parts.len)
 			return
 		var/update = FALSE
 		for(var/obj/item/bodypart/L in parts)
-			if(L.heal_damage(1/parts.len, 1/parts.len, null, BODYPART_ROBOTIC)) //much faster than organic healing
+			if(L.heal_damage(1/parts.len, 1/parts.len, BODYPART_ROBOTIC)) //much faster than organic healing
 				update = TRUE
 		if(update)
 			host_mob.update_damage_overlays()
@@ -167,12 +167,12 @@
 /datum/nanite_program/regenerative_advanced/active_effect()
 	if(iscarbon(host_mob))
 		var/mob/living/carbon/C = host_mob
-		var/list/parts = C.get_damaged_bodyparts(TRUE,TRUE, status = BODYPART_ORGANIC)
+		var/list/parts = C.get_damaged_bodyparts(TRUE,TRUE, BODYPART_ORGANIC)
 		if(!parts.len)
 			return
 		var/update = FALSE
 		for(var/obj/item/bodypart/L in parts)
-			if(L.heal_damage(2/parts.len, 2/parts.len, null, BODYPART_ORGANIC))
+			if(L.heal_damage(2/parts.len, 2/parts.len, BODYPART_ORGANIC))
 				update = TRUE
 		if(update)
 			host_mob.update_damage_overlays()

@@ -102,12 +102,12 @@
 			return TRUE
 
 	var/heal_amt = 10
-	var/list/hurt_limbs = blessed.get_damaged_bodyparts(1, 1, null, BODYPART_ORGANIC)
+	var/list/hurt_limbs = blessed.get_damaged_bodyparts(TRUE, TRUE, BODYPART_ORGANIC)
 
 	if(hurt_limbs.len)
 		for(var/X in hurt_limbs)
 			var/obj/item/bodypart/affecting = X
-			if(affecting.heal_damage(heal_amt, heal_amt, null, BODYPART_ORGANIC))
+			if(affecting.heal_damage(heal_amt, heal_amt, BODYPART_ORGANIC))
 				blessed.update_damage_overlays()
 		blessed.visible_message(SPAN_NOTICE("[chap] heals [blessed] with the power of [GLOB.deity]!"))
 		to_chat(blessed, SPAN_BOLDNOTICE("May the power of [GLOB.deity] compel you to be healed!"))
@@ -172,7 +172,7 @@
 		return TRUE
 
 	//charge(?) and go
-	if(bodypart.heal_damage(5,5,null,BODYPART_ROBOTIC))
+	if(bodypart.heal_damage(5, 5, BODYPART_ROBOTIC))
 		blessed.update_damage_overlays()
 
 	blessed.visible_message(SPAN_NOTICE("[chap] [did_we_charge ? "repairs" : "repairs and charges"] [blessed] with the power of [GLOB.deity]!"))
@@ -254,10 +254,10 @@
 
 	account.adjust_money(-GREEDY_HEAL_COST)
 	var/heal_amt = 30
-	var/list/hurt_limbs = blessed.get_damaged_bodyparts(1, 1, null, BODYPART_ORGANIC)
+	var/list/hurt_limbs = blessed.get_damaged_bodyparts(TRUE, TRUE, BODYPART_ORGANIC)
 	if(hurt_limbs.len)
 		for(var/obj/item/bodypart/affecting as anything in hurt_limbs)
-			if(affecting.heal_damage(heal_amt, heal_amt, null, BODYPART_ORGANIC))
+			if(affecting.heal_damage(heal_amt, heal_amt, BODYPART_ORGANIC))
 				blessed.update_damage_overlays()
 		blessed.visible_message(SPAN_NOTICE("[chap] barters a heal for [blessed] from [GLOB.deity]!"))
 		to_chat(blessed, SPAN_BOLDNOTICE("May the power of [GLOB.deity] compel you to be healed! Thank you for choosing [GLOB.deity]!"))
