@@ -628,10 +628,10 @@
 	icon = 'icons/obj/smooth_structures/window.dmi'
 	icon_state = "window-0"
 	base_icon_state = "window"
-	color = "#97caf2"
+	color = "#9bbad4"
 	greyscale_config = /datum/greyscale_config/fulltile_window
-	greyscale_colors = "#97caf2"
-	alpha = 180
+	greyscale_colors = "#9bbad4"
+	alpha = 150
 	max_integrity = 50
 	fulltile = TRUE
 	flags_1 = PREVENT_CLICK_UNDER_1
@@ -650,7 +650,7 @@
 	color = "#be0afa"
 	greyscale_config = /datum/greyscale_config/fulltile_window
 	greyscale_colors = "#B90DF2"
-	alpha = 180
+	alpha = 150
 	max_integrity = 300
 	fulltile = TRUE
 	flags_1 = PREVENT_CLICK_UNDER_1
@@ -669,7 +669,7 @@
 	color = "#8a09b5"
 	greyscale_config = /datum/greyscale_config/fulltile_window
 	greyscale_colors = "#B90DF2"
-	alpha = 180
+	alpha = 150
 	state = RWINDOW_SECURE
 	max_integrity = 500
 	fulltile = TRUE
@@ -687,10 +687,10 @@
 	icon = 'icons/obj/smooth_structures/window.dmi'
 	icon_state = "window-0"
 	base_icon_state = "window"
-	color = "#7ca9cc"
+	color = "#829eb5"
 	greyscale_config = /datum/greyscale_config/fulltile_window
-	greyscale_colors = "#7ca9cc"
-	alpha = 180
+	greyscale_colors = "#829eb5"
+	alpha = 150
 	max_integrity = 150
 	fulltile = TRUE
 	flags_1 = PREVENT_CLICK_UNDER_1
@@ -711,7 +711,7 @@
 	color = "#3b5461"
 	greyscale_config = /datum/greyscale_config/fulltile_window
 	greyscale_colors = "#3b5461"
-	alpha = 180
+	alpha = 150
 	fulltile = TRUE
 	flags_1 = PREVENT_CLICK_UNDER_1
 	smoothing_flags = SMOOTH_BITMASK
@@ -732,7 +732,7 @@
 	color = "#D0CBD4"
 	greyscale_config = /datum/greyscale_config/fulltile_window
 	greyscale_colors = "#D0CBD4"
-	alpha = 180
+	alpha = 150
 	max_integrity = 150
 	wtype = "shuttle"
 	fulltile = TRUE
@@ -767,7 +767,7 @@
 	color = "#D0CBD4"
 	greyscale_config = /datum/greyscale_config/fulltile_window
 	greyscale_colors = "#D0CBD4"
-	alpha = 180
+	alpha = 150
 	max_integrity = 600
 	wtype = "shuttle"
 	fulltile = TRUE
@@ -885,7 +885,7 @@
 	color = "#92661A"
 	greyscale_config = /datum/greyscale_config/fulltile_window
 	greyscale_colors = "#92661A"
-	alpha = 180
+	alpha = 150
 	smoothing_flags = SMOOTH_BITMASK
 	smoothing_groups = list(SMOOTH_GROUP_WINDOW_FULLTILE)
 	canSmoothWith = list(SMOOTH_GROUP_WINDOW_FULLTILE, SMOOTH_GROUP_WALLS, SMOOTH_GROUP_AIRLOCK, SMOOTH_GROUP_SHUTTERS_BLASTDOORS)
