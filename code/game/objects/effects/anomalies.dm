@@ -238,7 +238,7 @@
 		var/list/possible = list()
 		var/datum/virtual_level/my_vlevel = get_virtual_level()
 		for(var/obj/item/beacon/W in GLOB.teleportbeacons)
-			if(W.get_virtual_level == my_vlevel)
+			if(W.get_virtual_level() == my_vlevel)
 				possible += W
 
 		if(possible.len > 0)
