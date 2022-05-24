@@ -501,7 +501,7 @@
 	return locate(
 		rand(low_x + reserved_margin, high_x - reserved_margin),
 		rand(low_y + reserved_margin, high_y - reserved_margin),
-		 z_value
+		z_value
 		)
 
 /datum/virtual_level/proc/get_below_turf(turf/Turf)
