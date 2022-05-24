@@ -90,11 +90,11 @@
 	if(!istype(floor) || floor.intact)
 		return
 	var/obj/structure/cable/cable = locate() in floor
+	if(!cable)
+		return
 	var/obj/structure/lattice/catwalk/catwalk = locate() in floor
 	// Mice can't eat through catwalks
 	if(catwalk)
-		return
-	if(!cable)
 		return
 	// 15% to chew a wire, after the initial 1% chance, cause I guess idk precision?
 	if(!prob(15))
