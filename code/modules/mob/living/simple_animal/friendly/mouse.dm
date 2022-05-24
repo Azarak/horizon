@@ -97,7 +97,7 @@
 	if(catwalk)
 		return
 	// 15% to chew a wire, after the initial 1% chance, cause I guess idk precision?
-	if(!prob(15))
+	if(prob(85))
 		return
 	var/powered = cable.avail()
 	if(powered && !HAS_TRAIT(src, TRAIT_SHOCKIMMUNE))
