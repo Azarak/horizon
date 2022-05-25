@@ -96,7 +96,7 @@
 
 
 /obj/item/bodypart/head/can_dismember(obj/item/item)
-	if(owner.stat < HARD_CRIT)
+	if(owner.stat < UNCONSCIOUS)
 		return FALSE
 	return ..()
 

@@ -63,7 +63,7 @@
 				to_chat(src, SPAN_REVENMINOR("You begin siphoning essence from [target]'s soul."))
 				if(target.stat != DEAD)
 					to_chat(target, SPAN_WARNING("You feel a horribly unpleasant draining sensation as your grip on life weakens..."))
-				if(target.stat == SOFT_CRIT)
+				if(target.in_pain_crit())
 					target.Stun(46)
 				reveal(46)
 				stun(46)

@@ -262,7 +262,7 @@ GLOBAL_LIST_EMPTY(parasites) //all currently existing/living guardians
 			to_chat(summoner, "[SPAN_DANGER("<B>Your [name] is under attack! You take damage!")]</B>")
 			summoner.visible_message(SPAN_DANGER("<B>Blood sprays from [summoner] as [src] takes damage!</B>"))
 			switch(summoner.stat)
-				if(UNCONSCIOUS, HARD_CRIT)
+				if(UNCONSCIOUS)
 					to_chat(summoner, "[SPAN_DANGER("<B>Your body can't take the strain of sustaining [src] in this condition, it begins to fall apart!")]</B>")
 					summoner.adjustCloneLoss(amount * 0.5) //dying hosts take 50% bonus damage as cloneloss
 		update_health_hud()

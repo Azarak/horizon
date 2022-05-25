@@ -3,6 +3,8 @@
 	var/pain_bar = 0
 	for(var/obj/item/bodypart/part as anything in bodyparts)
 		pain_bar += part.get_damage()
+	// Toxins also count into pain, but they dont deal pain immediately when inflicted
+	pain_bar += toxloss
 	return pain_bar
 
 /mob/living/carbon/adjustPainLoss(pain_amt)
@@ -109,3 +111,9 @@
 				ADD_TRAIT(src, TRAIT_FLOORED, PAIN)
 				ADD_TRAIT(src, TRAIT_IMMOBILIZED, PAIN)
 				AdjustUnconscious(10 SECONDS) // Entering this state makes you unconscious for 10 seconds
+
+/mob/living/carbon/in_shock()
+	return (health <= crit_threshold)
+
+/mob/living/carbon/in_pain_crit()
+	return (pain_crit_state > PAIN_CRIT_STATE_NONE)

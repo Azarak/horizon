@@ -515,7 +515,7 @@
 
 	med_hud_set_health()
 
-	if(stat == SOFT_CRIT)
+	if(in_pain_crit())
 		add_movespeed_modifier(/datum/movespeed_modifier/carbon_softcrit)
 	else
 		remove_movespeed_modifier(/datum/movespeed_modifier/carbon_softcrit)
@@ -642,7 +642,7 @@
 				severity = 9
 			if(-INFINITY to -95)
 				severity = 10
-		if(stat != HARD_CRIT)
+		if(!in_shock())
 			var/visionseverity = 4
 			switch(health)
 				if(-8 to -4)
@@ -764,12 +764,8 @@
 		if(health <= HEALTH_THRESHOLD_DEAD && !HAS_TRAIT(src, TRAIT_NODEATH))
 			death()
 			return
-		if(health <= hardcrit_threshold && !HAS_TRAIT(src, TRAIT_NOHARDCRIT))
-			set_stat(HARD_CRIT)
-		else if(HAS_TRAIT(src, TRAIT_KNOCKEDOUT))
+		else if(HAS_TRAIT(src, TRAIT_KNOCKEDOUT) || in_shock())
 			set_stat(UNCONSCIOUS)
-		else if(health <= crit_threshold && !HAS_TRAIT(src, TRAIT_NOSOFTCRIT))
-			set_stat(SOFT_CRIT)
 		else
 			set_stat(CONSCIOUS)
 	update_damage_hud()

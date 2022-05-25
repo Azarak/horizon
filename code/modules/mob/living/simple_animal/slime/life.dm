@@ -31,7 +31,7 @@
 // Unlike most of the simple animals, slimes support UNCONSCIOUS. This is an ugly hack.
 /mob/living/simple_animal/slime/update_stat()
 	switch(stat)
-		if(UNCONSCIOUS, HARD_CRIT)
+		if(UNCONSCIOUS)
 			if(health > 0)
 				return
 	return ..()
@@ -156,7 +156,7 @@
 					powerlevel = 0
 					rabid = FALSE
 					regenerate_icons()
-			if(UNCONSCIOUS, HARD_CRIT)
+			if(UNCONSCIOUS)
 				if(!stasis)
 					to_chat(src, SPAN_NOTICE("You wake up from the stasis."))
 					set_stat(CONSCIOUS)

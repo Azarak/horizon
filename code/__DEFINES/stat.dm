@@ -4,10 +4,8 @@
 
 //mob/var/stat things
 #define CONSCIOUS 0
-#define SOFT_CRIT 1
-#define UNCONSCIOUS 2
-#define HARD_CRIT 3
-#define DEAD 4
+#define UNCONSCIOUS 1
+#define DEAD 2
 
 //Maximum healthiness an individual can have
 #define MAX_SATIETY 600

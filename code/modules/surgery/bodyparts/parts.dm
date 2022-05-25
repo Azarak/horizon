@@ -13,7 +13,7 @@
 	var/obj/item/cavity_item
 
 /obj/item/bodypart/chest/can_dismember(obj/item/item)
-	if(owner.stat < HARD_CRIT || !get_organs())
+	if(owner.stat < UNCONSCIOUS || !get_organs())
 		return FALSE
 	return ..()
 

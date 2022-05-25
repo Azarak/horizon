@@ -329,11 +329,8 @@
 		return power
 	if(M.IsSleeping())
 		return power * 0.25 //Voluntary unconsciousness yields lower healing.
-	switch(M.stat)
-		if(UNCONSCIOUS, HARD_CRIT)
-			return power * 0.9
-		if(SOFT_CRIT)
-			return power * 0.5
+	if(M.in_shock())
+		return power * 0.5
 	if(M.getBruteLoss() + M.getFireLoss() >= 70 && !active_coma)
 		to_chat(M, SPAN_WARNING("You feel yourself slip into a regenerative coma..."))
 		active_coma = TRUE
