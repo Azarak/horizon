@@ -1526,3 +1526,10 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 	new /obj/effect/pod_landingzone(landing_location, pod)
 	return pod
 
+/proc/clear_turf(turf/turf_to_clear)
+	for(var/obj/structure/spawner/nest in turf_to_clear)
+		qdel(nest)
+	for(var/mob/living/simple_animal/monster in turf_to_clear)
+		qdel(monster)
+	for(var/obj/structure/flora/plant in turf_to_clear)
+		qdel(plant)
