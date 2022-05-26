@@ -825,7 +825,7 @@
 		if(isliving(M))
 			var/mob/living/L = M
 			var/status
-			if(L.in_shock())
+			if(L.shock_stat != SHOCK_NONE)
 				status = "<font color='orange'><b>Unconscious and Dying</b></font>"
 			else
 				switch (M.stat)

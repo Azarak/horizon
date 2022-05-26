@@ -7,6 +7,13 @@
 #define UNCONSCIOUS 1
 #define DEAD 2
 
+//mob/var/shock_stat things
+#define SHOCK_NONE 0
+#define SHOCK_MILD 1
+#define SHOCK_SEVERE 2
+
+#define SHOCK "shock"
+
 //Maximum healthiness an individual can have
 #define MAX_SATIETY 600
 

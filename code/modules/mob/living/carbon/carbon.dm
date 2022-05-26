@@ -509,13 +509,14 @@
 		total_brute += (BP.brute_dam * BP.body_damage_coeff)
 		total_burn += (BP.burn_dam * BP.body_damage_coeff)
 	set_health(round(maxHealth - getOxyLoss() - getToxLoss() - getCloneLoss() - total_burn - total_brute, DAMAGE_PRECISION))
+	update_shock()
 	update_stat()
 	if(((maxHealth - total_burn) < HEALTH_THRESHOLD_DEAD*2) && stat == DEAD )
 		become_husk(BURN)
 
 	med_hud_set_health()
 
-	if(in_pain_crit())
+	if(shock_stat != SHOCK_NONE)
 		add_movespeed_modifier(/datum/movespeed_modifier/carbon_softcrit)
 	else
 		remove_movespeed_modifier(/datum/movespeed_modifier/carbon_softcrit)
@@ -642,7 +643,7 @@
 				severity = 9
 			if(-INFINITY to -95)
 				severity = 10
-		if(!in_shock())
+		if(shock_stat == SHOCK_NONE)
 			var/visionseverity = 4
 			switch(health)
 				if(-8 to -4)
@@ -764,7 +765,7 @@
 		if(health <= HEALTH_THRESHOLD_DEAD && !HAS_TRAIT(src, TRAIT_NODEATH))
 			death()
 			return
-		else if(HAS_TRAIT(src, TRAIT_KNOCKEDOUT) || in_shock())
+		else if(HAS_TRAIT(src, TRAIT_KNOCKEDOUT) || shock_stat == SHOCK_SEVERE)
 			set_stat(UNCONSCIOUS)
 		else
 			set_stat(CONSCIOUS)
@@ -1259,3 +1260,8 @@
 /mob/living/carbon/proc/attach_rot(mapload)
 	SIGNAL_HANDLER
 	AddComponent(/datum/component/rot, 6 MINUTES, 10 MINUTES, 1)
+
+/mob/living/carbon/proc/update_deathly_grab_weakness()
+	// Special interaction can add an immobilization while being grabbed, its important to remove this when the conditions are no longer true
+	if(shock_stat == SHOCK_NONE && pain_stat == PAIN_STAT_NONE)
+		REMOVE_TRAIT(src, TRAIT_IMMOBILIZED, PULLED_WHILE_SOFTCRIT_TRAIT)

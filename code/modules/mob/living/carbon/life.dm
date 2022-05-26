@@ -3,6 +3,13 @@
 	if(notransform)
 		return
 
+	// Carbons very slowly regenerate if they're laying down
+	if(body_position == LYING_DOWN)
+		// 4 brute per 100 seconds
+		adjustBruteLoss(-0.04 * delta_time)
+		// 2 fire per 100 seconds
+		adjustFireLoss(-0.02 * delta_time)
+
 	handle_pain(delta_time)
 
 	if(isopenturf(loc))
@@ -88,9 +95,10 @@
 	var/datum/gas_mixture/breath
 
 	if(!getorganslot(ORGAN_SLOT_BREATHING_TUBE))
-		if(in_shock() || (pulledby && pulledby.grab_state >= GRAB_KILL) || HAS_TRAIT(src, TRAIT_MAGIC_CHOKE) || (lungs && lungs.organ_flags & ORGAN_FAILING))
-			losebreath++  //You can't breath at all when in shock or when being choked, so you're going to miss a breath
-
+		if(shock_stat == SHOCK_SEVERE || (pulledby && pulledby.grab_state >= GRAB_KILL) || HAS_TRAIT(src, TRAIT_MAGIC_CHOKE) || (lungs && lungs.organ_flags & ORGAN_FAILING))
+			losebreath++  //You can't breath at all when in severe shock or when being choked, so you're going to miss a breath
+		else if (shock_stat == SHOCK_MILD)
+			losebreath += 0.25 // Loose a breath every 4 times if in mild shock
 	//Suffocate
 	if(losebreath >= 1) //You've missed a breath, take oxy damage
 		losebreath--

@@ -57,6 +57,10 @@
 /mob/living/keybind_face_direction(direction)
 	if(stat > CONSCIOUS)
 		return
+	if(shock_stat > SHOCK_NONE)
+		return
+	if(pain_stat > PAIN_STAT_NONE)
+		return
 	return ..()
 
 /mob/living/Process_Spacemove(movement_dir = 0)

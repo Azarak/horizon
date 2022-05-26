@@ -25,7 +25,6 @@
 	var/cloneloss = 0 ///Damage caused by being cloned or ejected from the cloner early. slimes also deal cloneloss damage to victims
 	var/staminaloss = 0 ///Stamina damage, or exhaustion. You recover it slowly naturally, and are knocked down if it gets too high. Holodeck and hallucinations deal this.
 	var/pain = 0
-	var/pain_crit_state = PAIN_CRIT_STATE_NONE
 	var/fatigue = 0
 	var/next_pain_groan = 0
 	var/next_pain_message = 0

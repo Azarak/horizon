@@ -623,7 +623,7 @@ SUBSYSTEM_DEF(gamemode)
 				if(L.suiciding) //Suicider
 					msg += "<b>[L.name]</b> ([L.key]), the [L.job] ([SPAN_BOLDANNOUNCE("Suicide")])\n"
 					failed = TRUE //Disconnected client
-				if(!failed && L.in_shock())
+				if(!failed && L.shock_stat != SHOCK_NONE)
 					msg += "<b>[L.name]</b> ([L.key]), the [L.job] (Dying)\n"
 					failed = TRUE //Unconscious
 				if(!failed && (L.stat == UNCONSCIOUS))

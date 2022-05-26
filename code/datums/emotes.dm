@@ -254,7 +254,7 @@
 		if(user.stat > stat_allowed)
 			if(!intentional)
 				return FALSE
-			if(user.in_shock())
+			if(user.shock_stat != SHOCK_NONE)
 				return FALSE
 			switch(user.stat)
 				if(UNCONSCIOUS)

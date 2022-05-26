@@ -247,8 +247,8 @@
 			burn *= 2
 
 	/// Pain
-	var/pain_multiplier = sharpness ? SHARP_WEAPON_PAIN_MULTIPLIER : BLUNT_WEAPON_PAIN_MULTIPLIER
-	owner.adjustPainLoss((brute + burn) * pain_multiplier)
+	//var/pain_multiplier = sharpness ? SHARP_WEAPON_PAIN_MULTIPLIER : BLUNT_WEAPON_PAIN_MULTIPLIER
+	//owner.adjustPainLoss((brute + burn) * pain_multiplier)
 
 	/*
 	// START WOUND HANDLING

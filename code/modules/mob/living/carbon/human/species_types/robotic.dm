@@ -42,7 +42,7 @@
 	)
 
 /datum/species/robotic/spec_life(mob/living/carbon/human/H)
-	if(H.in_shock())
+	if(H.shock_stat != SHOCK_NONE)
 		H.adjustFireLoss(1) //Still deal some damage in case a cold environment would be preventing us from the sweet release to robot heaven
 		H.adjust_bodytemperature(13) //We're overheating!!
 		if(prob(10))

@@ -2,7 +2,7 @@
 /mob/living/carbon/proc/get_pain_bar()
 	var/pain_bar = 0
 	for(var/obj/item/bodypart/part as anything in bodyparts)
-		pain_bar += part.get_damage()
+		pain_bar += part.get_damage() * part.body_damage_coeff
 	// Toxins also count into pain, but they dont deal pain immediately when inflicted
 	pain_bar += toxloss
 	return pain_bar
@@ -70,50 +70,59 @@
 	var/new_pain_crit_state = 0
 	var/paincrit_persists = TRUE
 	switch(pain)
-		if(0 to 180)
+		if(0 to 190)
 			paincrit_persists = FALSE
-			new_pain_crit_state = PAIN_CRIT_STATE_NONE
-		if(180 to 200)
-			new_pain_crit_state = PAIN_CRIT_STATE_CRAWLING
-		if(200 to 230)
-			new_pain_crit_state = PAIN_CRIT_STATE_INCAPACITATED
-		if(230 to PAIN_MAXIMUM)
-			new_pain_crit_state = PAIN_CRIT_STATE_UNCONSCIOUS
+			new_pain_crit_state = PAIN_STAT_NONE
+		if(190 to 210)
+			new_pain_crit_state = PAIN_STAT_NONE
+		if(210 to 230)
+			new_pain_crit_state = PAIN_STAT_CRAWLING
+		if(230 to 250)
+			new_pain_crit_state = PAIN_STAT_INCAPACITATED
+		if(250 to PAIN_MAXIMUM)
+			new_pain_crit_state = PAIN_STAT_UNCONSCIOUS
 
-
-	if(pain_crit_state && !new_pain_crit_state && paincrit_persists)
-		new_pain_crit_state = PAIN_CRIT_STATE_CRAWLING
+	if(pain_stat && !new_pain_crit_state && paincrit_persists)
+		new_pain_crit_state = PAIN_STAT_CRAWLING
 
 	// If the state is new
-	if(new_pain_crit_state != pain_crit_state)
-		if(!pain_crit_state)
-			to_chat(src, SPAN_BOLDWARNING("You succumb to pain..."))
-		pain_crit_state = new_pain_crit_state
-		switch(pain_crit_state)
-			if(PAIN_CRIT_STATE_NONE)
-				//Remove paincrit stuff
+	if(new_pain_crit_state != pain_stat)
+		if(!pain_stat)
+			to_chat(src, SPAN_BOLDWARNING("Pain overtakes you!"))
+		// Undo effects of the previous state
+		switch(pain_stat)
+			if(PAIN_STAT_CRAWLING)
+				//Incapacitated, floored
+				REMOVE_TRAIT(src, TRAIT_INCAPACITATED, PAIN)
+				REMOVE_TRAIT(src, TRAIT_FLOORED, PAIN)
+			if(PAIN_STAT_INCAPACITATED)
+				//Incapacitated, floored, immobilized
 				REMOVE_TRAIT(src, TRAIT_INCAPACITATED, PAIN)
 				REMOVE_TRAIT(src, TRAIT_FLOORED, PAIN)
 				REMOVE_TRAIT(src, TRAIT_IMMOBILIZED, PAIN)
-			if(PAIN_CRIT_STATE_CRAWLING)
+			if(PAIN_STAT_UNCONSCIOUS)
+				// Unconscious + the rest
+				REMOVE_TRAIT(src, TRAIT_INCAPACITATED, PAIN)
+				REMOVE_TRAIT(src, TRAIT_FLOORED, PAIN)
+				REMOVE_TRAIT(src, TRAIT_IMMOBILIZED, PAIN)
+				REMOVE_TRAIT(src, TRAIT_KNOCKEDOUT, PAIN)
+		// Apply effects of the new state
+		pain_stat = new_pain_crit_state
+		switch(pain_stat)
+			if(PAIN_STAT_CRAWLING)
 				//Incapacitated, floored
 				ADD_TRAIT(src, TRAIT_INCAPACITATED, PAIN)
 				ADD_TRAIT(src, TRAIT_FLOORED, PAIN)
-				REMOVE_TRAIT(src, TRAIT_IMMOBILIZED, PAIN)
-			if(PAIN_CRIT_STATE_INCAPACITATED)
+			if(PAIN_STAT_INCAPACITATED)
 				//Incapacitated, floored, immobilized
 				ADD_TRAIT(src, TRAIT_INCAPACITATED, PAIN)
 				ADD_TRAIT(src, TRAIT_FLOORED, PAIN)
 				ADD_TRAIT(src, TRAIT_IMMOBILIZED, PAIN)
-			if(PAIN_CRIT_STATE_UNCONSCIOUS)
+			if(PAIN_STAT_UNCONSCIOUS)
 				// Unconscious + the rest
 				ADD_TRAIT(src, TRAIT_INCAPACITATED, PAIN)
 				ADD_TRAIT(src, TRAIT_FLOORED, PAIN)
 				ADD_TRAIT(src, TRAIT_IMMOBILIZED, PAIN)
-				AdjustUnconscious(10 SECONDS) // Entering this state makes you unconscious for 10 seconds
+				ADD_TRAIT(src, TRAIT_KNOCKEDOUT, PAIN)
 
-/mob/living/carbon/in_shock()
-	return (health <= crit_threshold)
-
-/mob/living/carbon/in_pain_crit()
-	return (pain_crit_state > PAIN_CRIT_STATE_NONE)
+		update_deathly_grab_weakness()

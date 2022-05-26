@@ -125,7 +125,7 @@
 	. += msg.Join("")
 
 	if(!appears_dead)
-		if(in_shock())
+		if(shock_stat != SHOCK_NONE)
 			. += "[t_His] breathing is shallow and labored."
 		else if(stat == UNCONSCIOUS)
 			. += "[t_He] [t_is]n't responding to anything around [t_him] and seems to be asleep."

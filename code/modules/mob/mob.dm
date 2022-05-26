@@ -1372,9 +1372,3 @@
 /// Used for typing indicator, relevant on /living level
 /mob/proc/set_typing_indicator(state, emote = FALSE)
 	return
-
-/mob/proc/in_shock()
-	return FALSE
-
-/mob/proc/in_pain_crit()
-	return FALSE

@@ -141,6 +141,9 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 			say_dead(original_message)
 			return
 
+	if(shock_stat != SHOCK_NONE || pain_stat != PAIN_STAT_NONE)
+		message_mods[WHISPER_MODE] = MODE_WHISPER
+
 	if(!can_speak_basic(original_message, ignore_spam, forced))
 		return
 
@@ -168,7 +171,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 	if(message_mods[WHISPER_MODE] == MODE_WHISPER)
 		message_range = 1
 		log_talk(message, LOG_WHISPER)
-		if(in_shock())
+		if(shock_stat == SHOCK_SEVERE)
 			var/health_diff = round(-HEALTH_THRESHOLD_DEAD + health)
 			// If we cut our message short, abruptly end it with a-..
 			var/message_len = length_char(message)

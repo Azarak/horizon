@@ -1517,6 +1517,7 @@
 			CLONE:<font size='1'><a href='?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=clone' id='clone'>[getCloneLoss()]</a>
 			BRAIN:<font size='1'><a href='?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=brain' id='brain'>[getOrganLoss(ORGAN_SLOT_BRAIN)]</a>
 			STAMINA:<font size='1'><a href='?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=stamina' id='stamina'>[getStaminaLoss()]</a>
+			PAIN:<font size='1'><a href='?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=pain' id='pain'>[pain]</a>
 		</font>
 	"}
 
@@ -1779,10 +1780,11 @@
 	. = ..()
 	if(. == FALSE) //null is a valid value here, we only want to return if FALSE is explicitly passed.
 		return
+	var/pulling_deathly_weak = (pain_stat != PAIN_STAT_NONE || shock_stat != SHOCK_NONE)
 	if(pulledby)
-		if(!. && in_pain_crit())
+		if(!. && pulling_deathly_weak)
 			ADD_TRAIT(src, TRAIT_IMMOBILIZED, PULLED_WHILE_SOFTCRIT_TRAIT)
-	else if(. && in_pain_crit())
+	else if(. && pulling_deathly_weak)
 		REMOVE_TRAIT(src, TRAIT_IMMOBILIZED, PULLED_WHILE_SOFTCRIT_TRAIT)
 
 
@@ -2040,9 +2042,3 @@
 	else
 		cut_overlay(typing_indicator_overlay)
 		typing_indicator_overlay = null
-
-/mob/living/in_shock()
-	return FALSE
-
-/mob/living/in_pain_crit()
-	return FALSE
