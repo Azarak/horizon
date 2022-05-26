@@ -706,6 +706,7 @@
 	desc = "A small box of Almost But Not Quite Plasma Premium Matches."
 	icon = 'icons/obj/cigarettes.dmi'
 	icon_state = "matchbox"
+	base_icon_state = "matchbox"
 	inhand_icon_state = "zippo"
 	worn_icon_state = "lighter"
 	w_class = WEIGHT_CLASS_TINY
@@ -713,13 +714,13 @@
 	drop_sound = 'sound/items/handling/matchbox_drop.ogg'
 	pickup_sound =  'sound/items/handling/matchbox_pickup.ogg'
 	custom_price = PAYCHECK_ASSISTANT * 0.4
-	base_icon_state = "matchbox"
 	illustration = null
+	var/matches_amount = 10
 
 /obj/item/storage/box/matches/ComponentInitialize()
 	. = ..()
 	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
-	STR.max_items = 10
+	STR.max_items = matches_amount
 	STR.set_holdable(list(/obj/item/match))
 
 /obj/item/storage/box/matches/PopulateContents()
@@ -731,15 +732,25 @@
 
 /obj/item/storage/box/matches/update_icon_state()
 	. = ..()
-	switch(length(contents))
-		if(10)
+	/// Get a 0-100 non floating number percentage of how filled up the box is and change its state based on that.
+	var/percentage = round((length(contents) / matches_amount * 100))
+	switch(percentage)
+		if(100)
 			icon_state = base_icon_state
-		if(5 to 9)
+		if(99 to 51)
 			icon_state = "[base_icon_state]_almostfull"
-		if(1 to 4)
+		if(50 to 1)
 			icon_state = "[base_icon_state]_almostempty"
 		if(0)
 			icon_state = "[base_icon_state]_e"
+
+/obj/item/storage/box/matches/matchbook
+	name = "matchbook"
+	desc = "An elegant box containing a lot of matches."
+	icon_state = "matchbook"
+	base_icon_state = "matchbook"
+	custom_price = PAYCHECK_ASSISTANT * 0.7
+	matches_amount = 20
 
 /obj/item/storage/box/lights
 	name = "box of replacement bulbs"
@@ -1329,7 +1340,6 @@
 	illustration = "emergencytank"
 
 /obj/item/storage/box/emergencytank/PopulateContents()
-	..()
 	for(var/i in 1 to 7)
 		new /obj/item/tank/internals/emergency_oxygen(src) //in case anyone ever wants to do anything with spawning them, apart from crafting the box
 
@@ -1339,7 +1349,6 @@
 	illustration = "extendedtank"
 
 /obj/item/storage/box/engitank/PopulateContents()
-	..()
 	for(var/i in 1 to 7)
 		new /obj/item/tank/internals/emergency_oxygen/engi(src) //in case anyone ever wants to do anything with spawning them, apart from crafting the box
 
@@ -1373,3 +1382,12 @@
 		/obj/item/slimecross/stabilized/rainbow=1,\
 		)
 	generate_items_inside(items_inside,src)
+
+/obj/item/storage/box/inflatables
+	name = "box of inflatable walls"
+	desc = "A box of inflatable walls. They seem very compressed in there."
+	illustration = "implant"
+
+/obj/item/storage/box/inflatables/PopulateContents()
+	for(var/i in 1 to 4)
+		new /obj/item/inflatable(src)

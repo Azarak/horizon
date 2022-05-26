@@ -244,6 +244,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	//we couldn't load character data so just randomize the character appearance + name
 	set_new_species(/datum/species/human)
 	random_character() //let's create a random character then - rather than a fat, bald and naked man.
+	// We dont have a system for initializing complex data on new saves and it is only an issue now
+	loadouts = list()
+	validate_loadouts()
+
 	key_bindings = deepCopyList(GLOB.hotkey_keybinding_list_by_key) // give them default keybinds and update their movement keys
 	C?.set_macros()
 	real_name = pref_species.random_name(gender,1)
@@ -3045,7 +3049,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/list/dat = list()
 	dat += "<center><b>Choose your languages:</b></center><br>"
 	dat += "Availability of the languages to choose from depends on your background. If you can't unlearn one, it means it is required for your background."
-	dat += "<BR><center><a href='?_src_=prefs;task=close_language'>Done</a></center>"
+	dat += "<br>A lot of jobs will require you to know the common language, you will be restricted from playing them if your character doesn't know it."
+	dat += "<br><center><a href='?_src_=prefs;task=close_language'>Done</a></center>"
 	dat += "<hr>"
 	var/current_ling_points = get_linguistic_points()
 	dat += "<b>Linguistic Points remaining: [current_ling_points]</b>"

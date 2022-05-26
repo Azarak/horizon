@@ -38,3 +38,93 @@
   - rscadd: Wormhole new icon
   - rscadd: New sprites for pumps and porta scrubbers
   - rscadd: Fireaxe and Flamethrower new icons
+2022-05-13:
+  Azarak:
+  - rscadd: New icons for chemical tanks
+  - rscadd: Emissive overlay for light fixtures
+  - rscadd: Adds new icons for cigarette accessories
+  - rscadd: Adds cigarette cartons
+  - rscadd: Adds matchbooks
+2022-05-18:
+  Azarak:
+  - rscadd: The GAGS system supports bitmasking.
+  - rscadd: Walls and windows have new icons.
+  - rscadd: Adds a warning about job language requirements
+2022-05-20:
+  Azarak:
+  - bugfix: Fixes Heat Pump UI and layering
+  - bugfix: Removes the defunct skill tracker PDA tab
+  - bugfix: Fixes loadouts being broken for completely new prefs
+2022-05-21:
+  AtoriBirb:
+  - imageadd: 6 new beak sprites
+2022-05-22:
+  Deek-Za (Deek-Za):
+  - imageadd: More crushed can sprites
+2022-05-23:
+  Azarak:
+  - bugfix: Industrial lifts no longer move ghosts around
+  - bugfix: Fixes cases of string use of assigned_role
+  - rscadd: Adresses muteness and language discrepencacies, allowing much larger freedom
+      of language for most jobs
+  - bugfix: Fixes looking down a z level
+  - bugfix: Fixes Alien Infestation failing to spawn
+  - balance: Bluespace anomaly will now only teleport to the same level
+  Deek-Za (Deek-Za):
+  - bugfix: '&#x27;Internal&#x27; option now appropriately hides the organ from examination'
+2022-05-24:
+  Alex 'Avunia' Takiya (atakiya):
+  - soundadd: Added logarithmic audio volume
+  - qol: Lobbymusic now uses logarithmic audio volume at 30% - tune in!
+  - qol: Roundend music now uses the same volume as the lobby music (30% instead of
+      40%)
+  - qol: Roundend sound effects are now quieter
+  Azarak:
+  - rscadd: New windows sprites
+  - rscdel: Mining shuttles no longer use the overmap
+  - bugfix: Fixes find_safe_turf() and all its uses
+  - bugfix: fFixes gravity from disabled gravity generators
+  - bugfix: Fixes up ambitions and antag normal objectives
+  - rscdel: You can no longer purchase the mining shuttle from the shuttle purchase
+      console
+  - rscadd: Added interaction hints to examine of showers
+  - rscadd: You can now deconstruct showers, and you&#x27;ll get back their full parts
+      too
+  - imageadd: Plated catwalks now have new icons which fit the current flooring icons,
+      there is also a new variant for the brighter &quot;textured&quot; flooring.
+  - balance: Mice can&#x27;t chew wires that are on tiles with catwalks.
+  - bugfix: Proper dir offsets and mapping types for bathroom objects
+  - bugfix: Ruin levels now have a reserved margin, you no longer will get &quot;stickied&quot;
+      to its edges
+  - rscdel: Removes scientist drunk lines
+  - bugfix: Emissive blockers no longer are in atom contents
+  - rscadd: Some trading tweaks
+  - balance: Removes access restrictions from using the Science Hub app
+  Emilitia Ennehrt (EmilitiaEnnehrt):
+  - rscadd: Added new options in the character creation loadout
+  - balance: Changed price cost for some loadout clothing
+2022-05-25:
+  Alex 'Avunia' Takiya (atakiya):
+  - rscadd: Adds inflatable walls, please don&#x27;t puncture.
+  - imageadd: Added inflatable icons, ports from baystation12, CEV-Eris and space-station-14
+  Azarak:
+  - bugfix: Fixes directionals for showers and sinks
+  - qol: Large input box for subtler anti ghost
+  - rscadd: Adds sprite accessory customization to podpeople
+  - rscadd: Synthetic Anthromorphs
+  - bugfix: More sanity in randomizing sprite accessories
+  - bugfix: Ruins will no longer cut every flora and monster in their viscinity when
+      spawned.
+  - balance: Less synthflesh amount to unhusk someone
+  - bugfix: Precision error shouldn&#x27;t prevent you from unhusking a person
+  - balance: Makes storyteller events around 30% less frequent
+  - balance: Robotic humans no longer raise temperature when in crit
+  Deek-Za (Deek-Za):
+  - bugfix: Med Sec Checkpoint APC on Kilo now properly gains power
+  cacogen:
+  - balance: Cannabis has more believable effects
+2022-05-26:
+  drizzlemutt:
+  - rscadd: Hardened Soles quirk
+  - rscadd: Excitable quirk
+  - balance: allows gasmasks to be stored in toolbelts
