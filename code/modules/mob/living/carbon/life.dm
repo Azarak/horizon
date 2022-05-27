@@ -3,13 +3,6 @@
 	if(notransform)
 		return
 
-	// Carbons very slowly regenerate if they're laying down
-	if(body_position == LYING_DOWN)
-		// 4 brute per 100 seconds
-		adjustBruteLoss(-0.04 * delta_time)
-		// 2 fire per 100 seconds
-		adjustFireLoss(-0.02 * delta_time)
-
 	handle_pain(delta_time)
 
 	if(isopenturf(loc))

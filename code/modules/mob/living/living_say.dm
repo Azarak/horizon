@@ -141,7 +141,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 			say_dead(original_message)
 			return
 
-	if(shock_stat != SHOCK_NONE || pain_stat != PAIN_STAT_NONE)
+	if(shock_stat != SHOCK_NONE) //Should pain crit also restrict speech like this?
 		message_mods[WHISPER_MODE] = MODE_WHISPER
 
 	if(!can_speak_basic(original_message, ignore_spam, forced))

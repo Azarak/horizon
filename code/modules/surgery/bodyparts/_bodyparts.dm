@@ -220,7 +220,7 @@
 //Applies brute and burn damage to the organ. Returns 1 if the damage-icon states changed at all.
 //Damage will not exceed max_damage using this proc
 //Cannot apply negative damage
-/obj/item/bodypart/proc/receive_damage(brute = 0, burn = 0, blocked = 0, updating_health = TRUE, required_status = null, wound_bonus = 0, bare_wound_bonus = 0, sharpness = NONE) // maybe separate BRUTE_SHARP and BRUTE_OTHER eventually somehow hmm
+/obj/item/bodypart/proc/receive_damage(brute = 0, burn = 0, blocked = 0, updating_health = TRUE, required_status = null, wound_bonus = 0, bare_wound_bonus = 0, sharpness = NONE, pain_multiplier = 0) // maybe separate BRUTE_SHARP and BRUTE_OTHER eventually somehow hmm
 	var/hit_percent = (100-blocked)/100
 	if((!brute && !burn) || hit_percent <= 0)
 		return FALSE
@@ -247,8 +247,8 @@
 			burn *= 2
 
 	/// Pain
-	//var/pain_multiplier = sharpness ? SHARP_WEAPON_PAIN_MULTIPLIER : BLUNT_WEAPON_PAIN_MULTIPLIER
-	//owner.adjustPainLoss((brute + burn) * pain_multiplier)
+	if(pain_multiplier > 0)
+		owner.adjustPainLoss((brute + burn) * pain_multiplier)
 
 	/*
 	// START WOUND HANDLING

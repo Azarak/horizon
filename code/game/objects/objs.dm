@@ -7,6 +7,8 @@
 
 	var/damtype = BRUTE
 	var/force = 0
+	/// Multiplier of pain inflicted from damage from this object.
+	var/pain_multiplier = BLUNT_WEAPON_PAIN_MULTIPLIER
 
 	/// How good a given object is at causing wounds on carbons. Higher values equal better shots at creating serious wounds.
 	var/wound_bonus = 0

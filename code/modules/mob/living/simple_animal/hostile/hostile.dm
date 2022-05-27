@@ -46,6 +46,8 @@
 	///Mobs ignore mob/living targets with a stat lower than that of stat_attack. If set to DEAD, then they'll include corpses in their targets, if to DEAD they'll keep attacking until they kill, and so on.
 	var/stat_attack = CONSCIOUS
 	var/stat_exclusive = FALSE //Mobs with this set to TRUE will exclusively attack things defined by stat_attack, stat_attack DEAD means they will only attack corpses
+	/// Whether we should acquire targets which are paincritted. This being FALSE gives people a good opportunity to escape combat if a mob gets them downed.
+	var/attack_paincritted = FALSE
 	var/attack_same = 0 //Set us to 1 to allow us to attack our own faction
 	//Use GET_TARGETS_FROM(mob) to access this
 	//Attempting to call GET_TARGETS_FROM(mob) when this var is null will just return mob as a base
@@ -166,14 +168,15 @@
 		if(Found(A))//Just in case people want to override targetting
 			. = list(A)
 			break
+		// Check if we can attack a paincritted person
+		if(!attack_paincritted_condition(A))
+			continue
 		if(CanAttack(A))//Can we attack it?
 			. += A
 			continue
 	var/Target = PickTarget(.)
 	GiveTarget(Target)
 	return Target //We now have a target
-
-
 
 /mob/living/simple_animal/hostile/proc/PossibleThreats()
 	. = list()
@@ -204,6 +207,14 @@
 		return
 	var/chosen_target = pick(Targets)//Pick the remaining targets (if any) at random
 	return chosen_target
+
+/// Checks whether the mob should target a paincritted person.
+/mob/living/simple_animal/hostile/proc/attack_paincritted_condition(mob/living/target)
+	if(!attack_paincritted && isliving(target))
+		var/mob/living/living_target = target
+		if(living_target.pain_stat != PAIN_STAT_NONE)
+			return FALSE
+	return TRUE
 
 // Please do not add one-off mob AIs here, but override this function for your mob
 /mob/living/simple_animal/hostile/CanAttack(atom/the_target)//Can we actually attack a possible target?
