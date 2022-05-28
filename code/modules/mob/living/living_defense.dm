@@ -351,8 +351,7 @@
 		return FALSE
 	if(!(flags & SHOCK_ILLUSION))
 		adjustFireLoss(shock_damage)
-	else
-		adjustStaminaLoss(shock_damage)
+	adjustPainLoss(shock_damage * ELECTRICAL_SHOCK_PAIN_MULTIPLIER)
 	visible_message(
 		SPAN_DANGER("[src] was shocked by \the [source]!"), \
 		SPAN_USERDANGER("You feel a powerful shock coursing through your body!"), \
