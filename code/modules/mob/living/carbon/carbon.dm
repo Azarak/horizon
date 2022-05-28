@@ -715,7 +715,7 @@
 	if(hud_used.healths)
 		if(stat != DEAD)
 			. = 1
-			var/comparison_max = 210
+			var/comparison_max = 220
 			var/comparison_amt = comparison_max - pain
 			if(comparison_amt >= comparison_max)
 				hud_used.healths.icon_state = "health0"

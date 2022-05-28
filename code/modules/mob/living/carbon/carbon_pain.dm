@@ -10,6 +10,7 @@
 /mob/living/carbon/adjustPainLoss(pain_amt)
 	pain = clamp(pain + pain_amt, 0, PAIN_MAXIMUM)
 	update_pain_states()
+	update_health_hud()
 
 	// Handle pain groans //50 pain amount is 100% for a response, so around 25 damage in a hit
 	if(next_pain_groan < world.time && pain_amt > PAIN_SCREAM_TRIGGER_THRESHOLD && pain >= PAIN_SCREAM_THRESHOLD && prob(pain_amt * PAIN_SCREAM_TRIGGER_MULTIPLIER))
@@ -26,7 +27,7 @@
 	if((pain || pain_bar) && pain != pain_bar)
 		var/bar_difference = pain - pain_bar
 		var/abs_difference = abs(bar_difference)
-		var/recovery_amount = ((abs_difference * 0.01) + 0.5) * delta_time //1% + 0.5 of difference per second
+		var/recovery_amount = ((abs_difference * PAIN_RECOVERY_PERCENT) + PAIN_RECOVERY_FLAT) * delta_time
 		if(recovery_amount > abs_difference)
 			recovery_amount = abs_difference
 		if(bar_difference < 0)
@@ -66,20 +67,20 @@
 		remove_movespeed_modifier(/datum/movespeed_modifier/damage_slowdown)
 		remove_movespeed_modifier(/datum/movespeed_modifier/damage_slowdown_flying)
 
-	// Handle paincrit
+	// Handle paincrit. Paincrit starts from 220 but persists until you get it back below 200.
 	var/new_pain_crit_state = 0
 	var/paincrit_persists = TRUE
 	switch(pain)
-		if(0 to 190)
+		if(0 to 200)
 			paincrit_persists = FALSE
 			new_pain_crit_state = PAIN_STAT_NONE
-		if(190 to 210)
+		if(200 to 220)
 			new_pain_crit_state = PAIN_STAT_NONE
-		if(210 to 230)
+		if(220 to 240)
 			new_pain_crit_state = PAIN_STAT_CRAWLING
-		if(230 to 250)
+		if(240 to 260)
 			new_pain_crit_state = PAIN_STAT_INCAPACITATED
-		if(250 to PAIN_MAXIMUM)
+		if(260 to PAIN_MAXIMUM)
 			new_pain_crit_state = PAIN_STAT_UNCONSCIOUS
 
 	if(pain_stat && !new_pain_crit_state && paincrit_persists)
