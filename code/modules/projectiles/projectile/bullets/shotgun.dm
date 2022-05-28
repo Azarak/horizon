@@ -16,7 +16,8 @@
 
 /obj/projectile/bullet/shotgun_beanbag
 	name = "beanbag slug"
-	damage = 10
+	damage = 22
+	bullet_pain_multiplier = RIOT_BULLETS_PAIN_MULTIPLIER
 	wound_bonus = 20
 	sharpness = NONE
 	embedding = null
@@ -83,13 +84,15 @@
 
 /obj/projectile/bullet/pellet/shotgun_rubbershot
 	name = "rubbershot pellet"
-	damage = 3
+	damage = 4
+	bullet_pain_multiplier = RIOT_BULLETS_PAIN_MULTIPLIER
 	sharpness = NONE
 	embedding = null
 
 /obj/projectile/bullet/pellet/shotgun_incapacitate
 	name = "incapacitating pellet"
-	damage = 1
+	damage = 2
+	bullet_pain_multiplier = RIOT_BULLETS_PAIN_MULTIPLIER
 	embedding = null
 
 /obj/projectile/bullet/pellet/Range()

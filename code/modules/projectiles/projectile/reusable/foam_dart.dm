@@ -42,3 +42,5 @@
 	base_icon_state = "foamdart_riot_proj"
 	ammo_type = /obj/item/ammo_casing/caseless/foam_dart/riot
 	nodamage = FALSE
+	damage = 5
+	bullet_pain_multiplier = RIOT_BULLETS_PAIN_MULTIPLIER

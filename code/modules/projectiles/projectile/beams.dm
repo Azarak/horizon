@@ -90,8 +90,9 @@
 /obj/projectile/beam/disabler
 	name = "disabler beam"
 	icon_state = "omnilaser"
-	damage = 30
-	damage_type = PAIN
+	damage = 7
+	damage_type = BURN
+	bullet_pain_multiplier = DISABLER_BEAM_PAIN_MULTIPLIER
 	flag = ENERGY
 	hitsound = 'sound/weapons/tap.ogg'
 	eyeblur = 0

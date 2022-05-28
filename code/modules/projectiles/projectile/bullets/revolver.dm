@@ -37,6 +37,7 @@
 /obj/projectile/bullet/c38/match/bouncy
 	name = ".38 Rubber bullet"
 	damage = 10
+	bullet_pain_multiplier = RIOT_BULLETS_PAIN_MULTIPLIER
 	weak_against_armour = TRUE
 	ricochets_max = 6
 	ricochet_incidence_leeway = 0

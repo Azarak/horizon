@@ -25,6 +25,7 @@
 /obj/projectile/bullet/a762/enchanted
 	name = "enchanted 7.62 bullet"
 	damage = 20
+	bullet_pain_multiplier = RIOT_BULLETS_PAIN_MULTIPLIER
 
 // Harpoons (Harpoon Gun)
 
