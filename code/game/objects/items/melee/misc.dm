@@ -182,6 +182,7 @@
 	righthand_file = 'icons/mob/inhands/equipment/security_righthand.dmi'
 	slot_flags = ITEM_SLOT_BELT
 	force = 12 //9 hit crit
+	pain_multiplier = BATON_WEAPON_PAIN_MULTIPLIER
 	w_class = WEIGHT_CLASS_NORMAL
 
 	var/on = TRUE // Are we on or off.
@@ -192,8 +193,6 @@
 	var/force_on // Damage when on - not stunning
 	var/force_off // Damage when off - not stunning
 	var/weight_class_on // What is the new size class when turned on
-
-	wound_bonus = 15
 
 // Description for when turning their baton "on"
 /obj/item/melee/classic_baton/proc/get_on_description()

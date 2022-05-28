@@ -14,11 +14,11 @@
 		if(do_teleport(user, get_turf(user), 50, channel = TELEPORT_CHANNEL_BLUESPACE))//honk honk
 			SEND_SIGNAL(user, COMSIG_LIVING_MINOR_SHOCK)
 			user.Paralyze(2 SECONDS)
-			deductcharge(cell_hit_cost)
+			deduct_charge(cell_hit_cost)
 		else
 			SEND_SIGNAL(user, COMSIG_LIVING_MINOR_SHOCK)
 			user.Paralyze(2 SECONDS)
-			deductcharge(cell_hit_cost/4)
+			deduct_charge(cell_hit_cost/4)
 		return
 	else
 		if(turned_on)

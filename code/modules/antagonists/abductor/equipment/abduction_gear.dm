@@ -504,7 +504,7 @@ Congratulations! You are now trained for invasive xenobiology research!"}
 	if(!AbductorCheck(user))
 		return FALSE
 
-	if(!deductcharge(cell_hit_cost))
+	if(!deduct_charge(cell_hit_cost))
 		to_chat(user, SPAN_WARNING("[src] [cell ? "is out of charge" : "does not have a power source installed"]."))
 		return FALSE
 

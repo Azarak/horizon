@@ -8,7 +8,7 @@
 	lefthand_file = 'icons/mob/inhands/equipment/security_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/security_righthand.dmi'
 
-	force = 10
+	force = 8
 	attack_verb_continuous = list("beats")
 	attack_verb_simple = list("beat")
 
@@ -16,9 +16,7 @@
 	slot_flags = ITEM_SLOT_BELT
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 50, BIO = 0, RAD = 0, FIRE = 80, ACID = 80)
 
-	throwforce = 7
-	var/throw_stun_chance = 35
-
+	var/force_on = 12
 	var/obj/item/stock_parts/cell/cell
 	var/preload_cell_type //if not empty the baton starts with this type of cell
 	var/cell_hit_cost = 1000
@@ -30,7 +28,7 @@
 	var/convertible = TRUE //if it can be converted with a conversion kit
 
 /obj/item/melee/baton/attack(mob/M, mob/living/carbon/human/user, params)
-	deductcharge(cell_hit_cost)
+	deduct_charge(cell_hit_cost)
 	return ..()
 
 /obj/item/melee/baton/get_cell()
@@ -47,33 +45,19 @@
 
 /obj/item/melee/baton/Initialize()
 	. = ..()
+	throwforce = force
 	if(preload_cell_type)
 		if(!ispath(preload_cell_type,/obj/item/stock_parts/cell))
 			log_mapping("[src] at [AREACOORD(src)] had an invalid preload_cell_type: [preload_cell_type].")
 		else
 			cell = new preload_cell_type(src)
 	update_appearance()
-	RegisterSignal(src, COMSIG_PARENT_ATTACKBY, .proc/convert)
 
 
 /obj/item/melee/baton/Destroy()
 	if(cell)
 		QDEL_NULL(cell)
-	UnregisterSignal(src, COMSIG_PARENT_ATTACKBY)
 	return ..()
-
-/obj/item/melee/baton/proc/convert(datum/source, obj/item/I, mob/user)
-	SIGNAL_HANDLER
-
-	if(istype(I,/obj/item/conversion_kit) && convertible)
-		var/turf/T = get_turf(src)
-		var/obj/item/melee/classic_baton/B = new /obj/item/melee/classic_baton (T)
-		B.alpha = 20
-		playsound(T, 'sound/items/drill_use.ogg', 80, TRUE, -1)
-		animate(src, alpha = 0, time = 10)
-		animate(B, alpha = 255, time = 10)
-		qdel(I)
-		qdel(src)
 
 /obj/item/melee/baton/handle_atom_del(atom/A)
 	if(A == cell)
@@ -85,17 +69,28 @@
 /obj/item/melee/baton/loaded //this one starts with a cell pre-installed.
 	preload_cell_type = /obj/item/stock_parts/cell/high
 
-/obj/item/melee/baton/proc/deductcharge(chrgdeductamt)
+/obj/item/melee/baton/proc/deduct_charge(chrgdeductamt)
 	if(cell)
 		//Note this value returned is significant, as it will determine
 		//if a stun is applied or not
 		. = cell.use(chrgdeductamt)
 		if(turned_on && cell.charge < cell_hit_cost)
 			//we're below minimum, turn off
-			turned_on = FALSE
-			update_appearance()
-			playsound(src, activate_sound, 75, TRUE, -1)
+			set_on_state(FALSE)
 
+/obj/item/melee/baton/proc/set_on_state(new_state)
+	if(new_state == turned_on)
+		return
+	turned_on = new_state
+	if(turned_on)
+		playsound(src, activate_sound, 75, TRUE, -1)
+		force = force_on
+		pain_multiplier = BATON_WEAPON_PAIN_MULTIPLIER
+	else
+		force = initial(force)
+		pain_multiplier = BLUNT_WEAPON_PAIN_MULTIPLIER
+	throwforce = force
+	update_appearance()
 
 /obj/item/melee/baton/update_icon_state()
 	if(turned_on)
@@ -114,56 +109,63 @@
 	else
 		. += SPAN_WARNING("\The [src] does not have a power source installed.")
 
-/obj/item/melee/baton/attackby(obj/item/W, mob/user, params)
-	if(istype(W, /obj/item/stock_parts/cell))
-		var/obj/item/stock_parts/cell/C = W
+/obj/item/melee/baton/attackby(obj/item/item, mob/user, params)
+	if(istype(item,/obj/item/conversion_kit) && convertible)
+		var/turf/my_turf = get_turf(src)
+		var/obj/item/melee/classic_baton/classic_baton = new /obj/item/melee/classic_baton(my_turf)
+		classic_baton.alpha = 20
+		playsound(my_turf, 'sound/items/drill_use.ogg', 80, TRUE, -1)
+		animate(src, alpha = 0, time = 10)
+		animate(classic_baton, alpha = 255, time = 10)
+		qdel(item)
+		qdel(src)
+	else if(istype(item, /obj/item/stock_parts/cell))
+		var/obj/item/stock_parts/cell/C = item
 		if(cell)
 			to_chat(user, SPAN_WARNING("[src] already has a cell!"))
 		else
 			if(C.maxcharge < cell_hit_cost)
 				to_chat(user, SPAN_NOTICE("[src] requires a higher capacity cell."))
 				return
-			if(!user.transferItemToLoc(W, src))
+			if(!user.transferItemToLoc(item, src))
 				return
-			cell = W
+			cell = item
 			to_chat(user, SPAN_NOTICE("You install a cell in [src]."))
 			update_appearance()
 
-	else if(W.tool_behaviour == TOOL_SCREWDRIVER)
-		tryremovecell(user)
+	else if(item.tool_behaviour == TOOL_SCREWDRIVER)
+		try_remove_cell(user)
 	else
 		return ..()
 
-/obj/item/melee/baton/proc/tryremovecell(mob/user)
+/obj/item/melee/baton/proc/try_remove_cell(mob/user)
 	if(cell && can_remove_cell)
 		cell.update_appearance()
 		cell.forceMove(get_turf(src))
 		cell = null
 		to_chat(user, SPAN_NOTICE("You remove the cell from [src]."))
-		turned_on = FALSE
 		update_appearance()
+		set_on_state(FALSE)
 
 /obj/item/melee/baton/attack_self(mob/user)
 	toggle_on(user)
 
 /obj/item/melee/baton/proc/toggle_on(mob/user)
 	if(cell && cell.charge >= cell_hit_cost)
-		turned_on = !turned_on
+		set_on_state(!turned_on)
 		to_chat(user, SPAN_NOTICE("[src] is now [turned_on ? "on" : "off"]."))
-		playsound(src, activate_sound, 75, TRUE, -1)
 	else
-		turned_on = FALSE
+		set_on_state(FALSE)
 		if(!cell)
 			to_chat(user, SPAN_WARNING("[src] does not have a power source!"))
 		else
 			to_chat(user, SPAN_WARNING("[src] is out of charge."))
-	update_appearance()
 	add_fingerprint(user)
 
 /obj/item/melee/baton/emp_act(severity)
 	. = ..()
 	if (!(. & EMP_PROTECT_SELF))
-		deductcharge(1000 / severity)
+		deduct_charge(1000 / severity)
 
 //Makeshift stun baton. Replacement for stun gloves.
 /obj/item/melee/baton/cattleprod
@@ -175,10 +177,9 @@
 	lefthand_file = 'icons/mob/inhands/weapons/melee_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/weapons/melee_righthand.dmi'
 	w_class = WEIGHT_CLASS_BULKY
-	force = 3
-	throwforce = 5
+	force = 5
+	force_on = 9
 	cell_hit_cost = 2000
-	throw_stun_chance = 10
 	slot_flags = ITEM_SLOT_BACK
 	convertible = FALSE
 	var/obj/item/assembly/igniter/sparkler = 0
@@ -198,11 +199,9 @@
 	throw_speed = 1
 	icon_state = "boomerang"
 	inhand_icon_state = "boomerang"
-	force = 5
-	throwforce = 5
-	throw_range = 5
+	force = 7
+	force_on = 11
 	cell_hit_cost = 2000
-	throw_stun_chance = 99  //Have you prayed today?
 	convertible = FALSE
 	custom_materials = list(/datum/material/iron = 10000, /datum/material/glass = 4000, /datum/material/silver = 10000, /datum/material/gold = 2000)
 
