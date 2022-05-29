@@ -12,7 +12,7 @@
 #define SHOCK_MILD 1
 #define SHOCK_SEVERE 2
 
-#define SHOCK "shock"
+#define SHOCK_CONDITION "shock"
 
 //Maximum healthiness an individual can have
 #define MAX_SATIETY 600

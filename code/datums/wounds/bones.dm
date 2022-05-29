@@ -81,7 +81,7 @@
 			regen_ticks_current += 0.5
 
 	if(DT_PROB(severity * 1.5, delta_time))
-		victim.take_bodypart_damage(rand(1, severity * 2), stamina=rand(2, severity * 2.5), wound_bonus=CANT_WOUND)
+		victim.take_bodypart_damage(rand(1, severity * 2), wound_bonus=CANT_WOUND)
 		if(prob(33))
 			to_chat(victim, SPAN_DANGER("You feel a sharp pain in your body as your bones are reforming!"))
 
