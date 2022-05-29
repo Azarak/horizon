@@ -155,7 +155,7 @@
 
 	/// We are throwing an item with force, see if we have stamina for that
 	if(I && I.force && !use_stamina(STAMINA_THROW_COST))
-		to_chat(user, SPAN_WARNING("You are too tired to toss!"))
+		to_chat(src, SPAN_WARNING("You are too tired to toss!"))
 		return
 
 	if(!I)
@@ -175,7 +175,7 @@
 		if(isliving(thrown_thing))
 			/// We are throwing a living mob, see if we have the stamina for it.
 			if(!use_stamina(STAMINA_THROW_COST))
-				to_chat(user, SPAN_WARNING("You are too tired to toss!"))
+				to_chat(src, SPAN_WARNING("You are too tired to toss!"))
 				return
 			var/turf/start_T = get_turf(loc) //Get the start and target tile for the descriptors
 			var/turf/end_T = get_turf(target)
