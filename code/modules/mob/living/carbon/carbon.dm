@@ -153,6 +153,11 @@
 	var/atom/movable/thrown_thing
 	var/obj/item/I = get_active_held_item()
 
+	/// We are throwing an item with force, see if we have stamina for that
+	if(I && I.force && !use_stamina(STAMINA_THROW_COST))
+		to_chat(user, SPAN_WARNING("You are too tired to toss!"))
+		return
+
 	if(!I)
 		if(pulling && isliving(pulling) && grab_state >= GRAB_AGGRESSIVE)
 			var/mob/living/throwable_mob = pulling
@@ -168,6 +173,10 @@
 	if(thrown_thing)
 
 		if(isliving(thrown_thing))
+			/// We are throwing a living mob, see if we have the stamina for it.
+			if(!use_stamina(STAMINA_THROW_COST))
+				to_chat(user, SPAN_WARNING("You are too tired to toss!"))
+				return
 			var/turf/start_T = get_turf(loc) //Get the start and target tile for the descriptors
 			var/turf/end_T = get_turf(target)
 			if(start_T && end_T)
@@ -520,9 +529,6 @@
 		add_movespeed_modifier(/datum/movespeed_modifier/carbon_softcrit)
 	else
 		remove_movespeed_modifier(/datum/movespeed_modifier/carbon_softcrit)
-
-/mob/living/carbon/update_stamina()
-	return
 
 /mob/living/carbon/update_sight()
 	if(!client)

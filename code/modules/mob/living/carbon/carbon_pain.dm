@@ -1,4 +1,4 @@
-
+/// Gets a "bar" of pain, which is the amount `handle_pain` tries to equalize towards. This is limbs tissue damage and toxin damage
 /mob/living/carbon/proc/get_pain_bar()
 	var/pain_bar = 0
 	for(var/obj/item/bodypart/part as anything in bodyparts)
@@ -7,6 +7,7 @@
 	pain_bar += toxloss
 	return pain_bar
 
+/// Adjusts pain loss and updates states based on it, also makes the carbon do an emote if the pain is sufficient.
 /mob/living/carbon/adjustPainLoss(pain_amt)
 	pain = clamp(pain + pain_amt, 0, PAIN_MAXIMUM)
 	update_pain_states()
@@ -21,6 +22,7 @@
 		else
 			emote("pain")
 
+/// Runs each life, moves pain towards the "bar" and updates pain states.
 /mob/living/carbon/proc/handle_pain(delta_time)
 	var/pain_bar = get_pain_bar()
 	// If there is pain, pain bar and pain isn't equal to pain bar, we move the pain towards the pain bar
@@ -36,6 +38,7 @@
 		return //adjusting pain updates pain states
 	update_pain_states()
 
+/// Gets a string description with a span on how painfully the carbon is feeling.
 /mob/living/carbon/proc/get_pain_string()
 	switch(pain)
 		if(0 to 75)
@@ -49,6 +52,7 @@
 		if(225 to PAIN_MAXIMUM)
 			return SPAN_BOLDWARNING("You feel agonizing pain!")
 
+/// Updates pain crit states.
 /mob/living/carbon/proc/update_pain_states()
 	// Handle pain messages
 	if(pain > PAIN_MESSAGE_THRESHOLD && next_pain_message < world.time)

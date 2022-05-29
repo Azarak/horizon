@@ -1501,6 +1501,9 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	if(HAS_TRAIT(user, TRAIT_PACIFISM))
 		to_chat(user, SPAN_WARNING("You don't want to harm [target]!"))
 		return FALSE
+	if(!user.use_stamina(STAMINA_ATTACK_COST))
+		to_chat(user, SPAN_WARNING("You are too tired to make a swing!"))
+		return FALSE
 	if(target.check_block())
 		target.visible_message(SPAN_WARNING("[target] blocks [user]'s attack!"), \
 						SPAN_USERDANGER("You block [user]'s attack!"), SPAN_HEAR("You hear a swoosh!"), COMBAT_MESSAGE_RANGE, user)
@@ -1568,6 +1571,9 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	return
 
 /datum/species/proc/disarm(mob/living/carbon/human/user, mob/living/carbon/human/target, datum/martial_art/attacker_style)
+	if(!user.use_stamina(STAMINA_SHOVE_COST))
+		to_chat(user, SPAN_WARNING("You are too tired to shove!"))
+		return
 	if(target.check_block())
 		target.visible_message(SPAN_WARNING("[user]'s shove is blocked by [target]!"), \
 						SPAN_DANGER("You block [user]'s shove!"), SPAN_HEAR("You hear a swoosh!"), COMBAT_MESSAGE_RANGE, user)

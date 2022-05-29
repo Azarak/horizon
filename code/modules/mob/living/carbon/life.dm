@@ -4,6 +4,7 @@
 		return
 
 	handle_pain(delta_time)
+	handle_stamina(delta_time)
 
 	if(isopenturf(loc))
 		var/turf/open/my_open_turf = loc

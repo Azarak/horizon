@@ -954,6 +954,7 @@
 			altered_grab_state++
 		var/resist_chance = BASE_GRAB_RESIST_CHANCE /// see defines/combat.dm, this should be baseline 60%
 		resist_chance = (resist_chance/altered_grab_state) ///Resist chance divided by the value imparted by your grab state. It isn't until you reach neckgrab that you gain a penalty to escaping a grab.
+		playsound(src, 'sound/weapons/thudswoosh.ogg', 40, TRUE, -1)
 		if(prob(resist_chance))
 			visible_message(SPAN_DANGER("[src] breaks free of [pulledby]'s grip!"), \
 							SPAN_DANGER("You break free of [pulledby]'s grip!"), null, null, pulledby)
@@ -962,6 +963,7 @@
 			pulledby.stop_pulling()
 			return FALSE
 		else
+			shake_animation(src)
 			adjustStaminaLoss(rand(15,20))//failure to escape still imparts a pretty serious penalty
 			visible_message(SPAN_DANGER("[src] struggles as they fail to break free of [pulledby]'s grip!"), \
 							SPAN_WARNING("You struggle as you fail to break free of [pulledby]'s grip!"), null, null, pulledby)
@@ -2042,3 +2044,8 @@
 	else
 		cut_overlay(typing_indicator_overlay)
 		typing_indicator_overlay = null
+
+/// Used for making the mobs spend a stamina for certain actions. Returns TRUE if succeeded or FALSE if not. 
+/// The threshold argument controls how much the user needs to have after spending the stamina for the proc to succeed
+/mob/living/proc/use_stamina(amount = 0, threshold = 0)
+	return TRUE
