@@ -17,10 +17,12 @@
 	if(next_pain_groan < world.time && pain_amt > PAIN_SCREAM_TRIGGER_THRESHOLD && pain >= PAIN_SCREAM_THRESHOLD && prob(pain_amt * PAIN_SCREAM_TRIGGER_MULTIPLIER))
 		next_pain_groan = world.time + 4 SECONDS
 		var/scream_chance = pain * 0.2
+		var/emote_to_use
 		if(prob(scream_chance))
-			emote("scream")
+			emote_to_use = "scream"
 		else
-			emote("pain")
+			emote_to_use = "pain"
+		INVOKE_ASYNC(src, .proc/emote, emote_to_use)
 
 /// Runs each life, moves pain towards the "bar" and updates pain states.
 /mob/living/carbon/proc/handle_pain(delta_time)
