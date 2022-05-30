@@ -31,6 +31,19 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/buttons_locked = FALSE
 	var/hotkeys = TRUE
 
+	/// Background of the character mannequin preview
+	var/background_state = "black"
+	/// List of icon_states available for the character mannequin preview
+	var/static/list/background_state_options = list(
+		"black",
+		"grey",
+		"pure_white",
+		"plating",
+		"floor",
+		"grass0",
+		"wood",
+	)
+
 	///Runechat preference. If true, certain messages will be displayed on the map, not ust on the chat area. Boolean.
 	var/chat_on_map = TRUE
 	///Limit preference on the size of the message. Requires chat_on_map to have effect.
@@ -422,6 +435,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						dat += "<a href='?_src_=prefs;preference=phobia;task=input'>[phobia]</a><BR>"
 
 				if(1) //Appearance
+					dat += "<b>Preview Background:</b><a href='?_src_=prefs;preference=choose_preview_background;task=input'>[background_state]</a><br/>"
 					dat += "<h2>Body</h2>"
 					dat += "<a href='?_src_=prefs;preference=all;task=random'>Random Body</A> "
 
@@ -1094,6 +1108,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				dat += "<b>Hide Dead Chat:</b> <a href = '?_src_=prefs;preference=toggle_dead_chat'>[(chat_toggles & CHAT_DEAD)?"Shown":"Hidden"]</a><br>"
 				dat += "<b>Hide Radio Messages:</b> <a href = '?_src_=prefs;preference=toggle_radio_chatter'>[(chat_toggles & CHAT_RADIO)?"Shown":"Hidden"]</a><br>"
 				dat += "<b>Hide Prayers:</b> <a href = '?_src_=prefs;preference=toggle_prayers'>[(chat_toggles & CHAT_PRAYER)?"Shown":"Hidden"]</a><br>"
+				dat += "<b>Hide Admin LOOC:</b> <a href='?_src_=prefs;preference=toggle_admin_looc'>[(chat_toggles & CHAT_ADMIN_LOOC) ? "Shown" : "Hidden"]</a><br/>"
 				dat += "<b>Split Admin Tabs:</b> <a href = '?_src_=prefs;preference=toggle_split_admin_tabs'>[(toggles & SPLIT_ADMIN_TABS)?"Enabled":"Disabled"]</a><br>"
 				dat += "<b>Ignore Being Summoned as Cult Ghost:</b> <a href = '?_src_=prefs;preference=toggle_ignore_cult_ghost'>[(toggles & ADMIN_IGNORE_CULT_GHOST)?"Don't Allow Being Summoned":"Allow Being Summoned"]</a><br>"
 				dat += "<b>Briefing Officer Outfit:</b> <a href = '?_src_=prefs;preference=briefoutfit;task=input'>[brief_outfit]</a><br>"
@@ -2060,16 +2075,16 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						needs_update = TRUE
 
 				if("hair")
-					needs_update = TRUE
 					var/new_hair = input(user, "Choose your character's hair colour:", "Character Preference","#"+hair_color) as color|null
 					if(new_hair)
 						hair_color = sanitize_hexcolor(new_hair)
+						needs_update = TRUE
 
 				if("hairstyle")
-					needs_update = TRUE
 					var/new_hairstyle = input(user, "Choose your character's hairstyle:", "Character Preference")  as null|anything in hairstyle_list_for_species(pref_species, null, mismatched_customization)
 					if(new_hairstyle)
 						hairstyle = new_hairstyle
+						needs_update = TRUE
 
 				if("next_hairstyle")
 					next_hairstyle()
@@ -2086,10 +2101,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						facial_hair_color = sanitize_hexcolor(new_facial)
 
 				if("facial_hairstyle")
-					needs_update = TRUE
 					var/new_facial_hairstyle = input(user, "Choose your character's facial-hairstyle:", "Character Preference")  as null|anything in facial_hairstyle_list_for_species(pref_species, null, mismatched_customization)
 					if(new_facial_hairstyle)
 						facial_hairstyle = new_facial_hairstyle
+						needs_update = TRUE
 
 				if("next_facehairstyle")
 					next_face_hairstyle()
@@ -2374,6 +2389,12 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if (!isnull(desiredlength))
 						max_chat_length = clamp(desiredlength, 1, CHAT_MESSAGE_MAX_LENGTH)
 
+				if("choose_preview_background")
+					var/new_background = input(user, "Choose a background for your character preview", "Preview Background", background_state) as null|anything in background_state_options
+					if(new_background)
+						background_state = new_background
+						needs_update = TRUE
+
 		else
 			switch(href_list["preference"])
 				if("loadout_show_equipped")
@@ -2545,6 +2566,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					toggles ^= SPLIT_ADMIN_TABS
 				if("toggle_prayers")
 					user.client.toggleprayers()
+				if("toggle_alooc")
+					user.client.toggle_admin_looc()
 				if("toggle_deadmin_always")
 					toggles ^= DEADMIN_ALWAYS
 				if("toggle_deadmin_antag")
