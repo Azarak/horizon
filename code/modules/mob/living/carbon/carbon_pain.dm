@@ -58,7 +58,7 @@
 /mob/living/carbon/proc/update_pain_states()
 	// Handle pain messages
 	if(stat != DEAD && pain > PAIN_MESSAGE_THRESHOLD && next_pain_message < world.time)
-		next_pain_message = world.time + 20 SECONDS
+		next_pain_message = world.time + 30 SECONDS
 		to_chat(src, get_pain_string())
 
 	// Update pain slowdown
