@@ -14,8 +14,8 @@
 	update_health_hud()
 
 	// Handle pain groans //50 pain amount is 100% for a response, so around 25 damage in a hit
-	if(next_pain_groan < world.time && pain_amt > PAIN_SCREAM_TRIGGER_THRESHOLD && pain >= PAIN_SCREAM_THRESHOLD && prob(pain_amt * PAIN_SCREAM_TRIGGER_MULTIPLIER))
-		next_pain_groan = world.time + 4 SECONDS
+	if(stat != DEAD next_pain_groan < world.time && pain_amt > PAIN_SCREAM_TRIGGER_THRESHOLD && pain >= PAIN_SCREAM_THRESHOLD && prob(pain_amt * PAIN_SCREAM_TRIGGER_MULTIPLIER))
+		next_pain_groan = world.time + 6 SECONDS
 		var/scream_chance = pain * 0.2
 		var/emote_to_use
 		if(prob(scream_chance))
@@ -57,7 +57,7 @@
 /// Updates pain crit states.
 /mob/living/carbon/proc/update_pain_states()
 	// Handle pain messages
-	if(pain > PAIN_MESSAGE_THRESHOLD && next_pain_message < world.time)
+	if(stat != DEAD pain > PAIN_MESSAGE_THRESHOLD && next_pain_message < world.time)
 		next_pain_message = world.time + 20 SECONDS
 		to_chat(src, get_pain_string())
 
@@ -94,7 +94,7 @@
 
 	// If the state is new
 	if(new_pain_crit_state != pain_stat)
-		if(!pain_stat)
+		if(stat != DEAD && !pain_stat)
 			to_chat(src, SPAN_BOLDWARNING("Pain overtakes you!"))
 		// Undo effects of the previous state
 		switch(pain_stat)
