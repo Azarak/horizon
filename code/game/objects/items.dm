@@ -448,6 +448,11 @@ GLOBAL_DATUM_INIT(fire_overlay, /mutable_appearance, mutable_appearance('icons/e
 		log_admin("[key_name(usr)] has added [picked_affix_name] fantasy affix to [before_name]")
 		message_admins(SPAN_NOTICE("[key_name(usr)] has added [picked_affix_name] fantasy affix to [before_name]"))
 
+/obj/item/attackby(obj/item/item, mob/living/user, params)
+	if(user.try_slapcraft(src, item))
+		return TRUE
+	return ..()
+
 /obj/item/attack_hand(mob/user, list/modifiers)
 	. = ..()
 	if(.)
