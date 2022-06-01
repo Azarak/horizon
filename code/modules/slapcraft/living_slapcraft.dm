@@ -9,8 +9,6 @@
 		var/datum/slapcraft_step/step_two = SLAPCRAFT_STEP(recipe.steps[2])
 		if(!step_one.perform_check(src, first_item, null) || !step_two.perform_check(src, second_item, null))
 			continue
-		// TODO: There could be a couple recipes matching those two first steps, most notably cooking recipes.
-		// Make sure there is a way to choose which recipe you want to perform.
 		recipes += recipe
 
 	if(!length(recipes))
