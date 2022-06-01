@@ -14,7 +14,7 @@
 	/// Subcategory this recipe is in the handbook.
 	var/subcategory = SLAP_SUBCATEGORY_MISC
 	/// Appearance in the radial menu for the user to choose from if there are recipe collisions.
-	var/mutable_appearance/radial_appearance
+	var/image/radial_appearance
 
 /datum/slapcraft_recipe/New()
 	. = ..()
@@ -25,6 +25,19 @@
 	if(!name && result_type)
 		var/atom/movable/result_cast = result_type
 		name = initial(result_cast.name)
+
+/datum/slapcraft_recipe/proc/get_radial_image()
+	if(!radial_appearance)
+		radial_appearance = make_radial_image()
+	return radial_appearance
+
+/datum/slapcraft_recipe/proc/make_radial_image()
+	// If we make an explicit result type, use its icon and icon state in the radial menu to display it.
+	if(result_type)
+		var/atom/movable/result_cast = result_type
+		return image(icon = initial(result_cast.icon), icon_state = initial(result_cast.icon_state))
+	//Fallback image idk what to put here.
+	return image(icon = 'icons/hud/radial.dmi', icon_state = "radial_rotate")
 
 /// Gets a reference to the recipe step.
 /datum/slapcraft_recipe/proc/get_recipe_step(step_to_get)

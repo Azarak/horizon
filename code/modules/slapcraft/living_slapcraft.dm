@@ -2,7 +2,7 @@
 /mob/living/proc/try_slapcraft(obj/item/first_item, obj/item/second_item)
 	// We need to find a recipe where the first item corresponds to the first step 
 	// ..and the second item corresponds to the second step
-	var/datum/slapcraft_recipe/target_recipe
+	var/list/recipes = list()
 	for(var/recipe_type in GLOB.slapcraft_recipes)
 		var/datum/slapcraft_recipe/recipe = SLAPCRAFT_RECIPE(recipe_type)
 		var/datum/slapcraft_step/step_one = SLAPCRAFT_STEP(recipe.steps[1])
@@ -11,10 +11,28 @@
 			continue
 		// TODO: There could be a couple recipes matching those two first steps, most notably cooking recipes.
 		// Make sure there is a way to choose which recipe you want to perform.
-		target_recipe = recipe
-		break
-	if(!target_recipe)
+		recipes += recipe
+
+	if(!length(recipes))
 		return FALSE
+
+	var/datum/slapcraft_recipe/target_recipe
+	// If we have only one recipe, choose it instantly
+	if(recipes.len == 1)
+		target_recipe = recipes[1]
+	// If we have more recipes, let the user choose one with a radial menu.
+	else
+		var/list/recipe_choices = list()
+		var/list/recipe_choice_translation = list()
+		for(var/datum/slapcraft_recipe/recipe as anything in recipes)
+			recipe_choices[recipe.name] = recipe.get_radial_image()
+			recipe_choice_translation[recipe.name] = recipe
+
+		var/choice = show_radial_menu(src, first_item, recipe_choices, custom_check = FALSE, require_near = TRUE)
+		if(choice)
+			target_recipe = recipe_choice_translation[choice]
+	if(!target_recipe)
+		return TRUE
 	// We have found the recipe we want to do, make an assembly item where the first item used to be.
 	var/obj/item/slapcraft_assembly/assembly = new(get_turf(first_item))
 	assembly.set_recipe(target_recipe)
@@ -26,7 +44,8 @@
 	if(!step_one.perform(src, first_item, assembly, instant = TRUE, silent = TRUE))
 		assembly.disassemble()
 		return TRUE
-	// Perform the second step.
-	// Alternatively, pass the attack chain onto the assembly to progress the crafting instead of calling it directly from the step.
-	step_two.perform(src, second_item, assembly)
+	// Perform the second step, also disassemble it if we stopped working on it, because keeping 1 component assembly is futile.
+	if(!step_two.perform(src, second_item, assembly))
+		assembly.disassemble()
+		return TRUE
 	return TRUE

@@ -26,3 +26,7 @@
 	todo_desc = "You could add a screwdriver..."
 	finish_msg = "You add a screwdriver to the assembly."
 	item_types = list(/obj/item/screwdriver)
+
+/datum/slapcraft_recipe/test/two
+	name = "Test Two"
+	result_type = /obj/item/wirecutters
