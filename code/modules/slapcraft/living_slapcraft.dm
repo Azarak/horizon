@@ -1,6 +1,6 @@
 /// Have a living mob attempt to do a slapcraft. The mob is using the second item on the first item.
 /mob/living/proc/try_slapcraft(obj/item/first_item, obj/item/second_item)
-	// We need to find a recipe where the first item corresponds to the first step 
+	// We need to find a recipe where the first item corresponds to the first step
 	// ..and the second item corresponds to the second step
 	var/list/available_recipes = slapcraft_recipes_for_type(first_item.type)
 	if(!available_recipes)

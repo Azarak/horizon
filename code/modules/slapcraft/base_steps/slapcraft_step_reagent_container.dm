@@ -24,3 +24,9 @@
 	if(!isnull(free_volume) && (container.reagents.maximum_volume - container.reagents.total_volume) < free_volume)
 		return FALSE
 	return TRUE
+
+/datum/slapcraft_step/reagent_container/make_list_desc()
+	. = ..()
+	if(reagent_type)
+		var/datum/reagent/reagent_cast = reagent_type
+		. += " - [reagent_volume]u. [lowertext(initial(reagent_cast.name))]"

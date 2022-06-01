@@ -37,6 +37,7 @@
 		var/mutable_appearance/component_overlay = mutable_appearance(component.icon, component.icon_state)
 		component_overlay.pixel_x = component.pixel_x
 		component_overlay.pixel_y = component.pixel_y
+		component_overlay.overlays = component.overlays
 		. += component_overlay
 
 /obj/item/slapcraft_assembly/attack_self(mob/user)

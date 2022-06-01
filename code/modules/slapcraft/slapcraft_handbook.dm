@@ -1,6 +1,6 @@
 /datum/slapcraft_handbook
-	var/current_category = SLAP_CATEGORY_MISC
-	var/current_subcategory = SLAP_SUBCATEGORY_MISC
+	var/current_category = SLAP_CAT_WEAPONS
+	var/current_subcategory = SLAP_SUBCAT_MISC
 	var/current_recipe
 
 /// Gets the description of the step. This can include a href link.

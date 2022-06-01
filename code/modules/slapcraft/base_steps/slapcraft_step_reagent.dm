@@ -37,3 +37,7 @@
 		assembly_container.reagents.add_reagent(reagent_type, reagent_volume)
 
 	container.reagents.remove_reagent(reagent_type, reagent_volume)
+
+/datum/slapcraft_step/reagent/make_list_desc()
+	var/datum/reagent/reagent_cast = reagent_type
+	return "[reagent_volume]u. [lowertext(initial(reagent_cast.name))]"

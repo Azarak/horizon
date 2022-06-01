@@ -10,9 +10,9 @@
 	/// Suffix for the assembly name.
 	var/assembly_name_suffix = "assembly"
 	/// Category this recipe is in the handbook.
-	var/category = SLAP_CATEGORY_MISC
+	var/category = SLAP_CAT_MISC
 	/// Subcategory this recipe is in the handbook.
-	var/subcategory = SLAP_SUBCATEGORY_MISC
+	var/subcategory = SLAP_SUBCAT_MISC
 	/// Appearance in the radial menu for the user to choose from if there are recipe collisions.
 	var/image/radial_appearance
 
