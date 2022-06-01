@@ -2,6 +2,9 @@
 /mob/living/proc/try_slapcraft(obj/item/first_item, obj/item/second_item)
 	// We need to find a recipe where the first item corresponds to the first step 
 	// ..and the second item corresponds to the second step
+	var/list/available_recipes = slapcraft_recipes_for_type(first_item.type)
+	if(!available_recipes)
+		return FALSE
 	var/list/recipes = list()
 	for(var/recipe_type in GLOB.slapcraft_recipes)
 		var/datum/slapcraft_recipe/recipe = SLAPCRAFT_RECIPE(recipe_type)
