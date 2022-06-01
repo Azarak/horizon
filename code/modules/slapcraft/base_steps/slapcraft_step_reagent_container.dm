@@ -1,6 +1,7 @@
 /// This step requires to input a reagent container, possibly with some reagent inside, or with some volume specifications.
 /datum/slapcraft_step/reagent_container
 	insert_item = TRUE
+	uses_something = TRUE
 	item_types = list(/obj/item/reagent_containers)
 	/// Type of the reagent needed.
 	var/reagent_type

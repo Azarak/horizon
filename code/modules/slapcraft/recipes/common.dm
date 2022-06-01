@@ -8,9 +8,11 @@
 	result_type = /obj/item/screwdriver
 
 /datum/slapcraft_step/one
+	desc = "Acquire a %LINK%holy screwdriver%ENDLINK%."
 	finished_desc = "A screwdriver has been added."
 	todo_desc = "You could add a screwdriver..."
 	finish_msg = "You add a screwdriver to the assembly."
+	recipe_link = /datum/slapcraft_recipe/test
 	item_types = list(/obj/item/screwdriver)
 
 /datum/slapcraft_step/two

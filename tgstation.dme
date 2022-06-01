@@ -3563,6 +3563,7 @@
 #include "code\modules\shuttle\white_ship.dm"
 #include "code\modules\slapcraft\living_slapcraft.dm"
 #include "code\modules\slapcraft\slapcraft_assembly.dm"
+#include "code\modules\slapcraft\slapcraft_handbook.dm"
 #include "code\modules\slapcraft\slapcraft_recipe.dm"
 #include "code\modules\slapcraft\slapcraft_step.dm"
 #include "code\modules\slapcraft\base_steps\slapcraft_step_reagent.dm"

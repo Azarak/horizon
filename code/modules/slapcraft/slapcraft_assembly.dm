@@ -80,12 +80,15 @@
 		component.forceMove(my_turf)
 	qdel(src)
 
+/// Progresses the assembly to the next step and finishes it if made it through the last step.
 /obj/item/slapcraft_assembly/proc/progress(mob/living/user)
 	recipe_step++
 	if(recipe_step >= length(recipe.steps))
 		recipe.finish_recipe(user, src)
 
+/// Sets the recipe of this assembly aswell making the name and description matching.
 /obj/item/slapcraft_assembly/proc/set_recipe(datum/slapcraft_recipe/set_recipe)
 	recipe = set_recipe
-	name = "[set_recipe.name] assembly"
+	w_class = recipe.assembly_weight_class
+	name = "[set_recipe.name] [set_recipe.assembly_name_suffix]"
 	desc = "This seems to be an assembly to craft \the [set_recipe.name]"

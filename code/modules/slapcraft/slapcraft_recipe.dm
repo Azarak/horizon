@@ -5,6 +5,14 @@
 	var/list/steps
 	/// Type of the item that will be yielded as the result.
 	var/result_type
+	/// Weight class of the assemblies for this recipe.
+	var/assembly_weight_class = WEIGHT_CLASS_NORMAL
+	/// Suffix for the assembly name.
+	var/assembly_name_suffix = "assembly"
+	/// Category this recipe is in the handbook.
+	var/category = SLAP_CATEGORY_MISC
+	/// Subcategory this recipe is in the handbook.
+	var/subcategory = SLAP_SUBCATEGORY_MISC
 
 /datum/slapcraft_recipe/New()
 	. = ..()

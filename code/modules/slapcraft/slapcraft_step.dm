@@ -6,6 +6,8 @@
 	var/finish_msg = "YOU FINISH THIS STEP"
 	/// Whether we insert the valid item in the assembly.
 	var/insert_item = TRUE
+	/// Whether the step "uses" something. It's needed so handbook can properly describe the step.
+	var/uses_something = TRUE
 	/// How long does it take to perform the step.
 	var/perform_time = 2 SECONDS
 	/// Whether we should check the types of the item, if FALSE then make sure `can_perform()` checks conditions.
@@ -14,6 +16,8 @@
 	var/list/item_types
 	/// The typecache of types of the items.
 	var/list/typecache
+	/// The recipe this step can link to. Make sure to include %LINK% and %ENDLINK% in `desc` to properly linkify it.
+	var/recipe_link
 
 /datum/slapcraft_step/New()
 	. = ..()
@@ -54,13 +58,15 @@
 	if(!perform_check(user, item, assembly) || !step_type_check(assembly))
 		return FALSE
 	if(perform_time && !instant)
-		if(!do_after(user, perform_time * get_speed_multiplier(user, item, assembly), target = assembly))
+		if(!perform_do_after(user, item, assembly, perform_time * get_speed_multiplier(user, item, assembly)))
 			return FALSE
 		// Do checks again because we spent time in a do_after(), this time also check deletions.
 		if(QDELETED(assembly) || QDELETED(item) || !perform_check(user, item, assembly) || !step_type_check(assembly))
 			return FALSE
 	if(!silent && finish_msg)
 		to_chat(user, SPAN_NOTICE(finish_msg))
+	if(!silent)
+		play_perform_sound(user, item, assembly)
 	on_perform(user, item, assembly)
 	if(insert_item)
 		move_item_to_assembly(user, item, assembly)
@@ -68,7 +74,7 @@
 		assembly.progress(user)
 	return TRUE
 
-/// Below are virtual procs I encourage steps to override for their specific behaviours.
+/// Below are virtual procs I allow steps to override for their specific behaviours.
 
 /// Checks whether a user can perform this step with an item. Exists so steps can override this proc for their own behavioural checks.
 /// `assembly` can be null here, when the recipe finding checks are trying to figure out what recipe we can make.
@@ -91,3 +97,15 @@
 /// Returns a speed multiplier to the time it takes for the step to complete. Useful for tool-related steps
 /datum/slapcraft_step/proc/get_speed_multiplier(mob/living/user, obj/item/item, obj/item/slapcraft_assembly/assembly)
 	return 1
+
+/// Proc to perform handling a do_after, return FALSE if it failed, TRUE if succeeded.
+/datum/slapcraft_step/proc/perform_do_after(mob/living/user, obj/item/item, obj/item/slapcraft_assembly/assembly, time_to_do)
+	if(!do_after(user, time_to_do, target = assembly))
+		return FALSE
+	return TRUE
+
+/// Plays a sound on successfully performing the step.
+/datum/slapcraft_step/proc/play_perform_sound(mob/living/user, obj/item/item, obj/item/slapcraft_assembly/assembly)
+	if(!insert_item || !item.drop_sound)
+		return
+	playsound(assembly, item.drop_sound, DROP_SOUND_VOLUME, ignore_walls = FALSE)

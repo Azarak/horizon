@@ -58,6 +58,10 @@
 	var/atom/movable/screen/using
 	var/atom/movable/screen/inventory/inv_box
 
+	using = new /atom/movable/screen/slapcraft
+	using.hud = src
+	static_inventory += using
+
 	using = new/atom/movable/screen/language_menu
 	using.icon = ui_style
 	using.hud = src

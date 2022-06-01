@@ -1,6 +1,7 @@
-/// This step requires an item with a specific tool behaviour. Make your own types with their own `tool_behaviour` since you'll be needing to make descriptions too.
+/// This step requires an item with a specific tool behaviour.
 /datum/slapcraft_step/tool
 	insert_item = FALSE
+	uses_something = FALSE
 	check_types = FALSE
 	/// What tool behaviour do we need for this step.
 	var/tool_behaviour
@@ -14,8 +15,12 @@
 		return
 	return TRUE
 
+/datum/slapcraft_step/tool/perform_do_after(mob/living/user, obj/item/item, obj/item/slapcraft_assembly/assembly, time_to_do)
+	// This will play the tool sound aswell. Rackety
+	if(!item.use_tool(assembly, user, time_to_do, volume = 50))
+		return FALSE
+	return TRUE
+
+// Only relevant for welding tools I believe.
 /datum/slapcraft_step/tool/on_perform(mob/living/user, obj/item/item, obj/item/slapcraft_assembly/assembly)
 	item.use(required_fuel)
-
-/datum/slapcraft_step/tool/get_speed_multiplier(mob/living/user, obj/item/item, obj/item/slapcraft_assembly/assembly)
-	return item.tool_speed

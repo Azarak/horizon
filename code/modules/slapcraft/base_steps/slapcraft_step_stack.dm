@@ -1,6 +1,7 @@
 /// This step requires an amount of a stack items which will be split off and put into the assembly.
 /datum/slapcraft_step/stack
 	insert_item = TRUE
+	uses_something = TRUE
 	item_types = list(/obj/item/stack)
 	/// Amount of the stack items to be put into the assembly.
 	var/amount = 1

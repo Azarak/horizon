@@ -13,3 +13,11 @@
 	if(item.force < force)
 		return FALSE
 	return TRUE
+
+/datum/slapcraft_step/weapon/play_perform_sound(mob/living/user, obj/item/item, obj/item/slapcraft_assembly/assembly)
+	// Sharpness was required, so play a slicing sound
+	if(sharpness != NONE)
+		playsound(assembly, 'sound/weapons/slice.ogg', 50, TRUE, -1)
+	// Else, play an attack sound if there is one.
+	else if (item.hitsound)
+		playsound(assembly, item.hitsound, 50, TRUE, -1)
