@@ -15,16 +15,20 @@
 /datum/slapcraft_handbook/proc/print_recipe(datum/slapcraft_recipe/recipe, in_handbook = FALSE, background_color = "#23273C")
 	var/list/dat = list()
 	var/recipe_type = recipe.type
-	var/recipe_name_text
+	var/first_cell
+	var/second_cell
 	if(in_handbook)
-		recipe_name_text = "<a href='?src=[REF(src)];preference=set_recipe;recipe=[recipe_type]' [current_recipe == recipe_type ? "class='linkOn'" : ""]>[recipe.name]</a> - <a href='?src=[REF(src)];preference=popup_recipe;recipe=[recipe_type]'>Popup</a>"
+		first_cell = "<a href='?src=[REF(src)];preference=set_recipe;recipe=[recipe_type]' [current_recipe == recipe_type ? "class='linkOn'" : ""]>[recipe.name]</a>"
+		second_cell = "<a href='?src=[REF(src)];preference=popup_recipe;recipe=[recipe_type]'>Popup Recipe</a>"
 	else
-		recipe_name_text = "[recipe.name] <a href='?src=[REF(src)];preference=goto_recipe;recipe=[recipe_type]'>Goto</a>"
+		first_cell = "[recipe.name]"
+		second_cell = "<a href='?src=[REF(src)];preference=goto_recipe;recipe=[recipe_type]'>Goto Recipe</a>"
 	dat += "<tr style='vertical-align:top; background-color: [background_color];'>"
-	dat += "<td>[recipe_name_text]</td>"
+	dat += "<td>[first_cell]</td><td>[second_cell]</td>"
 	dat += "</tr>"
 	if(!in_handbook || recipe_type == current_recipe)
 		var/steps_string = ""
+		var/list_string = ""
 		var/first = TRUE
 		var/step_count = 0
 		for(var/step_type in recipe.steps)
@@ -32,9 +36,12 @@
 			step_count++
 			if(!first)
 				steps_string += "<br>"
+				list_string += "<br>"
 			steps_string += "[step_count]. [print_step_description(step_datum)]"
+			list_string += "[step_datum.list_desc]"
 			first = FALSE
-		dat += "<tr><td>[steps_string]</td></tr>"
+
+		dat += "<tr><td>[steps_string]</td><td>[list_string]</td></tr>"
 	return dat
 
 /datum/slapcraft_handbook/proc/show(mob/user)

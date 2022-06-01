@@ -1,7 +1,6 @@
 /// This step requires an amount of a stack items which will be split off and put into the assembly.
 /datum/slapcraft_step/stack
 	insert_item = TRUE
-	uses_something = TRUE
 	item_types = list(/obj/item/stack)
 	/// Amount of the stack items to be put into the assembly.
 	var/amount = 1
@@ -21,3 +20,7 @@
 		// We have more than we need, split the stacks off
 		var/obj/item/stack/split_stack = stack.split_stack(null, amount)
 		split_stack.forceMove(assembly)
+
+/datum/slapcraft_step/stack/make_list_desc()
+	var/obj/item/stack/stack_cast = item_types[1]
+	return "[amount]x [initial(stack_cast.singular_name)]"

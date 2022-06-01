@@ -13,6 +13,8 @@
 	var/category = SLAP_CATEGORY_MISC
 	/// Subcategory this recipe is in the handbook.
 	var/subcategory = SLAP_SUBCATEGORY_MISC
+	/// Appearance in the radial menu for the user to choose from if there are recipe collisions.
+	var/mutable_appearance/radial_appearance
 
 /datum/slapcraft_recipe/New()
 	. = ..()

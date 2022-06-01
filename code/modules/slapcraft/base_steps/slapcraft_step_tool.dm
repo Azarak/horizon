@@ -1,7 +1,6 @@
 /// This step requires an item with a specific tool behaviour.
 /datum/slapcraft_step/tool
 	insert_item = FALSE
-	uses_something = FALSE
 	check_types = FALSE
 	/// What tool behaviour do we need for this step.
 	var/tool_behaviour

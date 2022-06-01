@@ -4,10 +4,10 @@
 	var/finished_desc = "SLAPCRAFT STEP FINISHED"
 	var/todo_desc = "HOW TO DO NEXT STEP"
 	var/finish_msg = "YOU FINISH THIS STEP"
+	/// Quantified description of the required element of this step. "screwdriver" or "15 cable", or "can with 50u. fuel" etc.
+	var/list_desc
 	/// Whether we insert the valid item in the assembly.
 	var/insert_item = TRUE
-	/// Whether the step "uses" something. It's needed so handbook can properly describe the step.
-	var/uses_something = TRUE
 	/// How long does it take to perform the step.
 	var/perform_time = 2 SECONDS
 	/// Whether we should check the types of the item, if FALSE then make sure `can_perform()` checks conditions.
@@ -25,6 +25,8 @@
 		if(!item_types || !length(item_types))
 			CRASH("Slapcraft step of type [type] wants to check types but is missing `item_types`")
 		typecache = typecacheof(item_types)
+	if(!list_desc)
+		list_desc = make_list_desc()
 
 /// Checks whether a type is in the typecache of the step.
 /datum/slapcraft_step/proc/check_type(checked_type)
@@ -109,3 +111,10 @@
 	if(!insert_item || !item.drop_sound)
 		return
 	playsound(assembly, item.drop_sound, DROP_SOUND_VOLUME, ignore_walls = FALSE)
+
+/// Makes a list description for the item.
+/datum/slapcraft_step/proc/make_list_desc()
+	// By default if we check types just grab the first type in the list and use that to describe the step.
+	if(check_types)
+		var/obj/item/first_path_cast = item_types[1]
+		return initial(first_path_cast.name)
