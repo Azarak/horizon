@@ -25,6 +25,10 @@
 	if(!name && result_type)
 		var/atom/movable/result_cast = result_type
 		name = initial(result_cast.name)
+	// Check if the first step is type checked, this is currently required because an optimization cache lookup works based off this.
+	var/datum/slapcraft_step/step_one = SLAPCRAFT_STEP(steps[1])
+	if(!step_one.check_types)
+		CRASH("Slapcrafting recipe of type [type] has first step [step_one.type] which doesn't type check. This is incompatible with an optimization cache.")
 
 /datum/slapcraft_recipe/proc/get_radial_image()
 	if(!radial_appearance)
