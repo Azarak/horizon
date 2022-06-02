@@ -12,7 +12,7 @@
 // How much flat pain do people recover each second
 #define PAIN_RECOVERY_FLAT 0.5
 // How much percent pain do people recover each second
-#define PAIN_RECOVERY_PERCENT 0.007
+#define PAIN_RECOVERY_PERCENT 0.008
 
 #define PAIN_SLOWDOWN_THRESHOLD 50
 #define PAIN_SLOWDOWN_DIVISOR 100
