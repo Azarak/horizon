@@ -28,7 +28,7 @@
 	friendly_verb_simple = "pinch"
 	combat_mode = FALSE
 	gold_core_spawnable = FRIENDLY_SPAWN
-	stat_attack = UNCONSCIOUS
+	stat_attack = CONSCIOUS
 	gender = NEUTER
 	stop_automated_movement = FALSE
 	stop_automated_movement_when_pulled = TRUE
