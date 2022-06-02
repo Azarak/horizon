@@ -1,8 +1,11 @@
 /datum/slapcraft_step
 	/// The description of the step, it shows in the slapcraft handbook
 	var/desc = "THIS IS HOW YOU DO THIS STEP"
+	/// The description of the finished step when you examine the assembly.
 	var/finished_desc = "SLAPCRAFT STEP FINISHED"
+	/// The description of the step when it's the next one to perform in the assembly.
 	var/todo_desc = "HOW TO DO NEXT STEP"
+	/// Message sent to user when they finish this step.
 	var/finish_msg = "YOU FINISH THIS STEP"
 	/// Quantified description of the required element of this step. "screwdriver" or "15 cable", or "can with 50u. fuel" etc.
 	var/list_desc
@@ -16,6 +19,10 @@
 	var/list/item_types
 	/// The typecache of types of the items.
 	var/list/typecache
+	/// Item types to make a typecache of for blacklisting.
+	var/list/blacklist_item_types
+	/// Typecache of the blacklist
+	var/list/blacklist_typecache
 	/// The recipe this step can link to. Make sure to include %LINK% and %ENDLINK% in `desc` to properly linkify it.
 	var/recipe_link
 
@@ -25,6 +32,8 @@
 		if(!item_types || !length(item_types))
 			CRASH("Slapcraft step of type [type] wants to check types but is missing `item_types`")
 		typecache = typecacheof(item_types)
+		if(blacklist_item_types)
+			blacklist_typecache = typecacheof(blacklist_item_types)
 	if(!list_desc)
 		list_desc = make_list_desc()
 
@@ -33,6 +42,8 @@
 	if(!typecache)
 		CRASH("Slapcraft step [type] tried to check a type without a typecache!")
 	if(typecache[checked_type])
+		if(blacklist_typecache && blacklist_typecache[checked_type])
+			return FALSE
 		return TRUE
 	return FALSE
 
