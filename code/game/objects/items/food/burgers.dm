@@ -57,7 +57,7 @@
 	food_reagents = list(/datum/reagent/consumable/nutriment = 2, /datum/reagent/consumable/nutriment/protein = 6, /datum/reagent/consumable/nutriment/vitamin = 6)
 	icon_state = "appendixburger"
 	tastes = list("bun" = 4, "grass" = 2)
-	foodtypes = GRAIN | MEAT
+	foodtypes = GRAIN | MEAT | GROSS
 
 /obj/item/food/burger/fish
 	name = "fillet -o- carp sandwich"
