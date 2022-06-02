@@ -204,7 +204,7 @@
 	if(force && !user.use_stamina(STAMINA_ATTACK_COST))
 		to_chat(user, SPAN_WARNING("You are too tired to make a swing!"))
 		return
-	u.changeNext_move(CLICK_CD_MELEE)
+	user.changeNext_move(CLICK_CD_MELEE)
 	user.do_attack_animation(O)
 	O.attacked_by(src, user)
 
