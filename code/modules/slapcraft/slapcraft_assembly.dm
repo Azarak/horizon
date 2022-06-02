@@ -9,6 +9,8 @@
 	var/disassembling = FALSE
 	/// Whether it's in the process of being finished.
 	var/being_finished = FALSE
+	/// All items that want to place itself in the resulting item after the recipe is finished.
+	var/list/items_to_place_in_result = list()
 
 /obj/item/slapcraft_assembly/examine(mob/user)
 	. = ..()
@@ -51,6 +53,7 @@
 // Most likely something gets teleported out of the assembly, or pulled out by other means
 /obj/item/slapcraft_assembly/Exited(atom/movable/gone, direction)
 	. = ..()
+	items_to_place_in_result -= gone
 	disassemble()
 
 /obj/item/slapcraft_assembly/Entered(atom/movable/arrived, direction)

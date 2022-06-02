@@ -15,6 +15,7 @@
 	item_types = list(/obj/item/reagent_containers/food/drinks/soda_cans)
 	reagent_type = /datum/reagent/fuel
 	reagent_volume = 50
+	insert_item_into_result = TRUE
 
 /datum/slapcraft_step/ied_igniter
 	desc = "Attach an igniter to the soda can."

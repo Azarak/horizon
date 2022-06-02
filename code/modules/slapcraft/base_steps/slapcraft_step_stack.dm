@@ -13,13 +13,16 @@
 
 /datum/slapcraft_step/stack/move_item_to_assembly(mob/living/user, obj/item/item, obj/item/slapcraft_assembly/assembly)
 	var/obj/item/stack/stack = item
+	var/obj/item/item_to_move
 	// Exactly how much we needed, just put the entirety in the assembly
 	if(stack.amount == amount)
-		stack.forceMove(assembly)
+		item_to_move = stack
 	else
 		// We have more than we need, split the stacks off
 		var/obj/item/stack/split_stack = stack.split_stack(null, amount)
-		split_stack.forceMove(assembly)
+		item_to_move = split_stack
+	item = item_to_move
+	return ..()
 
 /datum/slapcraft_step/stack/make_list_desc()
 	var/obj/item/stack/stack_cast = item_types[1]

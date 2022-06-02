@@ -11,6 +11,8 @@
 	var/list_desc
 	/// Whether we insert the valid item in the assembly.
 	var/insert_item = TRUE
+	/// Whether we insert the item into the resulting item's contents
+	var/insert_item_into_result = FALSE
 	/// How long does it take to perform the step.
 	var/perform_time = 2 SECONDS
 	/// Whether we should check the types of the item, if FALSE then make sure `can_perform()` checks conditions.
@@ -47,16 +49,17 @@
 		return TRUE
 	return FALSE
 
-/// Checks if the passed item is a proper type to perform this step, and whether it passes the `can_perform()` check. 
+/// Checks if the passed item is a proper type to perform this step, and whether it passes the `can_perform()` check. Asembly can be null
 /datum/slapcraft_step/proc/perform_check(mob/living/user, obj/item/item, obj/item/slapcraft_assembly/assembly)
 	if(check_types && !check_type(item.type))
 		return FALSE
 	if(!can_perform(user, item, assembly))
 		return FALSE
 	//Check if this is the last step of the recipe and the recipe allows finishing.
-	var/datum/slapcraft_recipe/recipe = assembly.recipe
-	if(type == recipe.steps[recipe.steps.len] && !recipe.can_finish(user, assembly))
-		return FALSE
+	if(assembly) //Assembly can be null due having this ran to check recipes
+		var/datum/slapcraft_recipe/recipe = assembly.recipe
+		if(type == recipe.steps[recipe.steps.len] && !recipe.can_finish(user, assembly))
+			return FALSE
 	return TRUE
 
 /// Checks whether this step is the correct one to perform to progress an assembly.
@@ -105,6 +108,8 @@
 /// Behaviour to move the item into the assembly. Stackable items may want to change how they do this.
 /datum/slapcraft_step/proc/move_item_to_assembly(mob/living/user, obj/item/item, obj/item/slapcraft_assembly/assembly)
 	item.forceMove(assembly)
+	if(insert_item_into_result)
+		assembly.items_to_place_in_result += item
 
 /// Whether the step progresses towards the next step when successfully performed. 
 /// This can be used to allow "freeform" crafting to put more things into an assembly than required, possibly utilizing it for things like custom burgers

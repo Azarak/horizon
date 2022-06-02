@@ -54,8 +54,15 @@
 	to_chat(user, SPAN_NOTICE("You finish \the [name]."))
 	assembly.being_finished = TRUE
 	var/atom/movable/result_item = create_item(assembly)
+	// Move items which wanted to go to the resulted item into it
+	for(var/obj/item/item as anything in assembly.items_to_place_in_result)
+		item.forceMove(result_item)
+
 	after_create_item(result_item, assembly)
 	dispose_assembly(assembly)
+
+	//Finally, CheckParts of the resulting item.
+	result_item.CheckParts()
 
 /// Runs when the last step tries to be performed and cancels the step if it returns FALSE. Could be used to validate location in structure construction via slap crafting.
 /datum/slapcraft_recipe/proc/can_finish(mob/living/user, obj/item/slapcraft_assembly/assembly)
