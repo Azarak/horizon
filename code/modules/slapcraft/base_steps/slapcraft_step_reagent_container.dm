@@ -6,6 +6,8 @@
 	var/reagent_type
 	/// Volume of the reagent needed.
 	var/reagent_volume
+	/// Instead of just one reagent type you can input a list to be used instead for the checks.
+	var/list/reagent_list
 	/// The amount of container volume we require if any.
 	var/container_volume
 	/// Amount of free volume we require if any.
@@ -17,8 +19,12 @@
 	var/obj/item/reagent_containers/container = item
 	if(needs_open_container && !container.is_open_container())
 		return FALSE
-	if(!isnull(reagent_type) && !container.reagents.has_reagent(reagent_type, reagent_volume))
-		return FALSE
+	if(reagent_list)
+		if(!container.reagents.has_reagent_list(reagent_list))
+			return FALSE
+	else if (reagent_type)
+		if(!container.reagents.has_reagent(reagent_type, reagent_volume))
+			return FALSE
 	if(!isnull(container_volume) && container.reagents.maximum_volume < container_volume)
 		return FALSE
 	if(!isnull(free_volume) && (container.reagents.maximum_volume - container.reagents.total_volume) < free_volume)
@@ -27,6 +33,17 @@
 
 /datum/slapcraft_step/reagent_container/make_list_desc()
 	. = ..()
-	if(reagent_type)
+	if(reagent_list)
+		var/string = ""
+		var/first = TRUE
+		for(var/r_id in reagent_list)
+			if(!first)
+				string += ", "
+			var/datum/reagent/reagent_cast = r_id
+			var/volume = reagent_list[r_id]
+			string += "[volume]u. [lowertext(initial(reagent_cast.name))]"
+			first = FALSE
+		. += string
+	else if(reagent_type)
 		var/datum/reagent/reagent_cast = reagent_type
 		. += " - [reagent_volume]u. [lowertext(initial(reagent_cast.name))]"

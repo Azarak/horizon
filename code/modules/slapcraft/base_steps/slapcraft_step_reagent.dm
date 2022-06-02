@@ -7,6 +7,8 @@
 	var/reagent_type
 	/// Volume of the reagent to use.
 	var/reagent_volume
+	/// Reagent list to be used for checks and interactions instead of above single type.
+	var/list/reagent_list
 	/// Whether we need an open container to do this
 	var/needs_open_container = TRUE
 	/// Whether we want to transfer to another container in the assembly. Requires a container in assembly and enough space for that inside it.
@@ -16,14 +18,25 @@
 	var/obj/item/reagent_containers/container = item
 	if(needs_open_container && !container.is_open_container())
 		return FALSE
-	if(!container.reagents.has_reagent(reagent_type, reagent_volume))
-		return FALSE
+	if(reagent_list)
+		if(!container.reagents.has_reagent_list(reagent_list))
+			return FALSE
+	else
+		if(!container.reagents.has_reagent(reagent_type, reagent_volume))
+			return FALSE
 	if(transfer_to_assembly_container && assembly)
 		var/obj/item/reagent_containers/assembly_container = locate() in assembly
 		if(!assembly_container)
 			return FALSE
+		var/required_free_volume
+		if(reagent_list)
+			required_free_volume = 0
+			for(var/r_id in reagent_list)
+				required_free_volume += reagent_list[r_id]
+		else
+			required_free_volume = reagent_volume
 		var/free_space = assembly_container.reagents.maximum_volume - assembly_container.reagents.total_volume
-		if(free_space < reagent_volume)
+		if(free_space < required_free_volume)
 			return FALSE
 	return TRUE
 
@@ -34,10 +47,28 @@
 		var/obj/item/reagent_containers/assembly_container = locate() in assembly
 		// Well it says "transfer", but it actually adds new because there isn't an easy way to transfer specifically a certain type.
 		// I guess this issue is only relevant for blood and viruses, which I doubt people will slapcraft with.
-		assembly_container.reagents.add_reagent(reagent_type, reagent_volume)
+		if(reagent_list)
+			assembly_container.reagents.add_reagent_list(reagent_list)
+		else
+			assembly_container.reagents.add_reagent(reagent_type, reagent_volume)
 
-	container.reagents.remove_reagent(reagent_type, reagent_volume)
+	if(reagent_list)
+		container.reagents.remove_reagent_list(reagent_list)
+	else
+		container.reagents.remove_reagent(reagent_type, reagent_volume)
 
 /datum/slapcraft_step/reagent/make_list_desc()
-	var/datum/reagent/reagent_cast = reagent_type
-	return "[reagent_volume]u. [lowertext(initial(reagent_cast.name))]"
+	if(reagent_list)
+		var/string = ""
+		var/first = TRUE
+		for(var/r_id in reagent_list)
+			if(!first)
+				string += ", "
+			var/datum/reagent/reagent_cast = r_id
+			var/volume = reagent_list[r_id]
+			string += "[volume]u. [lowertext(initial(reagent_cast.name))]"
+			first = FALSE
+		return string
+	else
+		var/datum/reagent/reagent_cast = reagent_type
+		return "[reagent_volume]u. [lowertext(initial(reagent_cast.name))]"
