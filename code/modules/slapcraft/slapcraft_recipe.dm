@@ -108,8 +108,8 @@
 			for(var/i in 1 to amount)
 				var/atom/movable/new_thing = new path(assembly.loc)
 				if(shift_pixels)
-					new_thing.pixel_x += rand(-3,3)
-					new_thing.pixel_y += rand(-3,3)
+					new_thing.pixel_x += rand(-4,4)
+					new_thing.pixel_y += rand(-4,4)
 				contents_list += new_thing
 	return contents_list
 
