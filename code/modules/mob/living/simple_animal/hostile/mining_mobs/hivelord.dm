@@ -195,14 +195,9 @@
 	if(stat == DEAD || !isturf(loc))
 		return
 	for(var/mob/living/carbon/human/victim in range(src, 1)) //Only for corpse right next to/on same tile
-		switch(victim.stat)
-			if(UNCONSCIOUS)
-				infest(victim)
-				return //This will qdelete the legion.
-			if(DEAD)
-				if(can_infest_dead)
-					infest(victim)
-					return //This will qdelete the legion.
+		if(victim.shock_stat == SHOCK_SEVERE || (victim.stat == DEAD && can_infest_dead))
+			infest(victim)
+			return //This will qdelete the legion.
 
 ///Create a legion at the location of a corpse. Exists so that legion subtypes can override it with their own type of legion.
 /mob/living/simple_animal/hostile/asteroid/hivelordbrood/legion/proc/make_legion(mob/living/carbon/human/H)
