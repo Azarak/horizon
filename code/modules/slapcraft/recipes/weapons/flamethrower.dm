@@ -31,8 +31,8 @@
 	finish_msg = "You secure the components with a screwdriver."
 
 /datum/slapcraft_step/stack/flamethrower_rod
-	desc = "Finish the flamethrower by placing it on a rod."
-	todo_desc = "You could finish it by placing a rod..."
-	finish_msg = "You add a rod to the assembly."
+	desc = "Finish the flamethrower by inserting a rod."
+	todo_desc = "You could finish it by inserting a rod..."
+	finish_msg = "You insert a rod to the assembly."
 	item_types = list(/obj/item/stack/rods)
 	amount = 1
