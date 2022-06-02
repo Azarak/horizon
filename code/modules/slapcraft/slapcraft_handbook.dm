@@ -40,7 +40,9 @@
 			steps_string += "[step_count]. [print_step_description(step_datum)]"
 			list_string += "[step_datum.list_desc]"
 			first = FALSE
-
+		// If there's a recipe, add a row with it.
+		if(recipe.desc)
+			dat += "<tr><td>[recipe.desc]</td><td></td></tr>"
 		dat += "<tr><td>[steps_string]</td><td>[list_string]</td></tr>"
 	return dat
 
