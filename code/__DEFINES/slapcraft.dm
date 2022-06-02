@@ -1,5 +1,5 @@
-#define SLAPCRAFT_RECIPE(type) GLOB.slapcraft_recipes[type]
 #define SLAPCRAFT_STEP(type) GLOB.slapcraft_steps[type]
+#define SLAPCRAFT_RECIPE(type) GLOB.slapcraft_recipes[type]
 
 // General, default categories.
 #define SLAP_CAT_MISC "Misc."
