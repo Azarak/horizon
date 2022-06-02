@@ -1,7 +1,7 @@
 GLOBAL_LIST_EMPTY(slapcraft_firststep_recipe_cache)
 GLOBAL_LIST_EMPTY(slapcraft_categorized_recipes)
-GLOBAL_LIST_INIT(slapcraft_recipes, build_slapcraft_recipes())
 GLOBAL_LIST_INIT(slapcraft_steps, build_slapcraft_steps())
+GLOBAL_LIST_INIT(slapcraft_recipes, build_slapcraft_recipes())
 
 
 /proc/build_slapcraft_recipes()
