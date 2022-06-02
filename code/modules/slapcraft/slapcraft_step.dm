@@ -53,6 +53,10 @@
 		return FALSE
 	if(!can_perform(user, item, assembly))
 		return FALSE
+	//Check if this is the last step of the recipe and the recipe allows finishing.
+	var/datum/slapcraft_recipe/recipe = assembly.recipe
+	if(type == recipe.steps[recipe.steps.len] && !recipe.can_finish(user, assembly))
+		return FALSE
 	return TRUE
 
 /// Checks whether this step is the correct one to perform to progress an assembly.

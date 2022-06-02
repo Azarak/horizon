@@ -57,6 +57,10 @@
 	after_create_item(result_item, assembly)
 	dispose_assembly(assembly)
 
+/// Runs when the last step tries to be performed and cancels the step if it returns FALSE. Could be used to validate location in structure construction via slap crafting.
+/datum/slapcraft_recipe/proc/can_finish(mob/living/user, obj/item/slapcraft_assembly/assembly)
+	return TRUE
+
 /// The proc that creates the resulted item and passes it as a return.
 /datum/slapcraft_recipe/proc/create_item(obj/item/slapcraft_assembly/assembly)
 	return new result_type(assembly.loc)
