@@ -4,8 +4,8 @@
 	steps = list(
 		/datum/slapcraft_step/flamethrower_welder,
 		/datum/slapcraft_step/flamethrower_igniter,
-		/datum/slapcraft_step/tool/screwdriver/flamethrower,
-		/datum/slapcraft_step/stack/flamethrower_rod
+		/datum/slapcraft_step/stack/flamethrower_rod,
+		/datum/slapcraft_step/tool/screwdriver/flamethrower
 		)
 	result_type = /obj/item/flamethrower
 
@@ -24,15 +24,15 @@
 	item_types = list(/obj/item/assembly/igniter)
 	insert_item_into_result = TRUE
 
-/datum/slapcraft_step/tool/screwdriver/flamethrower
-	desc = "Secure the igniter and the welding tool with a screwdriver."
-	finished_desc = "The igniter and the welding tool were secured."
-	todo_desc = "You could secure this with a screwdriver..."
-	finish_msg = "You secure the components with a screwdriver."
-
 /datum/slapcraft_step/stack/flamethrower_rod
-	desc = "Finish the flamethrower by inserting a rod."
-	todo_desc = "You could finish it by inserting a rod..."
+	desc = "Add a rod to the assembly."
+	finished_desc = "A rod is added."
+	todo_desc = "You could add a rod..."
 	finish_msg = "You insert a rod to the assembly."
 	item_types = list(/obj/item/stack/rods)
 	amount = 1
+
+/datum/slapcraft_step/tool/screwdriver/flamethrower
+	desc = "Secure the parts with a screwdriver."
+	todo_desc = "You could secure the parts with a screwdriver..."
+	finish_msg = "You secure the parts with a screwdriver."
