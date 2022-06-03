@@ -13,10 +13,18 @@
 	var/needs_open_container = TRUE
 	/// Whether we want to transfer to another container in the assembly. Requires a container in assembly and enough space for that inside it.
 	var/transfer_to_assembly_container = FALSE
+	/// If defined, it's the minimum required temperature for the step to work.
+	var/temperature_min
+	/// If defined it's the maximum required temperature for the step to work.
+	var/temperature_max
 
 /datum/slapcraft_step/reagent/can_perform(mob/living/user, obj/item/item, obj/item/slapcraft_assembly/assembly)
 	var/obj/item/reagent_containers/container = item
 	if(needs_open_container && !container.is_open_container())
+		return FALSE
+	if(!isnull(temperature_min) && container.reagents.chem_temp < temperature_min)
+		return FALSE
+	if(!isnull(temperature_max) && container.reagents.chem_temp > temperature_max)
 		return FALSE
 	if(reagent_list)
 		if(!container.reagents.has_reagent_list(reagent_list))

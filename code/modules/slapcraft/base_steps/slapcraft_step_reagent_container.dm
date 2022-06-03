@@ -14,10 +14,18 @@
 	var/free_volume
 	/// Whether we need an open container to do this.
 	var/needs_open_container = TRUE
+	/// If defined, it's the minimum required temperature for the step to work.
+	var/temperature_min
+	/// If defined it's the maximum required temperature for the step to work.
+	var/temperature_max
 
 /datum/slapcraft_step/reagent_container/can_perform(mob/living/user, obj/item/item)
 	var/obj/item/reagent_containers/container = item
 	if(needs_open_container && !container.is_open_container())
+		return FALSE
+	if(!isnull(temperature_min) && container.reagents.chem_temp < temperature_min)
+		return FALSE
+	if(!isnull(temperature_max) && container.reagents.chem_temp > temperature_max)
 		return FALSE
 	if(reagent_list)
 		if(!container.reagents.has_reagent_list(reagent_list))
