@@ -21,6 +21,8 @@
 	var/subcategory = SLAP_SUBCAT_MISC
 	/// Appearance in the radial menu for the user to choose from if there are recipe collisions.
 	var/image/radial_appearance
+	/// Order in which the steps should be performed.
+	var/step_order = SLAP_ORDER_STEP_BY_STEP
 
 /datum/slapcraft_recipe/New()
 	. = ..()
@@ -44,10 +46,100 @@
 	if(!step_one.check_types)
 		CRASH("Slapcrafting recipe of type [type] has first step [step_one.type] which doesn't type check. This is incompatible with an optimization cache.")
 
+	// Make sure all steps are unique
+	var/list/assoc_check = list()
+	for(var/step_type in steps)
+		if(assoc_check[step_type])
+			CRASH("Slapcrafting recipe of type [type] has duplicate step [step_type]. Recipes need unique steps!")
+		assoc_check[step_type] = TRUE
+
 /datum/slapcraft_recipe/proc/get_radial_image()
 	if(!radial_appearance)
 		radial_appearance = make_radial_image()
 	return radial_appearance
+
+/// Returns the next suitable step to be performed with the item by the user with such step_states
+/datum/slapcraft_recipe/proc/next_suitable_step(mob/living/user, obj/item/item, list/step_states)
+	var/datum/slapcraft_step/chosen_step
+	for(var/step_type in steps)
+		if(!check_correct_step(step_type, step_states))
+			continue
+		var/datum/slapcraft_step/iterated_step = SLAPCRAFT_STEP(step_type)
+		if(!iterated_step.perform_check(user, item, null))
+			continue
+		chosen_step = iterated_step
+		break
+	return chosen_step
+
+/datum/slapcraft_recipe/proc/is_finished(list/step_states, add_step)
+	// Adds step checks if the recipe would be finished with the added step
+	if(add_step)
+		step_states = step_states.Copy()
+		step_states[add_step] = TRUE
+	switch(step_order)
+		if(SLAP_ORDER_STEP_BY_STEP, SLAP_ORDER_FIRST_AND_LAST)
+			//See if the last step was finished.
+			var/last_path = steps[steps.len]
+			if(step_states[last_path])
+				return TRUE
+		if(SLAP_ORDER_FIRST_THEN_FREEFORM)
+			var/any_missing = FALSE
+			for(var/step_path in steps)
+				if(!step_states[step_path])
+					any_missing = TRUE
+					break
+			if(!any_missing)
+				return TRUE
+	return FALSE
+
+/datum/slapcraft_recipe/proc/get_possible_next_steps(list/step_states)
+	var/list/possible = list()
+	for(var/step_type in steps)
+		if(!check_correct_step(step_type, step_states))
+			continue
+		possible += step_type
+	return possible
+
+/// Checks if a step of type `step_type` can be performed with the given `step_states` state.
+/datum/slapcraft_recipe/proc/check_correct_step(step_type, list/step_states)
+	// Already finished this step.
+	if(step_states[step_type])
+		return FALSE
+	var/first_step = steps[1]
+	// We are missing the first step being done, only allow it until we allow something else
+	if(!step_states[first_step])
+		if(step_type == first_step)
+			return TRUE
+		else
+			return FALSE
+	switch(step_order)
+		if(SLAP_ORDER_STEP_BY_STEP)
+			for(var/iterated_step in steps)
+				if(step_states[iterated_step])
+					continue
+				//We reach a step that isn't done. Check if the checked step is the one
+				if(iterated_step == step_type)
+					return TRUE
+				break
+		if(SLAP_ORDER_FIRST_AND_LAST)
+			var/last_step = steps[steps.len]
+			// If we are trying to do the last step, make sure all the rest ones are finished
+			if(step_type == last_step)
+				for(var/iterated_step in steps)
+					if(step_states[iterated_step])
+						continue
+					if(iterated_step == last_step)
+						return TRUE
+					return FALSE
+
+			// Middle step, with the last step not being finished, and the first step being finished
+			return TRUE
+
+		if(SLAP_ORDER_FIRST_THEN_FREEFORM)
+			// We have the first one and we are not repeating a step.
+			return TRUE
+				
+	return FALSE
 
 /datum/slapcraft_recipe/proc/make_radial_image()
 	// If we make an explicit result type, use its icon and icon state in the radial menu to display it.
@@ -63,12 +155,6 @@
 		return image(icon = initial(result_cast.icon), icon_state = initial(result_cast.icon_state))
 	//Fallback image idk what to put here.
 	return image(icon = 'icons/hud/radial.dmi', icon_state = "radial_rotate")
-
-/// Gets a reference to the recipe step.
-/datum/slapcraft_recipe/proc/get_recipe_step(step_to_get)
-	if(step_to_get > steps.len)
-		CRASH("Tried to get a slapcraft recipe step out of index.")
-	return SLAPCRAFT_STEP(steps[step_to_get])
 
 /// User has finished the recipe in an assembly.
 /datum/slapcraft_recipe/proc/finish_recipe(mob/living/user, obj/item/slapcraft_assembly/assembly)

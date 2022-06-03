@@ -55,33 +55,22 @@
 		return FALSE
 	if(!can_perform(user, item, assembly))
 		return FALSE
-	//Check if this is the last step of the recipe and the recipe allows finishing.
-	if(assembly) //Assembly can be null due having this ran to check recipes
-		var/datum/slapcraft_recipe/recipe = assembly.recipe
-		if(type == recipe.steps[recipe.steps.len] && !recipe.can_finish(user, assembly))
+	//Check if we finish the assembly, and whether that's possible
+	if(assembly)
+		// If would be finished, but can't be
+		if(assembly.recipe.is_finished(assembly.step_states, type) && !assembly.recipe.can_finish(user, assembly))
 			return FALSE
-	return TRUE
-
-/// Checks whether this step is the correct one to perform to progress an assembly.
-/datum/slapcraft_step/proc/step_type_check(obj/item/slapcraft_assembly/assembly)
-	var/target_step = assembly.recipe_step + 1
-	var/datum/slapcraft_recipe/recipe = assembly.recipe
-	if(length(recipe.steps) < target_step)
-		CRASH("Tried to perform a slapcraft step on an assembly whose recipe doesn't have the next step and yet still exists.")
-	var/target_step_type = recipe.steps[target_step]
-	if(target_step_type != type)
-		return FALSE
 	return TRUE
 
 /// Make a user perform this step, by using an item on the assembly, trying to progress the assembly.
 /datum/slapcraft_step/proc/perform(mob/living/user, obj/item/item, obj/item/slapcraft_assembly/assembly, instant = FALSE, silent = FALSE)
-	if(!perform_check(user, item, assembly) || !step_type_check(assembly))
+	if(!perform_check(user, item, assembly) || !assembly.recipe.check_correct_step(type, assembly.step_states))
 		return FALSE
 	if(perform_time && !instant)
 		if(!perform_do_after(user, item, assembly, perform_time * get_speed_multiplier(user, item, assembly)))
 			return FALSE
 		// Do checks again because we spent time in a do_after(), this time also check deletions.
-		if(QDELETED(assembly) || QDELETED(item) || !perform_check(user, item, assembly) || !step_type_check(assembly))
+		if(QDELETED(assembly) || QDELETED(item) || !perform_check(user, item, assembly) || !assembly.recipe.check_correct_step(type, assembly.step_states))
 			return FALSE
 	if(!silent && finish_msg)
 		to_chat(user, SPAN_NOTICE(finish_msg))
@@ -91,7 +80,7 @@
 	if(insert_item)
 		move_item_to_assembly(user, item, assembly)
 	if(progress_crafting(user, item, assembly))
-		assembly.progress(user)
+		assembly.finished_step(user, src)
 	return TRUE
 
 /// Below are virtual procs I allow steps to override for their specific behaviours.

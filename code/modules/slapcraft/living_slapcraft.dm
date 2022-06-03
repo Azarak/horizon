@@ -6,12 +6,21 @@
 	if(!available_recipes)
 		return FALSE
 	var/list/recipes = list()
-	for(var/recipe_type in GLOB.slapcraft_recipes)
-		var/datum/slapcraft_recipe/recipe = SLAPCRAFT_RECIPE(recipe_type)
+	for(var/datum/slapcraft_recipe/recipe in available_recipes)
+		//Always start from step one.
 		var/datum/slapcraft_step/step_one = SLAPCRAFT_STEP(recipe.steps[1])
-		var/datum/slapcraft_step/step_two = SLAPCRAFT_STEP(recipe.steps[2])
-		if(!step_one.perform_check(src, first_item, null) || !step_two.perform_check(src, second_item, null))
+		if(!step_one.perform_check(src, first_item, null))
 			continue
+
+		// Get next suitable step that is available after the first one would be performed.
+		var/list/pretend_list = list()
+		pretend_list[step_one.type] = TRUE
+		var/datum/slapcraft_step/next_step = recipe.next_suitable_step(src, second_item, pretend_list)
+		if(!next_step)
+			continue
+		if(!next_step.perform_check(src, second_item, null))
+			continue
+
 		recipes += recipe
 
 	if(!length(recipes))
@@ -39,12 +48,13 @@
 	assembly.set_recipe(target_recipe)
 
 	var/datum/slapcraft_step/step_one = SLAPCRAFT_STEP(target_recipe.steps[1])
-	var/datum/slapcraft_step/step_two = SLAPCRAFT_STEP(target_recipe.steps[2])
 
 	// Instantly and silently perform the first step on the assembly, disassemble it if something went wrong
 	if(!step_one.perform(src, first_item, assembly, instant = TRUE, silent = TRUE))
 		assembly.disassemble()
 		return TRUE
+
+	var/datum/slapcraft_step/step_two = target_recipe.next_suitable_step(src, second_item, assembly.step_states)
 	// Perform the second step, also disassemble it if we stopped working on it, because keeping 1 component assembly is futile.
 	if(!step_two.perform(src, second_item, assembly))
 		assembly.disassemble()

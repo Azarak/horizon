@@ -37,7 +37,21 @@
 			if(!first)
 				steps_string += "<br>"
 				list_string += "<br>"
-			steps_string += "[step_count]. [print_step_description(step_datum)]"
+			var/count_string
+			switch(recipe.step_order)
+				if(SLAP_ORDER_STEP_BY_STEP)
+					count_string = step_count
+				if(SLAP_ORDER_FIRST_AND_LAST)
+					if(step_count == 1 || step_count == recipe.steps.len)
+						count_string = step_count
+					else
+						count_string = "X"
+				if(SLAP_ORDER_FIRST_THEN_FREEFORM)
+					if(step_count == 1)
+						count_string = step_count
+					else
+						count_string = "X"
+			steps_string += "[count_string]. [print_step_description(step_datum)]"
 			list_string += "[step_datum.list_desc]"
 			first = FALSE
 		// If there's a recipe, add a row with it.

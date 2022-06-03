@@ -3,8 +3,8 @@
 	w_class = WEIGHT_CLASS_NORMAL
 	/// Recipe this assembly is trying to make
 	var/datum/slapcraft_recipe/recipe
-	/// The step of the recipe
-	var/recipe_step = 0
+	/// Associative list of whether the steps are finished or not
+	var/list/step_states
 	/// Whether it's in the process of being disassembled.
 	var/disassembling = FALSE
 	/// Whether it's in the process of being finished.
@@ -15,19 +15,23 @@
 /obj/item/slapcraft_assembly/examine(mob/user)
 	. = ..()
 	// Describe the steps that already have been performed on the assembly
-	if(recipe_step > 0)
-		for(var/i in 1 to recipe_step)
-			var/datum/slapcraft_step/done_step = recipe.get_recipe_step(i)
+	for(var/step_path in recipe.steps)
+		if(step_states[step_path])
+			var/datum/slapcraft_step/done_step = SLAPCRAFT_STEP(step_path)
 			. += SPAN_NOTICE(done_step.finished_desc)
-	// Describe how the next step could be performed
-	var/datum/slapcraft_step/next_step = recipe.get_recipe_step(recipe_step + 1)
-	. += SPAN_BOLDNOTICE(next_step.todo_desc)
+	// Describe how the next steps could be performed
+	var/list/next_steps = recipe.get_possible_next_steps(step_states)
+	for(var/step_type in next_steps)
+		var/datum/slapcraft_step/next_step = SLAPCRAFT_STEP(step_type)
+		. += SPAN_BOLDNOTICE(next_step.todo_desc)
 	// And tell them that it can be disassembled back into the components aswell.
 	. += SPAN_BOLDNOTICE("Use in hand to disassemble this back into components.")
 
 /obj/item/slapcraft_assembly/attackby(obj/item/item, mob/user, params)
 	// Get the next step
-	var/datum/slapcraft_step/next_step = recipe.get_recipe_step(recipe_step + 1)
+	var/datum/slapcraft_step/next_step = recipe.next_suitable_step(user, item, step_states)
+	if(!next_step)
+		return ..()
 	// Try and do it
 	next_step.perform(user, item, src)
 	return TRUE
@@ -85,9 +89,11 @@
 	qdel(src)
 
 /// Progresses the assembly to the next step and finishes it if made it through the last step.
-/obj/item/slapcraft_assembly/proc/progress(mob/living/user)
-	recipe_step++
-	if(recipe_step >= length(recipe.steps))
+/obj/item/slapcraft_assembly/proc/finished_step(mob/living/user, datum/slapcraft_step/step_datum)
+	// Mark the step as finished.
+	step_states[step_datum.type] = TRUE
+
+	if(recipe.is_finished(step_states))
 		recipe.finish_recipe(user, src)
 
 /// Sets the recipe of this assembly aswell making the name and description matching.
@@ -96,3 +102,9 @@
 	w_class = recipe.assembly_weight_class
 	name = "[set_recipe.name] [set_recipe.assembly_name_suffix]"
 	desc = "This seems to be an assembly to craft \the [set_recipe.name]"
+
+	// Set step states for this recipe.
+	step_states = list()
+	for(var/step_path in set_recipe.steps)
+		step_states[step_path] = FALSE
+
