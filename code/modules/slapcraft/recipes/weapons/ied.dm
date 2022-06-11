@@ -1,6 +1,6 @@
 /datum/slapcraft_recipe/ied
 	name = "improvised explosive device"
-	examine_hint = "You could craft an IED, starting by filling this with some fuel and adding an igniter..."
+	examine_hint = "You could craft an IED, starting by filling this with fuel and adding an igniter..."
 	category = SLAP_CAT_WEAPONS
 	steps = list(
 		/datum/slapcraft_step/reagent_container/ied_can,
