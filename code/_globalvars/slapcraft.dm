@@ -53,3 +53,17 @@ GLOBAL_LIST_INIT(slapcraft_recipes, build_slapcraft_recipes())
 		return value
 	else
 		return list(value)
+
+/// Gets examine hints for this item type for slap crafting.
+/proc/slapcraft_examine_hints_for_type(passed_type)
+	var/list/valid_recipes = slapcraft_recipes_for_type(passed_type)
+	if(!valid_recipes)
+		return null
+	var/list/all_hints = list()
+	for(var/datum/slapcraft_recipe/recipe as anything in valid_recipes)
+		if(recipe.examine_hint)
+			all_hints += recipe.examine_hint
+
+	if(all_hints.len == 0)
+		return null
+	return all_hints

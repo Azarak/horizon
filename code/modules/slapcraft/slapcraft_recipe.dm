@@ -3,6 +3,8 @@
 	var/name
 	/// Description of the recipe. May be displayed as additional info in the handbook.
 	var/desc
+	/// Hint displayed to the user which examines the item required for the first step.
+	var/examine_hint
 	/// List of all steps to finish this recipe
 	var/list/steps
 	/// Type of the item that will be yielded as the result.
@@ -42,6 +44,7 @@
 		if(result_cast)
 			name = initial(result_cast.name)
 	// Check if the first step is type checked, this is currently required because an optimization cache lookup works based off this.
+	// And also required for the examine hints to work properly.
 	var/datum/slapcraft_step/step_one = SLAPCRAFT_STEP(steps[1])
 	if(!step_one.check_types)
 		CRASH("Slapcrafting recipe of type [type] has first step [step_one.type] which doesn't type check. This is incompatible with an optimization cache.")

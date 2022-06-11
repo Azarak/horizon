@@ -344,6 +344,12 @@ GLOBAL_DATUM_INIT(fire_overlay, /mutable_appearance, mutable_appearance('icons/e
 		if(resistance_flags & FIRE_PROOF)
 			. += "[src] is made of fire-retardant materials."
 
+	/// Add slapcraft hints for the item if its eligible for any recipes.
+	var/list/slapcraft_hints = slapcraft_examine_hints_for_type(type)
+	if(slapcraft_hints)
+		for(var/hint in slapcraft_hints)
+			. += SPAN_NOTICE(hint)
+
 	if(!user.research_scanner)
 		return
 
@@ -381,6 +387,7 @@ GLOBAL_DATUM_INIT(fire_overlay, /mutable_appearance, mutable_appearance('icons/e
 		research_msg += "None"
 	research_msg += "."
 	. += research_msg.Join()
+
 
 /obj/item/interact(mob/user)
 	add_fingerprint(user)

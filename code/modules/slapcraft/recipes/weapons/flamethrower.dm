@@ -1,5 +1,6 @@
 /datum/slapcraft_recipe/flamethrower
 	name = "flamethrower"
+	examine_hint = "You could craft a flamethrower, starting by attaching an igniter..."
 	category = SLAP_CAT_WEAPONS
 	steps = list(
 		/datum/slapcraft_step/flamethrower_welder,
