@@ -832,6 +832,7 @@
 		"tray_goggles",
 		"holopad",
 		"vendatray",
+		"long_range",
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
 
@@ -1320,7 +1321,7 @@
 	description = "Weapons using radioactive technology."
 	prereq_ids = list("adv_engi", "adv_weaponry")
 	design_ids = list(
-		"nuclear_gun",
+		"advenergy",
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
 
