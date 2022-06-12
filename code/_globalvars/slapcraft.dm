@@ -6,7 +6,9 @@ GLOBAL_LIST_INIT(slapcraft_recipes, build_slapcraft_recipes())
 
 /proc/build_slapcraft_recipes()
 	var/list/recipe_list = list()
-	for(var/type in subtypesof(/datum/slapcraft_recipe))
+	for(var/type in typesof(/datum/slapcraft_recipe))
+		if(is_abstract(type))
+			continue
 		var/datum/slapcraft_recipe/recipe = new type()
 		recipe_list[type] = recipe
 
@@ -21,7 +23,9 @@ GLOBAL_LIST_INIT(slapcraft_recipes, build_slapcraft_recipes())
 
 /proc/build_slapcraft_steps()
 	var/list/step_list = list()
-	for(var/type in subtypesof(/datum/slapcraft_step))
+	for(var/type in typesof(/datum/slapcraft_step))
+		if(is_abstract(type))
+			continue
 		step_list[type] = new type()
 	return step_list
 

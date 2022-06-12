@@ -1,5 +1,6 @@
 /// This steps can check sufficient weapon variables, such as sharpness or force
 /datum/slapcraft_step/weapon
+	abstract_type = /datum/slapcraft_step/weapon
 	insert_item = FALSE
 	check_types = FALSE
 	list_desc = "sharp implement"

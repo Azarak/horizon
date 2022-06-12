@@ -1,4 +1,5 @@
 /datum/slapcraft_recipe
+	abstract_type = /datum/slapcraft_recipe
 	/// Name of the recipe. Will use the resulting atom's name if not specified
 	var/name
 	/// Description of the recipe. May be displayed as additional info in the handbook.

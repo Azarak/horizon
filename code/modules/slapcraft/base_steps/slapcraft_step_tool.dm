@@ -1,5 +1,6 @@
 /// This step requires an item with a specific tool behaviour.
 /datum/slapcraft_step/tool
+	abstract_type = /datum/slapcraft_step/tool
 	insert_item = FALSE
 	check_types = FALSE
 	/// What tool behaviour do we need for this step.
@@ -25,5 +26,6 @@
 	item.use(required_fuel)
 
 /datum/slapcraft_step/tool/screwdriver
+	abstract_type = /datum/slapcraft_step/tool/screwdriver
 	list_desc = "screwdriver"
 	tool_behaviour = TOOL_SCREWDRIVER

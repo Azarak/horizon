@@ -1,6 +1,7 @@
 /// This step requires and uses a reagent to finish itself. This step is great as a last step since reagents can't be recovered from disassembly.
 /// This alternatively can also transfer to a container inside the crafting assembly too!
 /datum/slapcraft_step/reagent
+	abstract_type = /datum/slapcraft_step/reagent
 	insert_item = FALSE
 	item_types = list(/obj/item/reagent_containers)
 	/// Type of the reagent to use.

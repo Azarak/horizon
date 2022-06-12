@@ -1,4 +1,5 @@
 /datum/slapcraft_step
+	abstract_type = /datum/slapcraft_step
 	/// The description of the step, it shows in the slapcraft handbook
 	var/desc = "THIS IS HOW YOU DO THIS STEP"
 	/// The description of the finished step when you examine the assembly.
