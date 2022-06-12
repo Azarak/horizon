@@ -388,7 +388,6 @@ GLOBAL_DATUM_INIT(fire_overlay, /mutable_appearance, mutable_appearance('icons/e
 	research_msg += "."
 	. += research_msg.Join()
 
-
 /obj/item/interact(mob/user)
 	add_fingerprint(user)
 	ui_interact(user)

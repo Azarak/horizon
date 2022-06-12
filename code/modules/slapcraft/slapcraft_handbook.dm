@@ -51,7 +51,8 @@
 						count_string = step_count
 					else
 						count_string = "X"
-			steps_string += "[count_string]. [print_step_description(step_datum)]"
+			var/opt_string = step_datum.optional ? "(optional)" : ""
+			steps_string += "[count_string]. [opt_string] [print_step_description(step_datum)]"
 			list_string += "[step_datum.list_desc]"
 			first = FALSE
 		// If there's a recipe, add a row with it.

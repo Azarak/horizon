@@ -56,6 +56,21 @@
 			CRASH("Slapcrafting recipe of type [type] has duplicate step [step_type]. Recipes need unique steps!")
 		assoc_check[step_type] = TRUE
 
+	// Make sure any optional steps are not invalid.
+	var/step_count = 0
+	for(var/step_type in steps)
+		step_count++
+		var/datum/slapcraft_step/iterated_step = SLAPCRAFT_STEP(step_type)
+		if(!iterated_step.optional)
+			continue
+		switch(step_order)
+			if(SLAP_ORDER_STEP_BY_STEP, SLAP_ORDER_FIRST_AND_LAST)
+				// If first, or last
+				if(step_count == 1 || step_count == steps.len)
+					CRASH("Slapcrafting recipe of type [type] has an optional step [step_type] as first or last step. This is forbidden!")
+			if(SLAP_ORDER_FIRST_THEN_FREEFORM)
+				CRASH("Slapcrafting recipe of type [type] has an optional step [step_type] while the order is SLAP_ORDER_FIRST_THEN_FREEFORM. This is forbidden!")
+
 /datum/slapcraft_recipe/proc/get_radial_image()
 	if(!radial_appearance)
 		radial_appearance = make_radial_image()
@@ -117,13 +132,33 @@
 			return FALSE
 	switch(step_order)
 		if(SLAP_ORDER_STEP_BY_STEP)
+			// Just in case any step is optional we need to figure out which is the furthest step performed.
+			var/furthest_step = 0
+			var/step_count = 0
 			for(var/iterated_step in steps)
+				step_count++
 				if(step_states[iterated_step])
+					furthest_step = step_count
+
+			step_count = 0
+			for(var/iterated_step in steps)
+				step_count++
+				// Step is done, continue
+				if(step_states[iterated_step])
+					continue
+				// This step is before one we have already completed, continue
+				// (essentially when skipping an optional step, we dont want to allow that step to be performed)
+				if(step_count <= furthest_step)
 					continue
 				//We reach a step that isn't done. Check if the checked step is the one
 				if(iterated_step == step_type)
 					return TRUE
-				break
+				// If the step is optional, perhaps the next one will be eligible.
+				var/datum/slapcraft_step/iterated_step_datum = SLAPCRAFT_STEP(iterated_step)
+				if(iterated_step_datum.optional)
+					continue
+				// It wasn't it, return FALSE
+				return FALSE
 		if(SLAP_ORDER_FIRST_AND_LAST)
 			var/last_step = steps[steps.len]
 			// If we are trying to do the last step, make sure all the rest ones are finished
@@ -133,6 +168,10 @@
 						continue
 					if(iterated_step == last_step)
 						return TRUE
+					// If the step is optional, we don't mind.
+					var/datum/slapcraft_step/iterated_step_datum = SLAPCRAFT_STEP(iterated_step)
+					if(iterated_step_datum.optional)
+						continue
 					return FALSE
 
 			// Middle step, with the last step not being finished, and the first step being finished

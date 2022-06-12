@@ -27,6 +27,8 @@
 	var/list/blacklist_typecache
 	/// The recipe this step can link to. Make sure to include %LINK% and %ENDLINK% in `desc` to properly linkify it.
 	var/recipe_link
+	/// Whether this step is optional. This is forbidden for first and last steps of recipes, and cannot be used on recipes with an order of SLAP_ORDER_FIRST_THEN_FREEFORM
+	var/optional = FALSE
 
 /datum/slapcraft_step/New()
 	. = ..()
