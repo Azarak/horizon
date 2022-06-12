@@ -14,7 +14,7 @@
 	desc = "Start with normal sized welding tool."
 	finished_desc = "A welding tool has been added."
 	item_types = list(/obj/item/weldingtool)
-	blacklist_item_types = list(/obj/item/weldingtool/mini, /obj/item/weldingtool/largetank)
+	blacklist_item_types = list(/obj/item/weldingtool/mini, /obj/item/weldingtool/largetank, /obj/item/weldingtool/experimental)
 	insert_item_into_result = TRUE
 
 /datum/slapcraft_step/flamethrower_igniter
