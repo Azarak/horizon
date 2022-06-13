@@ -137,6 +137,9 @@ GLOBAL_VAR_INIT(cmp_field, "name")
 /proc/cmp_ambience_dist_asc(datum/ambience_sort/a, datum/ambience_sort/b)
 	return cmp_numeric_asc(a.dist, b.dist)
 
+/proc/cmp_recipe_priority(datum/recipe/a, datum/recipe/b)
+	return cmp_numeric_dsc(a.priority, b.priority)
+
 /**
  * Sorts crafting recipe requirements before the crafting recipe is inserted into GLOB.crafting_recipes
  *

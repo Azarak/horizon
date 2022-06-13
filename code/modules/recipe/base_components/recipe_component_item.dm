@@ -59,20 +59,20 @@
 	return FALSE
 
 /datum/recipe_component/item/use_component(atom/movable/source, turf/location, list/atoms, list/conditions, datum/recipe_component_state/item/state)
-	if(dispose_item)
-		for(var/atom/movable/item as anything in state.used_items)
-			dispose_item(item)
+	for(var/atom/movable/item as anything in state.used_items)
+		dispose_item(item)
 
 /// Disposes of the item
 /datum/recipe_component/item/proc/dispose_item(atom/movable/item)
-	qdel(item)
+	if(dispose_item)
+		qdel(item)
 
 /// Checks if the item type is valid.
 /datum/recipe_component/item/proc/check_item_type(item_type)
 	if(!check_types)
 		return TRUE
 	if(typecache[item_type])
-		if(blacklist_typecache[item_type])
+		if(blacklist_typecache && blacklist_typecache[item_type])
 			return FALSE
 		return TRUE
 	return FALSE

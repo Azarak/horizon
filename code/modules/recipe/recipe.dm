@@ -52,3 +52,32 @@
 // Creates a result of the recipe, this could be anything from making an item to creation an explosion.
 /datum/recipe/proc/create_result(atom/movable/source, turf/location, list/atoms, list/conditions, list/results)
 	return
+
+
+///Test recipe
+/datum/recipe/test
+	appliance = RECIPE_APPLIANCE_TEST
+	recipe_components = list(
+		/datum/recipe_component/item/test1,
+		/datum/recipe_component/item/test2,
+		/datum/recipe_component/item/reagent/test1,
+		)
+
+/datum/recipe/test/lo
+	priority = RECIPE_PRIORITY_LOW
+
+/datum/recipe/test/hi
+	priority = RECIPE_PRIORITY_HIGH
+
+/datum/recipe_component/item/test1
+	types = list(/obj/item/assembly/igniter)
+
+/datum/recipe_component/item/test2
+	types = list(/obj/item/screwdriver)
+
+/datum/recipe_component/item/reagent/test1
+	reagent_type = /datum/reagent/fuel
+	reagent_amount = 15
+
+/turf/proc/test_recipe()
+	perform_recipes(RECIPE_APPLIANCE_TEST, src, contents, null)
