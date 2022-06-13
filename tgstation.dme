@@ -3396,6 +3396,7 @@
 #include "code\modules\recipe\recipe_component_state.dm"
 #include "code\modules\recipe\base_components\recipe_component_item.dm"
 #include "code\modules\recipe\base_components\recipe_component_reagent.dm"
+#include "code\modules\recipe\base_components\recipe_component_stack.dm"
 #include "code\modules\recycling\conveyor2.dm"
 #include "code\modules\recycling\sortingmachinery.dm"
 #include "code\modules\recycling\disposal\bin.dm"
