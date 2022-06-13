@@ -1,12 +1,14 @@
 /// A recipe which implements a way to create something from components, be it effects or items
 /datum/recipe
 	abstract_type = /datum/recipe
-	// Required appliance to perform this recipe.
+	/// Required appliance to perform this recipe.
 	var/appliance
-	// Priority in which this recipe should be checked for. Broader recipes should have lower priorities, while more specific ones higher.
+	/// Priority in which this recipe should be checked for. Broader recipes should have lower priorities, while more specific ones higher.
 	var/priority = RECIPE_PRIORITY_NORMAL
-	// List of recipe_component's, all of them need to pass for the recipe to be completed.
+	/// List of recipe_component's, all of them need to pass for the recipe to be completed.
 	var/list/recipe_components
+	/// Datum path to the result of the recipe.
+	var/recipe_result
 
 // Tries to perform the recipe and returns TRUE if passed, FALSE if not.
 /datum/recipe/proc/try_perform(atom/movable/source, list/atoms, list/conditions)
@@ -51,33 +53,5 @@
 
 // Creates a result of the recipe, this could be anything from making an item to creation an explosion.
 /datum/recipe/proc/create_result(atom/movable/source, turf/location, list/atoms, list/conditions, list/results)
-	return
-
-
-///Test recipe
-/datum/recipe/test
-	appliance = RECIPE_APPLIANCE_TEST
-	recipe_components = list(
-		/datum/recipe_component/item/test1,
-		/datum/recipe_component/item/test2,
-		/datum/recipe_component/item/reagent/test1,
-		)
-
-/datum/recipe/test/lo
-	priority = RECIPE_PRIORITY_LOW
-
-/datum/recipe/test/hi
-	priority = RECIPE_PRIORITY_HIGH
-
-/datum/recipe_component/item/test1
-	types = list(/obj/item/assembly/igniter)
-
-/datum/recipe_component/item/test2
-	types = list(/obj/item/screwdriver)
-
-/datum/recipe_component/item/reagent/test1
-	reagent_type = /datum/reagent/fuel
-	reagent_amount = 15
-
-/turf/proc/test_recipe()
-	perform_recipes(RECIPE_APPLIANCE_TEST, src, contents, null)
+	var/datum/recipe_result/result = RECIPE_RESULT(recipe_result)
+	result.create_result(source, location, atoms, conditions, results)

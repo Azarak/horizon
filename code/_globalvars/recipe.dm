@@ -1,6 +1,15 @@
 GLOBAL_LIST_INIT(recipe_components, build_recipe_component_list())
+GLOBAL_LIST_INIT(recipe_results, build_recipe_result_list())
 GLOBAL_LIST_EMPTY(appliance_recipes)
 GLOBAL_LIST_INIT(recipes, build_recipe_list())
+
+/proc/build_recipe_result_list()
+	var/list/recipe_result_list = list()
+	for(var/type in typesof(/datum/recipe_result))
+		if(is_abstract(type))
+			continue
+		recipe_result_list[type] = new type()
+	return recipe_result_list
 
 /proc/build_recipe_component_list()
 	var/list/recipe_component_list = list()

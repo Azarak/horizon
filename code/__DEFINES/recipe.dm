@@ -1,10 +1,9 @@
 #define RECIPE_COMPONENT(type) GLOB.recipe_components[type]
+#define RECIPE_RESULT(type) GLOB.recipe_results[type]
 #define RECIPE(type) GLOB.recipes[type]
 
 // Appliance types
-// Special type which allows the recipe to be performed anywhere.
-#define RECIPE_APPLIANCE_ANY "Any"
-#define RECIPE_APPLIANCE_TEST "Test"
+#define RECIPE_APPLIANCE_OVEN "Oven"
 
 // Recipe priorities
 #define RECIPE_PRIORITY_VERY_HIGH 4000
