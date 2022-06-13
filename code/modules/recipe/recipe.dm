@@ -6,18 +6,49 @@
 	// Priority in which this recipe should be checked for. Broader recipes should have lower priorities, while more specific ones higher.
 	var/priority = RECIPE_PRIORITY_NORMAL
 	// List of recipe_component's, all of them need to pass for the recipe to be completed.
-	var/list/components
+	var/list/recipe_components
 
-// What should be the arguments that pass into recipe checking?
-// This needs to be broad as the system is supposed to cover a large and abstract functionality
-// - List of items that are being mixed
-// - Location at which its being performed
-// - Reagents.. do we want to read reagents from passed item containers or something else?
-//		- Perhaps we want to be able to read reagents from items and reagents from some other abstract way?
-// - Abstract list of conditionals (such as oven temperature etc.)
-// - Nearby related turf locations?
-//		- So a recipe condition can check if there's something nearby,
-			//but perhaps all we need is location, and we can get turf location from the location, 
-			// yeah that's better
-/datum/recipe/proc/check_recipe()
-	return FALSE
+// Tries to perform the recipe and returns TRUE if passed, FALSE if not.
+/datum/recipe/proc/try_perform(atom/movable/source, list/atoms, list/conditions)
+	var/turf/location = get_turf(source)
+
+	// Create those two lists to allow components to "reserve" atoms to block other components
+	var/list/atoms_available = atoms.Copy()
+	// A list that components can add atoms to mark them as being used by the recipe.
+	var/list/used = list()
+	// List of component states for components to save.
+	var/list/component_states = list()
+
+	for(var/component_type in recipe_components)
+		var/datum/recipe_component/comp = RECIPE_COMPONENT(component_type)
+		component_states[component_type] = new comp.component_state
+		if(!comp.check_component(source, location, atoms_available, conditions, component_states[component_type], used))
+			return FALSE
+	// All components have passed, see if the recipe can be performed.
+	if(!check_recipe(source, location, used, conditions))
+		return FALSE
+
+	var/list/results = list()
+
+	// Create the result.
+	create_result(source, location, used, conditions, results)
+
+	// "Apply" the checked components to the result.
+	for(var/component_type in recipe_components)
+		var/datum/recipe_component/comp = RECIPE_COMPONENT(component_type)
+		comp.apply_component(source, location, used, conditions, component_states[component_type], results)
+
+	// Use the checked components.
+	for(var/component_type in recipe_components)
+		var/datum/recipe_component/comp = RECIPE_COMPONENT(component_type)
+		comp.use_component(source, location, used, conditions, component_states[component_type])
+
+	return TRUE
+
+// Called after all components have been checked, checks if the recipe can be performed.
+/datum/recipe/proc/check_recipe(atom/movable/source, turf/location, list/atoms, list/conditions)
+	return TRUE
+
+// Creates a result of the recipe, this could be anything from making an item to creation an explosion.
+/datum/recipe/proc/create_result(atom/movable/source, turf/location, list/atoms, list/conditions, list/results)
+	return
