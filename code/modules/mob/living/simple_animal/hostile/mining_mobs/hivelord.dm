@@ -195,7 +195,11 @@
 	if(stat == DEAD || !isturf(loc))
 		return
 	for(var/mob/living/carbon/human/victim in range(src, 1)) //Only for corpse right next to/on same tile
-		if(victim.shock_stat == SHOCK_SEVERE || (victim.stat == DEAD && can_infest_dead))
+		if(victim.stat == DEAD)
+			if(can_infest_dead)
+				infest(victim)
+				return //This will qdelete the legion.
+		else if(victim.shock_stat == SHOCK_SEVERE)
 			infest(victim)
 			return //This will qdelete the legion.
 
