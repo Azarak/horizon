@@ -9,6 +9,11 @@
 	/// Whether to spawn the items in the source, otherwise the location turf will be used
 	var/spawn_in_source = FALSE
 
+/datum/recipe_result/item/New()
+	if(!item_type && !item_list)
+		CRASH("Item recipe result of type [type] doesn't spawn any items.")
+	..()
+
 /datum/recipe_result/item/create_result(atom/movable/source, turf/location, list/atoms, list/conditions, list/results)
 	var/atom/destination = spawn_in_source ? source : location
 	if(item_list)

@@ -29,9 +29,11 @@
 /datum/recipe_component/item/New()
 	..()
 	if(check_types)
+		if(!types)
+			CRASH("Item recipe component of type [type] checks types but lacks them.")
 		typecache = typecacheof(types)
-	if(blacklist_types)
-		blacklist_typecache = typecacheof(blacklist_types)
+		if(blacklist_types)
+			blacklist_typecache = typecacheof(blacklist_types)
 
 /datum/recipe_component/item/check_component(atom/movable/source, turf/location, list/atoms, list/conditions, datum/recipe_component_state/item/state, list/used)
 	var/items_so_far = 0

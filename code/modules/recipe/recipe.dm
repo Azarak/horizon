@@ -10,6 +10,15 @@
 	/// Datum path to the result of the recipe.
 	var/recipe_result
 
+/datum/recipe/New()
+	if(!appliance)
+		CRASH("Recipe of type [type] has no appliance.")
+	if(!recipe_result)
+		CRASH("Recipe of type [type] has no recipe result.")
+	if(!recipe_components)
+		CRASH("Recipe of type [type] has no recipe components.")
+	..()
+
 // Tries to perform the recipe and returns TRUE if passed, FALSE if not.
 /datum/recipe/proc/try_perform(atom/movable/source, list/atoms, list/conditions)
 	var/turf/location = get_turf(source)

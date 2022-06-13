@@ -17,6 +17,11 @@
 	/// Whether we need an open container to do this.
 	var/needs_open_container = TRUE
 
+/datum/recipe_component/item/reagent/New()
+	if(!reagent_type && !reagent_list)
+		CRASH("Reagent recipe component doesn't specify any reagents.")
+	..()
+
 /datum/recipe_component/item/reagent/check_item(atom/movable/item)
 	if(!item.reagents)
 		return FALSE
