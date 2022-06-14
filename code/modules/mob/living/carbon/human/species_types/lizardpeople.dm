@@ -15,19 +15,17 @@
 		FACEHAIR,
 	)
 	inherent_biotypes = MOB_ORGANIC|MOB_HUMANOID|MOB_REPTILE
-	default_mutant_bodyparts = list(
-		"tail" = ACC_RANDOM,
-		"snout" = ACC_RANDOM,
-		"spines" = ACC_RANDOM,
-		"frills" = ACC_RANDOM,
-		"horns" = ACC_RANDOM,
-		"body_markings" = ACC_RANDOM,
-		"legs" = "Digitigrade Legs",
-		"taur" = ACC_NONE,
-		"wings" = ACC_NONE,
-		"neck" = ACC_NONE,
-	)
-	mutanttongue = /obj/item/organ/tongue/lizard
+	organs = list(
+		ORGAN_SLOT_BRAIN = /obj/item/organ/brain,
+		ORGAN_SLOT_HEART = /obj/item/organ/heart,
+		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs,
+		ORGAN_SLOT_EYES = /obj/item/organ/eyes,
+		ORGAN_SLOT_EARS = /obj/item/organ/ears,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/lizard,
+		ORGAN_SLOT_LIVER = /obj/item/organ/liver,
+		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach,
+		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,
+		)
 	coldmod = 1.5
 	heatmod = 0.67
 	payday_modifier = 0.75
@@ -98,13 +96,6 @@
 	returned["mcolor2"] = second_color
 	returned["mcolor3"] = third_color
 	return returned
-
-/datum/species/lizard/randomize_main_appearance_element(mob/living/carbon/human/human_mob)
-	var/tail = pick(GLOB.tails_list_lizard)
-	human_mob.dna.features["tail_lizard"] = tail
-	mutant_bodyparts["tail_lizard"] = tail
-	human_mob.update_body()
-
 /*
 Lizard subspecies: ASHWALKERS
 */
@@ -154,7 +145,17 @@ Lizard subspecies: SILVER SCALED
 		TRAIT_VIRUSIMMUNE,
 	)
 	species_language_holder = /datum/language_holder/lizard/silver
-	mutanttongue = /obj/item/organ/tongue/lizard/silver
+	organs = list(
+		ORGAN_SLOT_BRAIN = /obj/item/organ/brain,
+		ORGAN_SLOT_HEART = /obj/item/organ/heart,
+		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs,
+		ORGAN_SLOT_EYES = /obj/item/organ/eyes,
+		ORGAN_SLOT_EARS = /obj/item/organ/ears,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/lizard/silver,
+		ORGAN_SLOT_LIVER = /obj/item/organ/liver,
+		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach,
+		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,
+		)
 	armor = 10 //very light silvery scales soften blows
 	changesource_flags = MIRROR_BADMIN | MIRROR_MAGIC | RACE_SWAP | ERT_SPAWN
 	///stored mutcolor for when we turn back off of a silverscale.
@@ -165,16 +166,16 @@ Lizard subspecies: SILVER SCALED
 /datum/species/lizard/silverscale/on_species_gain(mob/living/carbon/C, datum/species/old_species)
 	var/mob/living/carbon/human/new_silverscale = C
 	old_mutcolor = C.dna.features["mcolor"]
-	old_eyecolor = new_silverscale.eye_color
+	//old_eyecolor = new_silverscale.eye_color
 	new_silverscale.dna.features["mcolor"] = "eeeeee"
-	new_silverscale.eye_color = "0000a0"
+	//new_silverscale.eye_color = "0000a0"
 	..()
 	new_silverscale.add_filter("silver_glint", 2, list("type" = "outline", "color" = "#ffffff63", "size" = 2))
 
 /datum/species/lizard/silverscale/on_species_loss(mob/living/carbon/C)
 	var/mob/living/carbon/human/was_silverscale = C
 	was_silverscale.dna.features["mcolor"] = old_mutcolor
-	was_silverscale.eye_color = old_eyecolor
+	//was_silverscale.eye_color = old_eyecolor
 
 	was_silverscale.remove_filter("silver_glint")
 	..()

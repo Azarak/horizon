@@ -2236,14 +2236,8 @@ All effects don't start immediately, but rather get worse over time; the rate is
 	if(DT_PROB(10, delta_time) && istype(metabolizer))
 		metabolizer.age += 1
 		if(metabolizer.age > 70)
-			metabolizer.facial_hair_color = "ccc"
-			metabolizer.hair_color = "ccc"
-			metabolizer.update_hair()
 			if(metabolizer.age > 100)
 				metabolizer.become_nearsighted(type)
-				if(metabolizer.gender == MALE)
-					metabolizer.facial_hairstyle = "Beard (Very Long)"
-					metabolizer.update_hair()
 
 				if(metabolizer.age > 969) //Best not let people get older than this or i might incur G-ds wrath
 					metabolizer.visible_message(SPAN_NOTICE("[metabolizer] becomes older than any man should be.. and crumbles into dust!"))

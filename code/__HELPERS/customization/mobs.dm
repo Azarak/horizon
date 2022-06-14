@@ -67,46 +67,6 @@
 		compiled_list[name] = marking_set
 	return compiled_list
 
-/proc/hairstyle_list_for_species(datum/species/species, gender, mismatched = FALSE)
-	if(mismatched)
-		return GLOB.hairstyles_list.Copy()
-	var/list/global_list_cache
-	switch(gender)
-		if(MALE)
-			global_list_cache = GLOB.hairstyles_male_list
-		if(FEMALE)
-			global_list_cache = GLOB.hairstyles_female_list
-		else
-			global_list_cache = GLOB.hairstyles_list
-	var/list/global_list_lookup = GLOB.hairstyles_list
-	var/list/compiled_list = list()
-	for(var/name in global_list_cache)
-		var/datum/sprite_accessory/accessory = global_list_lookup[name]
-		if(!(accessory.bodytypes & species.bodytype))
-			continue
-		compiled_list += accessory.name
-	return compiled_list
-
-/proc/facial_hairstyle_list_for_species(datum/species/species, gender, mismatched = FALSE)
-	if(mismatched)
-		return GLOB.facial_hairstyles_list.Copy()
-	var/list/global_list_cache
-	switch(gender)
-		if(MALE)
-			global_list_cache = GLOB.facial_hairstyles_male_list
-		if(FEMALE)
-			global_list_cache = GLOB.facial_hairstyles_female_list
-		else
-			global_list_cache = GLOB.facial_hairstyles_list
-	var/list/global_list_lookup = GLOB.facial_hairstyles_list
-	var/list/compiled_list = list()
-	for(var/name in global_list_cache)
-		var/datum/sprite_accessory/accessory = global_list_lookup[name]
-		if(!(accessory.bodytypes & species.bodytype))
-			continue
-		compiled_list += accessory.name
-	return compiled_list
-
 /proc/underwear_list_for_species(datum/species/species, gender, mismatched = FALSE)
 	if(mismatched)
 		return GLOB.underwear_list.Copy()

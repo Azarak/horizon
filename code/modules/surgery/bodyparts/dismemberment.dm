@@ -130,7 +130,6 @@
 	update_icon_dropped()
 	phantom_owner.update_health_hud() //update the healthdoll
 	phantom_owner.update_body()
-	phantom_owner.update_hair()
 
 	if(!drop_loc) // drop_loc = null happens when a "dummy human" used for rendering icons on prefs screen gets its limbs replaced.
 		qdel(src)
@@ -364,16 +363,11 @@
 
 	new_limb_owner.updatehealth()
 	new_limb_owner.update_body()
-	new_limb_owner.update_hair()
 	new_limb_owner.update_damage_overlays()
 
 
 /obj/item/bodypart/head/attach_limb(mob/living/carbon/new_head_owner, special = FALSE, abort = FALSE)
 	// These are stored before calling super. This is so that if the head is from a different body, it persists its appearance.
-	var/hair_color = src.hair_color
-	var/hairstyle = src.hairstyle
-	var/facial_hair_color = src.facial_hair_color
-	var/facial_hairstyle = src.facial_hairstyle
 	var/lip_style = src.lip_style
 	var/lip_color = src.lip_color
 	var/real_name = src.real_name
@@ -400,10 +394,6 @@
 
 	if(ishuman(new_head_owner))
 		var/mob/living/carbon/human/human_head_owner = new_head_owner
-		human_head_owner.hair_color = hair_color
-		human_head_owner.hairstyle = hairstyle
-		human_head_owner.facial_hair_color = facial_hair_color
-		human_head_owner.facial_hairstyle = facial_hairstyle
 		human_head_owner.update_lips(lip_style, lip_color, stored_lipstick_trait)
 	if(real_name)
 		new_head_owner.real_name = real_name
@@ -419,7 +409,6 @@
 
 	new_head_owner.updatehealth()
 	new_head_owner.update_body()
-	new_head_owner.update_hair()
 	new_head_owner.update_damage_overlays()
 
 
@@ -452,8 +441,10 @@
 
 		if(dna?.species && (ROBOTIC_LIMBS in dna.species.species_traits))
 			limb.change_bodypart_status(BODYPART_ROBOTIC)
+		/*
 		if(dna?.mutant_bodyparts["legs"] && dna.mutant_bodyparts["legs"][MUTANT_INDEX_NAME] == "Digitigrade Legs")
 			limb.use_digitigrade = FULL_DIGITIGRADE
+		*/
 
 		if(!limb.attach_limb(src, 1))
 			qdel(limb)

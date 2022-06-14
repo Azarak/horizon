@@ -60,5 +60,3 @@ GLOBAL_LIST_INIT(robotic_styles_list, list("None" = "None",
 										"Zeng-Hu Pharmaceuticals" = 'icons/mob/augmentation/zhpipc.dmi'
 										))
 
-GLOBAL_LIST_EMPTY(hairstyle_cache)
-GLOBAL_LIST_EMPTY(face_hairstyle_cache)

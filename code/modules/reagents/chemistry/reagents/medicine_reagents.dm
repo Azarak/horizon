@@ -1068,9 +1068,6 @@
 		return
 
 	var/mob/living/carbon/human/exposed_human = exposed_mob
-	exposed_human.hair_color = "C2F"
-	exposed_human.facial_hair_color = "C2F"
-	exposed_human.update_hair()
 
 /datum/reagent/medicine/regen_jelly/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
 	M.adjustBruteLoss(-1.5 * REM * delta_time, 0)
@@ -1436,9 +1433,6 @@
 	. = ..()
 	if(!(methods & (TOUCH|VAPOR)) || !ishuman(exposed_human) || (reac_volume < 0.5))
 		return
-	exposed_human.hair_color = "92f"
-	exposed_human.facial_hair_color = "92f"
-	exposed_human.update_hair()
 
 /datum/reagent/medicine/polypyr/overdose_process(mob/living/M, delta_time, times_fired)
 	M.adjustOrganLoss(ORGAN_SLOT_LUNGS, 0.5 * REM * delta_time)

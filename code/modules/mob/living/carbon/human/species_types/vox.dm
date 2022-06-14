@@ -22,16 +22,18 @@
 		TRAIT_RESISTCOLD,
 	)
 	inherent_biotypes = MOB_ORGANIC|MOB_HUMANOID
-	mutantlungs = /obj/item/organ/lungs/vox
-	mutantbrain = /obj/item/organ/brain/vox
-	mutanttongue = /obj/item/organ/tongue/avian
+	organs = list(
+		ORGAN_SLOT_BRAIN = /obj/item/organ/brain/vox,
+		ORGAN_SLOT_HEART = /obj/item/organ/heart,
+		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs/vox,
+		ORGAN_SLOT_EYES = /obj/item/organ/eyes,
+		ORGAN_SLOT_EARS = /obj/item/organ/ears,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/avian,
+		ORGAN_SLOT_LIVER = /obj/item/organ/liver,
+		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach,
+		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,
+		)
 	breathid = "n2"
-	default_mutant_bodyparts = list(
-		"tail" = "Vox Tail",
-		"legs" = "Digitigrade Legs",
-		"snout" = "Vox Snout",
-		"spines" = ACC_RANDOM,
-	)
 	attack_verb = "slash"
 	attack_sound = 'sound/weapons/slash.ogg'
 	miss_sound = 'sound/weapons/slashmiss.ogg'

@@ -244,10 +244,12 @@
 		return
 
 	var/is_taur = FALSE
+	/*
 	if(dna?.species.mutant_bodyparts["taur"])
 		var/datum/sprite_accessory/taur/S = GLOB.sprite_accessories["taur"][dna.species.mutant_bodyparts["taur"][MUTANT_INDEX_NAME]]
 		if(S.hide_legs)
 			is_taur = TRUE
+	*/
 
 	//GENERATE NEW LIMBS
 	var/list/new_limbs = list()
@@ -296,8 +298,10 @@
 	if(HAS_TRAIT(src, TRAIT_HUSK))
 		. += "-husk"
 
+	/*
 	if(dna?.species.mutant_bodyparts["taur"])
 		. += "-taur"
+	*/
 
 
 //change the mob's icon to the one matching its key

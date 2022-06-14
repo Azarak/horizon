@@ -405,12 +405,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	READ_FILE(S["gender"], gender)
 	READ_FILE(S["body_type"], body_type)
 	READ_FILE(S["age"], age)
-	READ_FILE(S["hair_color"], hair_color)
-	READ_FILE(S["facial_hair_color"], facial_hair_color)
-	READ_FILE(S["eye_color"], eye_color)
 	READ_FILE(S["skin_tone"], skin_tone)
-	READ_FILE(S["hairstyle_name"], hairstyle)
-	READ_FILE(S["facial_style_name"], facial_hairstyle)
 	READ_FILE(S["underwear"], underwear)
 	READ_FILE(S["underwear_color"], underwear_color)
 	READ_FILE(S["undershirt"], undershirt)
@@ -423,7 +418,6 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	READ_FILE(S["dominant_hand"], dominant_hand)
 
 	READ_FILE(S["features"], features)
-	READ_FILE(S["mutant_bodyparts"], mutant_bodyparts)
 	READ_FILE(S["body_markings"], body_markings)
 
 	READ_FILE(S["loadouts"], loadouts)
@@ -505,16 +499,11 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 		if(!custom_names[custom_name_id])
 			custom_names[custom_name_id] = get_default_name(custom_name_id)
 
-	hairstyle = sanitize_inlist(hairstyle, GLOB.hairstyles_list)
-	facial_hairstyle = sanitize_inlist(facial_hairstyle, GLOB.facial_hairstyles_list)
 	underwear = sanitize_inlist(underwear, GLOB.underwear_list)
 	undershirt = sanitize_inlist(undershirt, GLOB.undershirt_list)
 	socks = sanitize_inlist(socks, GLOB.socks_list)
 	age = sanitize_integer(age, AGE_MIN, AGE_MAX, initial(age))
-	hair_color = sanitize_hexcolor(hair_color, 3, 0)
-	facial_hair_color = sanitize_hexcolor(facial_hair_color, 3, 0)
 	underwear_color = sanitize_hexcolor(underwear_color, 3, 0)
-	eye_color = sanitize_hexcolor(eye_color, 3, 0)
 	skin_tone = sanitize_inlist(skin_tone, GLOB.skin_tones)
 	backpack = sanitize_inlist(backpack, GLOB.backpacklist, initial(backpack))
 	jumpsuit_style = sanitize_inlist(jumpsuit_style, GLOB.jumpsuitlist, initial(jumpsuit_style))
@@ -547,7 +536,6 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	validate_languages()
 
 	features = SANITIZE_LIST(features)
-	mutant_bodyparts = SANITIZE_LIST(mutant_bodyparts)
 	body_markings = SANITIZE_LIST(body_markings)
 
 	loadouts = SANITIZE_LIST(loadouts)
@@ -597,7 +585,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 
 	validate_attributes()
 
-	validate_species_parts()
+	//validate_species_parts()
 
 	needs_update = TRUE
 
@@ -618,12 +606,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	WRITE_FILE(S["gender"] , gender)
 	WRITE_FILE(S["body_type"] , body_type)
 	WRITE_FILE(S["age"] , age)
-	WRITE_FILE(S["hair_color"] , hair_color)
-	WRITE_FILE(S["facial_hair_color"] , facial_hair_color)
-	WRITE_FILE(S["eye_color"] , eye_color)
 	WRITE_FILE(S["skin_tone"] , skin_tone)
-	WRITE_FILE(S["hairstyle_name"] , hairstyle)
-	WRITE_FILE(S["facial_style_name"] , facial_hairstyle)
 	WRITE_FILE(S["underwear"] , underwear)
 	WRITE_FILE(S["underwear_color"] , underwear_color)
 	WRITE_FILE(S["undershirt"] , undershirt)
@@ -655,7 +638,6 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 
 	//All the new horizon related stuff here
 	WRITE_FILE(S["features"] , features)
-	WRITE_FILE(S["mutant_bodyparts"] , mutant_bodyparts)
 	WRITE_FILE(S["body_markings"] , body_markings)
 
 	WRITE_FILE(S["loadouts"] , loadouts)

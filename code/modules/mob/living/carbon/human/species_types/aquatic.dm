@@ -13,14 +13,6 @@
 		FACEHAIR,
 	)
 	inherent_biotypes = MOB_ORGANIC|MOB_HUMANOID
-	default_mutant_bodyparts = list(
-		"tail" = ACC_RANDOM,
-		"snout" = ACC_RANDOM,
-		"horns" = ACC_NONE,
-		"ears" = ACC_RANDOM,
-		"legs" = "Normal Legs",
-		"wings" = ACC_NONE,
-	)
 	attack_verb = "slash"
 	attack_sound = 'sound/weapons/slash.ogg'
 	miss_sound = 'sound/weapons/slashmiss.ogg'

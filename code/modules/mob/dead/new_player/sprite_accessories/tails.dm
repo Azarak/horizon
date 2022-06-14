@@ -165,12 +165,6 @@
 	name = "Cow"
 	icon_state = "cow"
 
-/*/datum/sprite_accessory/tails/mammal/wagging/dtiger //icon = 'icons/mob/mutant_bodyparts.dmi'
-	name = "Dark Tiger"
-	icon_state = "dtiger"
-	color_src = USE_ONE_COLOR
-	default_color = DEFAULT_PRIMARY*/
-
 /datum/sprite_accessory/tails/mammal/wagging/eevee
 	name = "Eevee"
 	icon_state = "eevee"
@@ -229,12 +223,6 @@
 /datum/sprite_accessory/tails/mammal/wagging/lab
 	name = "Lab"
 	icon_state = "lab"
-
-/*/datum/sprite_accessory/tails/mammal/wagging/ltiger //icon = 'icons/mob/mutant_bodyparts.dmi'
-	name = "Light Tiger"
-	icon_state = "ltiger"
-	color_src = USE_ONE_COLOR
-	default_color = DEFAULT_PRIMARY*/
 
 /datum/sprite_accessory/tails/mammal/wagging/murid
 	name = "Murid"

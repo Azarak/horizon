@@ -30,13 +30,8 @@
 	if(visualsOnly)
 		return
 	equipped_on.fully_replace_character_name(null,"Waldo")
-	equipped_on.eye_color = "000"
 	equipped_on.gender = MALE
 	equipped_on.skin_tone = "caucasian3"
-	equipped_on.hairstyle = "Business Hair 3"
-	equipped_on.facial_hairstyle = "Shaved"
-	equipped_on.hair_color = "000"
-	equipped_on.facial_hair_color = equipped_on.hair_color
 	equipped_on.update_body()
 	if(equipped_on.mind)
 		equipped_on.mind.AddSpell(new /obj/effect/proc_holder/spell/aoe_turf/knock(null))
@@ -137,36 +132,6 @@
 /datum/outfit/bountyhook/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE)
 	if(visualsOnly)
 		return
-	var/obj/item/card/id/W = H.wear_id
-	W.assignment = "Bounty Hunter"
-	W.registered_name = H.real_name
-	W.update_label()
-	W.update_icon()
-
-/datum/outfit/bountysynth
-	name = "Bounty Hunter - Synth"
-	uniform = /obj/item/clothing/under/rank/prisoner
-	back = /obj/item/storage/backpack
-	suit = /obj/item/clothing/suit/armor/riot
-	shoes = /obj/item/clothing/shoes/jackboots
-	glasses = /obj/item/clothing/glasses/eyepatch
-	r_pocket = /obj/item/restraints/handcuffs/cable
-	ears = /obj/item/radio/headset
-	id = /obj/item/card/id/advanced
-	r_hand = /obj/item/storage/firstaid/regular
-	l_hand = /obj/item/pinpointer/shuttle
-
-	backpack_contents = list(
-		/obj/item/bountytrap = 4
-		)
-
-/datum/outfit/bountysynth/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE)
-	if(visualsOnly)
-		return
-	var/datum/species/synth/synthetic_appearance = new()
-	H.set_species(synthetic_appearance)
-	synthetic_appearance.assume_disguise(synthetic_appearance, H)
-	H.update_hair()
 	var/obj/item/card/id/W = H.wear_id
 	W.assignment = "Bounty Hunter"
 	W.registered_name = H.real_name

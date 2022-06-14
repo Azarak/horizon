@@ -9,7 +9,6 @@
 	)
 	inherent_biotypes = MOB_ORGANIC|MOB_HUMANOID|MOB_BUG
 	meat = /obj/item/food/meat/slab/human/mutant/fly
-	mutanteyes = /obj/item/organ/eyes/fly
 	liked_food = GROSS
 	disliked_food = NONE
 	toxic_food = NONE
@@ -17,13 +16,18 @@
 	species_language_holder = /datum/language_holder/fly
 	payday_modifier = 0.75
 
-	mutanttongue = /obj/item/organ/tongue/fly
-	mutantheart = /obj/item/organ/heart/fly
-	mutantlungs = /obj/item/organ/lungs/fly
-	mutantliver = /obj/item/organ/liver/fly
-	mutantstomach = /obj/item/organ/stomach/fly
-	mutantappendix = /obj/item/organ/appendix/fly
-	mutant_organs = list(/obj/item/organ/fly, /obj/item/organ/fly/groin)
+	organs = list(
+		ORGAN_SLOT_BRAIN = /obj/item/organ/brain,
+		ORGAN_SLOT_HEART = /obj/item/organ/heart/fly,
+		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs/fly,
+		ORGAN_SLOT_EYES = /obj/item/organ/eyes/fly,
+		ORGAN_SLOT_EARS = /obj/item/organ/ears,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/fly,
+		ORGAN_SLOT_LIVER = /obj/item/organ/liver/fly,
+		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach/fly,
+		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix/fly,
+		)
+
 	scream_sounds = list(
 		NEUTER = 'sound/voice/scream_moth.ogg',
 	)
@@ -97,15 +101,3 @@
 
 /obj/item/organ/appendix/fly/update_appearance(updates=ALL)
 	return ..(updates & ~(UPDATE_NAME|UPDATE_ICON)) //don't set name or icon thank you
-
-//useless organs we throw in just to fuck with surgeons a bit more
-/obj/item/organ/fly
-	desc = "You have no idea what the hell this is, or how it manages to keep something alive in any capacity."
-
-/obj/item/organ/fly/Initialize()
-	. = ..()
-	name = odd_organ_name()
-	icon_state = pick("brain-x-d", "liver-x", "kidneys-x", "stomach-x", "lungs-x", "random_fly_1", "random_fly_2", "random_fly_3", "random_fly_4", "random_fly_5")
-
-/obj/item/organ/fly/groin //appendix is the only groin organ so we gotta have one of these too lol
-	zone = BODY_ZONE_PRECISE_GROIN

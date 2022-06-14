@@ -356,7 +356,6 @@
 		"surgery_heal_burn_upgrade_femto",
 		"surgery_heal_combo",
 		"surgery_lobotomy",
-		"surgery_wing_reconstruction",
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 1500)
 

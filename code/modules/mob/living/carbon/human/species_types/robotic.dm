@@ -16,7 +16,6 @@
 		TRAIT_NO_HUSK,
 		TRAIT_OXYIMMUNE,
 	)
-	mutant_bodyparts = list()
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | ERT_SPAWN | RACE_SWAP | SLIME_EXTRACT
 	reagent_flags = PROCESS_SYNTHETIC
 	coldmod = 0.5
@@ -24,15 +23,17 @@
 	heatmod = 1.2
 	brutemod = 1.1
 	siemens_coeff = 1.2 //Not more because some shocks will outright crit you, which is very unfun
-	mutant_organs = list(/obj/item/organ/cyberimp/arm/power_cord)
-	mutantbrain = /obj/item/organ/brain/ipc_positron
-	mutantstomach = /obj/item/organ/stomach/robot_ipc
-	mutantears = /obj/item/organ/ears/robot_ipc
-	mutanttongue = /obj/item/organ/tongue/robot_ipc
-	mutanteyes = /obj/item/organ/eyes/robot_ipc
-	mutantlungs = /obj/item/organ/lungs/robot_ipc
-	mutantheart = /obj/item/organ/heart/robot_ipc
-	mutantliver = /obj/item/organ/liver/robot_ipc
+	organs = list(
+		ORGAN_SLOT_BRAIN = /obj/item/organ/brain/ipc_positron,
+		ORGAN_SLOT_HEART = /obj/item/organ/heart/robot_ipc,
+		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs/robot_ipc,
+		ORGAN_SLOT_EYES = /obj/item/organ/eyes/robot_ipc,
+		ORGAN_SLOT_EARS = /obj/item/organ/ears/robot_ipc,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/robot_ipc,
+		ORGAN_SLOT_LIVER = /obj/item/organ/liver/robot_ipc,
+		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach/robot_ipc,
+		ORGAN_SLOT_RIGHT_ARM_AUG = /obj/item/organ/cyberimp/arm/power_cord,
+		)
 	exotic_blood = /datum/reagent/fuel/oil
 	scream_sounds = list(
 		NEUTER = 'sound/voice/scream_silicon.ogg',
@@ -52,13 +53,6 @@
 /datum/species/robotic/spec_revival(mob/living/carbon/human/H)
 	playsound(H.loc, 'sound/machines/chime.ogg', 50, 1, -1)
 	H.visible_message(SPAN_NOTICE("[H]'s monitor lights up."), SPAN_NOTICE("All systems nominal. You're back online!"))
-
-/datum/species/robotic/on_species_gain(mob/living/carbon/human/C)
-	. = ..()
-	var/obj/item/organ/appendix/appendix = C.getorganslot(ORGAN_SLOT_APPENDIX)
-	if(appendix)
-		appendix.Remove(C)
-		qdel(appendix)
 
 /datum/species/robotic/random_name(gender,unique,lastname)
 	var/randname = pick(GLOB.posibrain_names)
@@ -80,12 +74,6 @@
 		NOTRANSSTING,
 		REVIVES_BY_HEALING,
 	)
-	mutant_bodyparts = list()
-	default_mutant_bodyparts = list(
-		"ipc_antenna" = ACC_RANDOM,
-		"ipc_screen" = ACC_RANDOM,
-		"ipc_chassis" = ACC_RANDOM,
-	)
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | ERT_SPAWN | RACE_SWAP | SLIME_EXTRACT
 	limbs_icon = 'icons/mob/species/ipc_parts.dmi'
 	hair_alpha = 210
@@ -98,21 +86,22 @@
 	//TODO: fix this
 	/*H.dna.mutant_bodyparts["ipc_screen"][MUTANT_INDEX_NAME] = "BSOD"
 	sleep(3 SECONDS)*/
-	H.dna.mutant_bodyparts["ipc_screen"][MUTANT_INDEX_NAME] = saved_screen
+	//H.dna.mutant_bodyparts["ipc_screen"][MUTANT_INDEX_NAME] = saved_screen
 
 /datum/species/robotic/ipc/spec_death(gibbed, mob/living/carbon/human/H)
 	. = ..()
-	saved_screen = H.dna.mutant_bodyparts["ipc_screen"][MUTANT_INDEX_NAME]
+	//saved_screen = H.dna.mutant_bodyparts["ipc_screen"][MUTANT_INDEX_NAME]
 	//TODO: fix this
 	/*H.dna.mutant_bodyparts["ipc_screen"][MUTANT_INDEX_NAME] = "BSOD"
 	sleep(3 SECONDS)*/
-	H.dna.mutant_bodyparts["ipc_screen"][MUTANT_INDEX_NAME] = "Blank"
+	//H.dna.mutant_bodyparts["ipc_screen"][MUTANT_INDEX_NAME] = "Blank"
 
 /datum/species/robotic/ipc/on_species_gain(mob/living/carbon/human/C)
 	. = ..()
 	if(!screen)
 		screen = new
 		screen.Grant(C)
+	/*
 	var/chassis = C.dna.mutant_bodyparts["ipc_chassis"]
 	if(!chassis)
 		return
@@ -122,6 +111,7 @@
 		if(chassis_of_choice.color_src)
 			species_traits += MUTCOLORS
 		C.update_body()
+	*/
 
 /datum/species/robotic/ipc/on_species_loss(mob/living/carbon/human/C)
 	. = ..()
@@ -140,7 +130,7 @@
 	var/new_ipc_screen = input(usr, "Choose your character's screen:", "Monitor Display") as null|anything in GLOB.sprite_accessories["ipc_screen"]
 	if(!new_ipc_screen)
 		return
-	H.dna.species.mutant_bodyparts["ipc_screen"][MUTANT_INDEX_NAME] = new_ipc_screen
+	//H.dna.species.mutant_bodyparts["ipc_screen"][MUTANT_INDEX_NAME] = new_ipc_screen
 	H.update_body()
 
 /datum/species/robotic/synthliz
@@ -155,13 +145,6 @@
 		ROBOTIC_LIMBS,
 		NOTRANSSTING,
 		REVIVES_BY_HEALING,
-	)
-	default_mutant_bodyparts = list(
-		"ipc_antenna" = ACC_RANDOM,
-		"tail" = ACC_RANDOM,
-		"snout" = ACC_RANDOM,
-		"legs" = "Digitigrade Legs",
-		"taur" = ACC_NONE,
 	)
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | ERT_SPAWN | RACE_SWAP | SLIME_EXTRACT
 	limbs_icon = 'icons/mob/species/synthliz_parts_greyscale.dmi'
@@ -187,16 +170,6 @@
 		ROBOTIC_LIMBS,
 		NOTRANSSTING,
 		REVIVES_BY_HEALING,
-	)
-	default_mutant_bodyparts = list(
-		"tail" = ACC_RANDOM,
-		"snout" = ACC_RANDOM,
-		"horns" = ACC_NONE,
-		"ears" = ACC_RANDOM,
-		"legs" = ACC_RANDOM,
-		"taur" = ACC_NONE,
-		"wings" = ACC_NONE,
-		"neck" = ACC_NONE,
 	)
 	limbs_icon = 'icons/mob/species/mammal_parts_greyscale.dmi'
 	limbs_id = "mammal"

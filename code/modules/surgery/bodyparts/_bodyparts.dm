@@ -741,7 +741,6 @@
 	if(owner)
 		owner.updatehealth()
 		owner.update_body() //if our head becomes robotic, we remove the lizard horns and human hair.
-		owner.update_hair()
 		owner.update_damage_overlays()
 
 /obj/item/bodypart/proc/is_organic_limb()

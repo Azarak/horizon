@@ -32,7 +32,17 @@
 		TRAIT_NOCLONELOSS,
 	)
 	inherent_biotypes = MOB_UNDEAD|MOB_HUMANOID
-	mutanttongue = /obj/item/organ/tongue/zombie
+	organs = list(
+		ORGAN_SLOT_BRAIN = /obj/item/organ/brain,
+		ORGAN_SLOT_HEART = /obj/item/organ/heart,
+		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs,
+		ORGAN_SLOT_EYES = /obj/item/organ/eyes,
+		ORGAN_SLOT_EARS = /obj/item/organ/ears,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/zombie,
+		ORGAN_SLOT_LIVER = /obj/item/organ/liver,
+		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach,
+		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,
+		)
 	var/static/list/spooks = list(
 		'sound/hallucinations/growl1.ogg',
 		'sound/hallucinations/growl2.ogg',
@@ -62,7 +72,17 @@
 	mutanthands = /obj/item/zombie_hand
 	armor = 20 // 120 damage to KO a zombie, which kills it
 	speedmod = 1.6
-	mutanteyes = /obj/item/organ/eyes/night_vision/zombie
+	organs = list(
+		ORGAN_SLOT_BRAIN = /obj/item/organ/brain,
+		ORGAN_SLOT_HEART = /obj/item/organ/heart,
+		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs,
+		ORGAN_SLOT_EYES = /obj/item/organ/eyes/night_vision/zombie,
+		ORGAN_SLOT_EARS = /obj/item/organ/ears,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/zombie,
+		ORGAN_SLOT_LIVER = /obj/item/organ/liver,
+		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach,
+		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,
+		)
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | ERT_SPAWN
 	/// The rate the zombies regenerate at
 	var/heal_rate = 0.5
@@ -122,21 +142,5 @@
 	if(!infection)
 		infection = new()
 		infection.Insert(C)
-
-// Your skin falls off
-/datum/species/krokodil_addict
-	name = "Human"
-	id = "goofzombies"
-	limbs_id = "zombie" //They look like zombies
-	sexes = 0
-	meat = /obj/item/food/meat/slab/human/mutant/zombie
-	mutanttongue = /obj/item/organ/tongue/zombie
-	changesource_flags = MIRROR_BADMIN | WABBAJACK | ERT_SPAWN
-	species_traits = list(HAS_FLESH, HAS_BONE)
-	inherent_traits = list(
-		TRAIT_ADVANCEDTOOLUSER,
-		TRAIT_CAN_STRIP,
-		TRAIT_EASILY_WOUNDED,
-	)
 
 #undef REGENERATION_DELAY

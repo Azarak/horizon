@@ -32,8 +32,17 @@
 		TRAIT_NOCLONELOSS,
 	)
 	inherent_biotypes = MOB_UNDEAD|MOB_HUMANOID
-	mutanttongue = /obj/item/organ/tongue/bone
-	mutantstomach = /obj/item/organ/stomach/bone
+	organs = list(
+		ORGAN_SLOT_BRAIN = /obj/item/organ/brain,
+		ORGAN_SLOT_HEART = /obj/item/organ/heart,
+		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs,
+		ORGAN_SLOT_EYES = /obj/item/organ/eyes,
+		ORGAN_SLOT_EARS = /obj/item/organ/ears,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/bone,
+		ORGAN_SLOT_LIVER = /obj/item/organ/liver,
+		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach/bone,
+		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,
+		)
 	damage_overlay_type = ""//let's not show bloody wounds or burns over bones.
 	disliked_food = NONE
 	liked_food = GROSS | MEAT | RAW

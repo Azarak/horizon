@@ -15,8 +15,6 @@
 	var/default_mutation_genes[DNA_MUTATION_BLOCKS] //List of the default genes from this mutation to allow DNA Scanner highlighting
 	var/stability = 100
 	var/scrambled = FALSE //Did we take something like mutagen? In that case we cant get our genes scanned to instantly cheese all the powers.
-	///Mutant bodyparts of our human, those that he originally has, so they dont change if you implant a tail or cut it off etc. For ones that do, check the species level
-	var/list/list/mutant_bodyparts = list()
 	///Body markings of the DNA's owner. This is for storing their original state for re-creating the character. They'll get changed on species mutation
 	var/list/list/body_markings = list()
 	///Current body size, used for proper re-sizing and keeping track of that
@@ -47,7 +45,7 @@
 	destination.dna.unique_enzymes = unique_enzymes
 	destination.dna.uni_identity = uni_identity
 	destination.dna.blood_type = blood_type
-	destination.set_species(species.type, TRUE, null, features.Copy(), mutant_bodyparts.Copy(), body_markings.Copy())
+	destination.set_species(species.type, TRUE, null, features.Copy(), body_markings.Copy())
 	destination.dna.features = features.Copy()
 	destination.dna.real_name = real_name
 	destination.dna.temporary_mutations = temporary_mutations.Copy()
@@ -62,7 +60,6 @@
 	new_dna.uni_identity = uni_identity
 	new_dna.blood_type = blood_type
 	new_dna.features = features.Copy()
-	new_dna.mutant_bodyparts = mutant_bodyparts.Copy()
 	new_dna.body_markings = body_markings.Copy()
 	new_dna.update_body_size()
 	new_dna.species = new species.type
@@ -111,16 +108,7 @@
 			L[DNA_GENDER_BLOCK] = construct_block(G_PLURAL, 3)
 	if(ishuman(holder))
 		var/mob/living/carbon/human/H = holder
-		if(!GLOB.hairstyles_list.len)
-			init_sprite_accessory_subtypes(/datum/sprite_accessory/hair,GLOB.hairstyles_list, GLOB.hairstyles_male_list, GLOB.hairstyles_female_list)
-		L[DNA_HAIRSTYLE_BLOCK] = construct_block(GLOB.hairstyles_list.Find(H.hairstyle), GLOB.hairstyles_list.len)
-		L[DNA_HAIR_COLOR_BLOCK] = sanitize_hexcolor(H.hair_color)
-		if(!GLOB.facial_hairstyles_list.len)
-			init_sprite_accessory_subtypes(/datum/sprite_accessory/facial_hair, GLOB.facial_hairstyles_list, GLOB.facial_hairstyles_male_list, GLOB.facial_hairstyles_female_list)
-		L[DNA_FACIAL_HAIRSTYLE_BLOCK] = construct_block(GLOB.facial_hairstyles_list.Find(H.facial_hairstyle), GLOB.facial_hairstyles_list.len)
-		L[DNA_FACIAL_HAIR_COLOR_BLOCK] = sanitize_hexcolor(H.facial_hair_color)
 		L[DNA_SKIN_TONE_BLOCK] = construct_block(GLOB.skin_tones.Find(H.skin_tone), GLOB.skin_tones.len)
-		L[DNA_EYE_COLOR_BLOCK] = sanitize_hexcolor(H.eye_color)
 
 	for(var/i=1, i<=DNA_UNI_IDENTITY_BLOCKS, i++)
 		if(L[i])
@@ -186,14 +174,8 @@
 		return
 	var/mob/living/carbon/human/H = holder
 	switch(blocknumber)
-		if(DNA_HAIR_COLOR_BLOCK)
-			setblock(uni_identity, blocknumber, sanitize_hexcolor(H.hair_color))
-		if(DNA_FACIAL_HAIR_COLOR_BLOCK)
-			setblock(uni_identity, blocknumber, sanitize_hexcolor(H.facial_hair_color))
 		if(DNA_SKIN_TONE_BLOCK)
 			setblock(uni_identity, blocknumber, construct_block(GLOB.skin_tones.Find(H.skin_tone), GLOB.skin_tones.len))
-		if(DNA_EYE_COLOR_BLOCK)
-			setblock(uni_identity, blocknumber, sanitize_hexcolor(H.eye_color))
 		if(DNA_GENDER_BLOCK)
 			switch(H.gender)
 				if(MALE)
@@ -202,10 +184,6 @@
 					setblock(uni_identity, blocknumber, construct_block(G_FEMALE, 3))
 				else
 					setblock(uni_identity, blocknumber, construct_block(G_PLURAL, 3))
-		if(DNA_FACIAL_HAIRSTYLE_BLOCK)
-			setblock(uni_identity, blocknumber, construct_block(GLOB.facial_hairstyles_list.Find(H.facial_hairstyle), GLOB.facial_hairstyles_list.len))
-		if(DNA_HAIRSTYLE_BLOCK)
-			setblock(uni_identity, blocknumber, construct_block(GLOB.hairstyles_list.Find(H.hairstyle), GLOB.hairstyles_list.len))
 
 //Please use add_mutation or activate_mutation instead
 /datum/dna/proc/force_give(datum/mutation/human/HM)
@@ -276,7 +254,6 @@
 	if(!skip_index) //I hate this
 		generate_dna_blocks()
 	features = species.get_random_features()
-	mutant_bodyparts = species.get_random_mutant_bodyparts(features)
 
 /datum/dna/proc/update_body_size()
 	if(!holder || current_body_size == features["body_size"])
@@ -319,7 +296,7 @@
 			stored_dna.species = mrace //not calling any species update procs since we're a brain, not a monkey/human
 
 
-/mob/living/carbon/set_species(datum/species/mrace, icon_update = TRUE, datum/preferences/pref_load, list/override_features, list/override_mutantparts, list/override_markings, retain_features = FALSE, retain_mutantparts = FALSE)
+/mob/living/carbon/set_species(datum/species/mrace, icon_update = TRUE, datum/preferences/pref_load, list/override_features, list/override_markings, retain_features = FALSE)
 	if(QDELETED(src))
 		CRASH("You're trying to change your species post deletion, this is a recipe for madness")
 	if(mrace && has_dna())
@@ -339,34 +316,20 @@
 		if(pref_load)
 			dna.features = pref_load.features.Copy()
 			dna.real_name = pref_load.real_name
-			dna.mutant_bodyparts = pref_load.mutant_bodyparts.Copy()
 			dna.body_markings = pref_load.body_markings.Copy()
 			dna.species.body_markings = pref_load.body_markings.Copy()
 		else
 			if(!retain_features)
 				dna.features = override_features || new_race.get_random_features()
-			if(retain_mutantparts)
-				var/list/list/new_list = new_race.get_random_mutant_bodyparts(dna.features)
-				var/list/compiled_list = list()
-				for(var/key in new_list)
-					if(dna.mutant_bodyparts[key])
-						compiled_list[key] = dna.mutant_bodyparts[key].Copy()
-					else
-						compiled_list[key] = new_list[key].Copy()
-			else
-				dna.mutant_bodyparts = override_mutantparts || new_race.get_random_mutant_bodyparts(dna.features)
 			dna.body_markings = override_markings || new_race.get_random_body_markings(dna.features)
 			dna.species.body_markings = dna.body_markings.Copy()
 
-		bodyparts_to_add = dna.mutant_bodyparts.Copy()
 
 		for(var/key in bodyparts_to_add)
 			var/datum/sprite_accessory/SP = GLOB.sprite_accessories[key][bodyparts_to_add[key][MUTANT_INDEX_NAME]]
 			if(!SP.factual)
 				bodyparts_to_add -= key
 				continue
-
-		dna.species.mutant_bodyparts = bodyparts_to_add.Copy()
 
 		dna.update_body_size()
 
@@ -382,7 +345,6 @@
 	..()
 	if(icon_update)
 		update_body()
-		update_hair()
 		update_body_parts()
 		update_mutations_overlay()// no lizard with human hulk overlay please.
 	// Adjust body temperatures to not burn special species as they spawn.
@@ -428,7 +390,6 @@
 
 	if(mrace || newfeatures || ui)
 		update_body()
-		update_hair()
 		update_body_parts()
 		update_mutations_overlay()
 
@@ -460,15 +421,9 @@
 /mob/living/carbon/human/updateappearance(icon_update=1, mutcolor_update=0, mutations_overlay_update=0)
 	..()
 	var/structure = dna.uni_identity
-	hair_color = sanitize_hexcolor(getblock(structure, DNA_HAIR_COLOR_BLOCK))
-	facial_hair_color = sanitize_hexcolor(getblock(structure, DNA_FACIAL_HAIR_COLOR_BLOCK))
 	skin_tone = GLOB.skin_tones[deconstruct_block(getblock(structure, DNA_SKIN_TONE_BLOCK), GLOB.skin_tones.len)]
-	eye_color = sanitize_hexcolor(getblock(structure, DNA_EYE_COLOR_BLOCK))
-	facial_hairstyle = GLOB.facial_hairstyles_list[deconstruct_block(getblock(structure, DNA_FACIAL_HAIRSTYLE_BLOCK), GLOB.facial_hairstyles_list.len)]
-	hairstyle = GLOB.hairstyles_list[deconstruct_block(getblock(structure, DNA_HAIRSTYLE_BLOCK), GLOB.hairstyles_list.len)]
 	if(icon_update)
 		dna.species.handle_body(src) // We want 'update_body_parts()' to be called only if mutcolor_update is TRUE, so no 'update_body()' here.
-		update_hair()
 		if(mutcolor_update)
 			update_body_parts()
 		if(mutations_overlay_update)

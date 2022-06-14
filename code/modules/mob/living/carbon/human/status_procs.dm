@@ -28,8 +28,6 @@
 
 /mob/living/carbon/human/cure_husk(list/sources)
 	. = ..()
-	if(.)
-		update_hair()
 
 /mob/living/carbon/human/become_husk(source)
 	if(HAS_TRAIT(src, TRAIT_NO_HUSK))
@@ -38,8 +36,6 @@
 		cure_husk()
 		return
 	. = ..()
-	if(.)
-		update_hair()
 
 /mob/living/carbon/human/set_drugginess(amount)
 	..()

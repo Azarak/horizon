@@ -37,33 +37,6 @@
 	if(broken || !Adjacent(user))
 		return
 
-	if(ishuman(user))
-		var/mob/living/carbon/human/H = user
-
-		//see code/modules/mob/dead/new_player/preferences.dm at approx line 545 for comments!
-		//this is largely copypasted from there.
-
-		//handle facial hair (if necessary)
-		if(H.gender != FEMALE)
-			var/new_style = input(user, "Select a facial hairstyle", "Grooming")  as null|anything in GLOB.facial_hairstyles_list
-			if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
-				return //no tele-grooming
-			if(new_style)
-				H.facial_hairstyle = new_style
-		else
-			H.facial_hairstyle = "Shaved"
-
-		//handle normal hair
-		var/new_style = input(user, "Select a hairstyle", "Grooming")  as null|anything in GLOB.hairstyles_list
-		if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
-			return //no tele-grooming
-		if(HAS_TRAIT(H, TRAIT_BALD))
-			to_chat(H, SPAN_NOTICE("If only growing back hair were that easy for you..."))
-		if(new_style)
-			H.hairstyle = new_style
-
-		H.update_hair()
-
 /obj/structure/mirror/examine_status(mob/user)
 	if(broken)
 		return list()// no message spam
@@ -221,7 +194,6 @@
 						to_chat(H, SPAN_NOTICE("Invalid color. Your color is not bright enough."))
 
 			H.update_body()
-			H.update_hair()
 			H.update_body_parts()
 			H.update_mutations_overlay() // no hulk lizard
 
@@ -251,34 +223,12 @@
 			H.update_body()
 			H.update_mutations_overlay() //(hulk male/female)
 
-		if("hair")
-			var/hairchoice = tgui_alert(H, "Hairstyle or hair color?", "Change Hair", list("Style", "Color"))
-			if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
-				return
-			if(hairchoice == "Style") //So you just want to use a mirror then?
-				..()
-			else
-				var/new_hair_color = input(H, "Choose your hair color", "Hair Color","#"+H.hair_color) as color|null
-				if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
-					return
-				if(new_hair_color)
-					H.hair_color = sanitize_hexcolor(new_hair_color)
-					H.dna.update_ui_block(DNA_HAIR_COLOR_BLOCK)
-				if(H.gender == "male")
-					var/new_face_color = input(H, "Choose your facial hair color", "Hair Color","#"+H.facial_hair_color) as color|null
-					if(new_face_color)
-						H.facial_hair_color = sanitize_hexcolor(new_face_color)
-						H.dna.update_ui_block(DNA_FACIAL_HAIR_COLOR_BLOCK)
-				H.update_hair()
-
 		if(BODY_ZONE_PRECISE_EYES)
 			var/new_eye_color = input(H, "Choose your eye color", "Eye Color","#"+H.eye_color) as color|null
 			if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
 				return
-			if(new_eye_color)
-				H.eye_color = sanitize_hexcolor(new_eye_color)
-				H.dna.update_ui_block(DNA_EYE_COLOR_BLOCK)
-				H.update_body()
+			return
+
 	if(choice)
 		curse(user)
 

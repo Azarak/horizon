@@ -109,10 +109,6 @@
 	if(!ishuman(affected_carbon))
 		return
 	var/mob/living/carbon/human/affected_human = affected_carbon
-	if(affected_human.gender == MALE)
-		to_chat(affected_human, SPAN_WARNING("Your chin itches."))
-		affected_human.facial_hairstyle = "Beard (Full)"
-		affected_human.update_hair()
 	//Only like gross food
 	affected_human.dna?.species.liked_food = GROSS
 	affected_human.dna?.species.disliked_food = NONE

@@ -193,10 +193,6 @@
 	var/backpack_contents = -1
 	var/suit_store = -1
 
-	var/hairstyle
-	var/facial_hairstyle
-	var/haircolor
-	var/facial_haircolor
 	var/skin_tone
 
 /obj/effect/mob_spawn/human/Initialize()
@@ -226,27 +222,10 @@
 		H.underwear = "Nude"
 		H.undershirt = "Nude"
 		H.socks = "Nude"
-		if(hairstyle)
-			H.hairstyle = hairstyle
-		else
-			H.hairstyle = random_hairstyle(H.gender, H.dna.species)
-		if(facial_hairstyle)
-			H.facial_hairstyle = facial_hairstyle
-		else
-			H.facial_hairstyle = random_facial_hairstyle(H.gender, H.dna.species)
-		if(haircolor)
-			H.hair_color = haircolor
-		else
-			H.hair_color = random_short_color()
-		if(facial_haircolor)
-			H.facial_hair_color = facial_haircolor
-		else
-			H.facial_hair_color = random_short_color()
 		if(skin_tone)
 			H.skin_tone = skin_tone
 		else
 			H.skin_tone = random_skin_tone()
-		H.update_hair()
 		H.update_body()
 	if(outfit)
 		var/static/list/slots = list("uniform", "r_hand", "l_hand", "suit", "shoes", "gloves", "ears", "glasses", "mask", "head", "belt", "r_pocket", "l_pocket", "back", "id", "neck", "backpack_contents", "suit_store")

@@ -39,5 +39,4 @@
 			visible_message(SPAN_NOTICE("[src] severs [L]'s tail in one swift swipe!"), SPAN_NOTICE("You sever [L]'s tail in one swift swipe."))
 			tail.Remove(L)
 			var/obj/item/organ/tail/cat/dropped_tail = new(target.drop_location())
-			dropped_tail.color = L.hair_color
 		return 1

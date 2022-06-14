@@ -16,7 +16,17 @@
 		TRAIT_CAN_STRIP,
 		TRAIT_TOXINLOVER,
 	)
-	mutantlungs = /obj/item/organ/lungs/slime
+	organs = list(
+		ORGAN_SLOT_BRAIN = /obj/item/organ/brain,
+		ORGAN_SLOT_HEART = /obj/item/organ/heart,
+		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs/slime,
+		ORGAN_SLOT_EYES = /obj/item/organ/eyes,
+		ORGAN_SLOT_EARS = /obj/item/organ/ears,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue,
+		ORGAN_SLOT_LIVER = /obj/item/organ/liver,
+		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach,
+		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,
+		)
 	meat = /obj/item/food/meat/slab/human/mutant/slime
 	exotic_blood = /datum/reagent/toxin/slimejelly
 	damage_overlay_type = ""
@@ -34,14 +44,6 @@
 	)
 	species_language_holder = /datum/language_holder/jelly
 	ass_image = 'icons/ass/assslime.png'
-	default_mutant_bodyparts = list(
-		"tail" = ACC_NONE,
-		"snout" = ACC_NONE,
-		"ears" = ACC_NONE,
-		"taur" = ACC_NONE,
-		"wings" = ACC_NONE,
-		"legs" = "Normal Legs",
-	)
 	hair_alpha = 160 //a notch brighter so it blends better.
 	scream_sounds = list(
 		NEUTER = 'sound/voice/jelly_scream.ogg',
@@ -847,6 +849,8 @@
 	change_form()
 
 /datum/action/innate/slime_change/proc/change_form()
+	return
+	/*
 	var/mob/living/carbon/human/H = owner
 	var/select_alteration = input(H, "Select what part of your form to alter", "Form Alteration", "cancel") in list("Body Colors","Hair Style", "Facial Hair Style", "Mutant Body Parts", "Markings", "DNA Specifics", "Cancel")
 	if(!select_alteration || select_alteration == "Cancel" || QDELETED(H))
@@ -1033,3 +1037,4 @@
 						DNA.update_body_size()
 			H.mutant_renderkey = "" //Just in case
 			H.update_mutant_bodyparts()
+	*/

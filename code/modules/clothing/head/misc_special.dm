@@ -176,8 +176,8 @@
 
 /obj/item/clothing/head/kitty/update_icon(updates=ALL, mob/living/carbon/human/user)
 	. = ..()
-	if(ishuman(user))
-		add_atom_colour("#[user.hair_color]", FIXED_COLOUR_PRIORITY)
+	//if(ishuman(user))
+	//	add_atom_colour("#[user.hair_color]", FIXED_COLOUR_PRIORITY)
 
 /obj/item/clothing/head/kitty/genuine
 	desc = "A pair of kitty ears. A tag on the inside says \"Hand made from real cats.\""
@@ -245,6 +245,7 @@
 	. = ..()
 	item_flags &= ~EXAMINE_SKIP
 
+/*
 /obj/item/clothing/head/wig/update_icon_state()
 	var/datum/sprite_accessory/S = GLOB.hairstyles_list[hairstyle]
 	if(S)
@@ -305,11 +306,13 @@
 		add_atom_colour(selected_hairstyle_color, FIXED_COLOUR_PRIORITY)
 		hairstyle = selected_hairstyle
 		update_appearance()
+*/
 
 /obj/item/clothing/head/wig/random/Initialize(mapload)
-	hairstyle = pick(GLOB.hairstyles_list - "Bald") //Don't want invisible wig
+	//hairstyle = pick(GLOB.hairstyles_list - "Bald") //Don't want invisible wig
 	add_atom_colour("#[random_short_color()]", FIXED_COLOUR_PRIORITY)
 	. = ..()
+
 
 /obj/item/clothing/head/wig/natural
 	name = "natural wig"
@@ -318,6 +321,7 @@
 	adjustablecolor = FALSE
 	custom_price = PAYCHECK_HARD
 
+/*
 /obj/item/clothing/head/wig/natural/Initialize(mapload)
 	hairstyle = pick(GLOB.hairstyles_list - "Bald")
 	. = ..()
@@ -329,6 +333,7 @@
 			add_atom_colour("#[user.hair_color]", FIXED_COLOUR_PRIORITY)
 			update_appearance()
 		user.update_inv_head()
+*/
 
 /obj/item/clothing/head/bronze
 	name = "bronze hat"

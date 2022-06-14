@@ -22,10 +22,18 @@
 	)
 
 	inherent_biotypes = MOB_HUMANOID|MOB_MINERAL
-	mutantlungs = /obj/item/organ/lungs/plasmaman
-	mutanttongue = /obj/item/organ/tongue/bone/plasmaman
-	mutantliver = /obj/item/organ/liver/plasmaman
-	mutantstomach = /obj/item/organ/stomach/bone/plasmaman
+	organs = list(
+		ORGAN_SLOT_BRAIN = /obj/item/organ/brain,
+		ORGAN_SLOT_HEART = /obj/item/organ/heart,
+		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs/plasmaman,
+		ORGAN_SLOT_EYES = /obj/item/organ/eyes,
+		ORGAN_SLOT_EARS = /obj/item/organ/ears,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/bone/plasmaman,
+		ORGAN_SLOT_LIVER = /obj/item/organ/liver/plasmaman,
+		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach/bone/plasmaman,
+		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,
+		)
+
 	burnmod = 1.5
 	heatmod = 1.5
 	brutemod = 1.5

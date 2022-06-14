@@ -59,9 +59,6 @@
 		return
 
 	var/mob/living/carbon/human/human_receiver = reciever
-	if(mutantpart_key && istype(human_receiver))
-		human_receiver.dna.species.mutant_bodyparts[mutantpart_key] = mutantpart_info.Copy()
-		human_receiver.update_body()
 
 	var/obj/item/organ/replaced = reciever.getorganslot(slot)
 	if(replaced)
@@ -95,12 +92,6 @@
 	owner = null
 	if(organ_owner)
 		var/mob/living/carbon/human/organ_owner_human = organ_owner
-		if(mutantpart_key && istype(organ_owner_human))
-			if(organ_owner_human.dna.species.mutant_bodyparts[mutantpart_key])
-				mutantpart_info = organ_owner_human.dna.species.mutant_bodyparts[mutantpart_key].Copy() //Update the info in case it was changed on the person
-			color = "#[mutantpart_info[MUTANT_INDEX_COLOR_LIST][1]]"
-			organ_owner_human.dna.species.mutant_bodyparts -= mutantpart_key
-			organ_owner_human.update_body()
 		organ_owner.internal_organs -= src
 		if(organ_owner.internal_organs_slot[slot] == src)
 			organ_owner.internal_organs_slot.Remove(slot)
@@ -298,6 +289,4 @@
 	return
 
 /obj/item/organ/proc/build_from_dna(datum/dna/DNA, associated_key)
-	mutantpart_key = associated_key
-	mutantpart_info = DNA.mutant_bodyparts[associated_key].Copy()
-	color = "#[mutantpart_info[MUTANT_INDEX_COLOR_LIST][1]]"
+	return

@@ -20,9 +20,3 @@
 	H.fully_replace_character_name(H.real_name, "Santa Claus")
 	H.mind.set_assigned_role(SSjob.GetJobType(/datum/job/santa))
 	H.mind.special_role = ROLE_SANTA
-
-	H.hairstyle = "Long Hair 3"
-	H.facial_hairstyle = "Beard (Full)"
-	H.hair_color = "FFF"
-	H.facial_hair_color = "FFF"
-	H.update_hair()

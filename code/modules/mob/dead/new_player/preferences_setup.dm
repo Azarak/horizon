@@ -16,10 +16,6 @@
 	socks = random_socks(pref_species)
 	backpack = random_backpack()
 	jumpsuit_style = pick(GLOB.jumpsuitlist)
-	hairstyle = random_hairstyle(gender, pref_species)
-	facial_hairstyle = random_facial_hairstyle(gender, pref_species)
-	hair_color = random_short_color()
-	facial_hair_color = random_short_color()
 	set_skin_tone(random_skin_tone())
 	eye_color = random_eye_color()
 	if(gender in list(MALE, FEMALE))
@@ -30,7 +26,6 @@
 	var/list/new_features = pref_species.get_random_features() //We do this to keep flavor text, genital sizes etc.
 	for(var/key in new_features)
 		features[key] = new_features[key]
-	mutant_bodyparts = pref_species.get_random_mutant_bodyparts(features)
 	body_markings = pref_species.get_random_body_markings(features)
 	needs_update = TRUE
 
@@ -80,50 +75,6 @@
 	parent.show_character_previews(new /mutable_appearance(mannequin))
 	unset_busy_human_dummy(DUMMY_HUMAN_SLOT_PREFERENCES)
 
-//This proc makes sure that we only have the parts that the species should have, add missing ones, remove extra ones(should any be changed)
-//Also, this handles missing color keys
-/datum/preferences/proc/validate_species_parts()
-	if(!pref_species)
-		return
-
-	var/list/target_bodyparts = pref_species.default_mutant_bodyparts.Copy()
-
-	//Remove all "extra" accessories
-	for(var/key in mutant_bodyparts)
-		if(!GLOB.sprite_accessories[key]) //That accessory no longer exists, remove it
-			mutant_bodyparts -= key
-			continue
-		if(!pref_species.default_mutant_bodyparts[key])
-			mutant_bodyparts -= key
-			continue
-		if(!GLOB.sprite_accessories[key][mutant_bodyparts[key][MUTANT_INDEX_NAME]]) //The individual accessory no longer exists
-			mutant_bodyparts[key][MUTANT_INDEX_NAME] = pref_species.default_mutant_bodyparts[key]
-		validate_color_keys_for_part(key) //Validate the color count of each accessory that wasnt removed
-
-	//Add any missing accessories
-	for(var/key in target_bodyparts)
-		if(!mutant_bodyparts[key])
-			var/datum/sprite_accessory/SA
-			if(target_bodyparts[key] == ACC_RANDOM)
-				SA = random_accessory_of_key_for_species(key, pref_species)
-			else
-				SA = GLOB.sprite_accessories[key][target_bodyparts[key]]
-			var/final_list = list()
-			final_list[MUTANT_INDEX_NAME] = SA.name
-			final_list[MUTANT_INDEX_COLOR_LIST] = SA.get_default_color(features, pref_species)
-			mutant_bodyparts[key] = final_list
-
-	if(!allow_advanced_colors)
-		reset_colors()
-
-/datum/preferences/proc/validate_color_keys_for_part(key)
-	var/datum/sprite_accessory/SA = GLOB.sprite_accessories[key][mutant_bodyparts[key][MUTANT_INDEX_NAME]]
-	var/list/colorlist = mutant_bodyparts[key][MUTANT_INDEX_COLOR_LIST]
-	if(SA.color_src == USE_MATRIXED_COLORS && colorlist.len != 3)
-		mutant_bodyparts[key][MUTANT_INDEX_COLOR_LIST] = SA.get_default_color(features, pref_species)
-	else if (SA.color_src == USE_ONE_COLOR && colorlist.len != 1)
-		mutant_bodyparts[key][MUTANT_INDEX_COLOR_LIST] = SA.get_default_color(features, pref_species)
-
 /datum/preferences/proc/set_new_species(new_species_path)
 	pref_species = new new_species_path()
 	random_character(FALSE, antag_override = FALSE)
@@ -140,12 +91,6 @@
 	validate_languages()
 
 /datum/preferences/proc/reset_colors()
-	for(var/key in mutant_bodyparts)
-		var/datum/sprite_accessory/SA = GLOB.sprite_accessories[key][mutant_bodyparts[key][MUTANT_INDEX_NAME]]
-		if(SA.always_color_customizable)
-			continue
-		mutant_bodyparts[key][MUTANT_INDEX_COLOR_LIST] = SA.get_default_color(features, pref_species)
-
 	for(var/zone in body_markings)
 		var/list/bml = body_markings[zone]
 		for(var/key in bml)

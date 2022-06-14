@@ -13,11 +13,6 @@
 		MUTCOLORS,
 	)
 	inherent_biotypes = MOB_ORGANIC|MOB_HUMANOID|MOB_BUG
-	default_mutant_bodyparts = list(
-		"wings" = ACC_RANDOM,
-		"moth_antennae" = ACC_RANDOM,
-		"neck" = ACC_RANDOM,
-	)
 	attack_verb = "slash"
 	attack_effect = ATTACK_EFFECT_CLAW
 	attack_sound = 'sound/weapons/slash.ogg'
@@ -26,7 +21,17 @@
 	liked_food = VEGETABLES | DAIRY | CLOTH
 	disliked_food = FRUIT | GROSS
 	toxic_food = MEAT | RAW
-	mutanteyes = /obj/item/organ/eyes/moth
+	organs = list(
+		ORGAN_SLOT_BRAIN = /obj/item/organ/brain,
+		ORGAN_SLOT_HEART = /obj/item/organ/heart,
+		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs,
+		ORGAN_SLOT_EYES = /obj/item/organ/eyes/moth,
+		ORGAN_SLOT_EARS = /obj/item/organ/ears,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue,
+		ORGAN_SLOT_LIVER = /obj/item/organ/liver,
+		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach,
+		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,
+		)
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | ERT_SPAWN | RACE_SWAP | SLIME_EXTRACT
 	species_language_holder = /datum/language_holder/moth
 	wings_icons = list(
@@ -45,7 +50,7 @@
 	. = ..()
 	if(ishuman(C))
 		var/mob/living/carbon/human/H = C
-		handle_mutant_bodyparts(H)
+		//handle_mutant_bodyparts(H)
 
 /datum/species/moth/random_name(gender,unique,lastname)
 	if(unique)
@@ -99,14 +104,6 @@
 		var/datum/gas_mixture/current = H.loc.return_air()
 		if(current && (current.return_pressure() >= ONE_ATMOSPHERE*0.85)) //as long as there's reasonable pressure and no gravity, flight is possible
 			return TRUE
-
-/datum/species/moth/randomize_main_appearance_element(mob/living/carbon/human/human_mob)
-	var/wings = pick(GLOB.moth_wings_list)
-	mutant_bodyparts["wings"] = wings
-	mutant_bodyparts["moth_wings"] = wings
-	human_mob.dna.features["wings"] = wings
-	human_mob.dna.features["moth_wings"] = wings
-	human_mob.update_body()
 
 /* Related to the fire proc above
 /datum/species/moth/spec_fully_heal(mob/living/carbon/human/H)

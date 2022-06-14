@@ -42,6 +42,7 @@
 	. = ..()
 	update_genital_icon_state()
 
+/*
 /obj/item/organ/genital/build_from_dna(datum/dna/DNA, associated_key)
 	..()
 	var/datum/sprite_accessory/genital/SA = GLOB.sprite_accessories[associated_key][DNA.mutant_bodyparts[associated_key][MUTANT_INDEX_NAME]]
@@ -50,6 +51,7 @@
 	if(DNA.features["uses_skintones"])
 		uses_skintones = SA.uses_skintones
 	update_sprite_suffix()
+*/
 
 /obj/item/organ/genital/penis
 	name = "penis"
@@ -132,6 +134,7 @@
 		passed_string += "_s"
 	return passed_string
 
+/*
 /obj/item/organ/genital/penis/build_from_dna(datum/dna/DNA, associated_key)
 	..()
 	girth = DNA.features["penis_girth"]
@@ -139,6 +142,7 @@
 	if(PS.can_have_sheath)
 		sheath = DNA.features["penis_sheath"]
 	set_size(DNA.features["penis_size"])
+*/
 
 /obj/item/organ/genital/testicles
 	name = "testicles"

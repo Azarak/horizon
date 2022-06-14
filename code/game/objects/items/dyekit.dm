@@ -27,10 +27,11 @@
 	if(!new_grad_style)
 		return
 
-	var/new_grad_color = input(usr, "Choose a secondary hair color:", "Character Preference","#"+human_target.grad_color) as color|null
-	if(!new_grad_color)
-		return
+	//var/new_grad_color = input(usr, "Choose a secondary hair color:", "Character Preference","#"+human_target.grad_color) as color|null
+	//if(!new_grad_color)
+	//	return
 
+	/*
 	human_target.grad_style = new_grad_style
 	human_target.grad_color = sanitize_hexcolor(new_grad_color)
 	to_chat(human_target, SPAN_NOTICE("You start applying the hair dye..."))
@@ -38,3 +39,4 @@
 		return
 	playsound(src, 'sound/effects/spray.ogg', 5, TRUE, 5)
 	human_target.update_hair()
+	*/

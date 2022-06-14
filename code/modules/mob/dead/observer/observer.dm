@@ -105,6 +105,7 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 
 		set_suicide(body.suiciding) // Transfer whether they committed suicide.
 
+		/*
 		if(ishuman(body))
 			var/mob/living/carbon/human/body_human = body
 			if(HAIR in body_human.dna.species.species_traits)
@@ -113,6 +114,7 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 			if(FACEHAIR in body_human.dna.species.species_traits)
 				facial_hairstyle = body_human.facial_hairstyle
 				facial_hair_color = brighten_color(body_human.facial_hair_color)
+		*/
 
 	update_appearance()
 
@@ -216,6 +218,7 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 		updatedir = 0 //stop updating the dir in case we want to show accessories with dirs on a ghost sprite without dirs
 		setDir(2 )//reset the dir to its default so the sprites all properly align up
 
+	/*
 	if(ghost_accs == GHOST_ACCS_FULL && (icon_state in GLOB.ghost_forms_with_accessories_list)) //check if this form supports accessories and if the client wants to show them
 		var/datum/sprite_accessory/S
 		if(facial_hairstyle)
@@ -234,6 +237,7 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 					hair_overlay.color = "#" + hair_color
 				hair_overlay.alpha = 200
 				add_overlay(hair_overlay)
+	*/
 
 /*
  * Increase the brightness of a color by calculating the average distance between the R, G and B values,
@@ -794,12 +798,14 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	if(!client?.prefs)
 		return
 
+	/*
 	if(HAIR in client.prefs.pref_species.species_traits)
 		hairstyle = client.prefs.hairstyle
 		hair_color = brighten_color(client.prefs.hair_color)
 	if(FACEHAIR in client.prefs.pref_species.species_traits)
 		facial_hairstyle = client.prefs.facial_hairstyle
 		facial_hair_color = brighten_color(client.prefs.facial_hair_color)
+	*/
 
 	update_appearance()
 

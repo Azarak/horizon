@@ -172,8 +172,6 @@
 	death_cloud_size = 0
 	icon = H.icon
 	icon_state = "zombie"
-	H.hairstyle = null
-	H.update_hair()
 	H.forceMove(src)
 	oldguy = H
 	update_icons()

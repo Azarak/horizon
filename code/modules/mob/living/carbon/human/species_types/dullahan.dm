@@ -18,10 +18,17 @@
 	)
 	inherent_biotypes = MOB_UNDEAD|MOB_HUMANOID
 	use_skintones = TRUE
-	mutantbrain = /obj/item/organ/brain/dullahan
-	mutanteyes = /obj/item/organ/eyes/dullahan
-	mutanttongue = /obj/item/organ/tongue/dullahan
-	mutantears = /obj/item/organ/ears/dullahan
+	organs = list(
+		ORGAN_SLOT_BRAIN = /obj/item/organ/brain/dullahan,
+		ORGAN_SLOT_HEART = /obj/item/organ/heart,
+		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs,
+		ORGAN_SLOT_EYES = /obj/item/organ/eyes/dullahan,
+		ORGAN_SLOT_EARS = /obj/item/organ/ears/dullahan,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/dullahan,
+		ORGAN_SLOT_LIVER = /obj/item/organ/liver,
+		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach,
+		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,
+		)
 	limbs_id = "human"
 	skinned_type = /obj/item/stack/sheet/animalhide/human
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_PRIDE | MIRROR_MAGIC | ERT_SPAWN

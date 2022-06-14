@@ -39,16 +39,6 @@
 /proc/random_features() //Not random now, use the species specific ones for that. This is kept for compatibility
 	return MANDATORY_FEATURE_LIST
 
-/proc/random_hairstyle(gender, datum/species/species, mismatched = FALSE)
-	if(!species)
-		mismatched = TRUE
-	return pick(hairstyle_list_for_species(species, gender, mismatched))
-
-/proc/random_facial_hairstyle(gender, datum/species/species, mismatched = FALSE)
-	if(!species)
-		mismatched = TRUE
-	return pick(facial_hairstyle_list_for_species(species, gender, mismatched))
-
 /proc/random_unique_name(gender, attempts_to_find_unique_name=10)
 	for(var/i in 1 to attempts_to_find_unique_name)
 		if(gender==FEMALE)

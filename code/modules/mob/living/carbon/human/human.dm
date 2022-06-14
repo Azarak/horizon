@@ -109,24 +109,6 @@
 				if(compare_text)
 					to_chat(usr, SPAN_NOTICE("<i>Comparing yourself to [src] you notice...\n[compare_text]</i>"))
 
-			if("genitals")
-				var/list/line = list()
-				for(var/genital in list("penis", "testicles", "vagina", "breasts"))
-					if(!dna.species.mutant_bodyparts[genital])
-						continue
-					var/datum/sprite_accessory/genital/G = GLOB.sprite_accessories[genital][dna.species.mutant_bodyparts[genital][MUTANT_INDEX_NAME]]
-					if(!G)
-						continue
-					if(G.is_hidden(src))
-						continue
-					var/obj/item/organ/genital/ORG = getorganslot(G.associated_organ_slot)
-					if(!ORG)
-						continue
-					var/new_line = ORG.get_description_string(G)
-					if(new_line)
-						line += new_line
-				if(length(line))
-					to_chat(usr, SPAN_NOTICE("[jointext(line, "\n")]"))
 			if("flavor_text")
 				if(length(dna.features["flavor_text"]))
 					var/datum/browser/popup = new(usr, "[name]'s flavor text", "[name]'s Flavor Text", 500, 200)
@@ -535,14 +517,8 @@
 
 //Used for new human mobs created by cloning/goleming/podding
 /mob/living/carbon/human/proc/set_cloned_appearance()
-	if(gender == MALE)
-		facial_hairstyle = "Full Beard"
-	else
-		facial_hairstyle = "Shaved"
-	hairstyle = pick("Bedhead", "Bedhead 2", "Bedhead 3")
 	underwear = "Nude"
 	update_body()
-	update_hair()
 
 /mob/living/carbon/human/singularity_pull(S, current_size)
 	..()
@@ -1114,9 +1090,6 @@
 /mob/living/carbon/human/species/abductor
 	race = /datum/species/abductor
 
-/mob/living/carbon/human/species/android
-	race = /datum/species/android
-
 /mob/living/carbon/human/species/dullahan
 	race = /datum/species/dullahan
 
@@ -1252,12 +1225,6 @@
 /mob/living/carbon/human/species/snail
 	race = /datum/species/snail
 
-/mob/living/carbon/human/species/synth
-	race = /datum/species/synth
-
-/mob/living/carbon/human/species/synth/military
-	race = /datum/species/synth/military
-
 /mob/living/carbon/human/species/vampire
 	race = /datum/species/vampire
 
@@ -1266,9 +1233,6 @@
 
 /mob/living/carbon/human/species/zombie/infectious
 	race = /datum/species/zombie/infectious
-
-/mob/living/carbon/human/species/zombie/krokodil_addict
-	race = /datum/species/krokodil_addict
 
 /mob/living/carbon/human/species/synthliz
 	race = /datum/species/robotic/synthliz
@@ -1338,4 +1302,4 @@
 		return
 	try_hide_mutant_parts = !try_hide_mutant_parts
 	to_chat(usr, SPAN_NOTICE("[try_hide_mutant_parts ? "You try and hide your mutant body parts under your clothes." : "You no longer try and hide your mutant body parts"]"))
-	update_mutant_bodyparts()
+	//update_mutant_bodyparts()

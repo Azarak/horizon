@@ -76,15 +76,6 @@
 		HAIR,
 		FACEHAIR,
 	)
-	default_mutant_bodyparts = list(
-		"tail" = ACC_NONE,
-		"snout" = ACC_NONE,
-		"horns" = ACC_NONE,
-		"ears" = ACC_NONE,
-		"taur" = ACC_NONE,
-		"wings" = ACC_NONE,
-		"neck" = ACC_NONE,
-		)
 
 	cultures = list(
 		CULTURES_EXOTIC,

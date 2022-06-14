@@ -13,15 +13,6 @@
 		FACEHAIR,
 	)
 	inherent_biotypes = MOB_ORGANIC|MOB_HUMANOID
-	default_mutant_bodyparts = list(
-		"tail" = ACC_NONE,
-		"snout" = ACC_NONE,
-		"ears" = ACC_NONE,
-		"legs" = "Normal Legs",
-		"wings" = ACC_NONE,
-		"taur" = ACC_NONE,
-		"horns" = ACC_NONE,
-		"neck" = ACC_NONE,
-	)
+
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | ERT_SPAWN | RACE_SWAP | SLIME_EXTRACT
 	limbs_id = "human"

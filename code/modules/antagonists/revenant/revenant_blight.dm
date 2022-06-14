@@ -18,9 +18,7 @@
 /datum/disease/revblight/cure()
 	if(affected_mob)
 		affected_mob.remove_atom_colour(TEMPORARY_COLOUR_PRIORITY, "#1d2953")
-		if(affected_mob.dna && affected_mob.dna.species)
-			affected_mob.dna.species.handle_mutant_bodyparts(affected_mob)
-			affected_mob.dna.species.handle_hair(affected_mob)
+		// TODO: Update organ appearance
 		to_chat(affected_mob, SPAN_NOTICE("You feel better."))
 	..()
 
@@ -62,9 +60,7 @@
 				to_chat(affected_mob, SPAN_REVENBIGNOTICE("You feel like [pick("nothing's worth it anymore", "nobody ever needed your help", "nothing you did mattered", "everything you tried to do was worthless")]."))
 				affected_mob.adjustStaminaLoss(22.5 * delta_time, FALSE)
 				new /obj/effect/temp_visual/revenant(affected_mob.loc)
-				if(affected_mob.dna && affected_mob.dna.species)
-					affected_mob.dna.species.handle_mutant_bodyparts(affected_mob,"#1d2953")
-					affected_mob.dna.species.handle_hair(affected_mob,"#1d2953")
+				//TODO: Apply color overrides and update organ appearances.
 				affected_mob.visible_message(SPAN_WARNING("[affected_mob] looks terrifyingly gaunt..."), SPAN_REVENNOTICE("You suddenly feel like your skin is <i>wrong</i>..."))
 				affected_mob.add_atom_colour("#1d2953", TEMPORARY_COLOUR_PRIORITY)
 				addtimer(CALLBACK(src, .proc/cure), 10 SECONDS)

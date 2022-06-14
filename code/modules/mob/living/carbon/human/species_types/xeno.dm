@@ -13,13 +13,6 @@
 		HAS_BONE,
 	)
 	inherent_biotypes = MOB_ORGANIC|MOB_HUMANOID
-	default_mutant_bodyparts = list(
-		"tail" = "Xenomorph Tail",
-		"legs" = "Digitigrade Legs",
-		"xenodorsal" = ACC_RANDOM,
-		"xenohead" = ACC_RANDOM,
-		"taur" = ACC_NONE,
-	)
 	attack_verb = "slash"
 	attack_sound = 'sound/weapons/slash.ogg'
 	miss_sound = 'sound/weapons/slashmiss.ogg'

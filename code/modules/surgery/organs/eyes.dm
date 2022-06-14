@@ -37,12 +37,14 @@
 	. = ..()
 	if(ishuman(eye_owner))
 		var/mob/living/carbon/human/human_owner = eye_owner
+		/*
 		old_eye_color = human_owner.eye_color
 		if(eye_color)
 			human_owner.eye_color = eye_color
 			human_owner.regenerate_icons()
 		else
 			eye_color = human_owner.eye_color
+		*/
 		if(HAS_TRAIT(human_owner, TRAIT_NIGHT_VISION) && !lighting_alpha)
 			lighting_alpha = LIGHTING_PLANE_ALPHA_NV_TRAIT
 	eye_owner.update_tint()
@@ -53,12 +55,14 @@
 /obj/item/organ/eyes/proc/refresh()
 	if(ishuman(owner))
 		var/mob/living/carbon/human/affected_human = owner
+		/*
 		old_eye_color = affected_human.eye_color
 		if(eye_color)
 			affected_human.eye_color = eye_color
 			affected_human.regenerate_icons()
 		else
 			eye_color = affected_human.eye_color
+		*/
 		if(HAS_TRAIT(affected_human, TRAIT_NIGHT_VISION) && !lighting_alpha)
 			lighting_alpha = LIGHTING_PLANE_ALPHA_NV_TRAIT
 	owner.update_tint()
@@ -70,10 +74,12 @@
 
 /obj/item/organ/eyes/Remove(mob/living/carbon/eye_owner, special = 0)
 	..()
+	/*
 	if(ishuman(eye_owner) && eye_color)
 		var/mob/living/carbon/human/human_owner = eye_owner
 		human_owner.eye_color = old_eye_color
 		human_owner.regenerate_icons()
+	*/
 	eye_owner.cure_blind(EYE_DAMAGE)
 	eye_owner.cure_nearsighted(EYE_DAMAGE)
 	eye_owner.set_blindness(0)
