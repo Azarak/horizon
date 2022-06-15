@@ -34,6 +34,17 @@
 
 	var/failure_time = 0
 
+	/// Whether the organ is fully internal and should not be seen by bare eyes.
+	var/internal_organ = TRUE
+	/// Description when the organ is visible and examined while it's attached to a bodypart. 
+	var/bodypart_desc = "This is an organ."
+	/// Icon of the organ when it's on a bodypart.
+	var/bodypart_icon
+	/// Icon state of the organ when it's on a bodypart.
+	var/bodypart_icon_state
+	/// Whether the bodypart organ overlay is an emissive blocker
+	var/bodypart_emissive_blocker = TRUE
+
 /obj/item/organ/Initialize()
 	. = ..()
 	if(organ_flags & ORGAN_EDIBLE)
@@ -281,4 +292,35 @@
 
 /// Called before organs are replaced in regenerate_organs with new ones
 /obj/item/organ/proc/before_organ_replacement(obj/item/organ/replacement)
+	return
+
+/// Gets organ description for when its attached to a bodypart.
+/obj/item/organ/proc/get_bodypart_desc()
+	return bodypart_desc
+
+/// Whether the organ is visible and should appear on a bodypart.
+/obj/item/organ/proc/is_visible()
+	/// It's an internal organ, always hidden.
+	if(internal_organ)
+		return FALSE
+	/// Doesn't have an owner so it couldn't be covered by anything.
+	if(!owner)
+		return TRUE
+	return TRUE
+
+/// Gets organ description for when its attached to a bodypart.
+/obj/item/organ/proc/get_bodypart_overlay()
+	if(!bodypart_icon)
+		return
+
+	var/mutable_appearance/organ_overlay = mutable_appearance(bodypart_icon, bodypart_icon_state)
+	bodypart_overlays(organ_overlay)
+
+	if(bodypart_emissive_blocker)
+		organ_overlay += emissive_blocker(bodypart_icon, bodypart_icon_state)
+
+	return organ_overlay
+
+/// This proc can add overlays to the organ image that is to be attached to a bodypart.
+/obj/item/organ/proc/bodypart_overlays(mutable_appearance/standing)
 	return
