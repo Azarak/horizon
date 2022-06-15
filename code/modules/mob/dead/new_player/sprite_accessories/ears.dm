@@ -1,7 +1,6 @@
 /datum/sprite_accessory/ears
 	key = "ears"
 	generic = "Ears"
-	organ_type = /obj/item/organ/ears/mutant
 	relevent_layers = list(BODY_ADJ_LAYER, BODY_FRONT_LAYER)
 	icon = 'icons/mob/sprite_accessory/ears.dmi'
 
@@ -23,7 +22,6 @@
 	relevent_layers = list(BODY_BEHIND_LAYER, BODY_FRONT_LAYER)
 
 /datum/sprite_accessory/ears/mutant
-	organ_type = /obj/item/organ/ears/mutant
 	color_src = USE_MATRIXED_COLORS
 	recommended_species = list("mammal", "human", "felinid", "humanoid")
 

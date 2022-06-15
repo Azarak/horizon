@@ -1,7 +1,6 @@
 /datum/sprite_accessory/tails
 	key = "tail"
 	generic = "Tail"
-	organ_type = /obj/item/organ/tail
 	icon = 'icons/mob/sprite_accessory/tails.dmi'
 	special_render_case = TRUE
 	special_icon_case = TRUE
@@ -48,7 +47,6 @@
 
 /datum/sprite_accessory/tails/lizard
 	recommended_species = list("lizard", "silverlizard", "ashlizard", "mammal", "unathi")
-	organ_type = /obj/item/organ/tail/lizard
 	general_type = "lizard"
 
 /datum/sprite_accessory/tails/lizard/smooth
@@ -73,7 +71,6 @@
 
 /datum/sprite_accessory/tails/human
 	recommended_species = list("human", "felinid", "mammal")
-	organ_type = /obj/item/organ/tail/cat
 
 /datum/sprite_accessory/tails/human/cat
 	name = "Cat"
@@ -85,7 +82,6 @@
 	icon_state = "monkey"
 	recommended_species = list("human", "felinid", "mammal", "monkey")
 	color_src = FALSE
-	organ_type = /obj/item/organ/tail/monkey
 
 /datum/sprite_accessory/tails/is_hidden(mob/living/carbon/human/H, obj/item/bodypart/HD)
 	if(H.wear_suit)
@@ -109,11 +105,9 @@
 /datum/sprite_accessory/tails/mammal
 	icon_state = "none"
 	recommended_species = list("mammal", "human", "humanoid")
-	organ_type = /obj/item/organ/tail/fluffy/no_wag
 	color_src = USE_MATRIXED_COLORS
 
 /datum/sprite_accessory/tails/mammal/wagging
-	organ_type = /obj/item/organ/tail/fluffy
 
 /datum/sprite_accessory/tails/mammal/wagging/vulpkanin
 	recommended_species = list("mammal", "human", "vulpkanin", "humanoid")

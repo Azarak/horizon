@@ -370,7 +370,6 @@ GLOBAL_LIST_EMPTY(customizable_races)
 		slots_to_iterate |= current_organ.slot
 
 	for(var/slot in slots_to_iterate)
-
 		var/obj/item/organ/oldorgan = C.getorganslot(slot) //used in removing
 		var/obj/item/organ/neworgan = slot_mutantorgans[slot] //used in adding
 		var/used_neworgan = FALSE

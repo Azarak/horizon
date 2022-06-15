@@ -29,7 +29,6 @@
 
 /datum/sprite_accessory/genital/penis
 	icon = 'icons/mob/sprite_accessory/genitals/penis_onmob.dmi'
-	organ_type = /obj/item/organ/genital/penis
 	associated_organ_slot = ORGAN_SLOT_PENIS
 	key = "penis"
 	color_src = USE_MATRIXED_COLORS
@@ -117,7 +116,6 @@
 
 /datum/sprite_accessory/genital/testicles
 	icon = 'icons/mob/sprite_accessory/genitals/testicles_onmob.dmi'
-	organ_type = /obj/item/organ/genital/testicles
 	associated_organ_slot = ORGAN_SLOT_TESTICLES
 	key = "testicles"
 	always_color_customizable = TRUE
@@ -174,7 +172,6 @@
 
 /datum/sprite_accessory/genital/vagina
 	icon = 'icons/mob/sprite_accessory/genitals/vagina_onmob.dmi'
-	organ_type = /obj/item/organ/genital/vagina
 	associated_organ_slot = ORGAN_SLOT_VAGINA
 	key = "vagina"
 	always_color_customizable = TRUE
@@ -240,7 +237,6 @@
 
 /datum/sprite_accessory/genital/breasts
 	icon = 'icons/mob/sprite_accessory/genitals/breasts_onmob.dmi'
-	organ_type = /obj/item/organ/genital/breasts
 	associated_organ_slot = ORGAN_SLOT_BREASTS
 	key = "breasts"
 	always_color_customizable = TRUE

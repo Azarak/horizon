@@ -42,17 +42,6 @@
 	. = ..()
 	update_genital_icon_state()
 
-/*
-/obj/item/organ/genital/build_from_dna(datum/dna/DNA, associated_key)
-	..()
-	var/datum/sprite_accessory/genital/SA = GLOB.sprite_accessories[associated_key][DNA.mutant_bodyparts[associated_key][MUTANT_INDEX_NAME]]
-	genital_name = SA.name
-	genital_type = SA.icon_state
-	if(DNA.features["uses_skintones"])
-		uses_skintones = SA.uses_skintones
-	update_sprite_suffix()
-*/
-
 /obj/item/organ/genital/penis
 	name = "penis"
 	desc = "A male reproductive organ."
@@ -60,8 +49,6 @@
 	icon = 'icons/obj/genitals/penis.dmi'
 	zone = BODY_ZONE_PRECISE_GROIN
 	slot = ORGAN_SLOT_PENIS
-	mutantpart_key = "penis"
-	mutantpart_info = list(MUTANT_INDEX_NAME = "Human", MUTANT_INDEX_COLOR_LIST = list("FEB"))
 	var/girth = 9
 	var/sheath = SHEATH_NONE
 
@@ -134,23 +121,11 @@
 		passed_string += "_s"
 	return passed_string
 
-/*
-/obj/item/organ/genital/penis/build_from_dna(datum/dna/DNA, associated_key)
-	..()
-	girth = DNA.features["penis_girth"]
-	var/datum/sprite_accessory/genital/penis/PS = GLOB.sprite_accessories[associated_key][DNA.mutant_bodyparts[associated_key][MUTANT_INDEX_NAME]]
-	if(PS.can_have_sheath)
-		sheath = DNA.features["penis_sheath"]
-	set_size(DNA.features["penis_size"])
-*/
-
 /obj/item/organ/genital/testicles
 	name = "testicles"
 	desc = "A male reproductive organ."
 	icon_state = "testicles"
 	icon = 'icons/obj/genitals/testicles.dmi'
-	mutantpart_key = "testicles"
-	mutantpart_info = list(MUTANT_INDEX_NAME = "Pair", MUTANT_INDEX_COLOR_LIST = list("FEB"))
 	zone = BODY_ZONE_PRECISE_GROIN
 	slot = ORGAN_SLOT_TESTICLES
 	aroused = AROUSAL_CANT
@@ -167,10 +142,6 @@
 		return null
 	return "You see a pair of testicles, they look [lowertext(balls_size_to_description(genital_size))]."
 
-/obj/item/organ/genital/testicles/build_from_dna(datum/dna/DNA, associated_key)
-	..()
-	set_size(DNA.features["balls_size"])
-
 /obj/item/organ/genital/testicles/get_sprite_size_string()
 	var/measured_size = FLOOR(genital_size,1)
 	measured_size = clamp(measured_size, 0, 3)
@@ -183,8 +154,6 @@
 	name = "vagina"
 	icon = 'icons/obj/genitals/vagina.dmi'
 	icon_state = "vagina"
-	mutantpart_key = "vagina"
-	mutantpart_info = list(MUTANT_INDEX_NAME = "Human", MUTANT_INDEX_COLOR_LIST = list("FEB"))
 	zone = BODY_ZONE_PRECISE_GROIN
 	slot = ORGAN_SLOT_VAGINA
 
@@ -211,8 +180,6 @@
 	icon_state = "breasts"
 	icon = 'icons/obj/genitals/breasts.dmi'
 	genital_type = "pair"
-	mutantpart_key = "penis"
-	mutantpart_info = list(MUTANT_INDEX_NAME = "Pair", MUTANT_INDEX_COLOR_LIST = list("FEB"))
 	zone = BODY_ZONE_CHEST
 	slot = ORGAN_SLOT_BREASTS
 	var/lactates = FALSE
@@ -261,11 +228,6 @@
 	if(uses_skintones)
 		passed_string += "_s"
 	return passed_string
-
-/obj/item/organ/genital/breasts/build_from_dna(datum/dna/DNA, associated_key)
-	..()
-	lactates = DNA.features["breasts_lactation"]
-	set_size(DNA.features["breasts_size"])
 
 /proc/breasts_size_to_cup(number)
 	if(number < 0)

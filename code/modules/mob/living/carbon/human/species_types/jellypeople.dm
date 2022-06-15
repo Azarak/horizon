@@ -954,7 +954,6 @@
 					if(ROBOTIC_DNA_ORGANS in DNA.species.species_traits)
 						path.status = ORGAN_ROBOTIC
 						path.organ_flags |= ORGAN_SYNTHETIC
-					path.build_from_dna(DNA, chosen_key)
 					path.Insert(H, 0, FALSE)
 
 				else

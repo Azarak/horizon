@@ -4,7 +4,6 @@
 	key = "wings"
 	color_src = USE_ONE_COLOR
 	recommended_species = list("human", "felinid", "lizard", "mammal")
-	organ_type = /obj/item/organ/wings
 	relevent_layers = list(BODY_BEHIND_LAYER, BODY_FRONT_LAYER, BODY_ADJ_LAYER)
 
 /datum/sprite_accessory/wings/is_hidden(mob/living/carbon/human/H, obj/item/bodypart/HD)
@@ -52,7 +51,6 @@
 	icon = 'icons/mob/sprite_accessory/moth_wings.dmi' //Needs new icon to suit new naming convention
 	default_color = "FFF"
 	recommended_species = list("moth", "mammal", "insect") //Mammals too, I guess. They wont get flight though, see the wing organs for that logic
-	organ_type = /obj/item/organ/wings/moth
 	relevent_layers = list(BODY_BEHIND_LAYER, BODY_FRONT_LAYER)
 
 /datum/sprite_accessory/wings/moth/is_hidden(mob/living/carbon/human/H, obj/item/bodypart/HD)

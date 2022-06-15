@@ -33,9 +33,6 @@
 	var/reagent_vol = 10
 
 	var/failure_time = 0
-	///This is for associating an organ with a mutant bodypart. Look at tails for examples
-	var/mutantpart_key
-	var/list/list/mutantpart_info
 
 /obj/item/organ/Initialize()
 	. = ..()
@@ -45,8 +42,6 @@
 			foodtypes = RAW | MEAT | GROSS,\
 			volume = reagent_vol,\
 			after_eat = CALLBACK(src, .proc/OnEatFrom))
-	if(mutantpart_key)
-		color = mutantpart_info[MUTANT_INDEX_COLOR_LIST][1]
 /*
  * Insert the organ into the select mob.
  *
@@ -286,7 +281,4 @@
 
 /// Called before organs are replaced in regenerate_organs with new ones
 /obj/item/organ/proc/before_organ_replacement(obj/item/organ/replacement)
-	return
-
-/obj/item/organ/proc/build_from_dna(datum/dna/DNA, associated_key)
 	return
