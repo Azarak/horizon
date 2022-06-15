@@ -140,6 +140,10 @@ GLOBAL_VAR_INIT(cmp_field, "name")
 /proc/cmp_recipe_priority(datum/recipe/a, datum/recipe/b)
 	return cmp_numeric_dsc(a.priority, b.priority)
 
+/// Orders by integrated circuit weight
+/proc/cmp_port_order_asc(datum/port/compare1, datum/port/compare2)
+	return compare1.order - compare2.order
+
 /**
  * Sorts crafting recipe requirements before the crafting recipe is inserted into GLOB.crafting_recipes
  *
