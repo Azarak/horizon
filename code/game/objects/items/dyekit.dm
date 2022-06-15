@@ -23,9 +23,9 @@
 		return
 	var/mob/living/carbon/human/human_target = target
 
-	var/new_grad_style = input(usr, "Choose a color pattern:", "Character Preference")  as null|anything in GLOB.hair_gradients_list
-	if(!new_grad_style)
-		return
+	//var/new_grad_style = input(usr, "Choose a color pattern:", "Character Preference")  as null|anything in GLOB.hair_gradients_list
+	//if(!new_grad_style)
+	//	return
 
 	//var/new_grad_color = input(usr, "Choose a secondary hair color:", "Character Preference","#"+human_target.grad_color) as color|null
 	//if(!new_grad_color)

@@ -149,7 +149,7 @@
 	..()
 
 /obj/item/bodypart/head/update_icon_dropped()
-	var/list/standing = get_limb_icon(1)
+	var/list/standing = get_limb_icon(TRUE)
 	if(!standing.len)
 		icon_state = initial(icon_state)//no overlays found, we default back to initial icon.
 		return
@@ -184,15 +184,6 @@
 			var/image/lips_overlay = image('icons/mob/sprite_accessory/human_face.dmi', "lips_[lip_style]", -BODY_LAYER, SOUTH)
 			lips_overlay.color = lip_color
 			. += lips_overlay
-
-		// eyes
-		var/image/eyes_overlay = image('icons/mob/sprite_accessory/human_face.dmi', "eyes_missing", -BODY_LAYER, SOUTH)
-		. += eyes_overlay
-		if(eyes)
-			eyes_overlay.icon_state = eyes.eye_icon_state
-
-			if(eyes.eye_color)
-				eyes_overlay.color = "#" + eyes.eye_color
 
 /obj/item/bodypart/head/monkey
 	icon = 'icons/mob/animal_parts.dmi'

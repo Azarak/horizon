@@ -324,12 +324,13 @@
 			dna.body_markings = override_markings || new_race.get_random_body_markings(dna.features)
 			dna.species.body_markings = dna.body_markings.Copy()
 
-
+		/*
 		for(var/key in bodyparts_to_add)
 			var/datum/sprite_accessory/SP = GLOB.sprite_accessories[key][bodyparts_to_add[key][MUTANT_INDEX_NAME]]
 			if(!SP.factual)
 				bodyparts_to_add -= key
 				continue
+		*/
 
 		dna.update_body_size()
 

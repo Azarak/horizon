@@ -20,19 +20,6 @@
 		else
 			return "000"
 
-/proc/random_underwear(gender, datum/species/species, mismatched = FALSE)
-	if(!species)
-		mismatched = TRUE
-	return pick(underwear_list_for_species(species, gender, mismatched))
-
-/proc/random_undershirt(gender, datum/species/species, mismatched = FALSE)
-	if(!species)
-		mismatched = TRUE
-	return pick(undershirt_list_for_species(species, gender, mismatched))
-
-/proc/random_socks(datum/species/species, mismatched = FALSE)
-	return pick(socks_list_for_species(species, mismatched))
-
 /proc/random_backpack()
 	return pick(GLOB.backpacklist)
 

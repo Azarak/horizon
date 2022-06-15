@@ -609,41 +609,6 @@ GLOBAL_LIST_EMPTY(customizable_races)
 				standing += eye_overlay
 		*/
 
-	//Underwear, Undershirts & Socks
-	if(!(NO_UNDERWEAR in species_traits))
-		if(species_human.underwear && !(species_human.underwear_visibility & UNDERWEAR_HIDE_UNDIES))
-			var/datum/sprite_accessory/underwear/underwear = GLOB.underwear_list[species_human.underwear]
-			var/mutable_appearance/underwear_overlay
-			if(underwear)
-				var/icon_state = underwear.icon_state
-				if(underwear.has_digitigrade && (DIGITIGRADE in species_traits))
-					icon_state += "_d"
-				underwear_overlay = mutable_appearance(underwear.icon, icon_state, -BODY_LAYER)
-				if(!underwear.use_static)
-					underwear_overlay.color = "#" + species_human.underwear_color
-				standing += underwear_overlay
-
-		if(species_human.undershirt && !(species_human.underwear_visibility & UNDERWEAR_HIDE_SHIRT))
-			var/datum/sprite_accessory/undershirt/undershirt = GLOB.undershirt_list[species_human.undershirt]
-			if(undershirt)
-				var/mutable_appearance/undershirt_overlay
-				undershirt_overlay = mutable_appearance(undershirt.icon, undershirt.icon_state, -BODY_LAYER)
-				if(!undershirt.use_static)
-					undershirt_overlay.color = "#" + species_human.undershirt_color
-				standing += undershirt_overlay
-
-		if(species_human.socks && species_human.num_legs >= 2 && /*!(mutant_bodyparts["taur"]) && */!(species_human.underwear_visibility & UNDERWEAR_HIDE_SOCKS))
-			var/datum/sprite_accessory/socks/socks = GLOB.socks_list[species_human.socks]
-			if(socks)
-				var/mutable_appearance/socks_overlay
-				var/icon_state = socks.icon_state
-				if(DIGITIGRADE in species_traits)
-					icon_state += "_d"
-				socks_overlay = mutable_appearance(socks.icon, icon_state, -BODY_LAYER)
-				if(!socks.use_static)
-					socks_overlay.color = "#" + species_human.socks_color
-				standing += socks_overlay
-
 	if(standing.len)
 		species_human.overlays_standing[BODY_LAYER] = standing
 
@@ -656,9 +621,6 @@ GLOBAL_LIST_EMPTY(customizable_races)
 
 ///Proc that will randomise the underwear (i.e. top, pants and socks) of a species' associated mob
 /datum/species/proc/randomize_active_underwear(mob/living/carbon/human/human_mob)
-	human_mob.undershirt = random_undershirt(human_mob.gender, human_mob.dna.species)
-	human_mob.underwear = random_underwear(human_mob.gender, human_mob.dna.species)
-	human_mob.socks = random_socks(human_mob.dna.species)
 	human_mob.update_body()
 
 /datum/species/proc/spec_life(mob/living/carbon/human/H, delta_time, times_fired)
@@ -1801,34 +1763,10 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	if(flying_species) //species that already have flying traits should not work with this proc
 		return
 	flying_species = TRUE
-	if(wings_icons.len > 1)
-		if(!H.client)
-			wings_icon = pick(wings_icons)
-		else
-			var/list/wings = list()
-			for(var/W in wings_icons)
-				var/datum/sprite_accessory/S = GLOB.wings_list[W] //Gets the datum for every wing this species has, then prompts user with a radial menu
-				var/image/img = image(icon = 'icons/mob/clothing/wings.dmi', icon_state = "m_wingsopen_[S.icon_state]_BEHIND") //Process the HUD elements
-				img.transform *= 0.5
-				img.pixel_x = -32
-				if(wings[S.name])
-					stack_trace("Different wing types with repeated names. Please fix as this may cause issues.")
-				else
-					wings[S.name] = img
-			wings_icon = show_radial_menu(H, H, wings, tooltips = TRUE)
-			if(!wings_icon)
-				wings_icon = pick(wings_icons)
-	else
-		wings_icon = wings_icons[1]
 	if(isnull(fly))
 		fly = new
 		fly.Grant(H)
-	/*
-	if(H.dna.features["wings"] != wings_icon)
-		mutant_bodyparts["wings"] = wings_icon
-		H.dna.features["wings"] = wings_icon
-		H.update_body()
-	*/
+
 
 /datum/species/proc/HandleFlight(mob/living/carbon/human/H)
 	if(H.movement_type & FLYING)

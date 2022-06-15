@@ -233,10 +233,6 @@
 
 ///copies over clothing preferences like underwear to another human
 /mob/living/carbon/human/proc/copy_clothing_prefs(mob/living/carbon/human/destination)
-	destination.underwear = underwear
-	destination.underwear_color = underwear_color
-	destination.undershirt = undershirt
-	destination.socks = socks
 	destination.jumpsuit_style = jumpsuit_style
 
 
@@ -257,14 +253,6 @@
 		real_name = new_name
 	if(randomise_flags & RANDOMIZE_AGE)
 		age = rand(AGE_MIN, AGE_MAX)
-	if(randomise_flags & RANDOMIZE_UNDERWEAR)
-		underwear = random_underwear(gender)
-	if(randomise_flags & RANDOMIZE_UNDERWEAR_COLOR)
-		underwear_color = random_short_color()
-	if(randomise_flags & RANDOMIZE_UNDERSHIRT)
-		undershirt = random_undershirt(gender)
-	if(randomise_flags & RANDOMIZE_SOCKS)
-		socks = random_socks()
 	if(randomise_flags & RANDOMIZE_BACKPACK)
 		backpack = random_backpack()
 	if(randomise_flags & RANDOMIZE_JUMPSUIT_STYLE)

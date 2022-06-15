@@ -682,10 +682,10 @@ generate/load female uniform sprites matching all previously decided variables
 //If icon cache exists what ends up happening is that people customizing their characters will be creating hundreds of caches as they customize markings, eating memory 4nr
 /mob/living/carbon/human/update_body_parts()
 	//CHECK FOR UPDATE
-	var/oldkey = icon_render_key
-	icon_render_key = generate_icon_render_key()
-	if(oldkey == icon_render_key)
-		return
+	//var/oldkey = icon_render_key
+	//icon_render_key = generate_icon_render_key() //TODO
+	//if(oldkey == icon_render_key)
+	//	return
 
 	remove_overlay(BODYPARTS_LAYER)
 

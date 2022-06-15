@@ -19,19 +19,25 @@
 	high_threshold_cleared = SPAN_INFO("Your vision functions passably once more.")
 	low_threshold_cleared = SPAN_INFO("Your vision is cleared of any ailment.")
 
+	visible_organ = TRUE
+	bodypart_icon = 'icons/mob/sprite_accessory/human_face.dmi'
+	bodypart_icon_state = "eyes"
+
 	var/sight_flags = 0
 	/// changes how the eyes overlay is applied, makes it apply over the lighting layer
 	var/overlay_ignore_lighting = FALSE
 	var/see_in_dark = 2
 	var/tint = 0
 	var/eye_color = "" //set to a hex code to override a mob's eye color
-	var/eye_icon_state = "eyes"
 	var/old_eye_color = "fff"
 	var/flash_protect = FLASH_PROTECTION_NONE
 	var/see_invisible = SEE_INVISIBLE_LIVING
 	var/lighting_alpha
 	var/no_glasses
 	var/damaged = FALSE //damaged indicates that our eyes are undergoing some level of negative effect
+
+/obj/item/organ/eyes/bodypart_icon(mutable_appearance/standing)
+	standing.color = eye_color
 
 /obj/item/organ/eyes/Insert(mob/living/carbon/eye_owner, special = FALSE, drop_if_replaced = FALSE, initialising)
 	. = ..()
@@ -438,20 +444,20 @@
 /obj/item/organ/eyes/moth
 	name = "moth eyes"
 	desc = "These eyes seem to have increased sensitivity to bright light, with no improvement to low light vision."
-	eye_icon_state = "motheyes"
+	bodypart_icon_state = "motheyes"
 	icon_state = "eyeballs-moth"
 	flash_protect = FLASH_PROTECTION_SENSITIVE
 
 /obj/item/organ/eyes/snail
 	name = "snail eyes"
 	desc = "These eyes seem to have a large range, but might be cumbersome with glasses."
-	eye_icon_state = "snail_eyes"
+	bodypart_icon_state = "snail_eyes"
 	icon_state = "snail_eyeballs"
 
 /obj/item/organ/eyes/fly
 	name = "fly eyes"
 	desc = "These eyes seem to stare back no matter the direction you look at it from."
-	eye_icon_state = "flyeyes"
+	bodypart_icon_state = "flyeyes"
 	icon_state = "eyeballs-fly"
 
 /obj/item/organ/eyes/fly/Insert(mob/living/carbon/eye_owner, special = FALSE)
@@ -468,7 +474,7 @@
 	flash_protect = FLASH_PROTECTION_SENSITIVE
 	eye_color = "f00"
 	icon_state = "adapted_eyes"
-	eye_icon_state = "eyes_glow"
+	bodypart_icon_state = "eyes_glow"
 	overlay_ignore_lighting = TRUE
 	var/obj/item/flashlight/eyelight/adapted/adapt_light
 

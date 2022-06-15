@@ -24,10 +24,6 @@
 	var/age = 30 //Player's age
 
 	//consider updating /mob/living/carbon/human/copy_clothing_prefs() if adding more of these
-	var/underwear = "Nude" //Which underwear the player wants
-	var/underwear_color = "000"
-	var/undershirt = "Nude" //Which undershirt the player wants
-	var/socks = "Nude" //Which socks the player wants
 	var/backpack = DBACKPACK //Which backpack type the player has chosen.
 	var/jumpsuit_style = PREF_SUIT //suit/skirt
 
@@ -72,10 +68,6 @@
 	/// When an braindead player has their equipment fiddled with, we log that info here for when they come back so they know who took their ID while they were DC'd for 30 seconds
 	var/list/afk_thefts
 
-	///Color of the undershirt
-	var/undershirt_color = "FFF"
-	///Color of the socks
-	var/socks_color = "FFF"
 	///Flags for showing/hiding underwear, toggleabley by a verb
 	var/underwear_visibility = NONE
 	///Render key for mutant bodyparts, utilized to reduce the amount of re-rendering

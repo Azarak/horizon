@@ -227,10 +227,10 @@
 
 /mob/living/carbon/proc/update_body_parts()
 	//CHECK FOR UPDATE
-	var/oldkey = icon_render_key
-	icon_render_key = generate_icon_render_key()
-	if(oldkey == icon_render_key)
-		return
+	//var/oldkey = icon_render_key
+	//icon_render_key = generate_icon_render_key() TODO
+	//if(oldkey == icon_render_key)
+	//	return
 
 	remove_overlay(BODYPARTS_LAYER)
 

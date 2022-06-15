@@ -15,8 +15,6 @@
 	H.body_type = H.gender
 	H.real_name = random_unique_name(H.gender)
 	H.name = H.real_name
-	H.underwear = random_underwear(H.gender, H.dna.species)
-	H.underwear_color = random_short_color()
 	H.skin_tone = random_skin_tone()
 	H.dna.blood_type = random_blood_type()
 

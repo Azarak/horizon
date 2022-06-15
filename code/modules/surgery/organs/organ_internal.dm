@@ -35,13 +35,19 @@
 	var/failure_time = 0
 
 	/// Whether the organ is fully internal and should not be seen by bare eyes.
-	var/internal_organ = TRUE
+	var/visible_organ = FALSE
 	/// Description when the organ is visible and examined while it's attached to a bodypart. 
 	var/bodypart_desc = "This is an organ."
 	/// Icon of the organ when it's on a bodypart.
 	var/bodypart_icon
 	/// Icon state of the organ when it's on a bodypart.
 	var/bodypart_icon_state
+	/// Layer of the overlay this organs renders for being on limbs.
+	var/bodypart_layer = BODY_LAYER
+	/// String for GAGS config, aswell as the string passed to sprite accessories that use GAGS.
+	var/bodypart_greyscale_colors
+	/// Instead of creating an overlay from above variables we can use a sprite accessory.
+	var/accessory_type
 	/// Whether the bodypart organ overlay is an emissive blocker
 	var/bodypart_emissive_blocker = TRUE
 
@@ -301,25 +307,36 @@
 /// Whether the organ is visible and should appear on a bodypart.
 /obj/item/organ/proc/is_visible()
 	/// It's an internal organ, always hidden.
-	if(internal_organ)
+	if(!visible_organ)
 		return FALSE
 	/// Doesn't have an owner so it couldn't be covered by anything.
 	if(!owner)
 		return TRUE
 	return TRUE
 
-/// Gets organ description for when its attached to a bodypart.
+/// Gets the organ overlay.
 /obj/item/organ/proc/get_bodypart_overlay()
-	if(!bodypart_icon)
+	if(!bodypart_icon && !accessory_type)
 		return
 
-	var/mutable_appearance/organ_overlay = mutable_appearance(bodypart_icon, bodypart_icon_state)
+	var/mutable_appearance/organ_overlay
+	if(accessory_type)
+		var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(accessory_type)
+	else
+		organ_overlay = mutable_appearance(bodypart_icon, bodypart_icon_state, layer = -bodypart_layer)
+		organ_overlay.color = color
+
+	bodypart_icon(organ_overlay)
 	bodypart_overlays(organ_overlay)
 
 	if(bodypart_emissive_blocker)
-		organ_overlay += emissive_blocker(bodypart_icon, bodypart_icon_state)
+		organ_overlay.overlays += emissive_blocker(bodypart_icon, bodypart_icon_state)
 
 	return organ_overlay
+
+/// Proc to customize the base icon of the organ.
+/obj/item/organ/proc/bodypart_icon(mutable_appearance/standing)
+	return
 
 /// This proc can add overlays to the organ image that is to be attached to a bodypart.
 /obj/item/organ/proc/bodypart_overlays(mutable_appearance/standing)

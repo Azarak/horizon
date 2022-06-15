@@ -10,10 +10,6 @@
 	else
 		gender = pick(MALE,FEMALE,PLURAL)
 	age = rand(AGE_MIN,AGE_MAX)
-	underwear = random_underwear(gender, pref_species)
-	underwear_color = random_short_color()
-	undershirt = random_undershirt(gender, pref_species)
-	socks = random_socks(pref_species)
 	backpack = random_backpack()
 	jumpsuit_style = pick(GLOB.jumpsuitlist)
 	set_skin_tone(random_skin_tone())

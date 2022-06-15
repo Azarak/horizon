@@ -65,11 +65,6 @@
 
 	id_trim = /datum/id_trim/job/head_of_personnel
 
-/datum/outfit/job/hop/pre_equip(mob/living/carbon/human/H)
-	..()
-	if(locate(/datum/holiday/ianbirthday) in SSgamemode.holidays)
-		undershirt = /datum/sprite_accessory/undershirt/ian
-
 //only pet worth reviving
 /datum/job/hop/get_mail_goodies(mob/recipient)
 	. = ..()

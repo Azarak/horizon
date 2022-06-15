@@ -110,9 +110,6 @@
 	/// Should the toggle helmet proc be called on the helmet during equip
 	var/toggle_helmet = TRUE
 
-	/// Any undershirt. While on humans it is a string, here we use paths to stay consistent with the rest of the equips.
-	var/datum/sprite_accessory/undershirt = null
-
 /**
  * Called at the start of the equip proc
  *
@@ -185,9 +182,6 @@
 			WARNING("Unable to apply trim [id_trim] to [id_card] in outfit [name].")
 	if(suit_store)
 		H.equip_to_slot_or_del(new suit_store(H),ITEM_SLOT_SUITSTORE, TRUE)
-
-	if(undershirt)
-		H.undershirt = initial(undershirt.name)
 
 	if(accessory)
 		var/obj/item/clothing/under/U = H.w_uniform

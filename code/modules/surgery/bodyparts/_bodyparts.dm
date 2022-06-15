@@ -825,7 +825,7 @@
 //to update the bodypart's icon when not attached to a mob
 /obj/item/bodypart/proc/update_icon_dropped()
 	cut_overlays()
-	var/list/standing = get_limb_icon(1)
+	var/list/standing = get_limb_icon(TRUE)
 	if(!standing.len)
 		icon_state = initial(icon_state)//no overlays found, we default back to initial icon.
 		return
@@ -921,6 +921,12 @@
 			limb.color = "#[draw_color]"
 			if(aux_zone)
 				aux.color = "#[draw_color]"
+
+	// Organ overlays
+	for(var/obj/item/organ/organ as anything in get_organs())
+		if(!organ.is_visible())
+			continue
+		. += organ.get_bodypart_overlay()
 
 	if (!owner || is_pseudopart || !ishuman(owner))
 		return

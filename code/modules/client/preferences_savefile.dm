@@ -406,10 +406,6 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	READ_FILE(S["body_type"], body_type)
 	READ_FILE(S["age"], age)
 	READ_FILE(S["skin_tone"], skin_tone)
-	READ_FILE(S["underwear"], underwear)
-	READ_FILE(S["underwear_color"], underwear_color)
-	READ_FILE(S["undershirt"], undershirt)
-	READ_FILE(S["socks"], socks)
 	READ_FILE(S["backpack"], backpack)
 	READ_FILE(S["jumpsuit_style"], jumpsuit_style)
 	READ_FILE(S["uplink_loc"], uplink_spawn_loc)
@@ -439,9 +435,6 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	READ_FILE(S["augments"] , augments)
 	READ_FILE(S["augment_limb_styles"] , augment_limb_styles)
 
-	READ_FILE(S["undershirt_color"], undershirt_color)
-
-	READ_FILE(S["socks_color"], socks_color)
 	READ_FILE(S["pref_culture"] , pref_culture)
 	READ_FILE(S["pref_location"] , pref_location)
 	READ_FILE(S["pref_faction"] , pref_faction)
@@ -499,11 +492,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 		if(!custom_names[custom_name_id])
 			custom_names[custom_name_id] = get_default_name(custom_name_id)
 
-	underwear = sanitize_inlist(underwear, GLOB.underwear_list)
-	undershirt = sanitize_inlist(undershirt, GLOB.undershirt_list)
-	socks = sanitize_inlist(socks, GLOB.socks_list)
 	age = sanitize_integer(age, AGE_MIN, AGE_MAX, initial(age))
-	underwear_color = sanitize_hexcolor(underwear_color, 3, 0)
 	skin_tone = sanitize_inlist(skin_tone, GLOB.skin_tones)
 	backpack = sanitize_inlist(backpack, GLOB.backpacklist, initial(backpack))
 	jumpsuit_style = sanitize_inlist(jumpsuit_style, GLOB.jumpsuitlist, initial(jumpsuit_style))
@@ -520,9 +509,6 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 
 	all_quirks = SANITIZE_LIST(all_quirks)
 	validate_quirks()
-
-	undershirt_color			= sanitize_hexcolor(undershirt_color, 3, 0)
-	socks_color			= sanitize_hexcolor(socks_color, 3, 0)
 
 	languages = SANITIZE_LIST(languages)
 
@@ -607,10 +593,6 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	WRITE_FILE(S["body_type"] , body_type)
 	WRITE_FILE(S["age"] , age)
 	WRITE_FILE(S["skin_tone"] , skin_tone)
-	WRITE_FILE(S["underwear"] , underwear)
-	WRITE_FILE(S["underwear_color"] , underwear_color)
-	WRITE_FILE(S["undershirt"] , undershirt)
-	WRITE_FILE(S["socks"] , socks)
 	WRITE_FILE(S["backpack"] , backpack)
 	WRITE_FILE(S["jumpsuit_style"] , jumpsuit_style)
 	WRITE_FILE(S["uplink_loc"] , uplink_spawn_loc)
@@ -658,9 +640,6 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 
 	WRITE_FILE(S["augments"] , augments)
 	WRITE_FILE(S["augment_limb_styles"] , augment_limb_styles)
-
-	WRITE_FILE(S["undershirt_color"], undershirt_color)
-	WRITE_FILE(S["socks_color"], socks_color)
 
 	WRITE_FILE(S["pref_culture"] , pref_culture)
 	WRITE_FILE(S["pref_location"] , pref_location)

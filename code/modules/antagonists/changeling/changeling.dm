@@ -292,10 +292,6 @@
 	prof.name = H.real_name
 	prof.protected = protect
 
-	prof.underwear = H.underwear
-	prof.undershirt = H.undershirt
-	prof.socks = H.socks
-
 	for(var/i in H.all_scars)
 		var/datum/scar/iter_scar = i
 		LAZYADD(prof.stored_scars, iter_scar.format())
@@ -513,9 +509,6 @@
 
 	var/datum/dna/chosen_dna = chosen_prof.dna
 	user.real_name = chosen_prof.name
-	user.underwear = chosen_prof.underwear
-	user.undershirt = chosen_prof.undershirt
-	user.socks = chosen_prof.socks
 
 	chosen_dna.transfer_identity(user, 1)
 	user.updateappearance(mutcolor_update=1)
@@ -593,10 +586,6 @@
 	var/list/worn_icon_list = list()
 	var/list/worn_icon_state_list = list()
 
-	var/underwear
-	var/undershirt
-	var/socks
-
 	/// What scars the target had when we copied them, in string form (like persistent scars)
 	var/list/stored_scars
 	/// Icon snapshot of the profile
@@ -621,9 +610,6 @@
 	newprofile.lefthand_file_list = lefthand_file_list.Copy()
 	newprofile.righthand_file_list = righthand_file_list.Copy()
 	newprofile.inhand_icon_state_list = inhand_icon_state_list.Copy()
-	newprofile.underwear = underwear
-	newprofile.undershirt = undershirt
-	newprofile.socks = socks
 	newprofile.worn_icon_list = worn_icon_list.Copy()
 	newprofile.worn_icon_state_list = worn_icon_state_list.Copy()
 	newprofile.stored_scars = stored_scars.Copy()

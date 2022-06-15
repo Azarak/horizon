@@ -81,12 +81,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/real_name //our character's name
 	var/gender = MALE //gender of character (well duh)
 	var/age = 30 //age of character
-	var/underwear = "Nude" //underwear type
-	var/underwear_color = "FFF" //underwear color
-	var/undershirt = "Nude" //undershirt type
-	var/undershirt_color = "FFF" //undershirt color
-	var/socks = "Nude" //socks type
-	var/socks_color = "FFF" //socks color
 	var/backpack = DBACKPACK //backpack type
 	var/jumpsuit_style = PREF_SUIT //suit/skirt
 	var/skin_tone = "caucasian1" //Skin color
@@ -524,16 +518,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					dat += "</tr></table>"
 
 					dat += "<table width='100%'><tr><td width='24%' valign='top'>"
-
-					dat += "<BR><b>Underwear:</b><BR><a href ='?_src_=prefs;preference=underwear;task=input'>[underwear]</a>"
-
-					dat += "<a href='?_src_=prefs;preference=underwear_color;task=input'><span class='color_holder_box' style='background-color:#[underwear_color]'></span></a>"
-
-					dat += "<BR><b>Undershirt:</b><BR><a href ='?_src_=prefs;preference=undershirt;task=input'>[undershirt]</a>"
-					dat += "<a href='?_src_=prefs;preference=undershirt_color;task=input'><span class='color_holder_box' style='background-color:#[undershirt_color]'></span></a>"
-
-					dat += "<br><b>Socks:</b><BR><a href ='?_src_=prefs;preference=socks;task=input'>[socks]</a>"
-					dat += "<a href='?_src_=prefs;preference=socks_color;task=input'><span class='color_holder_box' style='background-color:#[socks_color]'></span></a>"
 
 					dat += "<br><b>Jumpsuit Style:</b><BR><a href ='?_src_=prefs;preference=suit;task=input'>[jumpsuit_style]</a>"
 
@@ -1697,14 +1681,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					real_name = pref_species.random_name(gender,1)
 				if("age")
 					age = rand(AGE_MIN, AGE_MAX)
-				if("underwear")
-					underwear = random_underwear(gender, pref_species)
-				if("underwear_color")
-					underwear_color = random_short_color()
-				if("undershirt")
-					undershirt = random_undershirt(gender, pref_species)
-				if("socks")
-					socks = random_socks(pref_species)
 				if(BODY_ZONE_PRECISE_EYES)
 					eye_color = random_eye_color()
 				if("s_tone")
@@ -1928,42 +1904,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if(new_arousal)
 						arousal_preview = gen_arous_trans[new_arousal]
 						needs_update = TRUE
-
-				if("underwear")
-					var/new_underwear = input(user, "Choose your character's underwear:", "Character Preference")  as null|anything in underwear_list_for_species(pref_species, null, mismatched_customization)
-					if(new_underwear)
-						underwear = new_underwear
-
-				if("underwear_color")
-					needs_update = TRUE
-					var/new_underwear_color = input(user, "Choose your character's underwear color:", "Character Preference","#"+underwear_color) as color|null
-					if(new_underwear_color)
-						underwear_color = sanitize_hexcolor(new_underwear_color)
-
-				if("undershirt_color")
-					needs_update = TRUE
-					var/new_undershirt_color = input(user, "Choose your character's undershirt color:", "Character Preference","#"+undershirt_color) as color|null
-					if(new_undershirt_color)
-						undershirt_color = sanitize_hexcolor(new_undershirt_color)
-
-				if("socks_color")
-					needs_update = TRUE
-					var/new_socks_color = input(user, "Choose your character's socks color:", "Character Preference","#"+socks_color) as color|null
-					if(new_socks_color)
-						socks_color = sanitize_hexcolor(new_socks_color)
-
-				if("undershirt")
-					needs_update = TRUE
-					var/new_undershirt = input(user, "Choose your character's undershirt:", "Character Preference") as null|anything in undershirt_list_for_species(pref_species, null, mismatched_customization)
-					if(new_undershirt)
-						undershirt = new_undershirt
-
-				if("socks")
-					needs_update = TRUE
-					var/new_socks
-					new_socks = input(user, "Choose your character's socks:", "Character Preference") as null|anything in socks_list_for_species(pref_species, mismatched_customization)
-					if(new_socks)
-						socks = new_socks
 
 				if("eyes")
 					needs_update = TRUE
@@ -2619,12 +2559,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		character.body_type = body_type
 
 	character.skin_tone = skin_tone
-	character.underwear = underwear
-	character.underwear_color = underwear_color
-	character.undershirt = undershirt
-	character.undershirt_color = undershirt_color
-	character.socks = socks
-	character.socks_color = socks_color
 
 	character.backpack = backpack
 

@@ -27,7 +27,6 @@
 		new_spawn.fully_replace_character_name(null,plant_name)
 	if(ishuman(new_spawn))
 		var/mob/living/carbon/human/H = new_spawn
-		H.underwear = "Nude" //You're a plant, partner
 		H.update_body()
 
 /obj/effect/mob_spawn/human/seed_vault/Destroy()
@@ -67,7 +66,6 @@
 	var/mob/living/carbon/human/yolk = new /mob/living/carbon/human/(get_turf(src))
 	yolk.fully_replace_character_name(null,random_unique_lizard_name(gender))
 	yolk.set_species(/datum/species/lizard/ashwalker)
-	yolk.underwear = "Nude"
 	yolk.equipOutfit(/datum/outfit/ashwalker)//this is an authentic mess we're making
 	yolk.update_body()
 	yolk.gib()
@@ -116,7 +114,6 @@
 
 	if(ishuman(new_spawn))
 		var/mob/living/carbon/human/H = new_spawn
-		H.underwear = "Nude"
 		H.update_body()
 		ADD_TRAIT(H, TRAIT_PRIMITIVE, ROUNDSTART_TRAIT)
 		H.remove_language(/datum/language/common)

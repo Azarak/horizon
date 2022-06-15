@@ -517,7 +517,6 @@
 
 //Used for new human mobs created by cloning/goleming/podding
 /mob/living/carbon/human/proc/set_cloned_appearance()
-	underwear = "Nude"
 	update_body()
 
 /mob/living/carbon/human/singularity_pull(S, current_size)
