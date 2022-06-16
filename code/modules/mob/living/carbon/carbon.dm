@@ -722,7 +722,8 @@
 		if(stat != DEAD)
 			. = 1
 			var/comparison_max = 220
-			var/comparison_amt = comparison_max - pain
+			var/oxy_deduction = getOxyLoss() * 2 //Bandaid until oxygen loss is represented better
+			var/comparison_amt = comparison_max - pain - oxy_deduction
 			if(comparison_amt >= comparison_max)
 				hud_used.healths.icon_state = "health0"
 			else if(comparison_amt > comparison_max*0.8)
