@@ -1,14 +1,28 @@
 /obj/item/dyespray
 	name = "hair dye spray"
-	desc = "A spray to dye your hair any gradients you'd like."
+	desc = "A spray to dye your hair any gradients you'd like. Includes a bleaching agent to remove it as well."
 	icon = 'icons/obj/dyespray.dmi'
 	icon_state = "dyespray"
 
 /obj/item/dyespray/attack_self(mob/user)
 	dye(user)
 
+/obj/item/dyespray/attack_self_secondary(mob/user, modifiers)
+	bleach(user)
+
 /obj/item/dyespray/pre_attack(atom/target, mob/living/user, params)
-	dye(target)
+	if(ishuman(target))
+		dye(target)
+		// Cancel attack chain so we don't bop ourselves/others with the spray
+		return TRUE
+	// Else just call the parent so we can do other things
+	return ..()
+
+/obj/item/dyespray/pre_attack_secondary(atom/target, mob/living/user, params)
+	if(ishuman(target))
+		bleach(target)
+		// Cancel attack chain so we don't call pre_attack().
+		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
 	return ..()
 
 /**
@@ -21,22 +35,14 @@
 /obj/item/dyespray/proc/dye(mob/target)
 	if(!ishuman(target))
 		return
-	var/mob/living/carbon/human/human_target = target
 
-	//var/new_grad_style = input(usr, "Choose a color pattern:", "Character Preference")  as null|anything in GLOB.hair_gradients_list
-	//if(!new_grad_style)
-	//	return
+/**
+ * Removes a gradient and a gradient color from a mob.
+ *
+ * Arguments:
+ * * target - The mob who we will remove the gradient and gradient color from.
+ */
 
-	//var/new_grad_color = input(usr, "Choose a secondary hair color:", "Character Preference","#"+human_target.grad_color) as color|null
-	//if(!new_grad_color)
-	//	return
-
-	/*
-	human_target.grad_style = new_grad_style
-	human_target.grad_color = sanitize_hexcolor(new_grad_color)
-	to_chat(human_target, SPAN_NOTICE("You start applying the hair dye..."))
-	if(!do_after(usr, 3 SECONDS, target))
+/obj/item/dyespray/proc/bleach(mob/target)
+	if(!ishuman(target))
 		return
-	playsound(src, 'sound/effects/spray.ogg', 5, TRUE, 5)
-	human_target.update_hair()
-	*/

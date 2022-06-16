@@ -55,6 +55,10 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	var/grad_style
 	///The gradient color used to color the gradient.
 	var/grad_color
+	///Permanent hair gradient color
+	var/hair_gradient_color_permanent
+	///Permanent hair gradient style
+	var/hair_gradient_style_permanent
 
 	///Does the species use skintones or not? As of now only used by humans.
 	var/use_skintones = FALSE
@@ -691,7 +695,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 		if(ITEM_SLOT_BELT)
 			if(!(I.item_flags & NO_STRAPS_NEEDED))
 				var/obj/item/bodypart/O = H.get_bodypart(BODY_ZONE_CHEST)
-	
+
 				if(!H.w_uniform && !nojumpsuit && (!O || O.status != BODYPART_ROBOTIC))
 					if(!disable_warning)
 						to_chat(H, SPAN_WARNING("You need a jumpsuit before you can attach this [I.name]!"))
