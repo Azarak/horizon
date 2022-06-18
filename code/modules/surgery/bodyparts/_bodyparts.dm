@@ -926,7 +926,7 @@
 	for(var/obj/item/organ/organ as anything in get_organs())
 		if(!organ.is_visible())
 			continue
-		. += organ.get_bodypart_overlay()
+		. += organ.get_bodypart_overlay(src)
 
 	if (!owner || is_pseudopart || !ishuman(owner))
 		return

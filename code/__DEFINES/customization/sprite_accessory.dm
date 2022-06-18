@@ -1,1 +1,8 @@
 #define SPRITE_ACCESSORY(type) GLOB.sprite_accessories[type]
+
+#define DEFAULT_MUT_COLOR_ONE 1
+#define DEFAULT_MUT_COLOR_TWO 2
+#define DEFAULT_MUT_COLOR_THREE 3
+#define DEFAULT_HAIR_COLOR 4
+#define DEFAULT_FACE_HAIR_COLOR 5
+#define DEFAULT_EYE_COLOR 6
