@@ -18,6 +18,8 @@
 	var/list/relevant_layers
 	/// Amount of color keys this accessory uses.
 	var/color_keys = 1
+	/// Color key name to describe a single customizable color key.
+	var/color_key_name = "Accessory"
 	/// List of names for color keys, required if you use more than 1. This is to present the user with how every color will affect the accessory.
 	var/list/color_key_names
 	/// Whether this accessory has gendered variants. This will add either a "m_" or "f_" prefix if TRUE, depending on gender. No prefix if FALSE
@@ -34,7 +36,7 @@
 	return ..()
 
 /datum/sprite_accessory/proc/validate_organ_color_keys(obj/item/organ/organ)
-	if(!icon)
+	if(!color_keys)
 		return
 	var/list/color_list = color_string_to_list(organ.bodypart_greyscale_colors)
 	if(color_list && color_list.len == color_keys)
