@@ -45,14 +45,6 @@
 /// No accessory
 #define ACC_NONE "None"
 
-//organ slots
-#define ORGAN_SLOT_PENIS "penis"
-#define ORGAN_SLOT_VAGINA "vagina"
-#define ORGAN_SLOT_TESTICLES "testicles"
-#define ORGAN_SLOT_BREASTS "breasts"
-
-#define ORGAN_SLOT_WINGS "wings"
-
 #define MAXIMUM_MARKINGS_PER_LIMB 3
 
 #define PREVIEW_PREF_JOB "Job"

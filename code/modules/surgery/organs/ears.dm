@@ -2,6 +2,7 @@
 	name = "ears"
 	icon_state = "ears"
 	desc = "There are three parts to the ear. Inner, middle and outer. Only one of these parts should be normally visible."
+	visible_organ = TRUE
 	zone = BODY_ZONE_HEAD
 	slot = ORGAN_SLOT_EARS
 	gender = PLURAL
@@ -107,7 +108,8 @@
 		return
 	damage += 40/severity
 
-/obj/item/organ/ears/mutant
-	name = "fluffy ears"
-	icon = 'icons/obj/clothing/hats.dmi'
-	icon_state = "kitty"
+/obj/item/organ/ears/mammal
+	name = "mammal ears"
+
+/obj/item/organ/ears/avali
+	name = "avali ears"

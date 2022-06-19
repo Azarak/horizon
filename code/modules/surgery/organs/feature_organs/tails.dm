@@ -4,22 +4,20 @@
 	name = "tail"
 	desc = "A severed tail. What did you cut this off of?"
 	icon_state = "severedtail"
+	visible_organ = TRUE
 	zone = BODY_ZONE_PRECISE_GROIN
 	slot = ORGAN_SLOT_TAIL
-	var/tail_type = "None"
 	var/can_wag = TRUE
 	var/wagging = FALSE
 
 /obj/item/organ/tail/cat
 	name = "cat tail"
 	desc = "A severed cat tail. Who's wagging now?"
-	tail_type = "Cat"
 
 /obj/item/organ/tail/lizard
 	name = "lizard tail"
 	desc = "A severed lizard tail. Somewhere, no doubt, a lizard hater is very pleased with themselves."
 	color = "#116611"
-	tail_type = "Smooth"
 
 /obj/item/organ/tail/lizard/fake
 	name = "fabricated lizard tail"
@@ -28,12 +26,10 @@
 /obj/item/organ/tail/monkey
 	name = "monkey tail"
 	desc = "A severed monkey tail. Does not look like a banana."
-	tail_type = "Monkey"
 	icon_state = "severedmonkeytail"
 
-/obj/item/organ/tail/fluffy
-	name = "fluffy tail"
+/obj/item/organ/tail/mammal
+	name = "mammal tail"
 
-/obj/item/organ/tail/fluffy/no_wag
-	name = "fluffy tail"
-	can_wag = FALSE
+/obj/item/organ/tail/avali
+	name = "avali tail"

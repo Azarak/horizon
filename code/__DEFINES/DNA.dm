@@ -155,6 +155,22 @@
 #define ORGAN_SLOT_TONGUE "tongue"
 #define ORGAN_SLOT_VOICE "vocal_cords"
 #define ORGAN_SLOT_ZOMBIE "zombie_infection"
+#define ORGAN_SLOT_FRILLS "frills"
+#define ORGAN_SLOT_HORNS "horns"
+#define ORGAN_SLOT_ANTENNAS "antennas"
+#define ORGAN_SLOT_NECK_FEATURE "neck_feature"
+#define ORGAN_SLOT_HEAD_FEATURE "head_feature"
+#define ORGAN_SLOT_BACK_FEATURE "back_feature"
+#define ORGAN_SLOT_TAIL_FEATURE "tail_feature"
+#define ORGAN_SLOT_TAUR_BODY "taur_body"
+#define ORGAN_SLOT_WINGS "wings"
+#define ORGAN_SLOT_SNOUT "snout"
+
+#define ORGAN_SLOT_PENIS "penis"
+#define ORGAN_SLOT_VAGINA "vagina"
+#define ORGAN_SLOT_TESTICLES "testicles"
+#define ORGAN_SLOT_BREASTS "breasts"
+
 
 /// Xenomorph organ slots
 #define ORGAN_SLOT_XENO_ACIDGLAND "acid_gland"

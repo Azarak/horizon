@@ -1641,38 +1641,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						body_markings[zone] -= changing_name
 						body_markings[zone].Insert(held_index, desired_marking)
 						body_markings[zone][desired_marking] = marking_content
-		if("change_genitals")
-			needs_update = TRUE
-			switch(href_list["preference"])
-				if("breasts_size")
-					var/new_size = input(user, "Choose your character's breasts size:", "Character Preference") as null|anything in GLOB.preference_breast_sizes
-					if(new_size)
-						features["breasts_size"] = breasts_cup_to_size(new_size)
-				if("breasts_lactation")
-					features["breasts_lactation"] = !features["breasts_lactation"]
-				if("penis_taur_mode")
-					features["penis_taur_mode"] = !features["penis_taur_mode"]
-				if("penis_size")
-					var/new_length = input(user, "Choose your penis length:\n([PENIS_MIN_LENGTH]-[PENIS_MAX_LENGTH] in inches)", "Character Preference") as num|null
-					if(new_length)
-						features["penis_size"] = clamp(round(new_length, 1), PENIS_MIN_LENGTH, PENIS_MAX_LENGTH)
-						if(features["penis_girth"] >= new_length)
-							features["penis_girth"] = new_length - 1
-				if("penis_sheath")
-					var/new_sheath = input(user, "Choose your penis sheath", "Character Preference") as null|anything in SHEATH_MODES
-					if(new_sheath)
-						features["penis_sheath"] = new_sheath
-				if("penis_girth")
-					var/max_girth = PENIS_MAX_GIRTH
-					if(features["penis_size"] >= max_girth)
-						max_girth = features["penis_size"]
-					var/new_girth = input(user, "Choose your penis girth:\n(1-[max_girth] (based on length) in inches)", "Character Preference") as num|null
-					if(new_girth)
-						features["penis_girth"] = clamp(round(new_girth, 1), 1, max_girth)
-				if("balls_size")
-					var/new_size = input(user, "Choose your character's balls size:", "Character Preference") as null|anything in GLOB.preference_balls_sizes
-					if(new_size)
-						features["balls_size"] = balls_description_to_size(new_size)
 
 		if("random")
 			needs_update = TRUE
@@ -2572,13 +2540,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	else //We need to update it to 100% in case they switch back
 		character.dna.features["body_size"] = BODY_SIZE_NORMAL
 		character.dna.update_body_size()
-
-	if(character_setup)
-		for(var/organ_key in list(ORGAN_SLOT_VAGINA, ORGAN_SLOT_PENIS, ORGAN_SLOT_BREASTS))
-			var/obj/item/organ/genital/gent = character.getorganslot(organ_key)
-			if(gent)
-				gent.aroused = arousal_preview
-				gent.update_sprite_suffix()
 
 	if(length(augments))
 		for(var/key in augments)

@@ -1,6 +1,7 @@
 /obj/item/organ/wings
 	name = "wings"
 	desc = "A pair of wings. Those may or may not allow you to fly... or at the very least flap."
+	visible_organ = TRUE
 	zone = BODY_ZONE_CHEST
 	slot = ORGAN_SLOT_WINGS
 	///Whether the wings should grant flight on insertion.
@@ -20,6 +21,9 @@
 	name = "moth wings"
 	desc = "A pair of fuzzy moth wings."
 	flight_for_species = list("moth")
+
+/obj/item/organ/wings/mammal
+	name = "mammal wings"
 
 /obj/item/organ/wings/flight
 	unconditional_flight = TRUE
