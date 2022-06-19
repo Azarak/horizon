@@ -327,6 +327,9 @@
 	if(accessory_type)
 		var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(accessory_type)
 		organ_overlay = mutable_appearance()
+		var/mutable_appearance/accessory_appearance = accessory.get_appearance(src, bodypart)
+		if(!accessory_appearance)
+			return
 		organ_overlay.overlays += accessory.get_appearance(src, bodypart)
 	else
 		organ_overlay = mutable_appearance(bodypart_icon, bodypart_icon_state, layer = -bodypart_layer)

@@ -926,7 +926,9 @@
 	for(var/obj/item/organ/organ as anything in get_organs())
 		if(!organ.is_visible())
 			continue
-		. += organ.get_bodypart_overlay(src)
+		var/mutable_appearance/organ_appearance = organ.get_bodypart_overlay(src)
+		if(organ_appearance)
+			. += organ_appearance
 
 	if (!owner || is_pseudopart || !ishuman(owner))
 		return

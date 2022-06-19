@@ -34,6 +34,8 @@
 	return ..()
 
 /datum/sprite_accessory/proc/validate_organ_color_keys(obj/item/organ/organ)
+	if(!icon)
+		return
 	var/list/color_list = color_string_to_list(organ.bodypart_greyscale_colors)
 	if(color_list && color_list.len == color_keys)
 		return
@@ -50,6 +52,8 @@
 /datum/sprite_accessory/proc/get_appearance(obj/item/organ/organ, obj/item/bodypart/bodypart)
 	var/mob/living/carbon/owner = organ.owner
 	var/icon_state_to_use = get_icon_state(organ, bodypart, owner)
+	if(!icon_state_to_use)
+		return null
 	var/color_string = organ.bodypart_greyscale_colors
 	return get_overlay(icon_state_to_use, color_string)
 
@@ -136,3 +140,10 @@
 
 /datum/sprite_accessory/proc/get_icon_state(obj/item/organ/organ, obj/item/bodypart/bodypart, mob/living/carbon/owner)
 	return icon_state
+
+/// None state which just means no appearance. Exists for easier manipulation so we dont have to write cases for customizng into a null type.
+/datum/sprite_accessory/none
+	name = "None"
+	color_keys = 0
+	icon = null
+	icon_state = null
