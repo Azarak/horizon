@@ -11,3 +11,9 @@
 
 /obj/item/organ/snout/vox
 	name = "large beak"
+
+/obj/item/organ/snout/mammal
+	name = "mammal snout"
+
+/obj/item/organ/snout/vulpkanin
+	name = "vulpkanin snout"

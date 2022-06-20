@@ -38,14 +38,14 @@
 /datum/sprite_accessory/proc/validate_organ_color_keys(obj/item/organ/organ)
 	if(!color_keys)
 		return
-	var/list/color_list = color_string_to_list(organ.bodypart_greyscale_colors)
+	var/list/color_list = color_string_to_list(organ.accessory_colors)
 	if(color_list && color_list.len == color_keys)
 		return
 
 	var/list/new_color_list = list()
 	for(var/i in 1 to color_keys)
 		new_color_list += get_color_for_color_key(color_keys, organ.owner)
-	organ.bodypart_greyscale_colors = color_list_to_string(new_color_list)
+	organ.accessory_colors = color_list_to_string(new_color_list)
 
 /datum/sprite_accessory/proc/get_color_for_color_key(color_key, mob/living/carbon/owner)
 	return "#FFFFFF"
@@ -56,7 +56,7 @@
 	var/icon_state_to_use = get_icon_state(organ, bodypart, owner)
 	if(!icon_state_to_use)
 		return null
-	var/color_string = organ.bodypart_greyscale_colors
+	var/color_string = organ.accessory_colors
 	return get_overlay(icon_state_to_use, color_string)
 
 /datum/sprite_accessory/proc/get_overlay(overlay_icon_state, color_string)
@@ -94,7 +94,7 @@
 		appearance = generate_overlay_layer(overlay_icon_state, color_list, layer)
 	return appearance
 
-/datum/sprite_accessory/proc/generate_overlay_layer(overlay_icon_state, color_list, layer, suffix)
+/datum/sprite_accessory/proc/generate_overlay_layer(overlay_icon_state, color_list, passed_layer, suffix)
 	var/one_color = (color_keys == 1)
 	if(suffix)
 		overlay_icon_state += "_[suffix]"
@@ -102,7 +102,6 @@
 	var/result_state
 	for(var/color_index in 1 to color_keys)
 		var/color_to_use = color_list[color_index]
-		message_admins(color_to_use)
 		var/lookup_state = one_color ? overlay_icon_state  : "[overlay_icon_state]_[color_index]"
 		var/icon/color_key_icon = icon(icon, lookup_state)
 		color_key_icon.Blend(color_to_use, ICON_MULTIPLY)
@@ -119,7 +118,7 @@
 
 	// Apparently new icons can do weird stuff unless you try and "read" something from it like this before using it.
 	result_icon.GetPixel(1, 1)
-	var/mutable_appearance/layer_appearance = mutable_appearance(result_icon, result_state, layer = layer)
+	var/mutable_appearance/layer_appearance = mutable_appearance(result_icon, result_state, layer = -passed_layer)
 	layer_appearance.overlays += emissive_blocker(result_icon, result_state)
 
 	// TODO: add emissive overlays here.
@@ -142,6 +141,42 @@
 
 /datum/sprite_accessory/proc/get_icon_state(obj/item/organ/organ, obj/item/bodypart/bodypart, mob/living/carbon/owner)
 	return icon_state
+
+#ifdef UNIT_TESTS
+
+/datum/sprite_accessory/proc/unit_testing_possible_icon_states()
+	var/list/icon_states = list()
+	var/list/final_states = list()
+	var/list/layer_suffixes = list()
+	unit_testing_icon_states(icon_states)
+
+	if(relevant_layers)
+		for(var/layer in relevant_layers)
+			layer_suffixes = get_layer_suffix(layer)
+
+	for(var/state in icon_states)
+		for(var/color_index in 1 to color_keys)
+			var/color_suffix = ""
+			if(color_keys !=)
+				color_suffix = "_[i]"
+			if(length(layer_suffixes))
+				for(var/layer_suffix in layer_suffixes)
+					var/final_state = "[state]_[layer_suffix][color_suffix]"
+					final_states += final_state
+					if(extra_state)
+						final_states += "[final_state]_extra"
+			else
+				final_state = "[state]_[color_suffix]"
+				final_states += final_state
+				if(extra_state)
+					final_states += "[final_state]_extra"
+
+	return final_states
+
+/datum/sprite_accessory/proc/unit_testing_icon_states(list/states)
+	states += icon_state
+
+#endif
 
 /// None state which just means no appearance. Exists for easier manipulation so we dont have to write cases for customizng into a null type.
 /datum/sprite_accessory/none

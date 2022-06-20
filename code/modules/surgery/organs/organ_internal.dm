@@ -44,10 +44,10 @@
 	var/bodypart_icon_state
 	/// Layer of the overlay this organs renders for being on limbs.
 	var/bodypart_layer = BODY_LAYER
-	/// Color list string for complex overlay generation through sprite accessory.
-	var/bodypart_greyscale_colors
 	/// Instead of creating an overlay from above variables we can use a sprite accessory.
 	var/accessory_type
+	/// Color list string for complex overlay generation through sprite accessory.
+	var/accessory_colors
 	/// Whether the bodypart organ overlay is an emissive blocker
 	var/bodypart_emissive_blocker = TRUE
 

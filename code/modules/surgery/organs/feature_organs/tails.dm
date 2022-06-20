@@ -13,11 +13,13 @@
 /obj/item/organ/tail/cat
 	name = "cat tail"
 	desc = "A severed cat tail. Who's wagging now?"
+	accessory_type = /datum/sprite_accessory/tail/cat
 
 /obj/item/organ/tail/lizard
 	name = "lizard tail"
 	desc = "A severed lizard tail. Somewhere, no doubt, a lizard hater is very pleased with themselves."
 	color = "#116611"
+	accessory_type = /datum/sprite_accessory/tail/lizard/smooth
 
 /obj/item/organ/tail/lizard/fake
 	name = "fabricated lizard tail"
@@ -27,9 +29,15 @@
 	name = "monkey tail"
 	desc = "A severed monkey tail. Does not look like a banana."
 	icon_state = "severedmonkeytail"
+	accessory_type = /datum/sprite_accessory/tail/monkey
 
 /obj/item/organ/tail/mammal
 	name = "mammal tail"
 
 /obj/item/organ/tail/avali
 	name = "avali tail"
+
+/obj/item/organ/tail/vulpkanin
+	name = "vulpkanin tail"
+	accessory_type = /datum/sprite_accessory/tail/fox
+	accessory_colors = "#fc8803#fff8f0"

@@ -113,3 +113,6 @@
 
 /obj/item/organ/ears/avali
 	name = "avali ears"
+
+/obj/item/organ/ears/vulpkanin
+	name = "vulpkanin ears"
