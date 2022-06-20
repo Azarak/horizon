@@ -323,24 +323,22 @@
 	if(!bodypart_icon && !accessory_type)
 		return
 
-	var/mutable_appearance/organ_overlay
 	if(accessory_type)
 		var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(accessory_type)
-		organ_overlay = mutable_appearance()
-		var/mutable_appearance/accessory_appearance = accessory.get_appearance(src, bodypart)
-		if(!accessory_appearance)
+		var/list/appearances = accessory.get_appearance(src, bodypart)
+		if(!appearances)
 			return
-		organ_overlay.overlays += accessory.get_appearance(src, bodypart)
+		return appearances
 	else
-		organ_overlay = mutable_appearance(bodypart_icon, bodypart_icon_state, layer = -bodypart_layer)
+		var/mutable_appearance/organ_overlay = mutable_appearance(bodypart_icon, bodypart_icon_state, layer = -bodypart_layer)
 		organ_overlay.color = color
 		bodypart_icon(organ_overlay)
 
 		if(bodypart_emissive_blocker)
 			organ_overlay.overlays += emissive_blocker(bodypart_icon, bodypart_icon_state)
 
-	bodypart_overlays(organ_overlay)
-	return organ_overlay
+		bodypart_overlays(organ_overlay)
+		return organ_overlay
 
 /// Proc to customize the base icon of the organ. This will not run if a sprite accessory going to generate the icon.
 /obj/item/organ/proc/bodypart_icon(mutable_appearance/standing)

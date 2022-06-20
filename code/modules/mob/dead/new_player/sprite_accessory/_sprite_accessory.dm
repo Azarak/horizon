@@ -81,18 +81,15 @@
 	return color_list_to_string(color_list)
 
 /datum/sprite_accessory/proc/generate_overlay(overlay_icon_state, color_string)
-	var/mutable_appearance/appearance
+	. = list()
 	var/list/color_list = color_string_to_list(color_string)
 	if(relevant_layers)
 		for(var/iterated_layer in relevant_layers)
 			var/mutable_appearance/layer_appearance = generate_overlay_layer(overlay_icon_state, color_list, iterated_layer, get_layer_suffix(iterated_layer))
-			if(appearance == null)
-				appearance = layer_appearance
-			else
-				appearance.overlays += layer_appearance
+			. += layer_appearance
 	else
-		appearance = generate_overlay_layer(overlay_icon_state, color_list, layer)
-	return appearance
+		. += generate_overlay_layer(overlay_icon_state, color_list, layer)
+	return .
 
 /datum/sprite_accessory/proc/generate_overlay_layer(overlay_icon_state, color_list, passed_layer, suffix)
 	var/one_color = (color_keys == 1)
