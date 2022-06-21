@@ -571,6 +571,8 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 
 	validate_attributes()
 
+	validate_organ_entries()
+
 	//validate_species_parts()
 
 	needs_update = TRUE

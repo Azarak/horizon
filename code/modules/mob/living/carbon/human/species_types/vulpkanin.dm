@@ -33,6 +33,9 @@
 		ORGAN_SLOT_TAIL = /obj/item/organ/tail/vulpkanin,
 		ORGAN_SLOT_SNOUT = /obj/item/organ/snout/vulpkanin,
 		)
+	organ_customizers = list(
+		/datum/organ_customizer/tail/vulpkanin
+		)
 
 
 /datum/species/vulpkanin/get_random_features()

@@ -19,6 +19,7 @@
 	var/list/list/body_markings = list()
 	///Current body size, used for proper re-sizing and keeping track of that
 	var/current_body_size = BODY_SIZE_NORMAL
+	var/list/organ_dna = list()
 
 /datum/dna/New(mob/living/new_holder)
 	if(istype(new_holder))

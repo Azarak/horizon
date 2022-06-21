@@ -50,6 +50,8 @@
 	var/accessory_colors
 	/// Whether the bodypart organ overlay is an emissive blocker
 	var/bodypart_emissive_blocker = TRUE
+	/// Type of organ DNA that this organ will create.
+	var/organ_dna_type = /datum/organ_dna
 
 /obj/item/organ/Initialize()
 	. = ..()
@@ -348,7 +350,23 @@
 /obj/item/organ/proc/bodypart_overlays(mutable_appearance/standing)
 	return
 
-/obj/item/organ/proc/set_accessory_type(new_accessory_type)
+/// Sets an accessory type and optionally colors too.
+/obj/item/organ/proc/set_accessory_type(new_accessory_type, colors)
 	accessory_type = new_accessory_type
+	if(!isnull(colors))
+		accessory_colors = colors
 	var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(accessory_type)
 	accessory.validate_organ_color_keys(src)
+
+/// Creates, imprints and returns an organ DNA datum.
+/obj/item/organ/proc/create_organ_dna()
+	var/datum/organ_dna/organ_dna = new organ_dna_type()
+	imprint_dna(organ_dna)
+	return organ_dna
+
+/// Imprints an organ DNA datum.
+/obj/item/organ/proc/imprint_organ_dna(datum/organ_dna/organ_dna)
+	organ_dna.organ_type = type
+	if(accessory_type)
+		organ_dna.accessory_type = accessory_type
+		organ_dna.accessory_colors = accessory_colors

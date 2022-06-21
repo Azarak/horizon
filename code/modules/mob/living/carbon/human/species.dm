@@ -206,6 +206,9 @@ GLOBAL_LIST_EMPTY(customizable_races)
 		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,
 		)
 
+	/// List of organ customizers for preferences to customize organs.
+	var/list/organ_customizers
+
 	///Bitflag that controls what in game ways something can select this species as a spawnable source, such as magic mirrors. See [mob defines][code/__DEFINES/mobs.dm] for possible sources.
 	var/changesource_flags = NONE
 

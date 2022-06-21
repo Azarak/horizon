@@ -225,6 +225,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/list/perceived_attributes = list()
 	/// Skills that the character will end up with, accounting in for other factors
 	var/list/perceived_skills = list()
+	/// List of all organ entires.
+	var/list/organ_entries = list()
 
 /datum/preferences/New(client/C)
 	parent = C
