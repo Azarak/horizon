@@ -36,6 +36,54 @@
 	for(var/datum/organ_entry/entry as anything in organ_entries)
 		entry.validate(src)
 
+/datum/preferences/proc/print_organs_page()
+	var/list/dat = list()
+	. = dat
+	if(!pref_species)
+		return
+	var/list/customizers = pref_species.organ_customizers
+	if(!customizers)
+		return
+	for(var/customizer_type in customizers)
+		var/datum/organ_customizer/customizer = ORGAN_CUSTOMIZER(customizer_type)
+		var/datum/organ_entry/entry = get_organ_entry_for_customizer_type(customizer_type)
+		if(!entry)
+			stack_trace("Missing organ entry in preferences for customizer [customizer_type]")
+			continue
+		var/datum/organ_choice/choice = ORGAN_CHOICE(entry.organ_choice_type)
+
+		var/customizer_link
+
+		if(entry.missing_organ)
+			customizer_link = "href='?_src_=prefs;task=change_organ'"
+		else
+			if(choice.allows_missing_organ)
+				customizer_link = "href='?_src_=prefs;task=change_organ' class='linkOn'"
+			else
+				customizer_link = "class='linkOff'"
+
+		dat += "<hr>"
+		dat += "<a [customizer_link]>[customizer.name]</a>"
+		if(!entry.missing_organ)
+			var/choice_link
+			if(length(customizer.organ_choices) > 1)
+				choice_link = "href='?_src_=prefs;task=change_organ'"
+			else
+				choice_link = "class='linkOff'"
+			dat += "<br><a [choice_link]>[choice.name]</a>"
+
+			var/list/choice_list = choice.show_pref_choices(src, entry, customizer_type)
+			if(choice_list)
+				dat += choice_list
+
+	return
+
+/// We dont associate the entries just to be safer for save/load, so we can't lookup easily and we do this.
+/datum/preferences/proc/get_organ_entry_for_customizer_type(customizer_type)
+	for(var/datum/organ_entry/entry as anything in organ_entries)
+		if(entry.organ_customizer_type == customizer_type)
+			return entry
+
 /// Gets an associative list of organ slots to organ dna created from organ customization
 /datum/preferences/proc/get_organ_dna_list()
 	var/list/organ_list = list()
@@ -44,3 +92,22 @@
 		organ_list[organ_choice.organ_slot] = organ_choice.create_organ_dna(entry)
 
 	return organ_list
+
+/datum/preferences/proc/customize_organ(obj/item/organ/organ)
+	for(var/datum/organ_entry/entry as anything in organ_entries)
+		var/datum/organ_choice/organ_choice = ORGAN_CHOICE(entry.organ_choice_type)
+		if(organ_choice.organ_slot != organ.slot)
+			continue
+		organ_choice.customize_organ(organ, entry)
+
+/datum/preferences/proc/handle_organ_topic(mob/user, href_list)
+	var/customizer_type = text2path(href_list[customizer])
+	var/datum/organ_entry/entry = get_organ_entry_for_customizer_type(customizer_type)
+	var/datum/organ_choice/choice = ORGAN_CHOICE(entry.organ_choice_type)
+	switch(href_list["organ"])
+		if("toggle_missing")
+			return
+		if("change_choice")
+			return
+		else
+			choice.handle_topic(user, href_list, src, entry, customizer_type)

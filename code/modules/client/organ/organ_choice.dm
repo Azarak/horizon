@@ -48,3 +48,49 @@
 		organ_dna.accessory_type = entry.accessory_type
 		if(allows_accessory_color_customization)
 			organ_dna.accessory_colors = entry.accessory_colors
+
+/// When you want to customize an organ but not through DNA (hair dye for example)
+/datum/organ_choice/proc/customize_organ(obj/item/organ/organ, datum/organ_entry/entry)
+	return
+
+/datum/organ_choice/proc/show_pref_choices(datum/preferences/prefs, datum/organ_entry/entry, customizer_type)
+	var/list/dat = list()
+	generate_pref_choices(dat, prefs, entry, customizer_type)
+	return dat
+
+/datum/organ_choice/proc/generate_pref_choices(list/dat, datum/preferences/prefs, datum/organ_entry/entry, customizer_type)
+	var/datum/sprite_accessory/accessory
+	if(sprite_accessories && entry.accessory_type)
+		accessory = SPRITE_ACCESSORY(entry.accessory_type)
+
+	if(accessory)
+		var/accessory_link
+		var/arrows_string
+		if(length(sprite_accessories) > 1)
+			accessory_link = "href='?_src_=prefs;task=change_organ;customizer=[customizer_type];organ=choose_acc'"
+			arrows_string = "<a href='?_src_=prefs;task=change_organ;customizer=[customizer_type];organ=next_acc''><</a><a href='?_src_=prefs]task=change_organ;customizer=[customizer_type];organ=prev_acc''>></a>"
+		else
+			accessory_link = "class='linkOff'"
+			arrows_string = "<a class='linkOff'><</a><a class='linkOff'>></a>"
+		dat += "<br>[arrows_string]<a [accessory_link]>[accessory.name]</a>"
+
+		if(allows_accessory_color_customization)
+			var/list/color_list = color_string_to_list(entry.accessory_colors)
+			for(var/index in 1 to accessory.color_keys)
+				var/named_index = (accessory.color_keys == 1) ? accessory.color_key_name : accessory.color_key_names[index]
+				dat += "<br>[named_index]: <a href='?_src_=prefs;task=change_organ;customizer=[customizer_type];organ=acc_color;color_index=[index]''><span class='color_holder_box' style='background-color:[color_list[index]]'></span></a>"
+
+/datum/organ_choice/proc/handle_topic(mob/user, list/href_list, datum/preferences/prefs, datum/organ_entry/entry, customizer_type)
+	switch(href_list["organ"])
+		if("choose_acc")
+			return
+		if("next_acc")
+			return
+		if("prev_acc")
+			return
+		if("acc_color")
+			var/index = text2num(href_list["color_index"])
+			return
+
+
+

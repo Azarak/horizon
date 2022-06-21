@@ -444,6 +444,8 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	READ_FILE(S["attributes"] , attributes)
 	READ_FILE(S["skills"] , skills)
 
+	READ_FILE(S["organ_entries"] , organ_entries)
+
 	switch(dominant_hand)
 		if(DOMINANT_HAND_LEFT, DOMINANT_HAND_RIGHT, DOMINANT_HAND_AMBI) // do nothing
 		else
@@ -573,8 +575,6 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 
 	validate_organ_entries()
 
-	//validate_species_parts()
-
 	needs_update = TRUE
 
 	return TRUE
@@ -651,6 +651,8 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 
 	WRITE_FILE(S["attributes"] , attributes)
 	WRITE_FILE(S["skills"] , skills)
+
+	WRITE_FILE(S["organ_entries"] , organ_entries)
 
 	return TRUE
 
