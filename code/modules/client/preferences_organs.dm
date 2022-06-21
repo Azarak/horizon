@@ -35,3 +35,12 @@
 	/// Validate the variables within organ entries
 	for(var/datum/organ_entry/entry as anything in organ_entries)
 		entry.validate(src)
+
+/// Gets an associative list of organ slots to organ dna created from organ customization
+/datum/preferences/proc/get_organ_dna_list()
+	var/list/organ_list = list()
+	for(var/datum/organ_entry/entry as anything in organ_entries)
+		var/datum/organ_choice/organ_choice = ORGAN_CHOICE(entry.organ_choice_type)
+		organ_list[organ_choice.organ_slot] = organ_choice.create_organ_dna(entry)
+
+	return organ_list

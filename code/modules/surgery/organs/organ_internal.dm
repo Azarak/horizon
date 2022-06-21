@@ -302,10 +302,6 @@
 /obj/item/organ/proc/get_availability(datum/species/owner_species)
 	return TRUE
 
-/// Called before organs are replaced in regenerate_organs with new ones
-/obj/item/organ/proc/before_organ_replacement(obj/item/organ/replacement)
-	return
-
 /// Gets organ description for when its attached to a bodypart.
 /obj/item/organ/proc/get_bodypart_desc()
 	return bodypart_desc
@@ -358,10 +354,17 @@
 	var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(accessory_type)
 	accessory.validate_organ_color_keys(src)
 
+/obj/item/organ/proc/build_colors_for_accessory(list/source_key_list)
+	if(!accessory_type)
+		return
+	var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(accessory_type)
+	accessory_colors = accessory.get_default_colors(source_key_list)
+	accessory.validate_organ_color_keys(src)
+
 /// Creates, imprints and returns an organ DNA datum.
 /obj/item/organ/proc/create_organ_dna()
 	var/datum/organ_dna/organ_dna = new organ_dna_type()
-	imprint_dna(organ_dna)
+	imprint_organ_dna(organ_dna)
 	return organ_dna
 
 /// Imprints an organ DNA datum.

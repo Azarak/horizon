@@ -366,11 +366,22 @@ GLOBAL_LIST_EMPTY(customizable_races)
  * * replace_current - boolean, forces all old organs to get deleted whether or not they pass the species' ability to keep that organ
  * * excluded_zones - list, add zone defines to block organs inside of the zones from getting handled. see headless mutation for an example
  */
-/datum/species/proc/regenerate_organs(mob/living/carbon/C,datum/species/old_species,replace_current=TRUE,list/excluded_zones)
+/datum/species/proc/regenerate_organs(mob/living/carbon/C, datum/species/old_species, replace_current=TRUE, list/excluded_zones, datum/preferences/pref_load)	
+	/// If we're switching species, and switching to a different specie, clear the organ dna.
+	if(old_species && old_species.type != type)
+		C.dna.organ_dna = list()
+	/// Add DNA and create organs from prefs
+	if(pref_load)
+		var/list/organ_dna_list = pref_load.get_organ_dna_list()
+		for(var/organ_slot in organ_dna_list)
+			C.dna.organ_dna[organ_slot] = organ_dna_list[organ_slot]
+
 	//what should be put in if there is no mutantorgan (brains handled seperately)
 	var/list/slot_mutantorgans = organs
 
 	var/list/slots_to_iterate = list()
+	for(var/slot in C.dna.organ_dna)
+		slots_to_iterate |= slot
 	for(var/slot in slot_mutantorgans)
 		slots_to_iterate |= slot
 	for(var/obj/item/organ/current_organ as anything in C.internal_organs)
@@ -378,21 +389,29 @@ GLOBAL_LIST_EMPTY(customizable_races)
 
 	for(var/slot in slots_to_iterate)
 		var/obj/item/organ/oldorgan = C.getorganslot(slot) //used in removing
-		var/obj/item/organ/neworgan = slot_mutantorgans[slot] //used in adding
+		var/obj/item/organ/neworgan
+
+		var/list/source_key_list = color_key_source_list_from_dna(C.dna)
+		if(C.dna.organ_dna[slot])
+			var/datum/organ_dna/organ_dna = C.dna.organ_dna[slot]
+			if(organ_dna.can_create_organ())
+				neworgan = organ_dna.create_organ()
+		else
+			var/new_type = slot_mutantorgans[slot]
+			neworgan = new new_type()
+			neworgan.build_colors_for_accessory(source_key_list)
+
 		var/used_neworgan = FALSE
-		neworgan = new neworgan()
 		var/should_have = neworgan.get_availability(src) //organ proc that points back to a species trait (so if the species is supposed to have this organ)
 
 		if(oldorgan && (!should_have || replace_current) && !(oldorgan.zone in excluded_zones) && !(oldorgan.organ_flags & ORGAN_UNREMOVABLE))
 			if(slot == ORGAN_SLOT_BRAIN)
 				var/obj/item/organ/brain/brain = oldorgan
 				if(!brain.decoy_override)//"Just keep it if it's fake" - confucius, probably
-					brain.before_organ_replacement(neworgan)
 					brain.Remove(C,TRUE, TRUE) //brain argument used so it doesn't cause any... sudden death.
 					QDEL_NULL(brain)
 					oldorgan = null //now deleted
 			else
-				oldorgan.before_organ_replacement(neworgan)
 				oldorgan.Remove(C,TRUE)
 				QDEL_NULL(oldorgan) //we cannot just tab this out because we need to skip the deleting if it is a decoy brain.
 
@@ -401,12 +420,15 @@ GLOBAL_LIST_EMPTY(customizable_races)
 			oldorgan.setOrganDamage(0)
 		else if(should_have && !(initial(neworgan.zone) in excluded_zones))
 			used_neworgan = TRUE
-			neworgan.Insert(C, TRUE, FALSE)
+			if(neworgan)
+				neworgan.Insert(C, TRUE, FALSE)
 
 		if(!used_neworgan)
-			qdel(neworgan)
-
-	var/robot_organs = (ROBOTIC_DNA_ORGANS in C.dna.species.species_traits)
+			if(neworgan)
+				qdel(neworgan)
+		else if (!C.dna.organ_dna[slot])
+			var/datum/organ_dna/new_dna = neworgan.create_organ_dna()
+			C.dna.organ_dna[slot] = new_dna
 
 /**
  * Proc called when a carbon becomes this species.
@@ -418,7 +440,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
  * * old_species - The species that the carbon used to be before becoming this race, used for regenerating organs.
  * * pref_load - Preferences to be loaded from character setup, loads in preferred mutant things like bodyparts, digilegs, skin color, etc.
  */
-/datum/species/proc/on_species_gain(mob/living/carbon/C, datum/species/old_species, pref_load)
+/datum/species/proc/on_species_gain(mob/living/carbon/C, datum/species/old_species, datum/preferences/pref_load)
 	// Add the species' descriptors to the human
 	if(species_descriptors)
 		C.descriptors += species_descriptors
@@ -444,7 +466,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 
 	C.mob_biotypes = inherent_biotypes
 
-	regenerate_organs(C,old_species)
+	regenerate_organs(C, old_species, pref_load = pref_load)
 
 	if(exotic_bloodtype && C.dna.blood_type != exotic_bloodtype)
 		C.dna.blood_type = exotic_bloodtype

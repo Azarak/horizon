@@ -86,6 +86,9 @@
 	try_get_common_language()
 	validate_languages()
 
+	organ_entries = list()
+	validate_organ_entries()
+
 /datum/preferences/proc/reset_colors()
 	for(var/zone in body_markings)
 		var/list/bml = body_markings[zone]

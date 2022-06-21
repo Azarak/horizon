@@ -4,6 +4,8 @@
 
 /datum/organ_choice/tail
 	name = "Tail"
+	organ_type = /obj/item/organ/tail
+	organ_slot = ORGAN_SLOT_TAIL
 	abstract_type = /datum/organ_choice/tail
 
 /datum/organ_customizer/tail/vulpkanin

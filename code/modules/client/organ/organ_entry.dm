@@ -5,10 +5,13 @@
 	var/organ_choice_type
 	var/accessory_type
 	var/accessory_colors
+	var/missing_organ = FALSE
 
 /datum/organ_entry/proc/validate(datum/preferences/prefs)
-	/// Validate chosen accessory
 	var/datum/organ_choice/organ_choice = ORGAN_CHOICE(organ_choice_type)
+	if(missing_organ && !organ_choice.allows_missing_organ)
+		missing_organ = FALSE
+	/// Validate chosen accessory
 	if(accessory_type && !organ_choice.sprite_accessories)
 		accessory_type = null
 		accessory_colors = null
@@ -26,7 +29,7 @@
 				if(color_list.len != accessory.color_keys)
 					reset_colors = TRUE
 			if(reset_colors)
-				accessory_colors = color_key_source_list_from_prefs(prefs)
+				accessory_colors = accessory.get_default_colors(color_key_source_list_from_prefs(prefs))
 
 /datum/organ_entry/proc/set_accessory_type(datum/preferences/prefs, new_accessory_type)
 	if(accessory_type == new_accessory_type)

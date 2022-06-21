@@ -6,6 +6,8 @@
 	var/organ_entry_type = /datum/organ_entry
 	/// Typepath of the organ this choice yields.
 	var/organ_type
+	/// Slot of the organ.
+	var/organ_slot
 	/// Typepath of the organ DNA.
 	var/organ_dna_type = /datum/organ_dna
 	/// List of sprite accessories this choice allows. Can be null
@@ -14,6 +16,8 @@
 	var/default_accessory
 	/// Whether this organ choice allows to customize colors of sprite accessories.
 	var/allows_accessory_color_customization = TRUE
+	/// Whether this choice allows the user to choose to be missing an organ.
+	var/allows_missing_organ = FALSE
 
 /datum/organ_choice/New()
 	. = ..()
@@ -33,11 +37,13 @@
 
 /datum/organ_choice/proc/create_organ_dna(datum/organ_entry/entry)
 	var/datum/organ_dna/organ_dna = new organ_dna_type()
-	imprint_organ_dna(organ_dna)
+	imprint_organ_dna(organ_dna, entry)
 	return organ_dna
 
 /datum/organ_choice/proc/imprint_organ_dna(datum/organ_dna/organ_dna, datum/organ_entry/entry)
 	organ_dna.organ_type = organ_type
+	if(allows_missing_organ && entry.missing_organ)
+		organ_dna.missing_organ = TRUE
 	if(entry.accessory_type)
 		organ_dna.accessory_type = entry.accessory_type
 		if(allows_accessory_color_customization)

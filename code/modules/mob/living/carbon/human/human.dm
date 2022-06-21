@@ -1248,6 +1248,9 @@
 /mob/living/carbon/human/species/xeno
 	race = /datum/species/xeno
 
+/mob/living/carbon/human/species/vulpkanin
+	race = /datum/species/vulpkanin
+
 /mob/living/carbon/human/species/roundstartslime
 	race = /datum/species/jelly/roundstartslime
 

@@ -6,8 +6,6 @@
 	var/list/organ_choices
 	/// The default choice from among `organ_choices`.
 	var/default_choice
-	/// Whether the user needs to have an entry for this customizer. (Otherwise the organ is optional)
-	var/required = TRUE
 
 /datum/organ_customizer/New()
 	. = ..()
