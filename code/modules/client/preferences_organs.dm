@@ -90,7 +90,7 @@
 	var/list/organ_list = list()
 	for(var/datum/organ_entry/entry as anything in organ_entries)
 		var/datum/organ_choice/organ_choice = ORGAN_CHOICE(entry.organ_choice_type)
-		organ_list[organ_choice.organ_slot] = organ_choice.create_organ_dna(entry)
+		organ_list[organ_choice.organ_slot] = organ_choice.create_organ_dna(entry, src)
 
 	return organ_list
 

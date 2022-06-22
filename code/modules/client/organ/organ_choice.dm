@@ -35,12 +35,12 @@
 		set_accessory_type(prefs, default_accessory, entry)
 	return entry
 
-/datum/organ_choice/proc/create_organ_dna(datum/organ_entry/entry)
+/datum/organ_choice/proc/create_organ_dna(datum/organ_entry/entry, datum/preferences/prefs)
 	var/datum/organ_dna/organ_dna = new organ_dna_type()
-	imprint_organ_dna(organ_dna, entry)
+	imprint_organ_dna(organ_dna, entry, prefs)
 	return organ_dna
 
-/datum/organ_choice/proc/imprint_organ_dna(datum/organ_dna/organ_dna, datum/organ_entry/entry)
+/datum/organ_choice/proc/imprint_organ_dna(datum/organ_dna/organ_dna, datum/organ_entry/entry, datum/preferences/prefs)
 	organ_dna.organ_type = organ_type
 	if(allows_missing_organ && entry.missing_organ)
 		organ_dna.missing_organ = TRUE
@@ -48,6 +48,9 @@
 		organ_dna.accessory_type = entry.accessory_type
 		if(allows_accessory_color_customization)
 			organ_dna.accessory_colors = entry.accessory_colors
+		else
+			var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(entry.accessory_type)
+			organ_dna.accessory_colors = accessory.get_default_colors(color_key_source_list_from_prefs(prefs))
 
 /// When you want to customize an organ but not through DNA (hair dye for example)
 /datum/organ_choice/proc/customize_organ(obj/item/organ/organ, datum/organ_entry/entry)
