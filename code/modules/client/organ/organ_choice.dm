@@ -32,7 +32,7 @@
 	entry.organ_customizer_type = customizer_type
 	entry.organ_choice_type = type
 	if(sprite_accessories)
-		entry.set_accessory_type(prefs, default_accessory)
+		set_accessory_type(prefs, default_accessory, entry)
 	return entry
 
 /datum/organ_choice/proc/create_organ_dna(datum/organ_entry/entry)
@@ -94,7 +94,7 @@
 			if(!chosen_input)
 				return
 			var/choice_type = choice_list[chosen_input]
-			entry.set_accessory_type(prefs, choice_type)
+			set_accessory_type(prefs, choice_type, entry)
 
 		if("rotate")
 			if(!sprite_accessories)
@@ -118,7 +118,8 @@
 				target_index = 1
 			else if (target_index <= 0)
 				target_index = sprite_accessories.len
-			entry.set_accessory_type(prefs, sprite_accessories[target_index])
+			var/datum/organ_choice/organ_choice = ORGAN_CHOICE(entry.organ_choice_type)
+			organ_choice.set_accessory_type(prefs, sprite_accessories[target_index], entry)
 
 		if("acc_color")
 			if(!sprite_accessories || !allows_accessory_color_customization)
@@ -136,4 +137,45 @@
 		if("reset_colors")
 			if(!sprite_accessories || !allows_accessory_color_customization)
 				return
-			entry.reset_accessory_colors(prefs)
+			reset_accessory_colors(prefs, entry)
+
+/datum/organ_choice/proc/validate(datum/preferences/prefs, datum/organ_entry/entry)
+	if(entry.missing_organ && !allows_missing_organ)
+		entry.missing_organ = FALSE
+	/// Validate chosen accessory
+	if(entry.accessory_type && !sprite_accessories)
+		entry.accessory_type = null
+		entry.accessory_colors = null
+	else if (sprite_accessories && !(entry.accessory_type in sprite_accessories))
+		set_accessory_type(prefs, default_accessory, entry)
+	/// Validate colors
+	if(entry.accessory_type)
+		var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(entry.accessory_type)
+		if(accessory.color_keys != 0)
+			var/reset_colors = FALSE
+			if(!entry.accessory_colors)
+				reset_colors = TRUE
+			else
+				var/list/color_list = color_string_to_list(entry.accessory_colors)
+				if(color_list.len != accessory.color_keys)
+					reset_colors = TRUE
+			if(reset_colors)
+				entry.accessory_colors = accessory.get_default_colors(color_key_source_list_from_prefs(prefs))
+
+/datum/organ_choice/proc/set_accessory_type(datum/preferences/prefs, new_accessory_type, datum/organ_entry/entry)
+	if(entry.accessory_type == new_accessory_type)
+		return
+	if(!entry.organ_choice_type)
+		CRASH("Tried to set an organ entry accessory without an organ choice.")
+	if(!(new_accessory_type in sprite_accessories))
+		CRASH("Tried to set an organ entry accessory that isn't allowed for the organ choice.")
+
+	entry.accessory_type = new_accessory_type
+	var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(entry.accessory_type)
+	entry.accessory_colors = accessory.get_default_colors(color_key_source_list_from_prefs(prefs))
+
+/datum/organ_choice/proc/reset_accessory_colors(datum/preferences/prefs, datum/organ_entry/entry)
+	if(!entry.accessory_type)
+		return
+	var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(entry.accessory_type)
+	entry.accessory_colors = accessory.get_default_colors(color_key_source_list_from_prefs(prefs))

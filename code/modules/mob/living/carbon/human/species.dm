@@ -428,7 +428,6 @@ GLOBAL_LIST_EMPTY(customizable_races)
 			used_neworgan = TRUE
 			if(neworgan)
 				neworgan.Insert(C, TRUE, FALSE)
-				neworgan.validate_accessory_color_keys()
 
 		if(!used_neworgan)
 			if(neworgan)

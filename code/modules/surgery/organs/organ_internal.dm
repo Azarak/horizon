@@ -361,13 +361,6 @@
 	accessory_colors = accessory.get_default_colors(source_key_list)
 	accessory.validate_organ_color_keys(src)
 
-/obj/item/organ/proc/validate_accessory_color_keys()
-	if(!accessory_type)
-		return
-	accessory_colors = null
-	var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(accessory_type)
-	accessory.validate_organ_color_keys(src)
-
 /// Creates, imprints and returns an organ DNA datum.
 /obj/item/organ/proc/create_organ_dna()
 	var/datum/organ_dna/organ_dna = new organ_dna_type()
