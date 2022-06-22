@@ -139,7 +139,7 @@
 				return
 			reset_accessory_colors(prefs, entry)
 
-/datum/organ_choice/proc/validate(datum/preferences/prefs, datum/organ_entry/entry)
+/datum/organ_choice/proc/validate_entry(datum/preferences/prefs, datum/organ_entry/entry)
 	if(entry.missing_organ && !allows_missing_organ)
 		entry.missing_organ = FALSE
 	/// Validate chosen accessory

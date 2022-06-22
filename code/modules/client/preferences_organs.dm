@@ -35,7 +35,7 @@
 	/// Validate the variables within organ entries
 	for(var/datum/organ_entry/entry as anything in organ_entries)
 		var/datum/organ_choice/organ_choice = ORGAN_CHOICE(entry.organ_choice_type)
-		organ_choice.validate(src, entry)
+		organ_choice.validate_entry(src, entry)
 
 /datum/preferences/proc/print_organs_page()
 	var/list/dat = list()
