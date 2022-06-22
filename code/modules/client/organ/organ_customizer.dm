@@ -15,5 +15,11 @@
 		default_choice = organ_choices[1]
 
 /datum/organ_customizer/proc/make_default_organ_entry(datum/preferences/prefs)
-	var/datum/organ_choice/default_organ = ORGAN_CHOICE(default_choice)
-	return default_organ.make_default_organ_entry(prefs, type)
+	return get_organ_entry(prefs, default_choice)
+
+/datum/organ_customizer/proc/create_organ_entry(datum/preferences/prefs, organ_choice_type)
+	return get_organ_entry(prefs, organ_choice_type)
+
+/datum/organ_customizer/proc/get_organ_entry(datum/preferences/prefs, organ_choice_type)
+	var/datum/organ_choice/chosen_organ = ORGAN_CHOICE(organ_choice_type)
+	return chosen_organ.make_default_organ_entry(prefs, type)

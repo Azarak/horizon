@@ -43,3 +43,10 @@
 	accessory_type = new_accessory_type
 	var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(accessory_type)
 	accessory_colors = accessory.get_default_colors(color_key_source_list_from_prefs(prefs))
+
+/datum/organ_entry/proc/reset_accessory_colors(datum/preferences/prefs)
+	if(!accessory_type)
+		return
+	var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(accessory_type)
+	accessory_colors = accessory.get_default_colors(color_key_source_list_from_prefs(prefs))
+

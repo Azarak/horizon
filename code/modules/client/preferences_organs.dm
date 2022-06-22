@@ -55,10 +55,10 @@
 		var/customizer_link
 
 		if(entry.missing_organ)
-			customizer_link = "href='?_src_=prefs;task=change_organ'"
+			customizer_link = "href='?_src_=prefs;task=change_organ;customizer=[customizer_type];organ=toggle_missing'"
 		else
 			if(choice.allows_missing_organ)
-				customizer_link = "href='?_src_=prefs;task=change_organ' class='linkOn'"
+				customizer_link = "href='?_src_=prefs;task=change_organ;customizer=[customizer_type];organ=toggle_missing' class='linkOn'"
 			else
 				customizer_link = "class='linkOff'"
 
@@ -67,7 +67,7 @@
 		if(!entry.missing_organ)
 			var/choice_link
 			if(length(customizer.organ_choices) > 1)
-				choice_link = "href='?_src_=prefs;task=change_organ'"
+				choice_link = "href='?_src_=prefs;task=change_organ;customizer=[customizer_type];organ=change_choice'"
 			else
 				choice_link = "class='linkOff'"
 			dat += "<br><a [choice_link]>[choice.name]</a>"
@@ -101,13 +101,27 @@
 		organ_choice.customize_organ(organ, entry)
 
 /datum/preferences/proc/handle_organ_topic(mob/user, href_list)
-	var/customizer_type = text2path(href_list[customizer])
+	needs_update = TRUE
+	var/customizer_type = text2path(href_list["customizer"])
 	var/datum/organ_entry/entry = get_organ_entry_for_customizer_type(customizer_type)
 	var/datum/organ_choice/choice = ORGAN_CHOICE(entry.organ_choice_type)
+	var/datum/organ_customizer/customizer = ORGAN_CUSTOMIZER(customizer_type)
 	switch(href_list["organ"])
 		if("toggle_missing")
-			return
+			if(choice.allows_missing_organ)
+				entry.missing_organ = !entry.missing_organ
 		if("change_choice")
-			return
+			var/list/choice_list = list()
+			for(var/choice_type in customizer.organ_choices)
+				var/datum/organ_choice/iter_choice = ORGAN_CHOICE(choice_type)
+				choice_list[iter_choice.name] = choice_type
+			var/chosen_input = input(user, "Choose your [lowertext(customizer.name)] organ:", "Character Preference")  as null|anything in choice_list
+			if(!chosen_input)
+				return
+			var/choice_type = choice_list[chosen_input]
+			if(choice_type == choice.type)
+				return
+			organ_entries -= entry
+			organ_entries += customizer.create_organ_entry(src, choice_type)
 		else
 			choice.handle_topic(user, href_list, src, entry, customizer_type)

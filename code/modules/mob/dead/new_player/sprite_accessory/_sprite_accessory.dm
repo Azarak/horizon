@@ -153,7 +153,7 @@
 			var/color = key_source_list[used_define]
 			if(!color)
 				color = "#FFFFFF"
-			color = sanitize_hexcolor(color, 6, 1)
+			color = sanitize_hexcolor(color, 6, TRUE)
 			color_list += color
 	return color_list_to_string(color_list)
 

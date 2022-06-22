@@ -404,7 +404,11 @@ GLOBAL_LIST_EMPTY(customizable_races)
 			neworgan.build_colors_for_accessory(source_key_list)
 
 		var/used_neworgan = FALSE
-		var/should_have = neworgan.get_availability(src) //organ proc that points back to a species trait (so if the species is supposed to have this organ)
+		var/should_have
+		if(neworgan)
+			should_have = neworgan.get_availability(src) 
+		else
+			should_have = TRUE
 
 		if(oldorgan && (!should_have || replace_current) && !(oldorgan.zone in excluded_zones) && !(oldorgan.organ_flags & ORGAN_UNREMOVABLE))
 			if(slot == ORGAN_SLOT_BRAIN)
@@ -424,6 +428,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 			used_neworgan = TRUE
 			if(neworgan)
 				neworgan.Insert(C, TRUE, FALSE)
+				neworgan.validate_accessory_color_keys()
 
 		if(!used_neworgan)
 			if(neworgan)

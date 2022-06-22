@@ -68,13 +68,14 @@
 		var/arrows_string
 		if(length(sprite_accessories) > 1)
 			accessory_link = "href='?_src_=prefs;task=change_organ;customizer=[customizer_type];organ=choose_acc'"
-			arrows_string = "<a href='?_src_=prefs;task=change_organ;customizer=[customizer_type];organ=next_acc''><</a><a href='?_src_=prefs]task=change_organ;customizer=[customizer_type];organ=prev_acc''>></a>"
+			arrows_string = "<a href='?_src_=prefs;task=change_organ;customizer=[customizer_type];organ=rotate;rotate=prev''><</a><a href='?_src_=prefs;task=change_organ;customizer=[customizer_type];organ=rotate;rotate=next''>></a>"
 		else
 			accessory_link = "class='linkOff'"
 			arrows_string = "<a class='linkOff'><</a><a class='linkOff'>></a>"
 		dat += "<br>[arrows_string]<a [accessory_link]>[accessory.name]</a>"
 
 		if(allows_accessory_color_customization)
+			dat += "<br><a href='?_src_=prefs;task=change_organ;customizer=[customizer_type];organ=reset_colors'>Reset colors</a>"
 			var/list/color_list = color_string_to_list(entry.accessory_colors)
 			for(var/index in 1 to accessory.color_keys)
 				var/named_index = (accessory.color_keys == 1) ? accessory.color_key_name : accessory.color_key_names[index]
@@ -83,14 +84,56 @@
 /datum/organ_choice/proc/handle_topic(mob/user, list/href_list, datum/preferences/prefs, datum/organ_entry/entry, customizer_type)
 	switch(href_list["organ"])
 		if("choose_acc")
-			return
-		if("next_acc")
-			return
-		if("prev_acc")
-			return
+			if(!sprite_accessories)
+				return
+			var/list/choice_list = list()
+			for(var/choice_type in sprite_accessories)
+				var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(choice_type)
+				choice_list[accessory.name] = choice_type
+			var/chosen_input = input(user, "Choose your organ appearance:", "Character Preference")  as null|anything in choice_list
+			if(!chosen_input)
+				return
+			var/choice_type = choice_list[chosen_input]
+			entry.set_accessory_type(prefs, choice_type)
+
+		if("rotate")
+			if(!sprite_accessories)
+				return
+			var/current_index
+			var/i = 0
+			for(var/accessory_type in sprite_accessories)
+				i++
+				if(entry.accessory_type != accessory_type)
+					continue
+				current_index = i
+				break
+			var/target_index = current_index
+
+			switch(href_list["rotate"])
+				if("next")
+					target_index++
+				if("prev")
+					target_index--
+			if(target_index > sprite_accessories.len)
+				target_index = 1
+			else if (target_index <= 0)
+				target_index = sprite_accessories.len
+			entry.set_accessory_type(prefs, sprite_accessories[target_index])
+
 		if("acc_color")
+			if(!sprite_accessories || !allows_accessory_color_customization)
+				return
 			var/index = text2num(href_list["color_index"])
-			return
-
-
-
+			var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(entry.accessory_type)
+			if(index > accessory.color_keys)
+				return
+			var/list/color_list = color_string_to_list(entry.accessory_colors)
+			var/new_color = input(user, "Choose your organ color:", "Character Preference","[color_list[index]]") as color|null
+			if(!new_color)
+				return
+			color_list[index] = sanitize_hexcolor(new_color, 6, TRUE)
+			entry.accessory_colors = color_list_to_string(color_list)
+		if("reset_colors")
+			if(!sprite_accessories || !allows_accessory_color_customization)
+				return
+			entry.reset_accessory_colors(prefs)
