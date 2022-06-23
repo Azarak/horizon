@@ -6,6 +6,8 @@
 	var/can_wag = FALSE
 
 /datum/sprite_accessory/tail/get_icon_state(obj/item/organ/organ, obj/item/bodypart/bodypart, mob/living/carbon/owner)
+	if(!can_wag)
+		return ..()
 	var/obj/item/organ/tail/tail_organ = organ
 	if(!owner || !tail_organ.wagging)
 		return ..()
@@ -304,3 +306,41 @@
 /datum/sprite_accessory/tail/lizard/spikes
 	name = "Spikes"
 	icon_state = "spikes"
+
+/datum/sprite_accessory/tail/xeno
+	name = "Xenomorph"
+	icon = 'icons/mob/sprite_accessory/tails/xeno_tail.dmi'
+	icon_state = "xeno"
+
+/datum/sprite_accessory/tail/synthliz
+	abstract_type = /datum/sprite_accessory/tail/synthliz
+	icon = 'icons/mob/sprite_accessory/tails/synthliz_tails.dmi'
+
+/datum/sprite_accessory/tail/synthliz/normal
+	name = "Normal"
+	icon_state = "normal"
+	can_wag = TRUE
+
+/datum/sprite_accessory/tail/teshari
+	abstract_type = /datum/sprite_accessory/tail/teshari
+	icon = 'icons/mob/sprite_accessory/tails/teshari_tails.dmi'
+
+/datum/sprite_accessory/tail/teshari/default
+	name = "Default"
+	icon_state = "default"
+
+/datum/sprite_accessory/tail/teshari/fluffy
+	name = "Fluffy"
+	icon_state = "fluffy"
+
+/datum/sprite_accessory/tail/teshari/thin
+	name = "Thin"
+	icon_state = "thin"
+
+/datum/sprite_accessory/tail/vox
+	abstract_type = /datum/sprite_accessory/tail/vox
+	icon = 'icons/mob/sprite_accessory/tails/vox_tails.dmi'
+
+/datum/sprite_accessory/tail/vox/default
+	name = "Default"
+	icon_state = "default"

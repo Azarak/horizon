@@ -314,6 +314,11 @@
 	/// Doesn't have an owner so it couldn't be covered by anything.
 	if(!owner)
 		return TRUE
+	if(!is_visible_on_owner())
+		return FALSE
+	return TRUE
+
+/obj/item/organ/proc/is_visible_on_owner()
 	return TRUE
 
 /// Gets the organ overlay.
