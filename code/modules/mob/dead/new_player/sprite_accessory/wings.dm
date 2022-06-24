@@ -42,6 +42,7 @@
 /datum/sprite_accessory/wings/moth
 	abstract_type = /datum/sprite_accessory/wings/moth
 	icon = 'icons/mob/sprite_accessory/wings/moth_wings.dmi'
+	default_colors = list("#FFFFFF")
 
 /datum/sprite_accessory/wings/moth/plain
 	name = "Plain"

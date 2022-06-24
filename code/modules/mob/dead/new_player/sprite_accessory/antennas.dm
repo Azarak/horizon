@@ -85,6 +85,7 @@
 	abstract_type = /datum/sprite_accessory/antenna/moth
 	icon = 'icons/mob/sprite_accessory/antenna/moth_antenna.dmi'
 	relevant_layers = list(BODY_BEHIND_LAYER, BODY_FRONT_LAYER)
+	default_colors = list("#FFFFFF")
 
 /datum/sprite_accessory/antenna/moth/plain
 	name = "Plain"

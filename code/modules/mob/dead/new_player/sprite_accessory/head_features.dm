@@ -42,6 +42,7 @@
 	icon = 'icons/mob/sprite_accessory/head_features/ipc_screens.dmi'
 	color_key_name = "Screen"
 	relevant_layers = list(BODY_ADJ_LAYER)
+	default_colors = list("#FFFFFF")
 
 /datum/sprite_accessory/head_feature/ipc_screen/blank
 	name = "Blank"

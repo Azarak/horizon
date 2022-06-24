@@ -24,8 +24,8 @@
 	var/list/color_key_names
 	/// List of defines for determining which color to use for which key as a default.
 	var/list/color_key_defaults
-	/// List of explicitly defined default colors which dont derrive from a variable key.
-	var/list/explicit_default_colors
+	/// List of explicitly defined default colors which dont derrive from a variable key. A null entry means it will read a color from a key for that index.
+	var/list/default_colors
 	/// Whether this accessory has gendered variants. This will add either a "m_" or "f_" prefix if TRUE, depending on gender. No prefix if FALSE
 	var/gendered_variants = FALSE
 	/// List of generated icons based on the [type x icon_state x colors] combination.
@@ -147,19 +147,20 @@
 /datum/sprite_accessory/proc/get_default_colors(var/key_source_list)
 	var/list/color_list = list()
 	for(var/i in 1 to color_keys)
-		if(length(explicit_default_colors) >= i)
-			color_list += explicit_default_colors[i]
+		var/color
+		if(length(default_colors) >= i && !isnull(default_colors[i]))
+			color = default_colors[i]
 		else
 			var/used_define
 			if(length(color_key_defaults) >= i)
 				used_define = color_key_defaults[i]
 			else
 				used_define = default_define_for_color_key(i)
-			var/color = key_source_list[used_define]
-			if(!color)
-				color = "#FFFFFF"
-			color = sanitize_hexcolor(color, 6, TRUE)
-			color_list += color
+			color = key_source_list[used_define]
+		if(!color)
+			color = "#FFFFFF"
+		color = sanitize_hexcolor(color, 6, TRUE)
+		color_list += color
 	return color_list_to_string(color_list)
 
 /datum/sprite_accessory/proc/default_define_for_color_key(index)

@@ -18,6 +18,8 @@
 	var/allows_accessory_color_customization = TRUE
 	/// Whether this choice allows the user to choose to be missing an organ.
 	var/allows_missing_organ = FALSE
+	/// Whether this organ choice defaults to being missing.
+	var/default_missing_organ = FALSE
 
 /datum/organ_choice/New()
 	. = ..()
@@ -31,6 +33,7 @@
 	var/datum/organ_entry/entry = new organ_entry_type()
 	entry.organ_customizer_type = customizer_type
 	entry.organ_choice_type = type
+	entry.missing_organ = default_missing_organ
 	if(sprite_accessories)
 		set_accessory_type(prefs, default_accessory, entry)
 	return entry

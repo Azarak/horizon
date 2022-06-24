@@ -6,6 +6,7 @@
 	abstract_type = /datum/sprite_accessory/neck_feature/moth_fluff
 	color_key_name = "Fluff"
 	icon = 'icons/mob/sprite_accessory/neck_features/moth_fluff.dmi'
+	default_colors = list("#FFFFFF")
 
 /datum/sprite_accessory/neck_feature/moth_fluff/plain
 	name = "Plain"

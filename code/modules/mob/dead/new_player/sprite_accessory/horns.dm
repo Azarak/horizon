@@ -3,6 +3,7 @@
 	icon = 'icons/mob/sprite_accessory/horns/horns.dmi'
 	color_key_name = "Horns"
 	relevant_layers = list(BODY_FRONT_LAYER)
+	default_colors = list("#555555")
 
 /datum/sprite_accessory/horns/simple
 	name = "Simple"
