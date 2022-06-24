@@ -28,8 +28,8 @@
 	var/list/explicit_default_colors
 	/// Whether this accessory has gendered variants. This will add either a "m_" or "f_" prefix if TRUE, depending on gender. No prefix if FALSE
 	var/gendered_variants = FALSE
-	/// List of generated overlays based on the [type x icon_state x colors] combination.
-	var/static/list/accessory_overlay_cache = list()
+	/// List of generated icons based on the [type x icon_state x colors] combination.
+	var/static/list/accessory_icon_cache = list()
 
 /datum/sprite_accessory/New()
 	if(color_keys > 1)
@@ -62,9 +62,23 @@
 /datum/sprite_accessory/proc/get_overlay(overlay_icon_state, color_string)
 	color_string = sanitize_color_string(color_string)
 	var/key = "[type]-[overlay_icon_state]-[color_string]"
-	if(!accessory_overlay_cache[key])
-		accessory_overlay_cache[key] = generate_overlay(overlay_icon_state, color_string)
-	return accessory_overlay_cache[key]
+	if(!accessory_icon_cache[key])
+		var/list/icon_states = generate_icon_states(overlay_icon_state, color_string)
+		var/icon/icon_bundle = icon('icons/testing/greyscale_error.dmi')
+		for(var/icon_state in icon_states)
+			icon_bundle.Insert(icon_states[icon_state], icon_state)
+
+		accessory_icon_cache[key] = icon_bundle
+
+	var/icon/cached_icon = icon(accessory_icon_cache[key])
+	/// Generate mutable appearances from the icon
+	var/appearance_list = list()
+	if(relevant_layers)
+		for(var/iterated_layer in relevant_layers)
+			appearance_list += mutable_appearance(cached_icon, "[overlay_icon_state]_[get_layer_suffix(iterated_layer)]", layer = -iterated_layer)
+	else
+		appearance_list += mutable_appearance(cached_icon, overlay_icon_state, layer = -layer)
+	return appearance_list
 
 /datum/sprite_accessory/proc/sanitize_color_string(color_string)
 	var/list/color_list = color_string_to_list(color_string)
@@ -80,31 +94,29 @@
 			color_list -= color_list[color_list.len]
 	return color_list_to_string(color_list)
 
-/datum/sprite_accessory/proc/generate_overlay(overlay_icon_state, color_string)
-	. = list()
+/datum/sprite_accessory/proc/generate_icon_states(overlay_icon_state, color_string)
+	var/list/state_list = list()
 	var/list/color_list = color_string_to_list(color_string)
 	if(relevant_layers)
 		for(var/iterated_layer in relevant_layers)
-			var/mutable_appearance/layer_appearance = generate_overlay_layer(overlay_icon_state, color_list, iterated_layer, get_layer_suffix(iterated_layer))
-			. += layer_appearance
+			var/layer_suffix = get_layer_suffix(iterated_layer)
+			state_list["[overlay_icon_state]_[layer_suffix]"] = generate_icon_state(overlay_icon_state, color_list, iterated_layer, layer_suffix)
 	else
-		. += generate_overlay_layer(overlay_icon_state, color_list, layer)
-	return .
+		state_list[overlay_icon_state] = generate_icon_state(overlay_icon_state, color_list, layer)
+	return state_list
 
-/datum/sprite_accessory/proc/generate_overlay_layer(overlay_icon_state, color_list, passed_layer, suffix)
+/datum/sprite_accessory/proc/generate_icon_state(overlay_icon_state, color_list, passed_layer, suffix)
 	var/one_color = (color_keys == 1)
 	if(suffix)
 		overlay_icon_state += "_[suffix]"
 	var/icon/result_icon
-	var/result_state
 	for(var/color_index in 1 to color_keys)
 		var/color_to_use = color_list[color_index]
 		var/lookup_state = one_color ? overlay_icon_state  : "[overlay_icon_state]_[color_index]"
 		var/icon/color_key_icon = icon(icon, lookup_state)
 		color_key_icon.Blend(color_to_use, ICON_MULTIPLY)
 		if(!result_icon)
-			result_icon = icon(color_key_icon)
-			result_state = lookup_state
+			result_icon = color_key_icon
 		else
 			result_icon.Blend(color_key_icon, ICON_OVERLAY)
 	
@@ -115,15 +127,8 @@
 
 	// Apparently new icons can do weird stuff unless you try and "read" something from it like this before using it.
 	result_icon.GetPixel(1, 1)
-	var/mutable_appearance/layer_appearance = mutable_appearance(result_icon, result_state, layer = -passed_layer)
-	layer_appearance.overlays += emissive_blocker(result_icon, result_state)
 
-	// TODO: add emissive overlays here.
-
-	layer_appearance.pixel_x = pixel_x
-	layer_appearance.pixel_y = pixel_y
-
-	return layer_appearance
+	return result_icon
 
 /datum/sprite_accessory/proc/get_layer_suffix(passed_layer)
 	switch(passed_layer)

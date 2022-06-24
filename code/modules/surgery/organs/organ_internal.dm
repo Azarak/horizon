@@ -331,6 +331,9 @@
 		var/list/appearances = accessory.get_appearance(src, bodypart)
 		if(!appearances)
 			return
+		for(var/standing in appearances)
+			bodypart_icon(standing)
+			bodypart_overlays(standing)
 		return appearances
 	else
 		var/mutable_appearance/organ_overlay = mutable_appearance(bodypart_icon, bodypart_icon_state, layer = -bodypart_layer)
@@ -343,7 +346,7 @@
 		bodypart_overlays(organ_overlay)
 		return organ_overlay
 
-/// Proc to customize the base icon of the organ. This will not run if a sprite accessory going to generate the icon.
+/// Proc to customize the base icon of the organ.
 /obj/item/organ/proc/bodypart_icon(mutable_appearance/standing)
 	return
 
