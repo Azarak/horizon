@@ -2,7 +2,7 @@
 	abstract_type = /datum/sprite_accessory/horns
 	icon = 'icons/mob/sprite_accessory/horns/horns.dmi'
 	color_key_name = "Horns"
-	relevant_layers = list(BODY_ADJ_LAYER)
+	relevant_layers = list(BODY_FRONT_LAYER)
 
 /datum/sprite_accessory/horns/simple
 	name = "Simple"

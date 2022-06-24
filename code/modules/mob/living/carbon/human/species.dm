@@ -400,8 +400,9 @@ GLOBAL_LIST_EMPTY(customizable_races)
 					pref_load.customize_organ(neworgan)
 		else
 			var/new_type = slot_mutantorgans[slot]
-			neworgan = new new_type()
-			neworgan.build_colors_for_accessory(source_key_list)
+			if(new_type)
+				neworgan = new new_type()
+				neworgan.build_colors_for_accessory(source_key_list)
 
 		var/used_neworgan = FALSE
 		var/should_have
@@ -432,7 +433,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 		if(!used_neworgan)
 			if(neworgan)
 				qdel(neworgan)
-		else if (!C.dna.organ_dna[slot])
+		else if (!C.dna.organ_dna[slot] && neworgan)
 			var/datum/organ_dna/new_dna = neworgan.create_organ_dna()
 			C.dna.organ_dna[slot] = new_dna
 
@@ -544,7 +545,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
  * * new_species - The new species that the carbon became, used for genetics mutations.
  * * pref_load - Preferences to be loaded from character setup, loads in preferred mutant things like bodyparts, digilegs, skin color, etc.
  */
-/datum/species/proc/on_species_loss(mob/living/carbon/human/C, datum/species/new_species, pref_load)
+/datum/species/proc/on_species_loss(mob/living/carbon/human/C, datum/species/new_species, datum/preferences/pref_load)
 	// Remove the species' descriptors from the human
 	if(species_descriptors)
 		C.descriptors -= species_descriptors

@@ -81,7 +81,7 @@
 
 /datum/sprite_accessory/wings/moth/punished
 	name = "Burnt Off"
-	icon_state = "punished"
+	icon_state = "burnt_off"
 
 /datum/sprite_accessory/wings/moth/firewatch
 	name = "Firewatch"
@@ -172,14 +172,17 @@
 /datum/sprite_accessory/wings/wide/harpywings_top
 	name = "Harpy (Top)"
 	icon_state = "harpy_top"
+	relevant_layers = list(BODY_FRONT_LAYER)
 
 /datum/sprite_accessory/wings/wide/harpywingsalt1_top
 	name = "Harpy (alt 1) (Top)"
 	icon_state = "harpyalt_top"
+	relevant_layers = list(BODY_FRONT_LAYER)
 
 /datum/sprite_accessory/wings/wide/harpywingsalt2_top
 	name = "Harpy (Bat) (Top)"
 	icon_state = "harpybat_top"
+	relevant_layers = list(BODY_FRONT_LAYER)
 
 /datum/sprite_accessory/wings/wide/low_wings
 	name = "Low wings"

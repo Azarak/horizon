@@ -61,7 +61,7 @@
 
 /datum/sprite_accessory/antenna/synthliz/synth_horns
 	name = "Horns"
-	icon_state = "shorns"
+	icon_state = "horns"
 
 /datum/sprite_accessory/antenna/synthliz/synth_hornslight
 	name = "Horns Light"

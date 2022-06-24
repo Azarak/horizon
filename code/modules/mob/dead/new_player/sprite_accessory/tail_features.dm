@@ -48,16 +48,17 @@
 /datum/sprite_accessory/tail_feature/vox_marking
 	abstract_type = /datum/sprite_accessory/tail_feature/vox_marking
 	icon = 'icons/mob/sprite_accessory/tail_features/vox_markings.dmi'
+	relevant_layers = list(BODY_BEHIND_LAYER, BODY_FRONT_LAYER)
 	color_key_name = "Marking"
 
-/datum/sprite_accessory/tail_feature/vox/vox_bands
+/datum/sprite_accessory/tail_feature/vox_marking/vox_bands
 	name = "Bands"
 	icon_state = "bands"
 
-/datum/sprite_accessory/tail_feature/vox/vox_tip
+/datum/sprite_accessory/tail_feature/vox_marking/vox_tip
 	name = "Tip"
 	icon_state = "tip"
 
-/datum/sprite_accessory/tail_feature/vox/vox_stripe
+/datum/sprite_accessory/tail_feature/vox_marking/vox_stripe
 	name = "Stripe"
 	icon_state = "stripe"

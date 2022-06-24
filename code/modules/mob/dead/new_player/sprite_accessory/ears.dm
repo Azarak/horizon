@@ -8,6 +8,7 @@
 	name = "Cat"
 	icon_state = "cat"
 	extra_state = TRUE
+	relevant_layers = list(BODY_BEHIND_LAYER, BODY_FRONT_LAYER)
 
 /datum/sprite_accessory/ears/axolotl
 	name = "Axolotl"
@@ -16,6 +17,9 @@
 /datum/sprite_accessory/ears/bat
 	name = "Bat"
 	icon_state = "bat"
+	color_keys = 2
+	color_key_names = list("Ears", "Inner")
+	relevant_layers = list(BODY_ADJ_LAYER)
 
 /datum/sprite_accessory/ears/bear
 	name = "Bear"
@@ -29,7 +33,9 @@
 
 /datum/sprite_accessory/ears/bigwolf_inner
 	name = "Big Wolf (Inner)"
-	icon_state = "bigwolfinner"
+	icon_state = "bigwolf_inner"
+	color_keys = 2
+	color_key_names = list("Ears", "Inner")
 	extra_state = TRUE
 
 /datum/sprite_accessory/ears/bunny
@@ -95,6 +101,8 @@
 /datum/sprite_accessory/ears/husky
 	name = "Husky"
 	icon_state = "wolf"
+	color_keys = 2
+	color_key_names = list("Ears", "Inner")
 
 /datum/sprite_accessory/ears/jellyfish
 	name = "Jellyfish"
@@ -137,8 +145,8 @@
 /datum/sprite_accessory/ears/pede
 	name = "Scolipede"
 	icon_state = "pede"
-	color_keys = 3
-	color_key_names = list("Ears", "Details", "Details")
+	color_keys = 2
+	color_key_names = list("Ears", "Details")
 
 /datum/sprite_accessory/ears/sergal
 	name = "Sergal"
@@ -195,22 +203,28 @@
 /datum/sprite_accessory/ears/antenna_fuzzball1
 	name = "Fuzzball antenna 1"
 	icon_state = "antenna_fuzzball1"
+	color_keys = 2
+	color_key_names = list("Ears", "Inner")
 
 /datum/sprite_accessory/ears/antenna_fuzzball2
 	name = "Fuzzball antenna 2"
-	icon_state = "antenna_fuzzbal2"
+	icon_state = "antenna_fuzzball2"
+	color_keys = 2
+	color_key_names = list("Ears", "Inner")
 
 /datum/sprite_accessory/ears/cobrahood
 	name = "Cobra Hood"
 	icon_state = "cobrahood"
 	color_keys = 2
 	color_key_names = list("Ears", "Inner")
+	relevant_layers = list(BODY_ADJ_LAYER)
 
 /datum/sprite_accessory/ears/cobrahoodears
 	name = "Cobra Hood (Ears)"
 	icon_state = "cobraears"
 	color_keys = 2
 	color_key_names = list("Ears", "Inner")
+	relevant_layers = list(BODY_ADJ_LAYER)
 
 /datum/sprite_accessory/ears/miqote
 	name = "Miqo'te"

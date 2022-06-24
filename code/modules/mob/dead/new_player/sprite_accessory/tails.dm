@@ -25,6 +25,7 @@
 /datum/sprite_accessory/tail/cat
 	name = "Cat"
 	icon_state = "cat"
+	relevant_layers = list(BODY_FRONT_LAYER)
 	can_wag = TRUE
 
 /datum/sprite_accessory/tail/monkey
@@ -52,6 +53,8 @@
 /datum/sprite_accessory/tail/bee
 	name = "Bee"
 	icon_state = "bee"
+	color_keys = 2
+	color_key_names = list("Abdomen", "Stripes")
 
 /datum/sprite_accessory/tail/catbig
 	name = "Cat, Big"
@@ -108,7 +111,6 @@
 /datum/sprite_accessory/tail/horse
 	name = "Horse"
 	icon_state = "horse"
-	can_wag = TRUE
 
 /datum/sprite_accessory/tail/husky
 	name = "Husky"
@@ -243,6 +245,8 @@
 /datum/sprite_accessory/tail/raptor
 	name = "Raptor"
 	icon_state = "raptor"
+	color_keys = 3
+	color_key_names = list("Tail", "Details", "Details")
 
 /datum/sprite_accessory/tail/lunasune
 	name = "Lunasune"
@@ -324,6 +328,8 @@
 /datum/sprite_accessory/tail/teshari
 	abstract_type = /datum/sprite_accessory/tail/teshari
 	icon = 'icons/mob/sprite_accessory/tails/teshari_tails.dmi'
+	color_keys = 3
+	color_key_names = list("Tail", "Details", "Details")
 
 /datum/sprite_accessory/tail/teshari/default
 	name = "Default"

@@ -141,6 +141,8 @@
 /datum/sprite_accessory/snout/wolf
 	name = "Mammal, Thick"
 	icon_state = "wolf"
+	color_keys = 2
+	color_key_names = list("Snout", "Inner")
 
 /datum/sprite_accessory/snout/wolfalt
 	name = "Mammal, Thick ALT"
@@ -236,7 +238,7 @@
 	color_keys = 2
 	color_key_names = list("Snout", "Inner")
 
-/datum/sprite_accessory/snout/front/hanubus
+/datum/sprite_accessory/snout/hanubus
 	name = "Anubus"
 	icon_state = "hanubus"
 	color_keys = 2
@@ -336,7 +338,7 @@
 	color_keys = 3
 	color_key_names = list("Snout", "Details", "Details")
 
-/datum/sprite_accessory/snout/fbovine
+/datum/sprite_accessory/snout/front/fbovine
 	name = "Bovine (Top)"
 	icon_state = "fbovine"
 	color_keys = 3

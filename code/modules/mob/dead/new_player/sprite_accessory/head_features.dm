@@ -133,7 +133,7 @@
 
 /datum/sprite_accessory/head_feature/ipc_screen/redtext
 	name = "Red Text"
-	icon_state = "retext"
+	icon_state = "redtext"
 
 /datum/sprite_accessory/head_feature/ipc_screen/sinewave
 	name = "Sine wave"
@@ -141,7 +141,7 @@
 
 /datum/sprite_accessory/head_feature/ipc_screen/squarewave
 	name = "Square wave"
-	icon_state = "squarwave"
+	icon_state = "squarewave"
 
 /datum/sprite_accessory/head_feature/ipc_screen/ecgwave
 	name = "ECG wave"
@@ -168,8 +168,8 @@
 /datum/sprite_accessory/head_feature/teshari_feathers/regular
 	name = "Regular"
 	icon_state = "regular"
-	color_keys = 3
-	color_key_names = list("Feathers", "Details", "Details")
+	color_keys = 2
+	color_key_names = list("Feathers", "Details")
 
 /datum/sprite_accessory/head_feature/teshari_feathers/bushy
 	name = "Bushy"

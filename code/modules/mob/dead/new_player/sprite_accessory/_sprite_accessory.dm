@@ -194,24 +194,29 @@
 
 	if(relevant_layers)
 		for(var/layer in relevant_layers)
-			layer_suffixes = get_layer_suffix(layer)
+			var/layer_suffix = get_layer_suffix(layer)
+			if(layer_suffix)
+				layer_suffixes += "_[layer_suffix]"
 
 	for(var/state in icon_states)
 		for(var/color_index in 1 to color_keys)
 			var/color_suffix = ""
-			if(color_keys !=)
-				color_suffix = "_[i]"
+			if(color_keys != 1)
+				color_suffix = "_[color_index]"
 			if(length(layer_suffixes))
 				for(var/layer_suffix in layer_suffixes)
-					var/final_state = "[state]_[layer_suffix][color_suffix]"
+					var/final_state = "[state][layer_suffix][color_suffix]"
 					final_states += final_state
-					if(extra_state)
-						final_states += "[final_state]_extra"
 			else
-				final_state = "[state]_[color_suffix]"
+				var/final_state = "[state][color_suffix]"
 				final_states += final_state
-				if(extra_state)
-					final_states += "[final_state]_extra"
+	if(extra_state)
+		for(var/icon_state in icon_states)
+			if(length(layer_suffixes))
+				for(var/layer_suffix in layer_suffixes)
+					final_states += "[icon_state][layer_suffix]_extra"
+			else
+				final_states += "[icon_state]_extra"
 
 	return final_states
 

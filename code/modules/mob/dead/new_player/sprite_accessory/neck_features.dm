@@ -45,7 +45,7 @@
 
 /datum/sprite_accessory/neck_feature/moth_fluff/punished
 	name = "Burnt Off"
-	icon_state = "punished"
+	icon_state = "burnt_off"
 
 /datum/sprite_accessory/neck_feature/moth_fluff/firewatch
 	name = "Firewatch"
