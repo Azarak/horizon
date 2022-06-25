@@ -34,7 +34,8 @@
 		ORGAN_SLOT_SNOUT = /obj/item/organ/snout/vulpkanin,
 		)
 	organ_customizers = list(
-		/datum/organ_customizer/tail/vulpkanin
+		/datum/organ_customizer/tail/vulpkanin,
+		/datum/organ_customizer/snout/vulpkanin,
 		)
 
 
