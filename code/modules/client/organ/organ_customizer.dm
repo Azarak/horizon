@@ -14,8 +14,8 @@
 	if(!default_choice)
 		default_choice = organ_choices[1]
 
-/datum/organ_customizer/proc/make_default_organ_entry(datum/preferences/prefs)
-	return get_organ_entry(prefs, default_choice)
+/datum/organ_customizer/proc/make_default_organ_entry(datum/preferences/prefs, changed_entry = TRUE)
+	return get_organ_entry(prefs, default_choice, changed_entry)
 
 /datum/organ_customizer/proc/create_organ_entry(datum/preferences/prefs, organ_choice_type)
 	return get_organ_entry(prefs, organ_choice_type)

@@ -29,11 +29,12 @@
 		if(!(default_accessory in sprite_accessories))
 			CRASH("Organ choice [type] has a default accessory which is unavailable in its accessory list.")
 
-/datum/organ_choice/proc/make_default_organ_entry(datum/preferences/prefs, customizer_type)
+/datum/organ_choice/proc/make_default_organ_entry(datum/preferences/prefs, customizer_type, changed_entry = TRUE)
 	var/datum/organ_entry/entry = new organ_entry_type()
 	entry.organ_customizer_type = customizer_type
 	entry.organ_choice_type = type
-	entry.missing_organ = default_missing_organ
+	if(!changed_entry)
+		entry.missing_organ = default_missing_organ
 	if(sprite_accessories)
 		set_accessory_type(prefs, default_accessory, entry)
 	return entry

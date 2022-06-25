@@ -75,9 +75,13 @@
 	var/appearance_list = list()
 	if(relevant_layers)
 		for(var/iterated_layer in relevant_layers)
-			appearance_list += mutable_appearance(cached_icon, "[overlay_icon_state]_[get_layer_suffix(iterated_layer)]", layer = -iterated_layer)
+			var/mutable_appearance/appearance = mutable_appearance(cached_icon, "[overlay_icon_state]_[get_layer_suffix(iterated_layer)]", layer = -iterated_layer)
+			appearance.overlays += emissive_blocker(cached_icon, "[overlay_icon_state]_[get_layer_suffix(iterated_layer)]")
+			appearance_list += appearance
 	else
-		appearance_list += mutable_appearance(cached_icon, overlay_icon_state, layer = -layer)
+		var/mutable_appearance/appearance = mutable_appearance(cached_icon, overlay_icon_state, layer = -layer)
+		appearance.overlays += emissive_blocker(cached_icon, overlay_icon_state)
+		appearance_list += appearance
 	return appearance_list
 
 /datum/sprite_accessory/proc/sanitize_color_string(color_string)

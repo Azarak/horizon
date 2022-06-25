@@ -30,7 +30,7 @@
 			break
 		var/datum/organ_customizer/customizer = ORGAN_CUSTOMIZER(customizer_type)
 		if(!found)
-			organ_entries += customizer.make_default_organ_entry(src)
+			organ_entries += customizer.make_default_organ_entry(src, FALSE)
 
 	/// Validate the variables within organ entries
 	for(var/datum/organ_entry/entry as anything in organ_entries)
