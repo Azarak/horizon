@@ -91,6 +91,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/jumpsuit_style = PREF_SUIT //suit/skirt
 	var/hairstyle = "Bald" //Hair type
 	var/hair_color = "000" //Hair color
+	var/hair_gradient_style = "None"
+	var/hair_gradient_color = "000"
+	var/hair_gradient_is_dye = FALSE
 	var/facial_hairstyle = "Shaved" //Face hair type
 	var/facial_hair_color = "000" //Facial hair color
 	var/skin_tone = "caucasian1" //Skin color
@@ -112,8 +115,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	//Job preferences 2.0 - indexed by job title , no key or value implies never
 	var/list/job_preferences = list()
 
-		// Want randomjob if preferences already filled - Donkie
-	var/joblessrole = BERANDOMJOB  //defaults to 1 for fewer assistants
+	/// What to do if the selected jobs are not available
+	var/joblessrole = RETURNTOLOBBY
 
 	// 0 = character settings, 1 = game preferences
 	var/current_tab = 0
@@ -536,6 +539,12 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						dat += "<a href='?_src_=prefs;preference=hairstyle;task=input'>[hairstyle]</a>"
 
 						dat += "<br> <a href='?_src_=prefs;preference=hair;task=input'><span class='color_holder_box' style='background-color:#[hair_color]'></span></a>"
+
+						dat += "<br/><h3>Hair Gradient</h3>"
+
+						dat += "<a href='?_src_=prefs;preference=hair_gradient_style;task=input'>[hair_gradient_style]</a>"
+						dat += "<br/> <a href='?_src_=prefs;preference=hair_gradient_color;task=input'><span class='color_holder_box' style='background-color:#[hair_gradient_color]'></span></a>"
+						dat += "<br/> Apply as dye (non-permanent): <a href='?_src_=prefs;preference=hair_gradient_is_dye;task=input'>[hair_gradient_is_dye ? "Yes" : "No"]</a>"
 
 						dat += "<BR><h3>Facial Hairstyle</h3>"
 
@@ -2094,6 +2103,21 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					prev_hairstyle()
 					needs_update = TRUE
 
+				if("hair_gradient_style")
+					var/new_hair_gradient_style = input(user, "Choose your character's hair gradient style:", "Hair Dye / Gradient Style") as null|anything in GLOB.hair_gradients_list
+					if(new_hair_gradient_style)
+						hair_gradient_style = new_hair_gradient_style
+						needs_update = TRUE
+
+				if("hair_gradient_color")
+					var/new_hair_gradient_color = input(user, "Choose your character's hair gradient color:", "Hair Dye / Gradient Color", "#"+hair_gradient_color) as color|null
+					if(new_hair_gradient_color)
+						hair_gradient_color = sanitize_hexcolor(new_hair_gradient_color)
+						needs_update = TRUE
+
+				if("hair_gradient_is_dye")
+					hair_gradient_is_dye = !hair_gradient_is_dye
+
 				if("facial")
 					needs_update = TRUE
 					var/new_facial = input(user, "Choose your character's facial-hair colour:", "Character Preference","#"+facial_hair_color) as color|null
@@ -2783,10 +2807,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 /// Sanitization checks to be performed before using these preferences.
 /datum/preferences/proc/sanitize_chosen_prefs()
-	if(!GLOB.roundstart_races[pref_species.id] && !(pref_species.id in (CONFIG_GET(keyed_list/roundstart_no_hard_check))))
-		pref_species = new /datum/species/human
-		save_character()
-
 	if(CONFIG_GET(flag/humans_need_surnames) && (pref_species.id == "human"))
 		var/firstspace = findtext(real_name, " ")
 		var/name_length = length(real_name)
@@ -2821,6 +2841,11 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	character.facial_hair_color = facial_hair_color
 	character.skin_tone = skin_tone
 	character.hairstyle = hairstyle
+	// By default the hair gradient style is None, but we do null checks down the road...
+	// So instead, if it is None, we set it to null. Easy.
+	character.hair_gradient_style_primary = (hair_gradient_style == "None" ? null : hair_gradient_style)
+	character.hair_gradient_color_primary = hair_gradient_color
+	character.hair_gradient_is_dye = hair_gradient_is_dye
 	character.facial_hairstyle = facial_hairstyle
 	character.underwear = underwear
 	character.underwear_color = underwear_color
@@ -2858,6 +2883,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	character.attributes.add_skills(skills)
 
 	if(icon_updates)
+		character.icon_render_key = null //turns out if you don't set this to null update_body_parts does nothing, since it assumes the operation was cached
 		character.update_body()
 		character.update_hair()
 		character.update_body_parts()

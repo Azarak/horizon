@@ -820,7 +820,7 @@
 		for(var/obj/item/restraints/R in contents) //actually remove cuffs from inventory
 			qdel(R)
 		update_handcuffed()
-	cure_all_traumas(TRAUMA_RESILIENCE_MAGIC)
+	cure_all_traumas(TRAUMA_RESILIENCE_WOUND)
 	..()
 
 /mob/living/carbon/can_be_revived()
