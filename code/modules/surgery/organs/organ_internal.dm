@@ -94,6 +94,7 @@
 	RegisterSignal(owner, COMSIG_PARENT_EXAMINE, .proc/on_owner_examine)
 	for(var/datum/action/action as anything in actions)
 		action.Grant(reciever)
+	update_accessory_colors()
 	STOP_PROCESSING(SSobj, src)
 
 /*
@@ -361,13 +362,19 @@
 		accessory_colors = colors
 	var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(accessory_type)
 	accessory.validate_organ_color_keys(src)
+	update_accessory_colors()
 
 /obj/item/organ/proc/build_colors_for_accessory(list/source_key_list)
 	if(!accessory_type)
 		return
+	if(!source_key_list)
+		if(!owner)
+			return
+		source_key_list = color_key_source_list_from_dna(owner.dna)
 	var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(accessory_type)
 	accessory_colors = accessory.get_default_colors(source_key_list)
 	accessory.validate_organ_color_keys(src)
+	update_accessory_colors()
 
 /// Creates, imprints and returns an organ DNA datum.
 /obj/item/organ/proc/create_organ_dna()
@@ -381,3 +388,6 @@
 	if(accessory_type)
 		organ_dna.accessory_type = accessory_type
 		organ_dna.accessory_colors = accessory_colors
+
+/obj/item/organ/proc/update_accessory_colors()
+	return

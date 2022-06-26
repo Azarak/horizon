@@ -20,9 +20,9 @@
 	low_threshold_cleared = SPAN_INFO("Your vision is cleared of any ailment.")
 
 	visible_organ = TRUE
-	bodypart_icon = 'icons/mob/sprite_accessory/human_face.dmi'
-	bodypart_icon_state = "eyes"
-
+	accessory_type = /datum/sprite_accessory/eyes/humanoid
+	accessory_colors = "#FFFFFF#FFFFFF"
+	organ_dna_type = /datum/organ_dna/eyes
 	var/sight_flags = 0
 	/// changes how the eyes overlay is applied, makes it apply over the lighting layer
 	var/overlay_ignore_lighting = FALSE
@@ -39,8 +39,21 @@
 	var/heterochromia = FALSE
 	var/second_color = "#FFFFFF"
 
-/obj/item/organ/eyes/bodypart_icon(mutable_appearance/standing)
-	standing.color = eye_color
+/obj/item/organ/eyes/update_accessory_colors()
+	var/list/colors_list = list()
+	colors_list += eye_color
+	if(heterochromia)
+		colors_list += second_color
+	else
+		colors_list += eye_color
+	accessory_colors = color_list_to_string(colors_list)
+
+/obj/item/organ/eyes/imprint_organ_dna(datum/organ_dna/organ_dna)
+	. = ..()
+	var/datum/organ_dna/eyes/eyes_dna = organ_dna
+	eyes_dna.eye_color = eye_color
+	eyes_dna.heterochromia = heterochromia
+	eyes_dna.second_color = second_color
 
 /obj/item/organ/eyes/Insert(mob/living/carbon/eye_owner, special = FALSE, drop_if_replaced = FALSE, initialising)
 	. = ..()

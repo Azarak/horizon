@@ -2660,6 +2660,7 @@
 #include "code\modules\mob\dead\new_player\sprite_accessory\antennas.dm"
 #include "code\modules\mob\dead\new_player\sprite_accessory\back_features.dm"
 #include "code\modules\mob\dead\new_player\sprite_accessory\ears.dm"
+#include "code\modules\mob\dead\new_player\sprite_accessory\eyes.dm"
 #include "code\modules\mob\dead\new_player\sprite_accessory\frills.dm"
 #include "code\modules\mob\dead\new_player\sprite_accessory\hair.dm"
 #include "code\modules\mob\dead\new_player\sprite_accessory\head_features.dm"
