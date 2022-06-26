@@ -21,6 +21,8 @@
 	limbs_id = "mammal"
 
 	organs = list(
+		ORGAN_SLOT_HAIR = /obj/item/organ/hair/head,
+		ORGAN_SLOT_FACIAL_HAIR = /obj/item/organ/hair/facial,
 		ORGAN_SLOT_BRAIN = /obj/item/organ/brain,
 		ORGAN_SLOT_HEART = /obj/item/organ/heart,
 		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs,
@@ -34,10 +36,12 @@
 		ORGAN_SLOT_SNOUT = /obj/item/organ/snout/vulpkanin,
 		)
 	organ_customizers = list(
+		/datum/organ_customizer/eyes/humanoid,
+		/datum/organ_customizer/hair/head/humanoid,
+		/datum/organ_customizer/hair/facial/humanoid,
 		/datum/organ_customizer/tail/vulpkanin,
 		/datum/organ_customizer/snout/vulpkanin,
 		)
-
 
 /datum/species/vulpkanin/get_random_features()
 	var/list/returned = MANDATORY_FEATURE_LIST

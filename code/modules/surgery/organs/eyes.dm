@@ -28,13 +28,16 @@
 	var/overlay_ignore_lighting = FALSE
 	var/see_in_dark = 2
 	var/tint = 0
-	var/eye_color = "" //set to a hex code to override a mob's eye color
 	var/old_eye_color = "fff"
 	var/flash_protect = FLASH_PROTECTION_NONE
 	var/see_invisible = SEE_INVISIBLE_LIVING
 	var/lighting_alpha
 	var/no_glasses
 	var/damaged = FALSE //damaged indicates that our eyes are undergoing some level of negative effect
+
+	var/eye_color = "#FFFFFF"
+	var/heterochromia = FALSE
+	var/second_color = "#FFFFFF"
 
 /obj/item/organ/eyes/bodypart_icon(mutable_appearance/standing)
 	standing.color = eye_color

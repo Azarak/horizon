@@ -1,5 +1,6 @@
 /datum/preferences/proc/validate_organ_entries()
 	organ_entries = SANITIZE_LIST(organ_entries)
+	listclearnulls(organ_entries)
 	var/datum/species/species = pref_species
 	var/list/customizers = species.organ_customizers
 	/// Check if we have any organ entries that don't match.
