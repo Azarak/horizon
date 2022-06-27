@@ -45,7 +45,7 @@
 	organ_choices = list(/datum/organ_choice/wings/moth)
 
 /datum/organ_choice/wings/moth
-	name = "Wings"
+	name = "Moth Wings"
 	organ_type = /obj/item/organ/wings/moth
 	sprite_accessories = list(
 		/datum/sprite_accessory/wings/moth/plain,
