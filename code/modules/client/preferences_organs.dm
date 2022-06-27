@@ -59,7 +59,7 @@
 		if(entry.missing_organ)
 			customizer_link = "href='?_src_=prefs;task=change_organ;customizer=[customizer_type];organ=toggle_missing'"
 		else
-			if(choice.allows_missing_organ)
+			if(customizer.allows_missing_organ)
 				customizer_link = "href='?_src_=prefs;task=change_organ;customizer=[customizer_type];organ=toggle_missing' class='linkOn'"
 			else
 				customizer_link = "class='linkOff'"
@@ -90,8 +90,9 @@
 /datum/preferences/proc/get_organ_dna_list()
 	var/list/organ_list = list()
 	for(var/datum/organ_entry/entry as anything in organ_entries)
+		var/datum/organ_customizer/customizer = ORGAN_CUSTOMIZER(entry.organ_customizer_type)
 		var/datum/organ_choice/organ_choice = ORGAN_CHOICE(entry.organ_choice_type)
-		organ_list[organ_choice.organ_slot] = organ_choice.create_organ_dna(entry, src)
+		organ_list[organ_choice.organ_slot] = customizer.create_organ_dna(entry, src)
 
 	return organ_list
 
@@ -110,7 +111,7 @@
 	var/datum/organ_customizer/customizer = ORGAN_CUSTOMIZER(customizer_type)
 	switch(href_list["organ"])
 		if("toggle_missing")
-			if(choice.allows_missing_organ)
+			if(customizer.allows_missing_organ)
 				entry.missing_organ = !entry.missing_organ
 		if("change_choice")
 			var/list/choice_list = list()

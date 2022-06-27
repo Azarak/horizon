@@ -79,6 +79,7 @@
 		)
 
 /datum/organ_customizer/snout/mammal
+	allows_missing_organ = TRUE
 	organ_choices = list(
 		/datum/organ_choice/snout/mammal,
 		/datum/organ_choice/snout/lizard,
@@ -165,4 +166,3 @@
 		/datum/sprite_accessory/snout/front/redpandaalt,
 		/datum/sprite_accessory/snout/front/skulldog,
 		)
-	allows_missing_organ = TRUE
