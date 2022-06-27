@@ -12,5 +12,5 @@
 /obj/item/organ/antennas/ipc
 	name = "I.P.C. antennas"
 
-/obj/item/organ/antennas/synthliz
+/obj/item/organ/antennas/synth
 	name = "synthetic antennas"
