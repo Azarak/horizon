@@ -26,10 +26,6 @@
 	color_keys = 3
 	color_key_names = list("Beak", "Detail", "Top")
 
-/datum/sprite_accessory/snout/bird
-	name = "Beak"
-	icon_state = "bird"
-
 /datum/sprite_accessory/snout/bigbeak
 	name = "Big Beak"
 	icon_state = "bigbeak"
@@ -134,7 +130,7 @@
 	color_keys = 2
 	color_key_names = list("Snout", "Inner")
 
-/datum/sprite_accessory/snout/normal
+/datum/sprite_accessory/snout/tajaran
 	name = "Tajaran, normal"
 	icon_state = "ntajaran"
 
@@ -310,149 +306,149 @@
 	name = "Round + Light (Top)"
 	icon_state = "froundlight"
 
-/datum/sprite_accessory/snout/front/fbird
+/datum/sprite_accessory/snout/front/bird
 	name = "Beak (Top)"
 	icon_state = "fbird"
 	color_keys = 3
 	color_key_names = list("Beak", "Detail", "Top")
 
-/datum/sprite_accessory/snout/front/fbigbeak
+/datum/sprite_accessory/snout/front/bigbeak
 	name = "Big Beak (Top)"
 	icon_state = "fbigbeak"
 
-/datum/sprite_accessory/snout/front/fbug
+/datum/sprite_accessory/snout/front/bug
 	name = "Bug (Top)"
 	icon_state = "fbug"
 	color_keys = 2
 	color_key_names = list("Snout", "Eyes")
 
-/datum/sprite_accessory/snout/front/felephant
+/datum/sprite_accessory/snout/front/elephant
 	name = "Elephant (Top)"
 	icon_state = "felephant"
 	color_keys = 2
 	color_key_names = list("Snout", "Horns")
 
-/datum/sprite_accessory/snout/front/frhino
+/datum/sprite_accessory/snout/front/rhino
 	name = "Horn (Top)"
 	icon_state = "frhino"
 	color_keys = 3
 	color_key_names = list("Snout", "Details", "Details")
 
-/datum/sprite_accessory/snout/front/fbovine
+/datum/sprite_accessory/snout/front/bovine
 	name = "Bovine (Top)"
 	icon_state = "fbovine"
 	color_keys = 3
 	color_key_names = list("Snout", "Details", "Details")
 
-/datum/sprite_accessory/snout/front/fhusky
+/datum/sprite_accessory/snout/front/husky
 	name = "Husky (Top)"
 	icon_state = "fhusky"
 	color_keys = 2
 	color_key_names = list("Snout", "Inner")
 
-/datum/sprite_accessory/snout/front/flcanid
+/datum/sprite_accessory/snout/front/lcanid
 	name = "Mammal, Long (Top)"
 	icon_state = "flcanid"
 
-/datum/sprite_accessory/snout/front/flcanidalt
+/datum/sprite_accessory/snout/front/lcanidalt
 	name = "Mammal, Long ALT (Top)"
 	icon_state = "flcanidalt"
 
-/datum/sprite_accessory/snout/front/flcanidstriped
+/datum/sprite_accessory/snout/front/lcanidstriped
 	name = "Mammal, Long, Striped (Top)"
 	icon_state = "flcanidstripe"
 	color_keys = 2
 	color_key_names = list("Snout", "Inner")
 
-/datum/sprite_accessory/snout/front/flcanidstripedalt
+/datum/sprite_accessory/snout/front/lcanidstripedalt
 	name = "Mammal, Long, Striped ALT (Top)"
 	icon_state = "flcanidstripealt"
 	color_keys = 2
 	color_key_names = list("Snout", "Inner")
 
-/datum/sprite_accessory/snout/front/fscanid
+/datum/sprite_accessory/snout/front/scanid
 	name = "Mammal, Short (Top)"
 	icon_state = "fscanid"
 	color_keys = 2
 	color_key_names = list("Snout", "Inner")
 
-/datum/sprite_accessory/snout/front/fscanidalt
+/datum/sprite_accessory/snout/front/scanidalt
 	name = "Mammal, Short ALT (Top)"
 	icon_state = "fscanidalt"
 	color_keys = 2
 	color_key_names = list("Snout", "Inner")
 
-/datum/sprite_accessory/snout/front/fscanidalt2
+/datum/sprite_accessory/snout/front/scanidalt2
 	name = "Mammal, Short ALT 2 (Top)"
 	icon_state = "fscanidalt2"
 
-/datum/sprite_accessory/snout/front/fscanidalt3
+/datum/sprite_accessory/snout/front/scanidalt3
 	name = "Mammal, Short ALT 3 (Top)"
 	icon_state = "fscanidalt3"
 	color_keys = 2
 	color_key_names = list("Snout", "Inner")
 
-/datum/sprite_accessory/snout/front/fwolf
+/datum/sprite_accessory/snout/front/wolf
 	name = "Mammal, Thick (Top)"
 	icon_state = "fwolf"
 	color_keys = 2
 	color_key_names = list("Snout", "Inner")
 
-/datum/sprite_accessory/snout/front/fwolfalt
+/datum/sprite_accessory/snout/front/wolfalt
 	name = "Mammal, Thick ALT (Top)"
 	icon_state = "fwolfalt"
 
-/datum/sprite_accessory/snout/front/fotie
+/datum/sprite_accessory/snout/front/otie
 	name = "Otie (Top)"
 	icon_state = "fotie"
 	color_keys = 2
 	color_key_names = list("Snout", "Inner")
 
-/datum/sprite_accessory/snout/front/fotiesmile
+/datum/sprite_accessory/snout/front/otiesmile
 	name = "Otie Smile (Top)"
 	icon_state = "fotiesmile"
 	color_keys = 2
 	color_key_names = list("Snout", "Inner")
 
-/datum/sprite_accessory/snout/front/frodent
+/datum/sprite_accessory/snout/front/rodent
 	name = "Rodent (Top)"
 	icon_state = "frodent"
 
-/datum/sprite_accessory/snout/front/fpede
+/datum/sprite_accessory/snout/front/pede
 	name = "Scolipede (Top)"
 	icon_state = "fpede"
 	color_keys = 2
 	color_key_names = list("Snout", "Inner")
 
-/datum/sprite_accessory/snout/front/fsergal
+/datum/sprite_accessory/snout/front/sergal
 	name = "Sergal (Top)"
 	icon_state = "fsergal"
 	color_keys = 2
 	color_key_names = list("Snout", "Inner")
 
-/datum/sprite_accessory/snout/front/fshark
+/datum/sprite_accessory/snout/front/shark
 	name = "Shark (Top)"
 	icon_state = "fshark"
 
-/datum/sprite_accessory/snout/front/ftoucan
+/datum/sprite_accessory/snout/front/toucan
 	name = "Toucan (Top)"
 	icon_state = "ftoucan"
 	color_keys = 2
 	color_key_names = list("Detail", "Beak")
 
-/datum/sprite_accessory/snout/front/fredpanda
+/datum/sprite_accessory/snout/front/redpanda
 	name = "WahCoon (Top)"
 	icon_state = "fwah"
 	color_keys = 3
 	color_key_names = list("Snout", "Details", "Details")
 
-/datum/sprite_accessory/snout/front/fredpandaalt
+/datum/sprite_accessory/snout/front/redpandaalt
 	name = "WahCoon ALT (Top)"
 	icon_state = "fwahalt"
 	color_keys = 2
 	color_key_names = list("Snout", "Details")
 
-/datum/sprite_accessory/snout/front/fskulldog
+/datum/sprite_accessory/snout/front/skulldog
 	name = "Skulldog (Top)"
 	icon_state = "fskulldog"
 	extra_state = TRUE

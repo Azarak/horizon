@@ -15,5 +15,14 @@
 /obj/item/organ/snout/mammal
 	name = "mammal snout"
 
+/obj/item/organ/snout/lizard
+	name = "lizard snout"
+
 /obj/item/organ/snout/vulpkanin
 	name = "vulpkanin snout"
+
+/obj/item/organ/snout/tajaran
+	name = "tajaran snout"
+
+/obj/item/organ/snout/synth
+	name = "synthetic snout"

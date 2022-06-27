@@ -246,7 +246,7 @@
 	name = "Emo 2"
 	icon_state = "emo2"
 
-/datum/sprite_accessory/hair/head/emofrine
+/datum/sprite_accessory/hair/head/emofringe
 	name = "Emo Fringe"
 	icon_state = "emofringe"
 
