@@ -341,8 +341,8 @@
 /area/security/prison)
 "abi" = (
 /obj/machinery/door/airlock/maintenance{
-	req_one_access_txt = "12;47";
-	name = "Freight Dock Umbilical"
+	name = "Freight Dock Umbilical";
+	req_one_access_txt = "12;47"
 	},
 /obj/effect/mapping_helpers/smart_pipe/manifold4w/supply/hidden/layer4{
 	dir = 4
@@ -1808,8 +1808,8 @@
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/cable,
 /obj/machinery/door/airlock/maintenance{
-	req_one_access_txt = "12;47";
-	name = "Freight Dock Umbilical"
+	name = "Freight Dock Umbilical";
+	req_one_access_txt = "12;47"
 	},
 /turf/open/floor/plating,
 /area/maintenance/starboard)
@@ -1921,7 +1921,6 @@
 /area/maintenance/starboard)
 "agg" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/structure/cable,
 /turf/closed/wall,
 /area/maintenance/starboard)
 "agh" = (
@@ -15447,12 +15446,16 @@
 /turf/open/floor/iron/dark,
 /area/science/mixing)
 "aXE" = (
-/obj/machinery/nanite_chamber,
-/obj/effect/turf_decal/bot,
 /obj/effect/turf_decal/tile/neutral,
 /obj/effect/turf_decal/tile/neutral{
 	dir = 4
 	},
+/obj/structure/table,
+/obj/item/storage/toolbox/electrical{
+	pixel_y = 5
+	},
+/obj/structure/window/spawner/west,
+/obj/structure/window/spawner/north,
 /turf/open/floor/iron/dark,
 /area/science/research)
 "aXH" = (
@@ -15521,7 +15524,7 @@
 "aXN" = (
 /obj/machinery/igniter/incinerator_toxmix,
 /mob/living/simple_animal/chicken{
-	atmos_requirements = list("min_oxy" = 0, "max_oxy" = 0, "min_tox" = 0, "max_tox" = 1, "min_co2" = 0, "max_co2" = 0, "min_n2" = 0, "max_n2" = 0);
+	atmos_requirements = list("min_oxy"=0,"max_oxy"=0,"min_tox"=0,"max_tox"=1,"min_co2"=0,"max_co2"=0,"min_n2"=0,"max_n2"=0);
 	desc = "A timeless classic.";
 	name = "Kentucky"
 	},
@@ -15618,6 +15621,7 @@
 /obj/effect/turf_decal/tile/neutral{
 	dir = 4
 	},
+/obj/effect/landmark/start/scientist,
 /turf/open/floor/iron/dark,
 /area/science/research)
 "aXY" = (
@@ -15878,7 +15882,6 @@
 	},
 /area/maintenance/central)
 "aYN" = (
-/obj/machinery/nanite_program_hub,
 /obj/effect/turf_decal/bot,
 /obj/effect/turf_decal/tile/neutral,
 /obj/effect/turf_decal/tile/neutral{
@@ -15890,6 +15893,7 @@
 /obj/effect/turf_decal/tile/neutral{
 	dir = 1
 	},
+/obj/machinery/component_printer,
 /turf/open/floor/iron/dark,
 /area/science/research)
 "aYO" = (
@@ -15916,12 +15920,15 @@
 /turf/open/floor/iron/showroomfloor,
 /area/science/research)
 "aYR" = (
-/obj/machinery/computer/nanite_cloud_controller,
 /obj/effect/turf_decal/bot,
 /obj/effect/turf_decal/tile/neutral,
 /obj/effect/turf_decal/tile/neutral{
 	dir = 4
 	},
+/obj/structure/rack,
+/obj/item/integrated_circuit/loaded/hello_world,
+/obj/item/integrated_circuit/loaded/speech_relay,
+/obj/structure/window/spawner/west,
 /turf/open/floor/iron/dark,
 /area/science/research)
 "aYS" = (
@@ -15938,7 +15945,6 @@
 /turf/open/floor/iron/dark,
 /area/science/research)
 "aYT" = (
-/obj/machinery/nanite_programmer,
 /obj/effect/turf_decal/bot,
 /obj/effect/turf_decal/tile/neutral{
 	dir = 8
@@ -15950,10 +15956,17 @@
 /obj/effect/turf_decal/tile/neutral{
 	dir = 4
 	},
+/obj/structure/table,
+/obj/item/multitool/circuit{
+	pixel_x = -8
+	},
+/obj/item/multitool/circuit{
+	pixel_x = -4
+	},
+/obj/item/multitool/circuit,
 /turf/open/floor/iron/dark,
 /area/science/research)
 "aYU" = (
-/obj/machinery/nanite_program_hub,
 /obj/effect/turf_decal/bot,
 /obj/effect/turf_decal/tile/neutral{
 	dir = 1
@@ -15965,6 +15978,7 @@
 /obj/effect/turf_decal/tile/neutral{
 	dir = 8
 	},
+/obj/machinery/module_duplicator,
 /turf/open/floor/iron/dark,
 /area/science/research)
 "aYY" = (
@@ -16189,7 +16203,6 @@
 /obj/effect/turf_decal/tile/neutral{
 	dir = 4
 	},
-/obj/effect/turf_decal/bot,
 /obj/machinery/holopad,
 /turf/open/floor/iron/dark,
 /area/science/research)
@@ -16493,10 +16506,6 @@
 /turf/open/floor/iron/showroomfloor,
 /area/medical/medbay/central)
 "aZX" = (
-/obj/effect/turf_decal/bot,
-/obj/machinery/computer/nanite_chamber_control{
-	dir = 8
-	},
 /obj/effect/turf_decal/tile/neutral{
 	dir = 8
 	},
@@ -16507,6 +16516,7 @@
 /obj/effect/turf_decal/tile/neutral{
 	dir = 4
 	},
+/obj/effect/turf_decal/bot,
 /turf/open/floor/iron/dark,
 /area/science/research)
 "aZZ" = (
@@ -16748,8 +16758,6 @@
 /obj/structure/rack,
 /obj/effect/turf_decal/tile/purple,
 /obj/effect/turf_decal/tile/purple,
-/obj/item/integrated_circuit/loaded/speech_relay,
-/obj/item/integrated_circuit/loaded/hello_world,
 /obj/machinery/light_switch/directional/south,
 /obj/effect/turf_decal/tile/purple{
 	dir = 8
@@ -17016,10 +17024,18 @@
 /obj/effect/turf_decal/tile/neutral{
 	dir = 4
 	},
-/obj/item/storage/box/disks_nanite{
-	pixel_y = 4
+/obj/machinery/cell_charger{
+	pixel_y = 5
 	},
-/obj/item/hand_labeler,
+/obj/item/stock_parts/cell/high{
+	pixel_x = 8;
+	pixel_y = -2
+	},
+/obj/item/stock_parts/cell/high{
+	pixel_x = 8;
+	pixel_y = 9
+	},
+/obj/item/stock_parts/cell/high,
 /turf/open/floor/iron/dark,
 /area/science/research)
 "bbk" = (
@@ -17184,33 +17200,11 @@
 /obj/effect/landmark/start/hangover,
 /turf/open/floor/iron,
 /area/hallway/primary/starboard)
-"bbJ" = (
-/obj/machinery/computer/nanite_cloud_controller,
-/obj/effect/turf_decal/bot,
-/obj/effect/turf_decal/tile/neutral{
-	dir = 1
-	},
-/obj/effect/turf_decal/tile/neutral{
-	dir = 4
-	},
-/turf/open/floor/iron/dark,
-/area/science/research)
 "bbK" = (
 /obj/machinery/door/airlock/research/glass/incinerator/toxmix_interior,
 /obj/effect/mapping_helpers/airlock/locked,
 /turf/open/floor/engine,
 /area/science/mixing/chamber)
-"bbL" = (
-/obj/machinery/nanite_chamber,
-/obj/effect/turf_decal/bot,
-/obj/effect/turf_decal/tile/neutral{
-	dir = 1
-	},
-/obj/effect/turf_decal/tile/neutral{
-	dir = 4
-	},
-/turf/open/floor/iron/dark,
-/area/science/research)
 "bbN" = (
 /turf/closed/wall,
 /area/science/mixing)
@@ -17879,8 +17873,8 @@
 	pixel_y = 5
 	},
 /obj/item/storage/fancy/cigarettes{
-	pixel_y = -3;
-	pixel_x = -5
+	pixel_x = -5;
+	pixel_y = -3
 	},
 /obj/item/lighter{
 	pixel_x = -8;
@@ -18308,20 +18302,16 @@
 /turf/open/floor/iron/showroomfloor,
 /area/medical/pharmacy)
 "beE" = (
-/obj/structure/chair/office/light{
-	dir = 4
-	},
-/obj/effect/turf_decal/tile/neutral{
-	dir = 8
-	},
 /obj/effect/turf_decal/tile/neutral,
 /obj/effect/turf_decal/tile/neutral{
-	dir = 1
-	},
-/obj/effect/turf_decal/tile/neutral{
 	dir = 4
 	},
-/obj/effect/landmark/start/scientist,
+/obj/structure/rack,
+/obj/item/controller,
+/obj/item/compact_remote,
+/obj/item/compact_remote,
+/obj/effect/turf_decal/bot,
+/obj/structure/window/spawner/west,
 /turf/open/floor/iron/dark,
 /area/science/research)
 "beH" = (
@@ -30438,14 +30428,6 @@
 /obj/effect/mapping_helpers/smart_pipe/manifold4w/scrubbers/hidden/layer2,
 /turf/open/floor/iron/showroomfloor,
 /area/ai_monitored/security/armory)
-"cbq" = (
-/obj/effect/turf_decal/tile/blue,
-/obj/effect/turf_decal/tile/blue{
-	dir = 8
-	},
-/obj/effect/turf_decal/tile/neutral,
-/turf/open/floor/iron,
-/area/hallway/primary/central)
 "cbr" = (
 /obj/effect/turf_decal/tile/blue,
 /obj/effect/turf_decal/tile/blue{
@@ -41499,12 +41481,11 @@
 /obj/effect/mapping_helpers/smart_pipe/manifold4w/supply/hidden/layer4{
 	dir = 4
 	},
-/obj/machinery/door/airlock/mining/glass{
-	name = "Mining Dock";
-	req_access_txt = "48"
-	},
 /obj/effect/mapping_helpers/smart_pipe/manifold4w/scrubbers/hidden/layer2{
 	dir = 8
+	},
+/obj/machinery/door/airlock/mining/glass{
+	name = "Freight Mining Airlock"
 	},
 /turf/open/floor/iron/dark,
 /area/cargo/warehouse)
@@ -41910,9 +41891,9 @@
 	dir = 8
 	},
 /mob/living/simple_animal/hostile/asteroid/basilisk{
+	desc = "Once a domesticated Basilisk, tamed by a legendary Quatermaster, but now is masterless and watches over the office it once called home.";
 	environment_smash = 0;
-	name = "Big Kahuna";
-	desc = "Once a domesticated Basilisk, tamed by a legendary Quatermaster, but now is masterless and watches over the office it once called home."
+	name = "Big Kahuna"
 	},
 /turf/open/floor/carpet/green,
 /area/cargo/warehouse)
@@ -45138,7 +45119,6 @@
 	dir = 1
 	},
 /obj/effect/decal/cleanable/dirt,
-/obj/machinery/bluespace_vendor/west,
 /turf/open/floor/iron,
 /area/hallway/secondary/entry)
 "eLX" = (
@@ -47650,8 +47630,8 @@
 /area/engineering/atmos)
 "fKs" = (
 /obj/item/paper/crumpled/bloody{
-	name = "bloody paper scrap";
-	info = "oh fuck i should of listened to the advisery why is dying so slow"
+	info = "oh fuck i should of listened to the advisery why is dying so slow";
+	name = "bloody paper scrap"
 	},
 /obj/item/pen{
 	pixel_x = 8;
@@ -50990,19 +50970,13 @@
 	dir = 4
 	},
 /obj/item/clipboard,
-/obj/item/nanite_remote{
-	pixel_x = -4;
-	pixel_y = 4
-	},
 /obj/effect/turf_decal/tile/neutral{
 	dir = 1
-	},
-/obj/item/nanite_scanner{
-	pixel_x = 4
 	},
 /obj/machinery/airalarm/directional/north,
 /obj/machinery/light/directional/east,
 /obj/effect/turf_decal/stripes/corner,
+/obj/item/hand_labeler,
 /turf/open/floor/iron/dark,
 /area/science/research)
 "hoE" = (
@@ -51267,7 +51241,6 @@
 	dir = 8
 	},
 /obj/structure/extinguisher_cabinet/directional/north,
-/obj/machinery/component_printer,
 /obj/structure/cable,
 /obj/effect/decal/cleanable/dirt,
 /turf/open/floor/iron/dark,
@@ -55267,8 +55240,8 @@
 "jkj" = (
 /obj/effect/spawner/structure/window/reinforced,
 /obj/machinery/door/poddoor/shutters{
-	name = "Freight Office Shutters";
-	id = "freight_office"
+	id = "freight_office";
+	name = "Freight Office Shutters"
 	},
 /turf/open/floor/plating,
 /area/cargo/warehouse)
@@ -55569,6 +55542,7 @@
 	id = "freight_port";
 	name = "Freight Bay Control"
 	},
+/obj/machinery/light/small/broken/directional/south,
 /turf/open/floor/iron/dark,
 /area/cargo/warehouse)
 "jsI" = (
@@ -57878,6 +57852,7 @@
 	id = "emmd";
 	name = "Medical Lockdown Toggle"
 	},
+/obj/structure/cable,
 /turf/open/floor/iron/showroomfloor,
 /area/medical/surgery)
 "kqL" = (
@@ -58320,7 +58295,6 @@
 	dir = 4;
 	name = "port camera"
 	},
-/obj/machinery/bluespace_vendor/west,
 /turf/open/floor/iron/dark/corner{
 	dir = 8
 	},
@@ -58349,8 +58323,6 @@
 /turf/open/floor/engine,
 /area/engineering/supermatter/room)
 "kzj" = (
-/obj/effect/turf_decal/bot,
-/obj/machinery/computer/nanite_chamber_control,
 /obj/effect/turf_decal/tile/neutral{
 	dir = 8
 	},
@@ -58367,6 +58339,7 @@
 	network = list("ss13","rd")
 	},
 /obj/machinery/status_display/evac/directional/north,
+/obj/structure/table,
 /turf/open/floor/iron/dark,
 /area/science/research)
 "kzI" = (
@@ -61088,18 +61061,18 @@
 /area/command/teleporter)
 "lFf" = (
 /obj/item/paper{
-	pixel_y = -5;
-	name = "CREW ADVISERY - DECOMMISSION NOTICE";
-	info = "As of further notice, this frieght dock is to be decommissioned due to repeated breaches by xenofauna.";
 	color = "orange";
-	pixel_x = -7
+	info = "As of further notice, this frieght dock is to be decommissioned due to repeated breaches by xenofauna.";
+	name = "CREW ADVISERY - DECOMMISSION NOTICE";
+	pixel_x = -7;
+	pixel_y = -5
 	},
 /obj/item/paper{
-	pixel_y = -5;
-	name = "CREW ADVISERY - DANGER";
-	info = "Due to an incident involving the death of several crewmembers, this is an advisery to STAY AWAY from this decommissioned dock. It is infested with hostile xenofauna that have made it a nest.";
 	color = "red";
-	pixel_x = 7
+	info = "Due to an incident involving the death of several crewmembers, this is an advisery to STAY AWAY from this decommissioned dock. It is infested with hostile xenofauna that have made it a nest.";
+	name = "CREW ADVISERY - DANGER";
+	pixel_x = 7;
+	pixel_y = -5
 	},
 /turf/closed/wall,
 /area/maintenance/starboard)
@@ -62102,7 +62075,6 @@
 	dir = 8
 	},
 /obj/effect/turf_decal/tile/neutral,
-/obj/machinery/bluespace_vendor/south,
 /turf/open/floor/iron,
 /area/hallway/primary/central)
 "maY" = (
@@ -64565,6 +64537,7 @@
 	dir = 1
 	},
 /obj/effect/decal/cleanable/dirt,
+/obj/machinery/light/small/broken/directional/north,
 /turf/open/floor/plating{
 	icon_state = "platingdmg3"
 	},
@@ -65662,6 +65635,7 @@
 	},
 /obj/effect/decal/cleanable/blood/old,
 /obj/effect/landmark/xeno_spawn,
+/obj/machinery/light/small/broken/directional/north,
 /turf/open/floor/iron/dark,
 /area/cargo/warehouse)
 "nKW" = (
@@ -67411,8 +67385,8 @@
 /obj/structure/cable,
 /obj/effect/decal/cleanable/blood/drip,
 /obj/machinery/door/airlock/maintenance{
-	req_one_access_txt = "12;47";
-	name = "Freight Dock Umbilical"
+	name = "Freight Dock Umbilical";
+	req_one_access_txt = "12;47"
 	},
 /turf/open/floor/iron/dark,
 /area/cargo/warehouse)
@@ -67753,7 +67727,6 @@
 	c_tag = "Fore Hallway Diner";
 	name = "fore camera"
 	},
-/obj/machinery/bluespace_vendor/north,
 /turf/open/floor/iron,
 /area/hallway/primary/fore)
 "oAH" = (
@@ -74713,7 +74686,7 @@
 	},
 /obj/item/reagent_containers/food/drinks/beer{
 	desc = "A station exclusive. Consumption may result in seizures, blindness, drunkenness, or even death.";
-	list_reagents = list(/datum/reagent/consumable/ethanol/thirteenloko = 30);
+	list_reagents = list(/datum/reagent/consumable/ethanol/thirteenloko=30);
 	name = "Kilo-Kocktail";
 	pixel_x = 5;
 	pixel_y = 5
@@ -76024,8 +75997,8 @@
 "sen" = (
 /obj/item/shard,
 /obj/machinery/door/poddoor/shutters{
-	name = "Freight Office Shutters";
-	id = "freight_office"
+	id = "freight_office";
+	name = "Freight Office Shutters"
 	},
 /obj/item/stack/rods,
 /turf/open/floor/plating,
@@ -77352,20 +77325,20 @@
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/table,
 /obj/item/clothing/head/flakhelm{
-	pixel_y = 10;
-	pixel_x = -5
+	pixel_x = -5;
+	pixel_y = 10
 	},
 /obj/item/plate{
-	pixel_y = -5;
-	pixel_x = 5
+	pixel_x = 5;
+	pixel_y = -5
 	},
 /obj/item/toy/crayon/green{
-	pixel_y = -5;
-	pixel_x = 5
+	pixel_x = 5;
+	pixel_y = -5
 	},
 /obj/item/toy/crayon/orange{
-	pixel_y = -5;
-	pixel_x = 9
+	pixel_x = 9;
+	pixel_y = -5
 	},
 /turf/open/floor/plating,
 /area/maintenance/starboard)
@@ -78294,13 +78267,6 @@
 /area/command/heads_quarters/captain)
 "tno" = (
 /obj/structure/table,
-/obj/item/multitool/circuit{
-	pixel_x = -8
-	},
-/obj/item/multitool/circuit{
-	pixel_x = -4
-	},
-/obj/item/multitool/circuit,
 /obj/effect/turf_decal/tile/purple,
 /obj/effect/turf_decal/tile/purple,
 /obj/machinery/firealarm/directional/south,
@@ -80328,8 +80294,8 @@
 "tZK" = (
 /obj/effect/spawner/structure/window/reinforced,
 /obj/machinery/door/poddoor/shutters{
-	name = "Freight Office Shutters";
-	id = "freight_office"
+	id = "freight_office";
+	name = "Freight Office Shutters"
 	},
 /obj/structure/barricade/wooden,
 /turf/open/floor/plating,
@@ -81581,7 +81547,10 @@
 /obj/effect/turf_decal/stripes/line{
 	dir = 1
 	},
-/obj/machinery/airalarm/directional/west,
+/obj/machinery/airalarm/server{
+	dir = 4;
+	pixel_x = -24
+	},
 /turf/open/floor/engine/telecomms,
 /area/tcommsat/server)
 "uAo" = (
@@ -82455,7 +82424,6 @@
 /area/maintenance/port)
 "uVC" = (
 /obj/effect/turf_decal/delivery,
-/obj/machinery/atmospherics/components/unary/bluespace_sender,
 /turf/open/floor/iron/dark,
 /area/engineering/atmos)
 "uVV" = (
@@ -83668,11 +83636,6 @@
 	dir = 4
 	},
 /obj/item/folder,
-/obj/item/nanite_scanner{
-	pixel_x = -4;
-	pixel_y = 4
-	},
-/obj/item/nanite_remote,
 /obj/machinery/light/directional/east,
 /obj/machinery/bounty_board/directional/north,
 /turf/open/floor/iron/dark,
@@ -85076,11 +85039,10 @@
 	dir = 4
 	},
 /obj/effect/decal/cleanable/dirt,
-/obj/machinery/atmospherics/components/unary/portables_connector/visible{
-	dir = 4;
-	piping_layer = 1
-	},
 /obj/machinery/portable_atmospherics/canister,
+/obj/machinery/atmospherics/components/unary/portables_connector/visible{
+	dir = 4
+	},
 /turf/open/floor/iron/dark,
 /area/cargo/warehouse)
 "vXv" = (
@@ -85798,8 +85760,8 @@
 	dir = 4
 	},
 /obj/machinery/door/airlock/maintenance{
-	req_one_access_txt = "12;47";
-	name = "Freight Dock Umbilical"
+	name = "Freight Dock Umbilical";
+	req_one_access_txt = "12;47"
 	},
 /turf/open/floor/plating,
 /area/cargo/warehouse)
@@ -87433,8 +87395,8 @@
 	dir = 8
 	},
 /obj/item/food/chips{
-	pixel_y = -3;
-	pixel_x = -3
+	pixel_x = -3;
+	pixel_y = -3
 	},
 /turf/open/floor/plating,
 /area/maintenance/starboard)
@@ -87717,10 +87679,7 @@
 /obj/effect/turf_decal/tile/purple{
 	dir = 8
 	},
-/obj/item/controller,
 /obj/machinery/light/directional/west,
-/obj/item/compact_remote,
-/obj/item/compact_remote,
 /turf/open/floor/iron/showroomfloor,
 /area/science/test_area)
 "xfz" = (
@@ -88411,8 +88370,8 @@
 	},
 /obj/structure/table/wood,
 /obj/item/paper/pamphlet/ruin/spacehotel{
-	name = "Take a Vacation - Today!";
-	info = "<center><b>Banhanmas!</center></b><br><center><i>The PLACE to Vacation!</i></center><br><br><center>"
+	info = "<center><b>Banhanmas!</center></b><br><center><i>The PLACE to Vacation!</i></center><br><br><center>";
+	name = "Take a Vacation - Today!"
 	},
 /turf/open/floor/carpet/green,
 /area/cargo/warehouse)
@@ -89874,8 +89833,8 @@
 	pixel_x = -32
 	},
 /obj/machinery/button/door/directional/south{
-	name = "Freight Office Shutters";
-	id = "freight_office"
+	id = "freight_office";
+	name = "Freight Office Shutters"
 	},
 /turf/open/floor/carpet/green,
 /area/cargo/warehouse)
@@ -119065,7 +119024,7 @@ imV
 rqY
 bjP
 bZG
-cbq
+maW
 fwx
 hie
 nRg
@@ -119322,7 +119281,7 @@ xbm
 mzi
 bfy
 oTs
-cbq
+maW
 fwx
 wvz
 gvk
@@ -119836,7 +119795,7 @@ prS
 prS
 pPh
 bZG
-cbq
+maW
 xeC
 jiV
 fJZ
@@ -128280,7 +128239,7 @@ vse
 aXE
 aXI
 aYR
-aXI
+beE
 bbj
 aOi
 bep
@@ -128795,7 +128754,7 @@ vlS
 aYN
 aYT
 aYS
-bbJ
+bbl
 aOo
 bgj
 aYe
@@ -129051,7 +129010,7 @@ nOe
 vlS
 vlS
 aYU
-beE
+aYS
 bbl
 aOi
 aRp
@@ -129309,7 +129268,7 @@ tWx
 vlS
 vlS
 aZX
-bbL
+bbl
 aOi
 bep
 baU

@@ -150,3 +150,111 @@
   Emilitia Ennehrt (EmilitiaEnnehrt):
   - qol: Added suspenders to the loadout menu
   - balance: Make TTS device costs lower
+2022-06-16:
+  Azarak:
+  - rscadd: Adds a powerful framework for all sorts of recipes, but is currently unused.
+  - rscadd: Adds bloom overlays. Those are added to light fixtures, floodlight, desk
+      lamps, flares, bonfires and fireplaces
+  - rscadd: Slapcrafting now has more feedback
+  - rscadd: Knives now make a cutting noise when used as a tool.
+  Delnth:
+  - rscadd: Added a torch recipe to the slapcraft system
+  - rscdel: Removed the original craft recipe for the torch
+  drizzlemutt:
+  - balance: changed techweb program clearance from RD to Research
+2022-06-17:
+  Deek-Za (Deek-Za):
+  - bugfix: Can no longer attempt to cryo while someone is buckled to you.
+2022-06-18:
+  Alex 'Avunia' Takiya (atakiya):
+  - bugfix: Fixed big and small things becoming normal sized when dropped from hands
+  - soundadd: Made adjustments to existing ambience sounds (general, vending machines,
+      AI areas)
+  - soundadd: Added ambient intercom chatter to arrivals and departures
+  - admin: Added an option in the VV dropdown of mobs to reapply the client&#x27;s
+      character preferences
+  Azarak:
+  - balance: Storyteller will now play events slightly less frequently.
+  Deek-Za (Deek-Za):
+  - bugfix: Cutting cable drops the appropriate cable type.
+  Delnth:
+  - rscadd: Added slapcraft wood chopping. Method is the same as before, but better
+      and with more potential.
+  - rscdel: Removed the old method of turning wood logs into planks.
+  - qol: Removed the drying rack power requirement
+2022-06-19:
+  /tg/station:
+  - rscadd: Ported airlock cycling ID setup. You can now repair cycling airlocks ingame
+      within the airlock circuit.
+  Alex 'Avunia' Takiya (atakiya):
+  - rscdel: Removed bluespace gas senders
+  - rscdel: Removed bluespace gas vendors
+  Azarak:
+  - qol: Lowers bloom intensity by roughly 10% and roughly 30% for light fixtures.
+      Lowered bloom radius for lamps and flares.
+  KathrinBailey:
+  - balance: Avians have been hired at the sorting office to ensure mail is now delivered
+      every day of the week, including Sunday.
+  Miss Fox (MissFox0810):
+  - rscadd: Added Circuit Module Duplicator to circuits lab on Pubby Station
+  - rscadd: Added Circuit Module Duplicator to Icebox, Kilo and Tram stations
+2022-06-20:
+  drizzlemutt:
+  - bugfix: removes a duplicate apc from the Rockdove
+  - rscadd: adds a Hermit Ruin area
+  - qol: moves elements to more sane positions
+2022-06-21:
+  KathrinBailey:
+  - rscadd: Milkshakes! You can now craft chocolate, strawberry, vanilla and banana
+      milkshake. Sprites for cherry and bluecherry shakes have been updated too! Craft
+      them with one part flavouring, one part cream, and three parts milk!
+  - rscadd: New mining base for Icebox.
+  - rscadd: Changes to QM&#x27;s office, mining office and a minor break room for
+      cargo in a connecting corridor.
+  Miss Fox (MissFox0810):
+  - rscadd: Silicons are now crew and will appear on manifest
+  drizzlemutt:
+  - bugfix: freight dock fixes and upkeep
+  - bugfix: missing cable from medbay surgery
+  - bugfix: changes tcomms air alarm to correct prefab
+  - balance: restricts radiation storms to outside of stations
+2022-06-22:
+  Alex 'Avunia' Takiya (atakiya):
+  - rscdel: Removed Nanites
+  - rscadd: The now defunct Nanite Lab&#x27;s are closed for renovation!
+2022-06-25:
+  Alex 'Avunia' Takiya (atakiya):
+  - rscdel: Removed xenoegg spawns from Pubby
+  Emilitia Ennehrt (EmilitiaEnnehrt):
+  - imageadd: Added welding effect overlay on the object being welded
+  - rscadd: Added medical beret to clothing vender
+  - qol: Syringes sprites are easier to click on
+  - bugfix: Fixed coat sprites on non-human body types
+  - bugfix: Reshade for nitrile gloves and nitrile mask
+  - imageadd: New syringe, paddle, folded bodybag sprites, and new reagent filling
+      to go with new syringe sprites
+  - imageadd: added digitigrade versions for some of the new coats
+2022-06-26:
+  AtoriBirb:
+  - balance: Adds Low-pop Pharma access to Virologist
+  Delnth, /tg/station &amp; Crumpaloo, Alex &#x27;Avunia&#x27; Takiya:
+  - rscadd: Milkshake recipes have been changed
+  - rscadd: Ported caramel milkshake
+  - rscadd: Ported Space Ale
+  - rscadd: Ported a few drinks from /tg/
+  - rscadd: Added a new reagent to the soda dispenser, the aquafaba. An alternative
+      to egg white.
+  - imageadd: Ported drink sprites from /tg/
+  - imageadd: Ported crushed can sprites from /tg/
+  - imageadd: Ported poster updates from /tg/
+  - imageadd: Ported tiny edit on space-up vendor from /tg/
+  - imageadd: '(atakiya): Added overlays for the new glass and shotglass sprite'
+  KathrinBailey:
+  - balance: Clarke in Icebox mining base downgraded to a Ripley.
+  - qol: Pubby kitchen re-organised to be less frustrating to work in.
+  - qol: Pubby botany has their biogenerator moved between the kitchen and botany.
+  - balance: Pubby kitchen has a few more roundstart food items.
+  - balance: Pubby bartender has their own condimaster for drink mixing.
+  - bugfix: Missing wallmounts and firelocks for Pubby service.
+  Miss Fox (MissFox0810):
+  - bugfix: Silicons now added to manifest round start
