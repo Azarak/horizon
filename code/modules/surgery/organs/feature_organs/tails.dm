@@ -1,5 +1,3 @@
-// Note: tails only work in humans. They use human-specific parameters and rely on human code for displaying.
-
 /obj/item/organ/tail
 	name = "tail"
 	desc = "A severed tail. What did you cut this off of?"
@@ -41,3 +39,15 @@
 	name = "vulpkanin tail"
 	accessory_type = /datum/sprite_accessory/tail/fox
 	accessory_colors = "#fc8803#fff8f0"
+
+/obj/item/organ/tail/tajaran
+	name = "tajaran tail"
+
+/obj/item/organ/tail/vox
+	name = "vox tail"
+
+/obj/item/organ/tail/synth
+	name = "synthetic tail"
+
+/obj/item/organ/tail/xeno
+	name = "xeno tail"

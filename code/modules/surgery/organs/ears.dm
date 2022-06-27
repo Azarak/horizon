@@ -111,8 +111,11 @@
 /obj/item/organ/ears/mammal
 	name = "mammal ears"
 
-/obj/item/organ/ears/avali
-	name = "avali ears"
-
 /obj/item/organ/ears/vulpkanin
 	name = "vulpkanin ears"
+
+/obj/item/organ/ears/tajaran
+	name = "tajaran ears"
+
+/obj/item/organ/ears/cat
+	name = "felinid ears"
