@@ -223,12 +223,6 @@
 			H.update_body()
 			H.update_mutations_overlay() //(hulk male/female)
 
-		if(BODY_ZONE_PRECISE_EYES)
-			var/new_eye_color = input(H, "Choose your eye color", "Eye Color","#"+H.eye_color) as color|null
-			if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
-				return
-			return
-
 	if(choice)
 		curse(user)
 

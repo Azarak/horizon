@@ -313,7 +313,6 @@
 		var/datum/species/old_species = dna.species
 		dna.species = new_race
 		//BODYPARTS AND FEATURES
-		var/list/bodyparts_to_add
 		if(pref_load)
 			dna.features = pref_load.features.Copy()
 			dna.real_name = pref_load.real_name

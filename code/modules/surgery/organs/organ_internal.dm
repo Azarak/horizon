@@ -36,7 +36,7 @@
 
 	/// Whether the organ is fully internal and should not be seen by bare eyes.
 	var/visible_organ = FALSE
-	/// Description when the organ is visible and examined while it's attached to a bodypart. 
+	/// Description when the organ is visible and examined while it's attached to a bodypart.
 	var/bodypart_desc = "This is an organ."
 	/// Icon of the organ when it's on a bodypart.
 	var/bodypart_icon
@@ -74,8 +74,6 @@
 	if(!iscarbon(reciever) || owner == reciever)
 		return
 
-	var/mob/living/carbon/human/human_receiver = reciever
-
 	var/obj/item/organ/replaced = reciever.getorganslot(slot)
 	if(replaced)
 		replaced.Remove(reciever, special = TRUE)
@@ -109,7 +107,6 @@
 
 	owner = null
 	if(organ_owner)
-		var/mob/living/carbon/human/organ_owner_human = organ_owner
 		organ_owner.internal_organs -= src
 		if(organ_owner.internal_organs_slot[slot] == src)
 			organ_owner.internal_organs_slot.Remove(slot)

@@ -1062,13 +1062,6 @@
 	taste_description = "jelly"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 
-/datum/reagent/medicine/regen_jelly/expose_mob(mob/living/exposed_mob, reac_volume)
-	. = ..()
-	if(!ishuman(exposed_mob) || (reac_volume < 0.5))
-		return
-
-	var/mob/living/carbon/human/exposed_human = exposed_mob
-
 /datum/reagent/medicine/regen_jelly/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
 	M.adjustBruteLoss(-1.5 * REM * delta_time, 0)
 	M.adjustFireLoss(-1.5 * REM * delta_time, 0)

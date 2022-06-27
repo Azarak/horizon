@@ -97,60 +97,6 @@
 	if(H.dna.species.is_wagging_tail(H))
 		. = null
 
-/datum/emote/living/carbon/human/wing
-	key = "wing"
-	key_third_person = "wings"
-	message = "their wings."
-
-/datum/emote/living/carbon/human/wing/run_emote(mob/user, params, type_override, intentional, override_message, override_emote_type)
-	. = ..()
-	if(.)
-		var/mob/living/carbon/human/H = user
-		if(findtext(select_message_type(user,intentional), "open"))
-			H.OpenWings()
-		else
-			H.CloseWings()
-
-/datum/emote/living/carbon/human/wing/select_message_type(mob/user, intentional)
-	. = ..()
-	var/mob/living/carbon/human/H = user
-	/*
-	if(H.dna.species.mutant_bodyparts["wings"])
-		. = "opens " + message
-	else
-		. = "closes " + message
-	*/
-
-/datum/emote/living/carbon/human/wing/can_run_emote(mob/user, status_check = TRUE, intentional)
-	if(!..())
-		return FALSE
-	var/mob/living/carbon/human/H = user
-	if(H.dna && H.dna.species && (H.dna.features["wings"] != "None"))
-		return TRUE
-
-/mob/living/carbon/human/proc/OpenWings()
-	if(!dna || !dna.species)
-		return
-	/*
-	if(dna.species.mutant_bodyparts["wings"])
-		dna.species.mutant_bodyparts["wingsopen"] = dna.species.mutant_bodyparts["wings"]
-		dna.species.mutant_bodyparts -= "wings"
-	*/
-	update_body()
-
-/mob/living/carbon/human/proc/CloseWings()
-	if(!dna || !dna.species)
-		return
-	/*
-	if(dna.species.mutant_bodyparts["wingsopen"])
-		dna.species.mutant_bodyparts["wings"] = dna.species.mutant_bodyparts["wingsopen"]
-		dna.species.mutant_bodyparts -= "wingsopen"
-	*/
-	update_body()
-	if(isturf(loc))
-		var/turf/T = loc
-		T.Entered(src)
-
 //Ayy lmao
 
 

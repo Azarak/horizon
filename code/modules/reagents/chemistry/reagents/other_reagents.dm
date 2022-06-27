@@ -2069,20 +2069,6 @@
 	penetrates_skin = NONE
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 
-/datum/reagent/hair_dye/New()
-	SSticker.OnRoundstart(CALLBACK(src,.proc/UpdateColor))
-	return ..()
-
-/datum/reagent/hair_dye/proc/UpdateColor()
-	color = pick(potential_colors)
-
-/datum/reagent/hair_dye/expose_mob(mob/living/exposed_mob, methods=TOUCH, reac_volume, show_message=TRUE, touch_protection=FALSE)
-	. = ..()
-	if(!(methods & (TOUCH|VAPOR)) || !ishuman(exposed_mob))
-		return
-
-	var/mob/living/carbon/human/exposed_human = exposed_mob
-
 /datum/reagent/barbers_aid
 	name = "Barber's Aid"
 	description = "A solution to hair loss across the world."

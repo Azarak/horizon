@@ -569,12 +569,6 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	if(inherent_factions)
 		for(var/i in inherent_factions)
 			C.faction -= i
-
-	if(flying_species)
-		fly.Remove(C)
-		QDEL_NULL(fly)
-		if(C.movement_type & FLYING)
-			ToggleFlight(C)
 	/*
 	if(C.dna && C.dna.species && (C.dna.features["wings"] == wings_icon))
 		C.dna.species.mutant_bodyparts -= "wings"
@@ -1705,9 +1699,6 @@ GLOBAL_LIST_EMPTY(customizable_races)
 
 /datum/species/proc/spec_stun(mob/living/carbon/human/H,amount)
 	stop_wagging_tail(H)
-	if(flying_species && H.movement_type & FLYING)
-		ToggleFlight(H)
-		flyslip(H)
 	. = stunmod * H.physiology.stun_mod * amount
 
 //////////////
@@ -1806,9 +1797,6 @@ GLOBAL_LIST_EMPTY(customizable_races)
 
 /datum/species/proc/HandleFlight(mob/living/carbon/human/H)
 	if(H.movement_type & FLYING)
-		if(!CanFly(H))
-			ToggleFlight(H)
-			return FALSE
 		return TRUE
 	else
 		return FALSE
@@ -1852,23 +1840,6 @@ GLOBAL_LIST_EMPTY(customizable_races)
 		new /datum/forced_movement(H, get_ranged_target_turf(H, olddir, 4), 1, FALSE, CALLBACK(H, /mob/living/carbon/.proc/spin, 1, 1))
 	return TRUE
 
-//UNSAFE PROC, should only be called through the Activate or other sources that check for CanFly
-/datum/species/proc/ToggleFlight(mob/living/carbon/human/H)
-	if(!HAS_TRAIT_FROM(H, TRAIT_MOVE_FLYING, SPECIES_FLIGHT_TRAIT))
-		stunmod *= 2
-		speedmod -= 0.35
-		ADD_TRAIT(H, TRAIT_NO_FLOATING_ANIM, SPECIES_FLIGHT_TRAIT)
-		ADD_TRAIT(H, TRAIT_MOVE_FLYING, SPECIES_FLIGHT_TRAIT)
-		passtable_on(H, SPECIES_TRAIT)
-		H.OpenWings()
-	else
-		stunmod *= 0.5
-		speedmod += 0.35
-		REMOVE_TRAIT(H, TRAIT_NO_FLOATING_ANIM, SPECIES_FLIGHT_TRAIT)
-		REMOVE_TRAIT(H, TRAIT_MOVE_FLYING, SPECIES_FLIGHT_TRAIT)
-		passtable_off(H, SPECIES_TRAIT)
-		H.CloseWings()
-
 /datum/action/innate/flight
 	name = "Toggle Flight"
 	check_flags = AB_CHECK_CONSCIOUS|AB_CHECK_IMMOBILE
@@ -1876,16 +1847,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	button_icon_state = "flight"
 
 /datum/action/innate/flight/Activate()
-	var/mob/living/carbon/human/H = owner
-	var/datum/species/S = H.dna.species
-	if(S.CanFly(H))
-		S.ToggleFlight(H)
-		if(!(H.movement_type & FLYING))
-			to_chat(H, SPAN_NOTICE("You settle gently back onto the ground..."))
-		else
-			to_chat(H, SPAN_NOTICE("You beat your wings and begin to hover gently above the ground..."))
-			H.set_resting(FALSE, TRUE)
-
+	return
 /**
  * The human species version of [/mob/living/carbon/proc/get_biological_state]. Depends on the HAS_FLESH and HAS_BONE species traits, having bones lets you have bone wounds, having flesh lets you have burn, slash, and piercing wounds
  */
