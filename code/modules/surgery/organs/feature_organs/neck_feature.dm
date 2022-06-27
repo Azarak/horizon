@@ -5,3 +5,7 @@
 	visible_organ = TRUE
 	zone = BODY_ZONE_CHEST
 	slot = ORGAN_SLOT_NECK_FEATURE
+
+/obj/item/organ/neck_feature/moth_fluff
+
+/obj/item/organ/neck_feature/mammal_fluff

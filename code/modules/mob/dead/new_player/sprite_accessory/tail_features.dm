@@ -41,7 +41,7 @@
 	name = "Long + Membrane"
 	icon_state = "longmeme"
 
-/datum/sprite_accessory/tail_feature/spines/aqautic
+/datum/sprite_accessory/tail_feature/spines/aquatic
 	name = "Aquatic"
 	icon_state = "aqua"
 
@@ -51,14 +51,14 @@
 	relevant_layers = list(BODY_BEHIND_LAYER, BODY_FRONT_LAYER)
 	color_key_name = "Marking"
 
-/datum/sprite_accessory/tail_feature/vox_marking/vox_bands
+/datum/sprite_accessory/tail_feature/vox_marking/bands
 	name = "Bands"
 	icon_state = "bands"
 
-/datum/sprite_accessory/tail_feature/vox_marking/vox_tip
+/datum/sprite_accessory/tail_feature/vox_marking/tip
 	name = "Tip"
 	icon_state = "tip"
 
-/datum/sprite_accessory/tail_feature/vox_marking/vox_stripe
+/datum/sprite_accessory/tail_feature/vox_marking/stripe
 	name = "Stripe"
 	icon_state = "stripe"
