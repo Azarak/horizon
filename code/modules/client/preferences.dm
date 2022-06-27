@@ -84,7 +84,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/backpack = DBACKPACK //backpack type
 	var/jumpsuit_style = PREF_SUIT //suit/skirt
 	var/skin_tone = "caucasian1" //Skin color
-	var/eye_color = "000" //Eye color
 	var/datum/species/pref_species
 	//Has to include all information that extra organs from mutant bodyparts would need.
 	var/list/features = MANDATORY_FEATURE_LIST
@@ -505,18 +504,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 						dat += "<a href='?_src_=prefs;preference=color_ethereal;task=input'><span class='color_holder_box' style='background-color:#[features["ethcolor"]]'></span></a><BR>"
 
-
-					if((EYECOLOR in pref_species.species_traits) && !(NOEYESPRITES in pref_species.species_traits))
-
-						/*if(!use_skintones)
-							dat += APPEARANCE_CATEGORY_COLUMN*/
-
-						dat += "<h3>Eye Color</h3>"
-						dat += "<a href='?_src_=prefs;preference=eyes;task=input'><span class='color_holder_box' style='background-color:#[eye_color]'></span></a>"
-
-						dat += "<br></td>"
-					else if(use_skintones)
-						dat += "</td>"
 
 					dat += "</tr></table>"
 
@@ -1657,8 +1644,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					real_name = pref_species.random_name(gender,1)
 				if("age")
 					age = rand(AGE_MIN, AGE_MAX)
-				if(BODY_ZONE_PRECISE_EYES)
-					eye_color = random_eye_color()
 				if("s_tone")
 					set_skin_tone(random_skin_tone())
 				if("species")
@@ -1880,12 +1865,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if(new_arousal)
 						arousal_preview = gen_arous_trans[new_arousal]
 						needs_update = TRUE
-
-				if("eyes")
-					needs_update = TRUE
-					var/new_eyes = input(user, "Choose your character's eye colour:", "Character Preference","#"+eye_color) as color|null
-					if(new_eyes)
-						eye_color = sanitize_hexcolor(new_eyes)
 
 				if("show_body_size")
 					needs_update = TRUE

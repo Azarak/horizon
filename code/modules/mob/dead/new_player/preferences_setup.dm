@@ -13,7 +13,6 @@
 	backpack = random_backpack()
 	jumpsuit_style = pick(GLOB.jumpsuitlist)
 	set_skin_tone(random_skin_tone())
-	eye_color = random_eye_color()
 	if(gender in list(MALE, FEMALE))
 		body_type = gender
 	else
