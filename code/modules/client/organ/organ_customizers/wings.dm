@@ -1,10 +1,10 @@
 /datum/organ_customizer/wings
 	abstract_type = /datum/organ_customizer/wings
-	name = "Tail Feature"
+	name = "Wings"
 
 /datum/organ_choice/wings
 	abstract_type = /datum/organ_choice/wings
-	name = "Tail Feature"
+	name = "Wings"
 	organ_type = /obj/item/organ/wings
 	organ_slot = ORGAN_SLOT_WINGS
 
