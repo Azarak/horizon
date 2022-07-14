@@ -222,3 +222,39 @@
   Alex 'Avunia' Takiya (atakiya):
   - rscdel: Removed Nanites
   - rscadd: The now defunct Nanite Lab&#x27;s are closed for renovation!
+2022-06-25:
+  Alex 'Avunia' Takiya (atakiya):
+  - rscdel: Removed xenoegg spawns from Pubby
+  Emilitia Ennehrt (EmilitiaEnnehrt):
+  - imageadd: Added welding effect overlay on the object being welded
+  - rscadd: Added medical beret to clothing vender
+  - qol: Syringes sprites are easier to click on
+  - bugfix: Fixed coat sprites on non-human body types
+  - bugfix: Reshade for nitrile gloves and nitrile mask
+  - imageadd: New syringe, paddle, folded bodybag sprites, and new reagent filling
+      to go with new syringe sprites
+  - imageadd: added digitigrade versions for some of the new coats
+2022-06-26:
+  AtoriBirb:
+  - balance: Adds Low-pop Pharma access to Virologist
+  Delnth, /tg/station &amp; Crumpaloo, Alex &#x27;Avunia&#x27; Takiya:
+  - rscadd: Milkshake recipes have been changed
+  - rscadd: Ported caramel milkshake
+  - rscadd: Ported Space Ale
+  - rscadd: Ported a few drinks from /tg/
+  - rscadd: Added a new reagent to the soda dispenser, the aquafaba. An alternative
+      to egg white.
+  - imageadd: Ported drink sprites from /tg/
+  - imageadd: Ported crushed can sprites from /tg/
+  - imageadd: Ported poster updates from /tg/
+  - imageadd: Ported tiny edit on space-up vendor from /tg/
+  - imageadd: '(atakiya): Added overlays for the new glass and shotglass sprite'
+  KathrinBailey:
+  - balance: Clarke in Icebox mining base downgraded to a Ripley.
+  - qol: Pubby kitchen re-organised to be less frustrating to work in.
+  - qol: Pubby botany has their biogenerator moved between the kitchen and botany.
+  - balance: Pubby kitchen has a few more roundstart food items.
+  - balance: Pubby bartender has their own condimaster for drink mixing.
+  - bugfix: Missing wallmounts and firelocks for Pubby service.
+  Miss Fox (MissFox0810):
+  - bugfix: Silicons now added to manifest round start
